@@ -56,8 +56,10 @@
  *            Direction define            *
  ******************************************/
 #define UI_RESOURCE_PATH    "..\\Resource"
-#define RECORD_NORMAL_DIR   "D:\\Record\\Normal\\"
-#define RECORD_ALARM_DIR    "D:\\Record\\Alarm\\"
+#define RECORD_PATH          "D:\\Record\\"
+#define NORMAL_RECORD_PATH   "D:\\Record\\Normal\\"
+#define ALARM_RECORD_PATH    "D:\\Record\\Alarm\\"
+#define SOUND_PATH           "D:\\Record\\Alarm\\"
 
 
 

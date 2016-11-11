@@ -230,8 +230,8 @@ void CSurfaceUI::BindCamera(CCamera* pCamera)
 	CString subDir;
 	subDir.Format(_T("%d\\"), m_BindedCamera->m_Id);
 
-	m_RecordFileButler.SetDirection(_T(RECORD_NORMAL_DIR) + subDir);
-	m_AlarmFileButler.SetDirection(_T(RECORD_ALARM_DIR) + subDir);
+	m_RecordFileButler.SetDirection(_T(NORMAL_RECORD_PATH) + subDir);
+	m_AlarmFileButler.SetDirection(_T(ALARM_RECORD_PATH) + subDir);
 
 	
 	m_RecordFileButler.SetFileType(1);

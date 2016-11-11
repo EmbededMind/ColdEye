@@ -47,6 +47,8 @@ private:
 	HANDLE m_hLoginThread;
 	UINT   m_LoginPID;
 
+	void CheckFileDirectory();
+	void CheckDatabase();
 
 
 // й╣ож
