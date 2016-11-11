@@ -8,7 +8,7 @@
 	
 	<!---------------------Default---------------------><!--控件默认属性-->
 	<!--菜单一级控件-->
-	<Default shared="true" name="MenuPopup" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFFFFFFF&quot; "/>
+	<Default shared="true" name="PopupMenu" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFFFFFFF&quot; "/>
 	<!--菜单二级控件-->
 	<Default shared="true" name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='Button/row.png' source='0,0,343,106'&quot; focusedimage=&quot;file='Button/row.png' source='344,0,686,106'&quot;"/>
 	<!--分割线-->
@@ -38,15 +38,15 @@
 	<Style name="list" value="textcolor=&quot;#FFFFFF00&quot;"/>
 	<HorizontalLayout name="root" bkcolor="FFEFEFF4">
 		<VerticalLayout name="menuLayout" width="328" bkcolor="#FFFFFFFF">
-			<MenuPopup name="alarmvideo" text="报警视频" userdata="0" bkimage="file='Button/报警视频.png' source='0,0,328,106'" focusedimage="file='Button/报警视频.png' source='329,0,656,106'" />
+			<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='Button/报警视频.png' source='0,0,328,106'" focusedimage="file='Button/报警视频.png' source='329,0,656,106'" />
 			<Control />
-			<MenuPopup name="setting"    text="主机设置" userdata="1" bkimage="file='Button/主机设置.png' source='0,0,328,106'" focusedimage="file='Button/主机设置.png' source='329,0,656,106'" />
+			<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='Button/主机设置.png' source='0,0,328,106'" focusedimage="file='Button/主机设置.png' source='329,0,656,106'" />
 			<Control />
-			<MenuPopup name="autowatch"  text="自动看船" userdata="2" bkimage="file='Button/自动看船.png' source='0,0,328,106'" focusedimage="file='Button/自动看船.png' source='329,0,656,106'" />
+			<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='Button/自动看船.png' source='0,0,328,106'" focusedimage="file='Button/自动看船.png' source='329,0,656,106'" />
 			<Control />
-			<MenuPopup name="videoget"   text="视频调取" userdata="3" bkimage="file='Button/视频调取.png' source='0,0,328,106'" focusedimage="file='Button/视频调取.png' source='329,0,656,106'" />
+			<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='Button/视频调取.png' source='0,0,328,106'" focusedimage="file='Button/视频调取.png' source='329,0,656,106'" />
 			<Control />
-			<MenuPopup name="homewatch"  text="回家看船" userdata="4" bkimage="file='Button/回家看船.png' source='0,0,328,106'" focusedimage="file='Button/回家看船.png' source='329,0,656,106'" />
+			<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='Button/回家看船.png' source='0,0,328,106'" focusedimage="file='Button/回家看船.png' source='329,0,656,106'" />
 			<Control />
 		</VerticalLayout>
 		

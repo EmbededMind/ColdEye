@@ -129,12 +129,6 @@ BOOL CColdEyeApp::InitInstance()
 	
 	CPaintManagerUI::SetResourcePath(_T(UI_RESOURCE_PATH));
 
-	_m_pMainWnd = new CMainWnd();
-	_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	_m_pMainWnd->CenterWindow();
-	_m_pMainWnd->ShowModal();
-
-
 	using namespace DuiLib;
 
 	REGIST_DUICONTROL(CPopupMenuUI);
@@ -151,6 +145,12 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CAlarmVoiceListUI);
 	REGIST_DUICONTROL(CAlarmLightUI);
 	REGIST_DUICONTROL(CMyListUI);
+
+	_m_pMainWnd = new CMainWnd();
+	_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
+	_m_pMainWnd->CenterWindow();
+	_m_pMainWnd->ShowModal();
+
 
 
 
