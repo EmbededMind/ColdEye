@@ -55,7 +55,7 @@
  /*****************************************
  *            Direction define            *
  ******************************************/
-#define UI_RESOURCE_PATH    "E:\\ColdEye\\Resource"
+#define UI_RESOURCE_PATH    "..\\Resource"
 #define RECORD_NORMAL_DIR   "D:\\Record\\Normal\\"
 #define RECORD_ALARM_DIR    "D:\\Record\\Alarm\\"
 
