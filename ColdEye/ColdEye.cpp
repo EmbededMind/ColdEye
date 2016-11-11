@@ -121,7 +121,7 @@ BOOL CColdEyeApp::InitInstance()
 	//
 	H264_DVR_Init(NULL, (DWORD)this);
 
-
+	CheckFileDirectory();
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
 
@@ -231,6 +231,48 @@ void CColdEyeApp::SetWallWnd(CWallWnd* pWallWnd)
 void CColdEyeApp::SetMenuWnd(CMyMenuWnd* pMenuWnd)
 {
 	this->m_pMenuWnd = pMenuWnd;
+}
+
+void CColdEyeApp::CheckFileDirectory()
+{
+	if (!PathIsDirectory(_T(RECORD_PATH)))
+	{
+		CreateDirectory(_T(RECORD_PATH), NULL);
+	}
+	if (!PathIsDirectory(_T(NORMAL_RECORD_PATH)))
+	{
+		CreateDirectory(_T(NORMAL_RECORD_PATH), NULL);
+	}
+	if (!PathIsDirectory(_T(ALARM_RECORD_PATH)))
+	{
+		CreateDirectory(_T(ALARM_RECORD_PATH), NULL);
+	}
+
+	if (!PathIsDirectory(_T(SOUND_PATH)))
+	{
+		CreateDirectory(_T(SOUND_PATH), NULL);
+	}
+
+	CString strRecordPath, temp;
+	for (int i = 1; i <= 6; i++)
+	{
+		temp.Format(_T("%d\\"), i);
+		strRecordPath = _T(NORMAL_RECORD_PATH) + temp;
+		if (!PathIsDirectory(strRecordPath))
+		{
+			CreateDirectory(strRecordPath, NULL);
+		}
+		strRecordPath = _T(ALARM_RECORD_PATH) + temp;
+		if (!PathIsDirectory(strRecordPath))
+		{
+			CreateDirectory(strRecordPath, NULL);
+		}
+	}
+	
+}
+
+void CColdEyeApp::CheckDatabase()
+{
 }
 
 
