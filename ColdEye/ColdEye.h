@@ -13,6 +13,7 @@
 
 #include "Wnd\MainWnd.h"
 #include "Wnd\WallWnd.h"
+#include "Wnd\MyMenuWnd.h"
 
 // CColdEyeApp: 
 // 有关此类的实现，请参阅 ColdEye.cpp
@@ -34,11 +35,13 @@ public:
 	UINT      GetLoginThreadPID();
 
 	void      SetWallWnd(CWallWnd* pWallWnd);
-	void      SetMenuWnd();
+	void      SetMenuWnd(CMyMenuWnd* pMenuWnd);
+
 
 private:
 	CMainWnd* _m_pMainWnd;
 	CWallWnd* m_pWallWnd;
+	CMyMenuWnd* m_pMenuWnd;
 
 
 	HANDLE m_hLoginThread;

@@ -1,6 +1,5 @@
-
 // ColdEye.cpp : 定义应用程序的类行为。
-//
+
 
 #include "stdafx.h"
 #include "ColdEye.h"
@@ -10,6 +9,24 @@
 
 
 #include "Device\Camera.h"
+
+#include "UIlib.h"
+
+
+#include "Control\AlarmLightUI.h"
+#include "Control\AlarmVoiceListUI.h"
+#include "Control\AlarmVoiceSwitchUI.h"
+#include "Control\CameraSwitchUI.h"
+#include "Control\KeyBoardUI.h"
+#include "Control\MenuItemUI.h"
+#include "Control\MyEditUI.h"
+#include "Control\MyLabelUI.h"
+#include "Control\MyListUI.h"
+#include "Control\MySliderUI.h"
+#include "Control\PopupMenuUI.h"
+#include "Control\ShipNameItemUI.h"
+#include "Control\TimeButtonUI.h"
+#include "Control\VideoListUI.h"
 
 #ifdef USE_PRINT
 #include <io.h>
@@ -118,6 +135,25 @@ BOOL CColdEyeApp::InitInstance()
 	_m_pMainWnd->ShowModal();
 
 
+	using namespace DuiLib;
+
+	REGIST_DUICONTROL(CPopupMenuUI);
+	REGIST_DUICONTROL(CVideoListUI);
+	REGIST_DUICONTROL(CTimeButtonUI);
+	REGIST_DUICONTROL(CMenuItemUI);
+	REGIST_DUICONTROL(CMyEditUI);
+	REGIST_DUICONTROL(CKeyBoardUI);
+	REGIST_DUICONTROL(CShipNameItemUI);
+	REGIST_DUICONTROL(CCameraSwitchUI);
+	REGIST_DUICONTROL(CMyLabelUI);
+	REGIST_DUICONTROL(CMySliderUI);
+	REGIST_DUICONTROL(CAlarmVoiceSwitchUI);
+	REGIST_DUICONTROL(CAlarmVoiceListUI);
+	REGIST_DUICONTROL(CAlarmLightUI);
+	REGIST_DUICONTROL(CMyListUI);
+
+
+
 	//CColdEyeDlg dlg;
 	//m_pMainWnd = &dlg;
 	//INT_PTR nResponse = dlg.DoModal();
@@ -192,9 +228,9 @@ void CColdEyeApp::SetWallWnd(CWallWnd* pWallWnd)
 }
 
 
-void CColdEyeApp::SetMenuWnd()
+void CColdEyeApp::SetMenuWnd(CMyMenuWnd* pMenuWnd)
 {
-
+	this->m_pMenuWnd = pMenuWnd;
 }
 
 

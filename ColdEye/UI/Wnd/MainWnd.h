@@ -3,6 +3,7 @@
 #include "UILib.h"
 
 #include "Wnd\WallWnd.h"
+#include "Wnd\MyMenuWnd.h"
 
 using namespace DuiLib;
 
@@ -25,6 +26,6 @@ protected:
 
 private:
 	CWallWnd * m_pWall;
-
+	CMyMenuWnd* m_pMenu;
 };
 

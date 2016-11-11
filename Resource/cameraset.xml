@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window >
+	<Font share="true" id="0" name="方正兰亭中黑_GBK" size="32"/>
+	<Font share="true" id="1" name="方正兰亭中黑_GBK" size="20"/>
+	<Font share="true" id="2" name="方正兰亭中黑_GBK" size="30"/>
+	<Font share="true" id="3" name="方正兰亭中黑_GBK" size="28"/>
+
+	<VerticalLayout name="camareset">	
+		<VerticalLayout float="true" bkcolor="#FFF3F3F3" pos="70,80,0,0" width="790" height="155">
+			<Label name ="title" bkcolor="#FFE5E3E3" height="80" font="3" textpadding="316,21,315,20" textcolor="#FF333333" text=""/>
+			<Text float="true" pos="45,111,165,150" font="3" textcolor="#FF666666" text="船舶名称" />
+			<MyEdit name="cameraset" pos="245,105,0,0"/>
+		</VerticalLayout>
+		<VerticalLayout	visible="false"  float="true" bkcolor="#FFF3F3F3" pos="70,235,0,0" width="790" height="204">
+			<VerticalLayout name="shipnamesel" padding="45,30,45,0" bkcolor="#FFD7E9FF" >
+				<HorizontalLayout height="33">
+					<ShipNameItem width="60" text="船头" 	userdata="0"/>
+					<ShipNameItem width="80" text="船甲板" 	userdata="1"/>
+					<ShipNameItem width="80" text="船左舷"	userdata="2"/>
+					<ShipNameItem width="80" text="船右舷" 	userdata="3"/>
+					<ShipNameItem width="80" text="船后方" 	userdata="4"/>
+					<ShipNameItem width="80" text="船缆绳" 	userdata="5"/>
+				</HorizontalLayout>
+				<HorizontalLayout height="33">
+					<ShipNameItem width="80" text="集控台" 	userdata="10"/>
+					<ShipNameItem width="80" text="监控台" 	userdata="11"/>
+					<ShipNameItem width="80" text="船长室"	userdata="12"/>
+					<ShipNameItem width="80" text="船员室" 	userdata="13"/>
+					<ShipNameItem width="80" text="主机舱" 	userdata="14"/>
+					<ShipNameItem width="100" text="发电机舱"	userdata="15"/>
+				</HorizontalLayout>
+				<HorizontalLayout height="33">
+					<ShipNameItem width="100" text="罗经甲板"	userdata="20"/>
+					<ShipNameItem width="100" text="一层甲板" 	userdata="21"/>
+					<ShipNameItem width="100" text="二层甲板" 	userdata="22"/>
+					<ShipNameItem width="100" text="三层甲板" 	userdata="23"/>
+					<ShipNameItem width="100" text="四层甲板" 	userdata="24"/>
+				</HorizontalLayout>
+				<HorizontalLayout height="33">
+					<ShipNameItem width="100" height="33" text="五层甲板"	userdata="30"/>
+				</HorizontalLayout>
+			</VerticalLayout>
+		</VerticalLayout>
+		<VerticalLayout name="111ggg" float="true" pos="70,235,0,0" width="790" height="495" bkcolor="#FFF3F3F3">
+			<Control name="testcc" float="true" pos="45,25,0,0" width="700" height="2"/>
+			<CameraSwitch float="true" pos="0,35,0,0" width="790" height="80" bkcolor="#FFF3F3F3" font="3" textcolor="#FF666666" focusedtextcolor="#FFFFFFFF" textpadding="45,0,605,0" text="摄像头开关" />
+			<Control float="true" pos="45,125,0,0" width="700" />
+			<Text float="true" pos="45,150,250,189" font="3" textcolor="#FF666666" text="喇叭声音音量" />
+			<MySlider float="true" pos="178,224,0,0" width="430" height="28" bkcolor="#FFF3F3F3" bkimage="file='Button/volumbk.png' dest='103,6,683,74' " />
+			<Control float="true" pos="45,296,0,0" width="700" />
+			<MyLabel float="true" pos="0,306,0,0" width="790" height="80" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF" font="3" textpadding="45,0,0,0" align="left" textcolor="#FF666666" text="是否储存该摄像机视频"/>
+			<Control float="true" pos="45,396,0,0" width="700" />
+			<MyLabel float="true" pos="0,406,0,0" width="790" height="80" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF" font="3" textpadding="45,0,0,0" align="left" textcolor="#FF666666" text="设置自动看船"/>
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

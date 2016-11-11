@@ -1,13 +1,1 @@
-/*
-!/ColdEye/*.cpp
-!/ColdEye/*.h
-!/ColdEye/Database/*
-!/ColdEye/Device/*
-!/ColdEye/File/*
-!/ColdEye/Pattern/*
-!/ColdEye/UI/*
-!/Libs/DuiLib/UIlib.h
-!/Libs/NetSDK/*.h
-!/Libs/sqlite3/*.cpp
-!/Libs/sqlite3/*.h
-!/Resource/*.xml
+

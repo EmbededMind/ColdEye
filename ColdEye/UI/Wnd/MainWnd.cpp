@@ -2,6 +2,7 @@
 #include "ColdEye.h"
 
 #include "Wnd\MainWnd.h"
+#include "Wnd\MyMenuWnd.h"
 #include "Control\UISurface.h"
 
 #include "Device\Camera.h"
@@ -47,7 +48,12 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			::MoveWindow(m_pWall->GetHWND(), 0, pVerLayout->GetFixedHeight(), rClient.Width(), rClient.Height(), TRUE);
 			m_pWall->ShowWindow();
 
+			m_pMenu = new CMyMenuWnd();
+			m_pMenu->Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE, { 0,0,0,0 });
+			
+
 			((CColdEyeApp*)AfxGetApp())->SetWallWnd(m_pWall);
+			((CColdEyeApp*)AfxGetApp())->SetMenuWnd(m_pMenu);
 
 			PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, 0);
 
@@ -59,7 +65,6 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case USER_MSG_SCAN_DEV:
 			TRACE("Case scan dev msg\n");
 			{
-
 				for (int i = 0; i < wParam; i++)
 				{
 					CCamera* pCamera = new CCamera();
