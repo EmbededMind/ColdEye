@@ -23,7 +23,8 @@ public:
 	void DecreaseMinute();
 	void IncreaseHour();
 	void IncreaseMinute();
-
+	bool isMorrow();
+	void SetTime();
 
 	void DoEvent(TEventUI& event);
 

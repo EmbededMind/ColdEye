@@ -21,16 +21,14 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 		CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
 		switch (event.wParam)
 		{
-		case VK_UP:
-			{
+		case VK_UP:{
 				CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pTabLayout->GetItemAt(pTabLayout->GetCurSel());
 				CVerticalLayoutUI *pTopLayout = (CVerticalLayoutUI*)pVerLayout->GetItemAt(0); //最上面布局
 				pTopLayout->GetItemAt(2)->SetFocus();
 			}
 			break;
 			
-		case VK_DOWN:
-			{
+		case VK_DOWN:{
 				CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pTabLayout->GetItemAt(pTabLayout->GetCurSel());
 				CVerticalLayoutUI *pBottomLayout = (CVerticalLayoutUI*)pVerLayout->GetItemAt(2); //最底下布局
 				pBottomLayout->GetItemAt(4)->SetFocus();
@@ -38,16 +36,14 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 			break;
 
 		case VK_LEFT:
-			if (Switch == true)
-			{
+			if (Switch == true){
 				Switch = false;
 				Invalidate();
 			}
 			break;
 
 		case VK_RIGHT:
-			if (!Switch)
-			{
+			if (!Switch){
 				Switch = true;
 				Invalidate();
 			}
@@ -79,12 +75,10 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 void CCameraSwitchUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
-	if (Switch == true)
-	{
+	if (Switch == true){
 		DrawImage(hDC,m_OnImage);
 	}
-	else
-	{
+	else{
 		DrawImage(hDC, m_OffImage);
 	}
 }

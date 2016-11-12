@@ -52,8 +52,8 @@ void CMySliderUI::PaintBkColor(HDC hDC)
 		m_dwBackColor = 0xFF4198FE;
 		m_rc = m_rcPaint;
 		m_rc.left -= 176;
-		m_rc.top -= 24;
-		m_rc.bottom += 24;
+		m_rc.top -= 28;
+		m_rc.bottom += 28;
 		m_rc.right += 184;
 		CRenderEngine::DrawColor(hDC, m_rc, GetAdjustColor(m_dwBackColor));
 	}
@@ -70,8 +70,8 @@ void CMySliderUI::PaintBkImage(HDC hDC)
 	CRect m_rc;
 	m_rc = m_rcPaint;
 	m_rc.left -= 176;
-	m_rc.top -= 24;
-	m_rc.bottom += 24;
+	m_rc.top -= 28;
+	m_rc.bottom += 28;
 	m_rc.right += 184;
 	CRenderEngine::DrawImageString(hDC, m_pManager, m_rc, m_rc, (LPCTSTR)m_sBkImage, NULL, NULL);
 	Invalidate();

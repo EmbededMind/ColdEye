@@ -15,34 +15,34 @@ void CAlarmVoiceSwitchUI::DoEvent(TEventUI & event)
 {
 	switch (event.Type)
 	{
-	case UIEVENT_KEYDOWN:
-		switch (event.wParam)
-		{
-		case VK_LEFT:
-			if (Switch)
-			{
-				Switch = false;
-				CTabLayoutUI *pThirdMenu;
-				CVerticalLayoutUI *pChildLayout;
-				pThirdMenu = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-				pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(pThirdMenu->GetCurSel());
-				pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(1);
-				pChildLayout->SetVisible(false);
-			}
-			break;
+	case UIEVENT_KEYDOWN:{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
+			CVerticalLayoutUI *pChildLayout = (CVerticalLayoutUI*)pTabLayout->GetItemAt(pTabLayout->GetCurSel());
+			pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(1);
+			switch (event.wParam){
+			case VK_DOWN:
+				if (Switch){
+					pChildLayout->GetItemAt(2)->SetFocus();
+				}
+				break;
+			case VK_LEFT:
+				if (Switch){
+					Switch = false;
+					pChildLayout->SetVisible(false);
+				}
+				break;
 
-		case VK_RIGHT:
-			if (!Switch)
-			{
-				Switch = true;
-				CTabLayoutUI *pThirdMenu;
-				CVerticalLayoutUI *pChildLayout;
-				pThirdMenu = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-				pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(pThirdMenu->GetCurSel());
-				pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(1);
-				pChildLayout->SetVisible(true);
+			case VK_RIGHT:
+				if (!Switch){
+					Switch = true;
+					pChildLayout->SetVisible(true);
+				}
+				break;
+
+			case VK_BACK:
+				m_pManager->FindControl(_T("alarm_voice"))->SetFocus();
+				break;
 			}
-			break;
 		}
 		break;
 
