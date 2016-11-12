@@ -50,12 +50,8 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			m_pMenu = new CMyMenuWnd();
 			m_pMenu->Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE, { 0,0,0,0 });
-<<<<<<< HEAD
-			//m_pMenu->Create(NULL, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, 0L, 0, 0, 800, 572);
-			//m_pMenu->ShowWindow(false);
-=======
 			m_pMenu->ShowWindow(false);
->>>>>>> ca485226a7408ecd74d76c03546ce42d531fbf82
+
 
 			((CColdEyeApp*)AfxGetApp())->SetWallWnd(m_pWall);
 			((CColdEyeApp*)AfxGetApp())->SetMenuWnd(m_pMenu);
@@ -82,10 +78,6 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case USER_MSG_TEST:
 			Print("Rec test msg:%d,%d", wParam, lParam);
 			break;
-<<<<<<< HEAD
-			
-		case WM_KEYDOWN:
-=======
 
 		case WM_CONTEXTMENU:
 			if (CWnd::FromHandle(m_pWall->GetHWND())->IsWindowVisible()) {
@@ -96,7 +88,6 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				m_pMenu->ShowWindow(false);
 				m_pWall->ShowWindow(true);
 			}
->>>>>>> ca485226a7408ecd74d76c03546ce42d531fbf82
 			break;
 	}
 

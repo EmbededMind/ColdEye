@@ -304,7 +304,7 @@ UINT __stdcall LoginThread(PVOID pM)
 					 }
 				 }
 				 break;
-
+			//-----------------------------------------------------------------------------------
 			 case USER_MSG_LOGIN:
 		    	 {
 					CCamera* pCamera = (CCamera*)msg.lParam;
@@ -321,6 +321,18 @@ UINT __stdcall LoginThread(PVOID pM)
 					}
 			     }
 				 break;
+			//----------------------------------------------------------------------------
+			 case USER_MSG_RELOGIN:
+				 {
+					 CCamera* pCamera = (CCamera*)msg.lParam;
+					 CWallWnd* pWallWnd = ((CColdEyeApp*)AfxGetApp())->GetWallWnd();
+
+					 if (pCamera->Login()) {
+						 PostMessage(pWallWnd->GetHWND(), USER_MSG_RELOGIN, 0, msg.lParam);
+					 }
+				 }
+				 break;
+			//-----------------------------------------------------------------------------------
 		}
 	}
 	DispatchMessage(&msg);

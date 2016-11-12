@@ -265,3 +265,10 @@ BOOL CCamera::UnsubscribeAlarmMessage()
 	return FALSE;
 }
 
+
+
+void CCamera::OnDisConnnect()
+{
+	Logout();
+	StopRealPlay();
+}

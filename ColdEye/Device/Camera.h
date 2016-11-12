@@ -61,6 +61,7 @@ public:
 	BOOL SetClientWindow(HWND hWnd);
 
 	void OnLogin();
+
 	BOOL Login();
 	void Logout();
 	BOOL StartRealPlay();
@@ -72,6 +73,8 @@ public:
 
 	BOOL SubscribeAlarmMessage();
 	BOOL UnsubscribeAlarmMessage();
+
+	void OnDisConnnect();
 
 protected:
 	SDK_CONFIG_NET_COMMON_V2 mCommonNetConfig;

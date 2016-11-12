@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "ColdEye.h"
+
 #include "UISurface.h"
 
 #include "H264Play.h"
@@ -78,11 +80,12 @@ void CSurfaceUI::DoEvent(TEventUI& event)
 	case UIEVENT_TIMER:
 		switch (event.wParam)
 		{
-			case 1:
+			case TIMER_ID_AUTO_RECORD:
 				TRACE("Record package\n");
 				PackageReocrdFile();
 				break;
-			case 2:
+			//------------------------------------
+			case TIMER_ID_ALARM:
 				if (m_wAlarmStamp > 0) {
 					m_wAlarmStamp--;
 				}
@@ -91,8 +94,14 @@ void CSurfaceUI::DoEvent(TEventUI& event)
 					OnAlarmStop();
 				}
 				break;
-			case 3:
+			//------------------------------------
+			case TIMER_ID_AUTO_WATCH:
 				TRACE("End of watch\n");
+				// TODO
+				break;
+			//------------------------------------
+			case TIMER_ID_RECONNECT:
+				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, 0, (LPARAM)m_BindedCamera );
 				break;
 		}
 		break;
@@ -461,7 +470,7 @@ BOOL CSurfaceUI::StartAutoRecord()
 	CFile* pf = m_RecordFileButler.AllocRecordFile();
 	if (pf) {
 		StartRecord(pf);
-		SetTimer(1, 30*1000);
+		SetTimer(TIMER_ID_AUTO_RECORD, 30*1000);
 		return TRUE;
 	}
 	else {
@@ -474,7 +483,7 @@ BOOL CSurfaceUI::StartAutoRecord()
 
 void CSurfaceUI::StopAutoRecord()
 {
-	this->KillTimer(1);
+	this->KillTimer(TIMER_ID_AUTO_RECORD);
 	StopRecord();
 	m_RecordFileButler.ReleaseRecordFile();
 	m_bIsRecording = false;
@@ -501,7 +510,7 @@ BOOL CSurfaceUI::StartAutoWatch()
 	m_BindedCamera->SubscribeAlarmMessage();
 	m_bIsWatching = true;
 
-	SetTimer(3, elapse);
+	SetTimer(TIMER_ID_AUTO_WATCH, elapse);
 	TRACE("elapse:%d before end:%d:%0d\n", elapse, m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd / 60, m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd % 60);
 	return TRUE;
 }
@@ -510,7 +519,7 @@ BOOL CSurfaceUI::StartAutoWatch()
 
 void CSurfaceUI::StopAutoWatch()
 {
-	this->KillTimer(3);
+	this->KillTimer(TIMER_ID_AUTO_WATCH);
 	m_BindedCamera->UnsubscribeAlarmMessage();
 	m_bIsWatching = false;
 }
@@ -543,7 +552,7 @@ Print("Alarm trigged");
 		CFile* pf  = m_AlarmFileButler.AllocRecordFile();
 		if (pf) {
 			StartAlarmRecord(pf);
-			SetTimer(2, 1000);
+			SetTimer(TIMER_ID_ALARM, 1000);
 		}
 		else {
 			Print("Alloc file failed when alarm trigged");
@@ -559,12 +568,34 @@ void CSurfaceUI::OnAlarmStop()
 Print("Alarm stop");
 
 	m_wAlarmStamp = 0;
-	KillTimer(2);
+	KillTimer(TIMER_ID_ALARM);
 	//StopAlarmRecord();
 	m_pAlmFile = NULL;
 	m_AlarmFileButler.ReleaseRecordFile();
 }
 
+
+
+void CSurfaceUI::OnDisConnect()
+{
+	if (m_bIsRecording) {
+		StopAutoRecord();
+	}
+
+	if (m_bIsAlarming) {
+		StopAlarmRecord();
+	}
+
+	if (m_bIsWatching) {
+		StopAutoWatch();
+	}
+
+	DisconnectRealPlay();
+	
+	m_BindedCamera->OnDisConnnect();
+
+	SetTimer(TIMER_ID_RECONNECT,  10*1000);
+}
 
 
 void CSurfaceUI::DoPaint(HDC hDC, const RECT& rcPaint)

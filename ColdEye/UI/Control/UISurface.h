@@ -86,6 +86,9 @@ public:
 	void OnAlarmTrigged();
 	void OnAlarmStop();
 
+	void OnDisConnect();
+	void OnReConnect();
+
 protected:
 	HWND m_hWnd;
 
