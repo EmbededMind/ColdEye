@@ -149,6 +149,22 @@ void CCamera::OnLogin()
 }
 
 
+void CCamera::Logout()
+{
+	if (m_LoginId > 0) {
+		if (H264_DVR_Logout(m_LoginId)) {
+			m_LoginId = 0;
+		}
+		else {
+			Print("%s logout failed:%d", m_szIp, H264_DVR_GetLastError());
+		}
+	}
+	else {
+		Print("Invalid logid:%d when logout", m_LoginId);
+	}
+}
+
+
 /**@brief 摄像机开启实时视频数据传输
  *
  */
@@ -180,6 +196,19 @@ BOOL CCamera::StartRealPlay(HWND hWnd)
 	this->m_ClientInfo.hWnd = hWnd;
 	StartRealPlay();
 	return 0;
+}
+
+
+void CCamera::StopRealPlay()
+{
+	if (m_hRealPlay > 0) {
+		if (!H264_DVR_StopRealPlay(m_hRealPlay, &this->m_ClientInfo.hWnd)) {
+			Print("%s stop real play failed:%d", this->m_szIp, H264_DVR_GetLastError());
+			ASSERT(false);
+		}
+		m_hRealPlay = 0;
+	}
+	Print("Invalid hRealPlay");
 }
 
 

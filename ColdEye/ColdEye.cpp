@@ -119,7 +119,7 @@ BOOL CColdEyeApp::InitInstance()
 	InitConsoleWindow();
 #endif
 	//
-	H264_DVR_Init(NULL, (DWORD)this);
+
 
 	CheckFileDirectory();
 	// Start login thread
