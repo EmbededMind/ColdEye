@@ -14,10 +14,5 @@ public:
 	void DoEvent(TEventUI &event);
 	void PaintBkColor(HDC hDC);
 	void PaintBkImage(HDC hDC);
-public:
-	CSliderUI *pSlider;
-	CTabLayoutUI *pTabLayout;
-	CPaintManagerUI *m_paintManger;
-	CRect m_rc;
 };
 

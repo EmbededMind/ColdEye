@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "MySliderUI.h"
-#include "conio.h"
 
 IMPLEMENT_DUICONTROL(CMySliderUI)
 CMySliderUI::CMySliderUI()
 {
-	//pSlider = new CSliderUI;
 }
 
 
@@ -17,12 +15,19 @@ void CMySliderUI::DoEvent(TEventUI & event)
 {
 	if (event.Type == UIEVENT_KEYDOWN)
 	{
+		CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)GetParent();
 		switch (event.wParam)
 		{
 		case VK_UP:
+			if (GetName() == _T("camera_set_volume") || GetName() == _T("sysset_voice"))
+				pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) - 3)->SetFocus();//向上移动3
 			break;
 
 		case VK_DOWN:
+			if (GetName() == _T("sysset_light"))
+				pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 3)->SetFocus();//向下移动3
+			else if(GetName() == _T("sysset_voice") || GetName() == _T("camera_set_volume"))
+				pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 2)->SetFocus();//向下移动2
 			break;
 
 		case VK_LEFT:
@@ -33,16 +38,17 @@ void CMySliderUI::DoEvent(TEventUI & event)
 			SetValue(GetValue() + 1);
 			break;
 		}
-		_cprintf("v = %d\n",GetValue());
 
 	}
 	CSliderUI::DoEvent(event);
 }
 
 void CMySliderUI::PaintBkColor(HDC hDC)
-{
+{	
+	CRect m_rc;
 	if (m_bFocused)
 	{
+		
 		m_dwBackColor = 0xFF4198FE;
 		m_rc = m_rcPaint;
 		m_rc.left -= 176;
@@ -61,6 +67,7 @@ void CMySliderUI::PaintBkColor(HDC hDC)
 
 void CMySliderUI::PaintBkImage(HDC hDC)
 {
+	CRect m_rc;
 	m_rc = m_rcPaint;
 	m_rc.left -= 176;
 	m_rc.top -= 24;
