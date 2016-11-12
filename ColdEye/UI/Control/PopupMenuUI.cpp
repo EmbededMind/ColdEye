@@ -24,48 +24,48 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 	if (event.Type == UIEVENT_KEYDOWN) {
 		switch (event.wParam)
 		{
-			case VK_SPACE:
-				break;
-            //---------------------------------------
-			case VK_UP:
-				if (mPrevItem) {
-					mPrevItem->SetFocus();
-				}
-				break;
-			//--------------------------------------
-			case VK_DOWN:
-				if (mNextItem) {
-					mNextItem->SetFocus();
-				}
-				break;
-			//--------------------------------------
-			case VK_LEFT:
-				break;
-			//--------------------------------------
-			case VK_RIGHT:
-				iInx = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetCurSel();
-				pFocused = (CContainerUI*)static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layour_secondmenu")))->GetItemAt(iInx);
+		case VK_SPACE:
+			break;
+		//---------------------------------------
+		case VK_UP:
+			if (mPrevItem) {
+				mPrevItem->SetFocus();
+			}
+			break;
+		//--------------------------------------
+		case VK_DOWN:
+			if (mNextItem) {
+				mNextItem->SetFocus();
+			}
+			break;
+		//--------------------------------------
+		case VK_LEFT:
+			break;
+		//--------------------------------------
+		case VK_RIGHT:
+			iInx = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetCurSel();
+			pFocused = (CContainerUI*)static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layour_secondmenu")))->GetItemAt(iInx);
 
-				if (pFocused->GetCount() > 0) {
-					static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(true);
-					pFocused->GetItemAt(0)->SetFocus();
-					SetMenuBkColor(0xFFE6EF, 0xFFFFFFFF);
-					SetBkColor(0xFF477688F);
-					SetTextColor(0xFFFFFFFF);
-				}
-				break;
+			if (pFocused->GetCount() > 0) {
+				static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(true);
+				pFocused->GetItemAt(0)->SetFocus();
+				SetMenuBkColor(0xFFE6EF, 0xFFFFFFFF);
+				SetBkColor(0xFF477688F);
+				SetTextColor(0xFFFFFFFF);
+			}
+			break;
 		}
-
-		if (event.Type == UIEVENT_SETFOCUS) {
-			SetBkColor(0xFF4198FE);
-			static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->SelectItem(StrToInt(GetUserData()));
-		}
-		else if (event.Type == UIEVENT_KILLFOCUS) {
-			SetBkColor(0xFFFFFFFF);
-		}
-
-		CButtonUI::DoEvent(event);
 	}
+
+	if (event.Type == UIEVENT_SETFOCUS) {
+		SetBkColor(0xFF4198FE);
+		static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->SelectItem(StrToInt(GetUserData()));
+	}
+	else if (event.Type == UIEVENT_KILLFOCUS) {
+		SetBkColor(0xFFFFFFFF);
+	}
+
+	CButtonUI::DoEvent(event);
 }
 
 void CPopupMenuUI::SetItemRelation(CPopupMenuUI * pPrevMenu, CPopupMenuUI * pNextMenu)

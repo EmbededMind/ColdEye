@@ -50,7 +50,8 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			m_pMenu = new CMyMenuWnd();
 			m_pMenu->Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE, { 0,0,0,0 });
-			
+			//m_pMenu->Create(NULL, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, 0L, 0, 0, 800, 572);
+			//m_pMenu->ShowWindow(false);
 
 			((CColdEyeApp*)AfxGetApp())->SetWallWnd(m_pWall);
 			((CColdEyeApp*)AfxGetApp())->SetMenuWnd(m_pMenu);
@@ -76,6 +77,9 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		case USER_MSG_TEST:
 			Print("Rec test msg:%d,%d", wParam, lParam);
+			break;
+			
+		case WM_KEYDOWN:
 			break;
 	}
 
