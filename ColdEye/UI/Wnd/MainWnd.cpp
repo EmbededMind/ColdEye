@@ -52,6 +52,7 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			m_pMenu->Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 			m_pMenu->ShowWindow(false);
 
+
 			((CColdEyeApp*)AfxGetApp())->SetWallWnd(m_pWall);
 			((CColdEyeApp*)AfxGetApp())->SetMenuWnd(m_pMenu);
 

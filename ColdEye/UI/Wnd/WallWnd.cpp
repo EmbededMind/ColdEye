@@ -33,7 +33,7 @@ void __stdcall cbDisConnect(LONG loginId, char* szDVRIP, LONG DVRPort, DWORD use
 
 	ASSERT(pThis != nullptr);
 
-
+	pThis->>OnDisConnect(loginId, szDVRIP, DVRPort);
 }
 
 
@@ -78,8 +78,9 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 				H264_DVR_SetDVRMessCallBack(cbDVRMessage, (long)this);
 			}break;
-
-		case USER_MSG_LOGIN:{
+		//----------------------------------------------------------------
+		case USER_MSG_LOGIN:
+			{
 				if (wParam){
 					TRACE("Login OK\n");
 					Invest((CCamera*)lParam);
@@ -91,7 +92,15 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				msg.lParam = 3;
 				CMsgSquare::GetInstance()->Broadcast(msg);
 		    }break;
+		//---------------------------------------------------------
+		case USER_MSG_RELOGIN:{
+				Device_Map::iterator iter;
+				CCamera* pCamera = (CCamera*)lParam;
 
+				
+			}			
+			break;
+		//---------------------------------------------------------
 		case WM_KEYDOWN:
 			TRACE("wall case key\n");
 			switch (wParam)
@@ -103,8 +112,7 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-		case WM_TIMER:
-			
+		case WM_TIMER:			
 			if (wParam == 1) {
 				Print("Reconnecting...");
 				Device_Map::iterator  p = mReconnectDevMap.begin();
@@ -249,6 +257,7 @@ void CWallWnd::ExecuteSurfaceLayout()
 void CWallWnd::ReConnect(LONG loginId, char * szIp, LONG port)
 {
 	CSurfaceUI* pSurface = FindSurface(loginId);
+
 	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
 	CCamera* pCamera = pSurface->m_BindedCamera;
 	ASSERT(pCamera != NULL || "Find null ReConnect camera" == 0);
@@ -273,6 +282,21 @@ void CWallWnd::ReConnect(LONG loginId, char * szIp, LONG port)
 	mReconnectDevMap[pCamera->m_Id] = pCamera;
 	SetTimer(m_hWnd, 1, 30*1000, NULL);
 }
+
+
+
+void CWallWnd::OnDisConnect(LONG loginId, char * szIp, LONG port)
+{
+	CSurfaceUI* pSurface = FindSurface(loginId);
+
+	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
+
+	pSurface->OnDisConnect();
+}
+
+
+
+
 
 CSurfaceUI* CWallWnd::FindSurface(long logidId)
 {
