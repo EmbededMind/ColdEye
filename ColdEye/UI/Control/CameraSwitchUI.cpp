@@ -18,23 +18,22 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 { 
 	if (event.Type == UIEVENT_KEYDOWN)
 	{
+		CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
 		switch (event.wParam)
 		{
 		case VK_UP:
 			{
-				CTabLayoutUI *pTab = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-				CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pTab->GetItemAt(pTab->GetCurSel());
+				CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pTabLayout->GetItemAt(pTabLayout->GetCurSel());
 				CVerticalLayoutUI *pTopLayout = (CVerticalLayoutUI*)pVerLayout->GetItemAt(0); //最上面布局
-				static_cast<CCameraSwitchUI*> (pTopLayout->GetItemAt(2))->SetFocus();
+				pTopLayout->GetItemAt(2)->SetFocus();
 			}
 			break;
 			
 		case VK_DOWN:
 			{
-				CTabLayoutUI *pTab = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-				CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pTab->GetItemAt(pTab->GetCurSel());
+				CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pTabLayout->GetItemAt(pTabLayout->GetCurSel());
 				CVerticalLayoutUI *pBottomLayout = (CVerticalLayoutUI*)pVerLayout->GetItemAt(2); //最底下布局
-				static_cast<CCameraSwitchUI*> (pBottomLayout->GetItemAt(4))->SetFocus();
+				pBottomLayout->GetItemAt(4)->SetFocus();
 			}
 			break;
 
@@ -80,17 +79,31 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 void CCameraSwitchUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
-	RECT rcPos;
-	CDuiString dest;
-	rcPos = { 665,16,745,77};
 	if (Switch == true)
 	{
-		dest.Format(_T("file='Button\\开关1.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
-		DrawImage(hDC, dest);
+		DrawImage(hDC,m_OnImage);
 	}
 	else
 	{
-		dest.Format(_T("file='Button\\开关2.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
-		DrawImage(hDC, dest);
+		DrawImage(hDC, m_OffImage);
 	}
+}
+
+void CCameraSwitchUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
+{
+	if (_tcsicmp(pstrName, _T("onimage")) == 0) 
+		SetOnImage(pstrValue);
+	else if (_tcsicmp(pstrName, _T("offimage")) == 0) 
+		SetOffImage(pstrValue);
+	CButtonUI::SetAttribute(pstrName, pstrValue);
+}
+
+void CCameraSwitchUI::SetOnImage(LPCTSTR pstrValue)
+{
+	m_OnImage = pstrValue;
+}
+
+void CCameraSwitchUI::SetOffImage(LPCTSTR pstrValue)
+{
+	m_OffImage = pstrValue;
 }
