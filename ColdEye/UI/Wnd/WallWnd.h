@@ -6,6 +6,10 @@
 
 #include "Device\Camera.h"
 
+#include <map>
+
+typedef std::map<long, CCamera*> Device_Map;
+
 using namespace DuiLib;
 
 class CWallWnd : public CWindowWnd, public INotifyUI
@@ -27,7 +31,7 @@ public :
 	void DesignSurfaceLayout();
 	void ExecuteSurfaceLayout();
 
-
+	void ReConnect(LONG loginId, char* szIp, LONG port);
 	//CCamera* FindCamera(long loginId);
 	CSurfaceUI* FindSurface(long loginId);
 	
@@ -36,9 +40,8 @@ protected:
 	CContainerUI*   m_pContainer;
 	CSurfaceUI* mSurfaces[6];
 
-	//CSurfaceWnd* mSurfaces[6];
+	Device_Map mReconnectDevMap;
 
-	//CSurfaceWnd* mSurfaces[6];
 
 	DWORD       mRows;
 	DWORD       mCols;

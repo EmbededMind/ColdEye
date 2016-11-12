@@ -62,8 +62,11 @@ public:
 
 	void OnLogin();
 	BOOL Login();
+	void Logout();
 	BOOL StartRealPlay();
 	BOOL StartRealPlay(HWND hWnd);
+
+	void StopRealPlay();
 
 	BOOL LoadLocalConfig();
 

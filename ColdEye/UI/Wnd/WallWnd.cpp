@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include "ColdEye.h"
 #include "WallWnd.h"
 
 #include "Pattern\MsgSquare.h"
@@ -22,6 +24,19 @@ Print("Alarm message");
 
 	return 0;
 }
+
+
+void __stdcall cbDisConnect(LONG loginId, char* szDVRIP, LONG DVRPort, DWORD userData)
+{
+	Print("---------------- DisConnect ------------%s", szDVRIP);
+	CWallWnd* pThis = (CWallWnd*)userData;
+
+	ASSERT(pThis != nullptr);
+
+
+}
+
+
 
 
 CWallWnd::CWallWnd()
@@ -59,6 +74,8 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					ASSERT(FALSE);
 				}
 
+				H264_DVR_Init(NULL, (DWORD)this);
+
 				H264_DVR_SetDVRMessCallBack(cbDVRMessage, (long)this);
 			}break;
 
@@ -80,11 +97,22 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			switch (wParam)
 			{
 				case VK_UP:
-					TRACE("wall case up\n");
 					break;
 				case VK_DOWN:
-					TRACE("wall case down\n");
 					break;
+			}
+			break;
+
+		case WM_TIMER:
+			
+			if (wParam == 1) {
+				Print("Reconnecting...");
+				Device_Map::iterator  p = mReconnectDevMap.begin();
+
+				while (p != mReconnectDevMap.end()) {
+					PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, 0, (LPARAM)p->second );
+					p++;
+				}
 			}
 			break;
 	}
@@ -111,7 +139,7 @@ void CWallWnd::Notify(TNotifyUI& msg)
 		TRACE("wall kill focus\n");
 	}
 	else if (msg.sType == DUI_MSGTYPE_MENU) {
-		TRACE("wall case menu\n");
+		TRACE("wall case -menu\n");
 	}
 	else {
 		//TRACE("wall -> msg type:%S\n", msg.sType);
@@ -215,9 +243,36 @@ void CWallWnd::ExecuteSurfaceLayout()
 			cnt++;
 		}
 	}
+
 }
 
+void CWallWnd::ReConnect(LONG loginId, char * szIp, LONG port)
+{
+	CSurfaceUI* pSurface = FindSurface(loginId);
+	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
+	CCamera* pCamera = pSurface->m_BindedCamera;
+	ASSERT(pCamera != NULL || "Find null ReConnect camera" == 0);
 
+	if(pSurface->m_bIsAlarming)
+		pSurface->StopAlarmRecord();
+
+	if (pSurface->m_bIsRecording) {
+		pSurface->StopAutoRecord();
+	}
+	
+	if (pSurface->m_bIsWatching) {
+		pSurface->StopAutoWatch();
+	}
+
+	pSurface->DisconnectRealPlay();
+
+	pCamera->Logout();
+	pCamera->StopRealPlay();
+
+
+	mReconnectDevMap[pCamera->m_Id] = pCamera;
+	SetTimer(m_hWnd, 1, 30*1000, NULL);
+}
 
 CSurfaceUI* CWallWnd::FindSurface(long logidId)
 {

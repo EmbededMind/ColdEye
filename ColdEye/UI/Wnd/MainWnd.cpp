@@ -79,10 +79,9 @@ LRESULT CMainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case WM_CONTEXTMENU:
-			//Print("Main window case menu");
 			if (CWnd::FromHandle(m_pWall->GetHWND())->IsWindowVisible()) {
 				m_pWall->ShowWindow(false);
-				m_pMenu->ShowWindow(true);
+				m_pMenu->ShowWindow(true);				
 			}
 			else {
 				m_pMenu->ShowWindow(false);
