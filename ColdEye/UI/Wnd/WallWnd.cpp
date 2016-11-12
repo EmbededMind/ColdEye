@@ -87,10 +87,6 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					break;
 			}
 			break;
-
-		case WM_CONTEXTMENU:
-			TRACE("wall case menu\n");
-			break;
 	}
 
 	if (m_PaintManager.MessageHandler(uMsg, wParam, lParam, lRes)){
