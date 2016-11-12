@@ -64,10 +64,10 @@ public:
 
 	BOOL Login();
 	void Logout();
-	BOOL StartRealPlay();
-	BOOL StartRealPlay(HWND hWnd);
+	//BOOL StartRealPlay();
+	//BOOL StartRealPlay(HWND hWnd);
 
-	void StopRealPlay();
+	//void StopRealPlay();
 
 	BOOL LoadLocalConfig();
 

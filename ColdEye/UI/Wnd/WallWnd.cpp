@@ -74,7 +74,7 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					ASSERT(FALSE);
 				}
 
-				H264_DVR_Init(NULL, (DWORD)this);
+				H264_DVR_Init(cbDisConnect, (DWORD)this);
 
 				H264_DVR_SetDVRMessCallBack(cbDVRMessage, (long)this);
 			}break;
@@ -176,7 +176,7 @@ BOOL CWallWnd::Invest(CCamera* pCamera)
 			m_pContainer->Add(mSurfaces[i]);
 			mSurfaces[i]->SetBkColor(0xFFBDBDBD);
 			mSurfaces[i]->BindCamera(pCamera);
-			mSurfaces[i]->SetFocus();
+			//mSurfaces[i]->SetFocus();
 			mSurfaces[i]->ConnectRealPlay();
 
 			mSurfaces[i]->ExecuteLocalConfig();
@@ -254,34 +254,34 @@ void CWallWnd::ExecuteSurfaceLayout()
 
 }
 
-void CWallWnd::ReConnect(LONG loginId, char * szIp, LONG port)
-{
-	CSurfaceUI* pSurface = FindSurface(loginId);
-
-	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
-	CCamera* pCamera = pSurface->m_BindedCamera;
-	ASSERT(pCamera != NULL || "Find null ReConnect camera" == 0);
-
-	if(pSurface->m_bIsAlarming)
-		pSurface->StopAlarmRecord();
-
-	if (pSurface->m_bIsRecording) {
-		pSurface->StopAutoRecord();
-	}
-	
-	if (pSurface->m_bIsWatching) {
-		pSurface->StopAutoWatch();
-	}
-
-	pSurface->DisconnectRealPlay();
-
-	pCamera->Logout();
-	pCamera->StopRealPlay();
-
-
-	mReconnectDevMap[pCamera->m_Id] = pCamera;
-	SetTimer(m_hWnd, 1, 30*1000, NULL);
-}
+//void CWallWnd::ReConnect(LONG loginId, char * szIp, LONG port)
+//{
+//	CSurfaceUI* pSurface = FindSurface(loginId);
+//
+//	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
+//	CCamera* pCamera = pSurface->m_BindedCamera;
+//	ASSERT(pCamera != NULL || "Find null ReConnect camera" == 0);
+//
+//	if(pSurface->m_bIsAlarming)
+//		pSurface->StopAlarmRecord();
+//
+//	if (pSurface->m_bIsRecording) {
+//		pSurface->StopAutoRecord();
+//	}
+//	
+//	if (pSurface->m_bIsWatching) {
+//		pSurface->StopAutoWatch();
+//	}
+//
+//	pSurface->DisconnectRealPlay();
+//
+//	pCamera->Logout();
+//	pCamera->StopRealPlay();
+//
+//
+//	mReconnectDevMap[pCamera->m_Id] = pCamera;
+//	SetTimer(m_hWnd, 1, 30*1000, NULL);
+//}
 
 
 

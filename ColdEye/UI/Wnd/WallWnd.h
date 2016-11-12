@@ -31,7 +31,7 @@ public :
 	void DesignSurfaceLayout();
 	void ExecuteSurfaceLayout();
 
-	void ReConnect(LONG loginId, char* szIp, LONG port);
+	//void ReConnect(LONG loginId, char* szIp, LONG port);
 	void OnDisConnect(LONG loginId, char* szIp, LONG port);
 	//CCamera* FindCamera(long loginId);
 	CSurfaceUI* FindSurface(long loginId);

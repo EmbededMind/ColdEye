@@ -406,14 +406,16 @@ void CSurfaceUI::DisconnectRealPlay()
 		if (!H264_DVR_StopRealPlay(m_hRealPlay)) {
 			TRACE("StopRealPlay failed:%d\n", H264_DVR_GetLastError());
 		}
-		else {
-			m_hRealPlay = 0;
-		}
+		//else {
+		//	m_hRealPlay = 0;
+		//}
 
 		H264_PLAY_Stop(m_lPlayPort);
 		H264_PLAY_CloseStream(m_lPlayPort);
 		H264_PLAY_FreePort(m_lPlayPort);
 		m_lPlayPort = 0;
+
+		Print("After disconnect hRealPlay:%d", m_hRealPlay);
 
 		CWnd::FromHandle(this->GetWindowHandle())->Invalidate();
 	}
