@@ -33,7 +33,7 @@ void __stdcall cbDisConnect(LONG loginId, char* szDVRIP, LONG DVRPort, DWORD use
 
 	ASSERT(pThis != nullptr);
 
-	pThis->>OnDisConnect(loginId, szDVRIP, DVRPort);
+	pThis->OnDisConnect(loginId, szDVRIP, DVRPort);
 }
 
 
