@@ -103,55 +103,67 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 				}
 				break;
 			//----------------------------------------------------------------------
-			case VK_RIGHT:
-				{
-					int userData = StrToInt(GetUserData());
-					int sel;
-					switch (userData)
-					{
-						case 6:
-							static_cast<CControlUI*>(m_pManager->FindControl(_T("shipname")))->SetFocus();
-							break;
-					    //---------------
-						case 7:
-						case 8:
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							{
-								CTabLayoutUI* pThirdMenu;
-								CVerticalLayoutUI* pChildLayout;
-								CControlUI* pControl;
-								pThirdMenu = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-								sel = pThirdMenu->GetCurSel();
-								pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(sel);
-								pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(0);
-								pControl = pChildLayout->GetItemAt(2);
-								pControl->SetFocus();
-							}
-							break;
-						//------------------------------------------------------------
-						case 15:
-							{							
-								CTabLayoutUI* pThirdMenu;
-								CVerticalLayoutUI* pChildLayout;
-								CControlUI* pItem;
-								pThirdMenu = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-								sel = pThirdMenu->GetCurSel();
 
-								pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(sel);
-								pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(0);
-								pItem = pChildLayout->GetItemAt(2);
-								pItem->SetFocus();
-							}
-							break;
-						//-------------------------------------------
+			case VK_RIGHT:
+				int userdata = StrToInt(GetUserData());
+				int sel;
+				CTabLayoutUI *pThirdMenu = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
+				CVerticalLayoutUI *pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(pThirdMenu->GetCurSel());
+
+				if (userdata >= 0 && userdata < 6)//报警视频列表
+				{
+					CDuiString name;
+					CListUI *pList;
+					name.Format(_T("list%d"), userdata + 1);
+					pList = static_cast<CListUI*>(m_pManager->FindControl(name));
+					int Count = pList->GetCount();
+					if (Count > 0)
+					{
+						pList->GetItemAt(0)->SetFocus();
+						pList->SelectItem(0);
 					}
-					SetItemBkColor(0xFFEFEFF4, 0xFFFFFFFF);
-					SetBkColor(0xFF4178B7);
-					SetTextColor(0xFFFFFFFF);
 				}
+				else if (userdata == 6)//主机名称
+				{
+					m_pManager->FindControl(_T("edit_shipname"))->SetFocus();
+				}
+				else if (userdata >= 7 && userdata < 13)//摄像机设置
+				{
+					CButtonUI *pEdit;
+					sel = pThirdMenu->GetCurSel();
+					pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(sel);
+					pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(0);
+					pEdit = (CButtonUI*)pChildLayout->GetItemAt(2); //船名编辑框
+					pEdit->SetFocus();
+				}
+				else if (userdata == 13) //系统设置
+				{
+					pChildLayout->GetItemAt(2)->SetFocus();
+				}
+				else if (userdata == 14)//看船时间
+				{
+					static_cast<CButtonUI*>(m_pManager->FindControl(_T("time1_hour")))->SetFocus();
+				}
+				else if (userdata == 15)//报警音
+				{
+					CButtonUI *pAlarmVoiceSwitch;
+					sel = pThirdMenu->GetCurSel();
+					pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(sel);
+					pChildLayout = (CVerticalLayoutUI*)pChildLayout->GetItemAt(0);
+					pAlarmVoiceSwitch = (CButtonUI*)pChildLayout->GetItemAt(2); //报警音开关
+					pAlarmVoiceSwitch->SetFocus();
+				}
+				else if (userdata == 16)//警告灯光
+				{
+
+				}
+				else if (userdata == 17) //看船开关记录
+				{
+
+				}
+				SetItemBkColor(0xFFEFEFF4, 0xFFFFFFFF);
+				SetBkColor(0xFF4178B7);
+				SetTextColor(0xFFFFFFFF);
 				break;
 		}
 	}
@@ -160,7 +172,7 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 		SetBkColor(0xFF4198FE);
 		static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SelectItem(StrToInt(GetUserData()));
 	}
-	else {
+	else if(event.Type == UIEVENT_KILLFOCUS){
 		SetBkColor(0xFFFFFFFF);
 	}
 

@@ -2,7 +2,6 @@
 #include "conio.h" 
 
 #include "Control\KeyBoardUI.h"
-#include "Control\MyEditUI.h"
 
 IMPLEMENT_DUICONTROL(CKeyBoardUI)
 CKeyBoardUI::CKeyBoardUI()
@@ -25,6 +24,7 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 		line = userdata / 10;
 		row = userdata % 10;
 		CVerticalLayoutUI *pLayout = static_cast<CVerticalLayoutUI*>(m_pManager->FindControl(_T("keyboard")));
+		CButtonUI* pEdit = (CButtonUI*)m_pManager->FindControl(_T("edit_shipname"));
 		switch (event.wParam)
 		{
 		case VK_UP:
@@ -60,7 +60,6 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 			break;
 
 		case VK_RETURN:
-			CMyEditUI* pEdit = static_cast<CMyEditUI*>(m_pManager->FindControl(_T("shipname")));
 			if ((pEdit->GetText().GetLength()) < 32)
 			{
 				CDuiString oldText, newText;
@@ -89,6 +88,13 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 				}
 			}
 			break;
+
+		case VK_BACK:
+			GetParent()->GetParent()->SetVisible(false);
+			m_pManager->FindControl(_T("prompt"))->SetVisible(false);
+			pEdit->SetFocus();
+			break;
+
 		}
 	}
 	CButtonUI::DoEvent(event);

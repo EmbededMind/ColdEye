@@ -44,12 +44,12 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 		//--------------------------------------
 		case VK_RIGHT:
 			iInx = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetCurSel();
-			pFocused = (CContainerUI*)static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layour_secondmenu")))->GetItemAt(iInx);
+			pFocused = (CContainerUI*)static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetItemAt(iInx);
 
 			if (pFocused->GetCount() > 0) {
 				static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(true);
 				pFocused->GetItemAt(0)->SetFocus();
-				SetMenuBkColor(0xFFE6EF, 0xFFFFFFFF);
+				//SetMenuBkColor(0xFFE6EF, 0xFFFFFFFF);
 				SetBkColor(0xFF477688F);
 				SetTextColor(0xFFFFFFFF);
 			}
@@ -130,6 +130,16 @@ void CPopupMenuUI::SetHintNum(CDuiString num)
 {
 	mHintNumber = num;
 	this->Invalidate();
+}
+
+void CPopupMenuUI::SetPrevItem(CControlUI * PrevItem)
+{
+	mPrevItem = PrevItem;
+}
+
+void CPopupMenuUI::SetNextItem(CControlUI * NextItem)
+{
+	mNextItem = NextItem;
 }
 
 CDuiString& CPopupMenuUI::GetHintNum()

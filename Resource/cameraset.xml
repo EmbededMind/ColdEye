@@ -9,7 +9,7 @@
 		<VerticalLayout float="true" bkcolor="#FFF3F3F3" pos="70,80,0,0" width="790" height="155">
 			<Label name ="title" bkcolor="#FFE5E3E3" height="80" font="3" textpadding="316,21,315,20" textcolor="#FF333333" text=""/>
 			<Text float="true" pos="45,111,165,150" font="3" textcolor="#FF666666" text="船舶名称" />
-			<MyEdit name="cameraset" pos="245,105,0,0"/>
+			<MyEdit name="cameraset_shipname" pos="245,105,0,0"/>
 		</VerticalLayout>
 		<VerticalLayout	visible="false"  float="true" bkcolor="#FFF3F3F3" pos="70,235,0,0" width="790" height="204">
 			<VerticalLayout name="shipnamesel" padding="45,30,45,0" bkcolor="#FFD7E9FF" >
@@ -41,16 +41,16 @@
 				</HorizontalLayout>
 			</VerticalLayout>
 		</VerticalLayout>
-		<VerticalLayout name="111ggg" float="true" pos="70,235,0,0" width="790" height="495" bkcolor="#FFF3F3F3">
-			<Control name="testcc" float="true" pos="45,25,0,0" width="700" height="2"/>
+		<VerticalLayout float="true" pos="70,235,0,0" width="790" height="495" bkcolor="#FFF3F3F3">
+			<Control float="true" pos="45,25,0,0" width="700" height="2"/>
 			<CameraSwitch float="true" pos="0,35,0,0" width="790" height="80" bkcolor="#FFF3F3F3" font="3" textcolor="#FF666666" focusedtextcolor="#FFFFFFFF" textpadding="45,0,605,0" text="摄像头开关" />
 			<Control float="true" pos="45,125,0,0" width="700" />
 			<Text float="true" pos="45,150,250,189" font="3" textcolor="#FF666666" text="喇叭声音音量" />
-			<MySlider float="true" pos="178,224,0,0" width="430" height="28" bkcolor="#FFF3F3F3" bkimage="file='Button/volumbk.png' dest='103,6,683,74' " />
+			<MySlider name="camera_set_volume" float="true" pos="178,224,0,0" width="430" height="28" bkcolor="#FFF3F3F3" bkimage="file='Button/volumbk.png' dest='103,6,683,74' " />
 			<Control float="true" pos="45,296,0,0" width="700" />
-			<MyLabel float="true" pos="0,306,0,0" width="790" height="80" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF" font="3" textpadding="45,0,0,0" align="left" textcolor="#FF666666" text="是否储存该摄像机视频"/>
+			<MyLabel name="camera_set_video_save" float="true" pos="0,306,0,0" width="790" height="80" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF" font="3" textpadding="45,0,0,0" align="left" textcolor="#FF666666" text="是否储存该摄像机视频"/>
 			<Control float="true" pos="45,396,0,0" width="700" />
-			<MyLabel float="true" pos="0,406,0,0" width="790" height="80" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF" font="3" textpadding="45,0,0,0" align="left" textcolor="#FF666666" text="设置自动看船"/>
+			<MyLabel name="camera_set_shipwatch" float="true" pos="0,406,0,0" width="790" height="80" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF" font="3" textpadding="45,0,0,0" align="left" textcolor="#FF666666" text="设置自动看船"/>
 		</VerticalLayout>
 	</VerticalLayout>
 </Window>

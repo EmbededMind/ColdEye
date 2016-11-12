@@ -2,6 +2,8 @@
 //
 #include "Wnd\MyMenuWnd.h"
 #include "Control\PopupMenuUI.h"
+#include "Control\MenuItemUI.h"
+#include "Control\TimeButtonUI.h"
 
 CMyMenuWnd::CMyMenuWnd()
 {
@@ -25,6 +27,7 @@ CDuiString CMyMenuWnd::GetSkinFile()
 
 void CMyMenuWnd::InitWindow()
 {
+	//-------------------------菜单控件关联-----------------------------------------
 	CPopupMenuUI *pPopupMenu[5];
 	pPopupMenu[0] = static_cast<CPopupMenuUI*>(m_pm.FindControl(_T("alarmvideo")));
 	pPopupMenu[1] = static_cast<CPopupMenuUI*>(m_pm.FindControl(_T("setting")));
@@ -36,6 +39,62 @@ void CMyMenuWnd::InitWindow()
 	pPopupMenu[2]->SetItemRelation(pPopupMenu[1], pPopupMenu[3]);
 	pPopupMenu[3]->SetItemRelation(pPopupMenu[2], pPopupMenu[4]);
 	pPopupMenu[4]->SetItemRelation(pPopupMenu[3], NULL);
+	
+	CMenuItemUI *pMenuItem,*pPrevItem, *pNextItem;
+	pMenuItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("mastername")));
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("sysset")));
+	pMenuItem->SetItemRelation(NULL, pNextItem);
+	pNextItem->SetItemRelation(pMenuItem, NULL);
+
+	pMenuItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("watchtime")));
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("almvoice")));
+	pMenuItem->SetItemRelation(NULL, pNextItem);
+	pPrevItem = pMenuItem;
+	pMenuItem = pNextItem;
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("almlight")));
+	pMenuItem->SetItemRelation(pPrevItem,pNextItem);
+	pPrevItem = pMenuItem;
+	pMenuItem = pNextItem;
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("watchrecode")));
+	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
+	pNextItem->SetItemRelation(pMenuItem, NULL);
+
+	//-------------------------看船时间控件关联---------------------------------
+	CTimeButtonUI *pTimeBt[4]; 
+	pTimeBt[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
+	pTimeBt[1] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_minute")));
+	pTimeBt[2] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time2_hour")));
+	pTimeBt[3] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time2_minute")));
+	pTimeBt[0]->SetItemRelation(NULL, pTimeBt[1]);
+	pTimeBt[1]->SetItemRelation(pTimeBt[0], pTimeBt[2]);
+	pTimeBt[2]->SetItemRelation(pTimeBt[1], pTimeBt[3]);
+	pTimeBt[3]->SetItemRelation(pTimeBt[2], NULL);
+
+	//-------------------------摄像机设置界面添加-------------------------------
+	CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
+	CDialogBuilder Camera1builder, Camera2builder, Camera3builder, Camera4builder, Camera5builder, Camera6builder;
+	CVerticalLayoutUI *CamareChildLayout;
+	CamareChildLayout = (CVerticalLayoutUI*)Camera1builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pTabLayout->AddAt(CamareChildLayout, 7);
+	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头1设置"));
+	CamareChildLayout = (CVerticalLayoutUI*)Camera2builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pTabLayout->AddAt(CamareChildLayout, 8);
+	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头2设置"));
+	CamareChildLayout = (CVerticalLayoutUI*)Camera3builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pTabLayout->AddAt(CamareChildLayout, 9);
+	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头3设置"));
+	CamareChildLayout = (CVerticalLayoutUI*)Camera4builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pTabLayout->AddAt(CamareChildLayout, 10);
+	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头4设置"));
+	CamareChildLayout = (CVerticalLayoutUI*)Camera5builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pTabLayout->AddAt(CamareChildLayout, 11);
+	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头5设置"));
+	CamareChildLayout = (CVerticalLayoutUI*)Camera6builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pTabLayout->AddAt(CamareChildLayout, 12);
+	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
+
+	//添加摄像头
+	AddCamear();
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -61,5 +120,40 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 }
 
 void CMyMenuWnd::AddCamear()
-{
+{ 
+	CVerticalLayoutUI *pLayout;
+	CMenuItemUI *pMenuItem;
+	CDuiString text, userdata, name;
+	int Count;
+	//报警视频二级菜单
+	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_alarm")));
+	Count = pLayout->GetCount()/2+1;
+	text.Format(_T("摄像头%d"), Count);
+	pMenuItem = new CMenuItemUI(pLayout, text);
+	userdata.Format(_T("%d"), Count - 1);
+	pMenuItem->SetUserData(userdata);
+	if (Count == 1)
+	{
+		pMenuItem->SetPrevItem(NULL);
+		pMenuItem->SetNextItem(NULL);
+	}
+	else
+	{
+		static_cast<CMenuItemUI*>(pLayout->GetItemAt(Count - 2))->SetNextItem((CControlUI*)pMenuItem);
+		pMenuItem->SetPrevItem((CControlUI*)pLayout->GetItemAt(Count - 2));
+		pMenuItem->SetNextItem(NULL);
+	}
+	
+	//摄像头设置控件
+	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_setting")));
+	text.Format(_T("摄像头%d"), Count);
+	pMenuItem = new CMenuItemUI(pLayout, text, (Count * 2));
+	userdata.Format(_T("%d"), Count + 6);	//设置控件数据
+	name.Format(_T("cameraset%d"), Count);
+	pMenuItem->SetName(name);					//设置控件名称
+	pMenuItem->SetUserData(userdata);
+	static_cast<CMenuItemUI*>(pLayout->GetItemAt((Count - 1) * 2))->SetNextItem((CControlUI*)pMenuItem); //主机名称
+	pMenuItem->SetPrevItem((CControlUI*)(pLayout->GetItemAt((Count - 1) * 2))); 
+	pMenuItem->SetNextItem((CControlUI*)pLayout->GetItemAt((Count+1)*2)); 
+	static_cast<CMenuItemUI*>(pLayout->GetItemAt((Count + 1) * 2))->SetPrevItem((CControlUI*)pMenuItem); //系统设置
 }
