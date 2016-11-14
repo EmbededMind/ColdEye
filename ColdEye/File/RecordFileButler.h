@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Pattern\Subject.h"
 #include "File\RecordFileInfo.h"
@@ -16,7 +16,7 @@ public:
 
 
 	void   SetDirection(CString& dir);
-	void   SetFileType(UINT type);
+        void   SetFileType(RECORD_FILE_TYPE fileType);
 
 
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);
