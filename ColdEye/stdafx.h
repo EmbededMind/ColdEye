@@ -92,8 +92,12 @@
 #define DB_COL_STATUS           4
 
 
-
-#define ALARM_TIMEOUT_CNT    30
+ /*****************************************
+ *         Time config macro define       *
+ ******************************************/
+#define RECONNECT_TIMER_ELAPSE   30 //短线后每隔30s重连一次。
+#define RECORD_PACK_TIMER_ELAPSE 60 //录像文件自动打包时间60s
+#define ALARM_TIMEOUT_CNT        30 //无移动帧后30s判定为报警结束
 
 /**  NetSDK lib **/
 #pragma comment(lib, "H264Play.lib")

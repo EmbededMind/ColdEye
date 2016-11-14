@@ -9,8 +9,6 @@
 
 bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, long dwUser)
 {
-	Print("Alarm message");
-
 	CWallDlg* pWall = (CWallDlg*)dwUser;
 
 	ASSERT(pWall != NULL);
@@ -21,7 +19,7 @@ bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, lon
 
 void __stdcall _cbDisconnect(LONG loginId, char* szDVRIP, LONG DVRPort, DWORD userData)
 {
-	Print("------------------------------Disconnect---------------------------%s", szDVRIP);
+	Print("---------------Disconnect-----------%s", szDVRIP);
 	CWallDlg* pThis = (CWallDlg*)userData;
 	ASSERT(pThis != nullptr);
 
@@ -70,6 +68,22 @@ BOOL CWallDlg::Invest(CCamera* pCamera)
 	return FALSE;
 }
 
+
+
+CSurface* CWallDlg::FindSurface(long loginId)
+{
+	for (int i = 0; i < 6; i++) {
+		if (mSurfaces[i] != NULL) {
+			ASSERT(mSurfaces[i]->m_BindedCamera != NULL);
+
+			if (mSurfaces[i]->m_BindedCamera->GetLoginId() == loginId) {
+				return mSurfaces[i];
+			}
+		}
+	}
+
+	return NULL;
+}
 
 
 void CWallDlg::DesignSurfaceLayout()
@@ -127,7 +141,11 @@ void CWallDlg::ExecuteSurfaceLayout()
 
 void CWallDlg::OnDisconnect(LONG loginId, char* szIp, LONG port)
 {
+	CSurface* pSurface = FindSurface(loginId);
 
+	if (pSurface != NULL) {
+		pSurface->OnDisconnect();
+	}
 }
 
 
@@ -139,9 +157,6 @@ void CWallDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_LOGIN, &CWallDlg::OnUserMsgLogin)
-	ON_WM_SIZE()
-	ON_WM_KILLFOCUS()
-	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 
 
@@ -173,28 +188,3 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 }
 
 
-void CWallDlg::OnSize(UINT nType, int cx, int cy)
-{
-	CDialogEx::OnSize(nType, cx, cy);
-
-	// TODO: 在此处添加消息处理程序代码
-	
-}
-
-
-void CWallDlg::OnKillFocus(CWnd* pNewWnd)
-{
-	CDialogEx::OnKillFocus(pNewWnd);
-
-	// TODO: 在此处添加消息处理程序代码
-	Print("Wall lose focus");
-}
-
-
-void CWallDlg::OnSetFocus(CWnd* pOldWnd)
-{
-	CDialogEx::OnSetFocus(pOldWnd);
-
-	// TODO: 在此处添加消息处理程序代码
-	Print("Wall get focus");
-}

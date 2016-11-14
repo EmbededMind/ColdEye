@@ -19,6 +19,9 @@ public:
 
 public:
 	BOOL Invest(CCamera* pCamera);
+
+	CSurface* FindSurface(long loginId);
+
 	void OnDisconnect(LONG loginId, char* szIp, LONG port);
 
 	void DesignSurfaceLayout();
@@ -26,7 +29,6 @@ public:
 
 
 protected:
-	//CSurfaceHolder*  mHolders[6];
 	CSurface*        mSurfaces[6];
 
 	DWORD            mRows;
@@ -41,8 +43,4 @@ public:
 	virtual BOOL OnInitDialog();
 protected:
 	afx_msg LRESULT OnUserMsgLogin(WPARAM wParam, LPARAM lParam);
-public:
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnKillFocus(CWnd* pNewWnd);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
 };
