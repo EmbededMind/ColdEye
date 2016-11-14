@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Database\DBShadow.h"
+#include "Pattern\MsgSquare.h"
 
 
 CDBShadow::CDBShadow()
@@ -28,42 +29,33 @@ CDBShadow* CDBShadow::GetInstance()
 
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
-	if (wParam == 1) {
-		Print("Normal record come");
+	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
+	MSG msg;
 
-		switch (opt)
-		{
-			case FILE_OPT_ADD:
-				AddFileInfo(mReocrdFileInfoList, (CRecordFileInfo*)lParam);
-				break;
-
-			case FILE_OPT_END:
-				EndFileInfo(mReocrdFileInfoList, (CRecordFileInfo*)lParam);
-				break;
-
-			case FILE_OPT_DEL:
-				DelFileInfo(mReocrdFileInfoList, (CRecordFileInfo*)lParam);
-				break;
-		}
-	}
-	else if (wParam == 2) {
-		Print("Alarm record come");
-
-		switch (opt)
-		{
+	switch (opt) 
+	{
 		case FILE_OPT_ADD:
-			AddFileInfo(mAlarmFileInfoList, (CRecordFileInfo*)lParam);
+			AddFileInfo(infoList,  (CRecordFileInfo*)lParam);
 			break;
-
+		//-----------------------------------------------
 		case FILE_OPT_END:
-			EndFileInfo(mAlarmFileInfoList, (CRecordFileInfo*)lParam);
-			break;
+			EndFileInfo(infoList, (CRecordFileInfo*)lParam);
 
-		case FILE_OPT_DEL:
-			DelFileInfo(mAlarmFileInfoList, (CRecordFileInfo*)lParam);
+			msg.message = USER_MSG_ADDFILE;
+			msg.wParam = wParam;
+			msg.lParam = lParam;
+			CMsgSquare::GetInstance()->Broadcast(msg);
 			break;
-		}
-	}
+		//------------------------------------------------
+		case FILE_OPT_DEL:
+			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
+
+			msg.message = USER_MSG_DELFILE;
+			msg.wParam = wParam;
+			msg.lParam = lParam;
+			CMsgSquare::GetInstance()->Broadcast(msg);
+			break;
+	}	
 }
 
 
