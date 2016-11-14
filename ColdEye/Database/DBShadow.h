@@ -33,6 +33,6 @@ public:
 
 	virtual void Update(UINT opt, WPARAM wParam, LPARAM lParam);
 
-
+	void Init();
 	void SynchronizeWithDB();			
 };

@@ -7,15 +7,6 @@ CRecordFileButler::CRecordFileButler()
 CRecordFileButler::~CRecordFileButler()
 {}
 
-//
-//void CRecordFileButler::Notify(string state, CRecordFileInfo* pInfo)
-//{
-//	list<Observer*>::iterator iter = this->mObserveres.begin();
-//
-//	for (; iter != mObserveres.end(); iter++) {
-//		(*iter)->Update(state, (DWORD_PTR)pInfo);
-//	}
-//}
 void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	list<Observer*>::iterator iter = this->mObserveres.begin();
@@ -62,7 +53,6 @@ void CRecordFileButler::ReleaseRecordFile()
 			CFile::Remove(status.m_szFullName);
 		}
 
-;
 		this->Notify(FILE_OPT_END, m_FileType, (LPARAM)m_pFileInfo);
 	}
 	else {
@@ -78,7 +68,7 @@ void CRecordFileButler::SetDirection(CString& dir)
 }
 
 
-void CRecordFileButler::SetFileType(UINT type)
+void CRecordFileButler::SetFileType(RECORD_FILE_TYPE type)
 {
 	m_FileType = type;
 }

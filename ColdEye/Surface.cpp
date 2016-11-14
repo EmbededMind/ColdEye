@@ -60,10 +60,10 @@ void CSurface::BindCamera(CCamera* pCamera)
 	m_RecordFileButler.SetDirection(_T(NORMAL_RECORD_PATH) + subDir);
 	m_AlarmFileButler.SetDirection(_T(ALARM_RECORD_PATH) + subDir);
 
-	m_RecordFileButler.SetFileType(1);
+	m_RecordFileButler.SetFileType(RECORD_NORMAl);
 	m_RecordFileButler.Attach(CDBShadow::GetInstance());
 
-	m_AlarmFileButler.SetFileType(2);
+	m_AlarmFileButler.SetFileType(RECORD_ALARM);
 	m_AlarmFileButler.Attach(CDBShadow::GetInstance());
 }
 
@@ -77,7 +77,7 @@ void CSurface::ExecuteLocalConfig()
 	if (m_BindedCamera->m_LocalConfig.IsActivate) {
 		//摄像机原本是关闭状态则开启
 		if (this->m_hRealPlay == 0) {
-			Print("Config--Acivate: false-->true");
+			Print("Config--Acivate: off-->on");
 			ConnectRealPlay();
 		}
 
@@ -85,7 +85,7 @@ void CSurface::ExecuteLocalConfig()
 		if (m_BindedCamera->m_LocalConfig.IsVideoRecordEnabled) {
 			//视频存储原本是关闭状态则开启
 			if (!m_bIsRecording) {
-				//StartRecord("E:\\Record\\normal\\test.h264");
+				Print("Config--Record: off-->on");
 				StartAutoRecord();
 			}
 		}
@@ -95,6 +95,7 @@ void CSurface::ExecuteLocalConfig()
 			//还未开始自动看船则开启
 			if (!m_bIsWatching) {
 				// 开启自动看船，订阅报警消息
+				Print("Config--Watch: off-->on");
 				StartAutoWatch();
 			}
 		}
@@ -103,10 +104,11 @@ void CSurface::ExecuteLocalConfig()
 	else {
 		//摄像机原本是开启状态则关闭摄像机
 		if (this->m_hRealPlay > 0) {
-
+			Print("Going to off");
 			//如果正在自动看船则停止自动看船
 			if (m_bIsWatching) {
-
+				Print();
+				StopAutoWatch();
 			}
 
 			//如果正在录像则停止录像
