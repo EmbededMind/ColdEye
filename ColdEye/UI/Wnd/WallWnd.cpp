@@ -17,10 +17,10 @@ Print("Alarm message");
 
 	ASSERT(pWall != NULL);
 
-	CSurfaceUI* pSurface = pWall->FindSurface(lLoginID);
-	if (pSurface) {
-		pSurface->OnAlarmTrigged();
-	}
+	//CSurfaceUI* pSurface = pWall->FindSurface(lLoginID);
+	//if (pSurface) {
+	//	pSurface->OnAlarmTrigged();
+	//}
 
 	return 0;
 }
@@ -74,9 +74,17 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					ASSERT(FALSE);
 				}
 
-				H264_DVR_Init(NULL, (DWORD)this);
+				H264_DVR_Init(cbDisConnect, (DWORD)this);
 
 				H264_DVR_SetDVRMessCallBack(cbDVRMessage, (long)this);
+
+				CCamera* pCamera  = new CCamera();
+				pCamera->m_Id;
+				Invest(pCamera);
+
+				DesignSurfaceLayout();
+				ExecuteSurfaceLayout();
+
 			}break;
 		//----------------------------------------------------------------
 		case USER_MSG_LOGIN:
@@ -94,10 +102,10 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		    }break;
 		//---------------------------------------------------------
 		case USER_MSG_RELOGIN:{
-				Device_Map::iterator iter;
-				CCamera* pCamera = (CCamera*)lParam;
-
-				
+				//CSurfaceUI* pSurface = FindSurface( ((CCamera*)lParam)->GetLoginId());
+				//if (pSurface != NULL) {
+				//	pSurface->OnReConnect();
+				//}
 			}			
 			break;
 		//---------------------------------------------------------
@@ -109,18 +117,6 @@ LRESULT CWallWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					break;
 				case VK_DOWN:
 					break;
-			}
-			break;
-
-		case WM_TIMER:			
-			if (wParam == 1) {
-				Print("Reconnecting...");
-				Device_Map::iterator  p = mReconnectDevMap.begin();
-
-				while (p != mReconnectDevMap.end()) {
-					PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, 0, (LPARAM)p->second );
-					p++;
-				}
 			}
 			break;
 	}
@@ -163,23 +159,37 @@ BOOL CWallWnd::Invest(CCamera* pCamera)
 	pCamera->LoadLocalConfig();
 
 	for (int i = 0; i < 6; i++){
-		if (mSurfaces[i] == NULL){
+		//if (mSurfaces[i] == NULL){
+		if(mHolders[i] == NULL){
 			pCamera->m_Id = i + 1;
 
-			mSurfaces[i] = new CSurfaceUI();
+			//mSurfaces[i] = new CSurfaceUI();
 
-			CWnd* pWnd = new CWnd();
-			
-			pWnd->Create(NULL, _T("Surface"), WS_CHILD | WS_VISIBLE, {0,0,0,0},CWnd::FromHandle(m_PaintManager.GetPaintWindow()),0);
-			mSurfaces[i]->Attach(pWnd->m_hWnd);
+			//CWnd* pWnd = new CWnd();
+			//
+			//pWnd->Create(NULL, _T("Surface"), WS_CHILD | WS_VISIBLE, {0,0,0,0},CWnd::FromHandle(m_PaintManager.GetPaintWindow()),0);
+			//mSurfaces[i]->Attach(pWnd->m_hWnd);
 
-			m_pContainer->Add(mSurfaces[i]);
-			mSurfaces[i]->SetBkColor(0xFFBDBDBD);
-			mSurfaces[i]->BindCamera(pCamera);
-			mSurfaces[i]->SetFocus();
-			mSurfaces[i]->ConnectRealPlay();
+			//m_pContainer->Add(mSurfaces[i]);
+			//mSurfaces[i]->SetBkColor(0xFFBDBDBD);
+			//mSurfaces[i]->BindCamera(pCamera);
+			////mSurfaces[i]->SetFocus();
+			//mSurfaces[i]->ConnectRealPlay();
 
-			mSurfaces[i]->ExecuteLocalConfig();
+			//mSurfaces[i]->ExecuteLocalConfig();
+
+			//DesignSurfaceLayout();
+			//ExecuteSurfaceLayout();
+			//return TRUE;
+
+
+			mHolders[i] = new CSurfaceHolder();
+			mHolders[i]->Create(IDD_HOLDER, CWnd::FromHandle(m_PaintManager.GetPaintWindow()));
+			mHolders[i]->ShowWindow(SW_SHOW);
+
+			mHolders[i]->BindCamera(pCamera);
+			mHolders[i]->ConnectRealPlay();
+			mHolders[i]->ExecuteLocalConfig();
 
 			DesignSurfaceLayout();
 			ExecuteSurfaceLayout();
@@ -199,7 +209,10 @@ void CWallWnd::DesignSurfaceLayout()
 	int i = 0;
 	int iSurfaceNumber  = 0;
 	for (; i < 6; i++) {
-		if (mSurfaces[i] != NULL){
+		//if (mSurfaces[i] != NULL){
+		//	iSurfaceNumber++;
+		//}
+		if (mHolders[i] != NULL) {
 			iSurfaceNumber++;
 		}
 	}
@@ -240,71 +253,52 @@ void CWallWnd::ExecuteSurfaceLayout()
 	int cnt = 0;
 	for (int i = 0; i < 6; i++)
 	{
-		if (mSurfaces[i] != NULL)
-		{
+		//if (mSurfaces[i] != NULL)
+		//{
+		//	long xPos = nOrgX + (cnt % mCols) * nWidth;
+		//	long yPos = nOrgY + (cnt / mCols) * nHeight;
+
+		//	mSurfaces[i]->SetFloat(true);
+		//	mSurfaces[i]->SetFixedPos({ xPos, yPos, xPos + nWidth, yPos + nHeight });
+
+		//	cnt++;
+		//}
+
+
+		if (mHolders[i] != NULL) {
 			long xPos = nOrgX + (cnt % mCols) * nWidth;
-			long yPos = nOrgY + (cnt / mCols) * nHeight;
-
-			mSurfaces[i]->SetFloat(true);
-			mSurfaces[i]->SetFixedPos({ xPos, yPos, xPos + nWidth, yPos + nHeight });
-
+			long yPos = nOrgY + (cnt /mCols)* nHeight;
+			 
+			mHolders[i]->SetWindowPos(NULL, xPos, yPos, nWidth, nHeight, 0);
 			cnt++;
 		}
 	}
 
 }
 
-void CWallWnd::ReConnect(LONG loginId, char * szIp, LONG port)
-{
-	CSurfaceUI* pSurface = FindSurface(loginId);
-
-	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
-	CCamera* pCamera = pSurface->m_BindedCamera;
-	ASSERT(pCamera != NULL || "Find null ReConnect camera" == 0);
-
-	if(pSurface->m_bIsAlarming)
-		pSurface->StopAlarmRecord();
-
-	if (pSurface->m_bIsRecording) {
-		pSurface->StopAutoRecord();
-	}
-	
-	if (pSurface->m_bIsWatching) {
-		pSurface->StopAutoWatch();
-	}
-
-	pSurface->DisconnectRealPlay();
-
-	pCamera->Logout();
-	pCamera->StopRealPlay();
-
-
-	mReconnectDevMap[pCamera->m_Id] = pCamera;
-	SetTimer(m_hWnd, 1, 30*1000, NULL);
-}
 
 
 
 void CWallWnd::OnDisConnect(LONG loginId, char * szIp, LONG port)
 {
-	CSurfaceUI* pSurface = FindSurface(loginId);
-
-	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
-
-	pSurface->OnDisConnect();
+//	CSurfaceUI* pSurface = FindSurface(loginId);
+//
+//	ASSERT(pSurface != NULL || "Find null ReConnnect surface" == 0);
+//
+//	pSurface->OnDisConnect();
 }
 
 
 
 
 
-CSurfaceUI* CWallWnd::FindSurface(long logidId)
-{
-	for (int i = 0; i < 6; i++) {
-		if (mSurfaces[i] && mSurfaces[i]->m_BindedCamera  && mSurfaces[i]->m_BindedCamera->GetLoginId() == logidId) {
-			return mSurfaces[i];
-		}
-	}
-	
-	return NULL;
-}
+//CSurfaceUI* CWallWnd::FindSurface(long logidId)
+//{
+//	for (int i = 0; i < 6; i++) {
+//		if (mSurfaces[i] && mSurfaces[i]->m_BindedCamera  && mSurfaces[i]->m_BindedCamera->GetLoginId() == logidId) {
+//			return mSurfaces[i];
+//		}
+//	}
+//	
+//	return NULL;
+//}

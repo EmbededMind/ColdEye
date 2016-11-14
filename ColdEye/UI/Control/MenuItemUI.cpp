@@ -155,7 +155,7 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 				}
 				else if (userdata == 16)//警告灯光
 				{
-
+					m_pManager->FindControl(_T("alarmlight_switch"))->SetFocus();
 				}
 				else if (userdata == 17) //看船开关记录
 				{

@@ -26,32 +26,26 @@ void CTimeButtonUI::SetItemRelation(CTimeButtonUI * pPrevItem, CTimeButtonUI * p
 
 void CTimeButtonUI::DecreaseHour()
 {
-	CControlUI* pBtn = m_pManager->GetFocus();
-
 	int val;
-	CDuiString text = pBtn->GetText();
+	CDuiString text = GetText();
 	val = StrToInt(text);
 
 	if (val > 0) {
 		val--;
 
-		text.Format(_T("%02d"), val);
 	}
 	else {
-		//val = 23;
-		//text.Format(_T("%d"), val);
-		text.Format(_T("23"), val);
+		val = 23;
 	}
-
-	pBtn->SetText(text);
+	text.Format(_T("%02d"), val);
+	SetText(text);
+	SetTime();
 }
 
 void CTimeButtonUI::DecreaseMinute()
 {
-	CControlUI* pBtn = m_pManager->GetFocus();
-
 	int val;
-	CDuiString text = pBtn->GetText();
+	CDuiString text = GetText();
 	val = StrToInt(text);
 	if (val > 0) {
 		val--;
@@ -61,14 +55,14 @@ void CTimeButtonUI::DecreaseMinute()
 	}
 
 	text.Format(_T("%02d"), val);
-	pBtn->SetText(text);
+	SetText(text);
+	SetTime();
 }
 
 void CTimeButtonUI::IncreaseHour()
 {
-	CControlUI* pBtn = m_pManager->GetFocus();
 	int val;
-	CDuiString text = pBtn->GetText();
+	CDuiString text = GetText();
 	val = StrToInt(text);
 
 	if (val < 23) {
@@ -79,18 +73,58 @@ void CTimeButtonUI::IncreaseHour()
 	}
 
 	text.Format(_T("%02d"), val);
-	pBtn->SetText(text);
+	SetText(text);
+	SetTime();
 }
 
 void CTimeButtonUI::IncreaseMinute()
 {
-	CControlUI* pBtn = m_pManager->GetFocus();
+	int val;
+	CDuiString text = GetText();
+	val = StrToInt(text);
+	if (val <59) {
+		val++;
+	}
+	else {
+		val = 0;
+	}
+
+	text.Format(_T("%02d"), val);
+	SetText(text);
+	SetTime();
+}
+
+bool CTimeButtonUI::isMorrow()
+{
+	if (tMinute_1 >= tMinute_2)
+		return false;
+	else
+		return true;
+}
+
+void CTimeButtonUI::SetTime()
+{
+	CButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
+	int tHour1, tHour2, tMinute1, tMinute2;
+	pHour1 = (CButtonUI*)m_pManager->FindControl(_T("time1_hour"));
+	pHour2 = (CButtonUI*)m_pManager->FindControl(_T("time2_hour"));
+	pMinute1 = (CButtonUI*)m_pManager->FindControl(_T("time1_minute"));
+	pMinute2 = (CButtonUI*)m_pManager->FindControl(_T("time2_minute"));
+	tHour1 = StrToInt(pHour1->GetText());
+	tHour2 = StrToInt(pHour2->GetText());
+	tMinute1 = StrToInt(pMinute1->GetText());
+	tMinute2 = StrToInt(pMinute2->GetText());
+	tMinute_1 = tHour1 * 60 + tMinute1;
+	tMinute_2 = tHour2 * 60 + tMinute2;
+
 }
 
 
 void CTimeButtonUI::DoEvent(TEventUI& event)
 {
 	if (event.Type == UIEVENT_KEYDOWN) {
+
+		CButtonUI* pButton = (CButtonUI*)m_pManager->FindControl(_T("morrow"));
 		switch (event.wParam)
 		{
 			case VK_UP:
@@ -101,6 +135,13 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 				else {
 					DecreaseMinute();
 				}
+				if (isMorrow()) {
+					if (!pButton->IsVisible())
+						pButton->SetVisible(true);
+				}
+				else if(pButton->IsVisible()) {
+					pButton->SetVisible(false);
+				}
 				break;
 			//---------------------------------------------------
 			case VK_DOWN:
@@ -110,6 +151,13 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 				}
 				else {
 					IncreaseMinute();
+				}
+				if (isMorrow()) {
+					if (!pButton->IsVisible())
+						pButton->SetVisible(true);
+				}
+				else if (pButton->IsVisible()) {
+					pButton->SetVisible(false);
 				}
 				break;
 			//---------------------------------------------------
@@ -125,14 +173,15 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 				}
 				break;
 			//---------------------------------------------------
-			case VK_RETURN:
-				
+			case VK_BACK:
+				m_pManager->FindControl(_T("watchtime"))->SetFocus();
 				break;
 		}
 	}
      
+	
 	if (event.Type == UIEVENT_KILLFOCUS) {
-		SetBkColor(0xFFF3FF3F3);
+		SetBkColor(0xFFF3F3F3);
 	}
 
 	CButtonUI::DoEvent(event);

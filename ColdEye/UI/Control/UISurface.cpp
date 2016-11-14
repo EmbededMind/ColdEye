@@ -73,67 +73,77 @@ void CSurfaceUI::DoEvent(TEventUI& event)
 
 	switch (event.Type)
 	{
-	case UIEVENT_SETFOCUS:
-		break;
-	case UIEVENT_KILLFOCUS:
-		break;
-	case UIEVENT_TIMER:
-		switch (event.wParam)
-		{
-			case TIMER_ID_AUTO_RECORD:
-				TRACE("Record package\n");
-				PackageReocrdFile();
-				break;
-			//------------------------------------
-			case TIMER_ID_ALARM:
-				if (m_wAlarmStamp > 0) {
-					m_wAlarmStamp--;
-				}
-
-				if (m_wAlarmStamp == 0) {
-					OnAlarmStop();
-				}
-				break;
-			//------------------------------------
-			case TIMER_ID_AUTO_WATCH:
-				TRACE("End of watch\n");
-				// TODO
-				break;
-			//------------------------------------
-			case TIMER_ID_RECONNECT:
-				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, 0, (LPARAM)m_BindedCamera );
-				break;
-		}
-		break;
-	case UIEVENT_KEYDOWN:
-		TRACE("Surface case key\n");
-		switch (event.chKey)
-		{
-		case VK_UP:
-
+		case UIEVENT_SETFOCUS:
 			break;
-		case VK_DOWN:
-
+		//--------------------------------------------------------------
+		case UIEVENT_KILLFOCUS:
 			break;
-		case VK_LEFT:
+		//--------------------------------------------------------------
+		case UIEVENT_TIMER:
+			switch (event.wParam)
+			{
+				case TIMER_ID_AUTO_RECORD:
+					TRACE("Record package\n");
+					PackageReocrdFile();
+					break;
+				//------------------------------------
+				case TIMER_ID_ALARM:
+					if (m_wAlarmStamp > 0) {
+						m_wAlarmStamp--;
+					}
 
+					if (m_wAlarmStamp == 0) {
+						OnAlarmStop();
+					}
+					break;
+				//------------------------------------
+				case TIMER_ID_AUTO_WATCH:
+					TRACE("End of watch\n");
+					// TODO
+					break;
+				//------------------------------------
+				case TIMER_ID_RECONNECT:
+					Print("Send wnd:%d", m_hWnd);
+					PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, (WPARAM)this->GetWindowHandle(), (LPARAM)m_BindedCamera );
+					break;
+			}
 			break;
-		case VK_RIGHT:
+		//--------------------------------------------------------------
+		case UIEVENT_KEYDOWN:
+			TRACE("Surface case key\n");
+			switch (event.chKey)
+			{
+				case VK_UP:
 
+					break;
+				case VK_DOWN:
+
+					break;
+				case VK_LEFT:
+
+					break;
+				case VK_RIGHT:
+
+					break;
+				case VK_MENU:
+
+					break;
+
+				default:
+
+					break;
+			}
 			break;
-		case VK_MENU:
-
-			break;
-
+		//--------------------------------------------------------------
+		//case USER_MSG_RELOGIN:
+		//	Print("Relogin");
+		//	OnReConnect();
+		//	KillTimer(TIMER_ID_RECONNECT);
+		//	break;
+		//--------------------------------------------------------------
 		default:
-
+			//TRACE("Surface event type:%d\n", event.Type);
 			break;
-		}
-		break;
-
-	default:
-		//TRACE("Surface event type:%d\n", event.Type);
-		break;
 	}
 
 	CControlUI::DoEvent(event);
@@ -406,14 +416,16 @@ void CSurfaceUI::DisconnectRealPlay()
 		if (!H264_DVR_StopRealPlay(m_hRealPlay)) {
 			TRACE("StopRealPlay failed:%d\n", H264_DVR_GetLastError());
 		}
-		else {
-			m_hRealPlay = 0;
-		}
+		//else {
+		//	m_hRealPlay = 0;
+		//}
 
 		H264_PLAY_Stop(m_lPlayPort);
 		H264_PLAY_CloseStream(m_lPlayPort);
 		H264_PLAY_FreePort(m_lPlayPort);
 		m_lPlayPort = 0;
+
+		Print("After disconnect hRealPlay:%d", m_hRealPlay);
 
 		CWnd::FromHandle(this->GetWindowHandle())->Invalidate();
 	}
@@ -595,6 +607,12 @@ void CSurfaceUI::OnDisConnect()
 	m_BindedCamera->OnDisConnnect();
 
 	SetTimer(TIMER_ID_RECONNECT,  10*1000);
+}
+
+void CSurfaceUI::OnReConnect()
+{
+	ConnectRealPlay();
+	ExecuteLocalConfig();
 }
 
 

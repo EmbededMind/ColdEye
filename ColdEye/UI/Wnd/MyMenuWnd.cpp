@@ -47,11 +47,11 @@ void CMyMenuWnd::InitWindow()
 	pNextItem->SetItemRelation(pMenuItem, NULL);
 
 	pMenuItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("watchtime")));
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("almvoice")));
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("alarm_voice")));
 	pMenuItem->SetItemRelation(NULL, pNextItem);
 	pPrevItem = pMenuItem;
 	pMenuItem = pNextItem;
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("almlight")));
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("alarm_light")));
 	pMenuItem->SetItemRelation(pPrevItem,pNextItem);
 	pPrevItem = pMenuItem;
 	pMenuItem = pNextItem;

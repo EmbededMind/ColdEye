@@ -3,7 +3,7 @@
 
 #include "Wnd\MainWnd.h"
 #include "Wnd\MyMenuWnd.h"
-#include "Control\UISurface.h"
+//#include "Control\UISurface.h"
 
 #include "Device\Camera.h"
 
@@ -116,14 +116,14 @@ void CMainWnd::Notify(TNotifyUI& msg)
 
 CControlUI* CMainWnd::CreateControl(LPCTSTR pstrClassName)
 {
-	if (_tcsicmp(pstrClassName, _T("Surface")) == 0)
-	{
-		TRACE("Find SurfaceUI\n");
-		CSurfaceUI* pUI = new CSurfaceUI();
-		HWND hWnd = CreateWindow(_T("CWnd"), _T("win32"), WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 0, 0, m_PaintManager.GetPaintWindow(), NULL, NULL, NULL);
-		pUI->Attach(hWnd);
-		return pUI;
-	}
+	//if (_tcsicmp(pstrClassName, _T("Surface")) == 0)
+	//{
+	//	TRACE("Find SurfaceUI\n");
+	//	CSurfaceUI* pUI = new CSurfaceUI();
+	//	HWND hWnd = CreateWindow(_T("CWnd"), _T("win32"), WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 0, 0, m_PaintManager.GetPaintWindow(), NULL, NULL, NULL);
+	//	pUI->Attach(hWnd);
+	//	return pUI;
+	//}
 
 	return NULL;
 }

@@ -11,8 +11,13 @@ public:
 	~CCameraSwitchUI();
 	void DoEvent(TEventUI &event);
 	void PaintStatusImage(HDC hDC);
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	void SetOnImage(LPCTSTR pstrValue);
+	void SetOffImage(LPCTSTR pstrValue);
 
-public:
+protected:
 	bool Switch;
+	CDuiString m_OnImage;
+	CDuiString m_OffImage;
 };
 
