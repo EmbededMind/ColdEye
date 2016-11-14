@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <math.h>
-#include "conio.h"
 #include "MyListUI.h"
+#include "File\RecordFileInfo.h"
 
 #include "UIlib.h"
 using namespace DuiLib;
@@ -163,7 +163,8 @@ public:
 
 	Node* AddNode(LPCTSTR text, int id, Node* parent = NULL) //添加节点
 	{
-		if (!parent) parent = _root;
+		if (!parent) 
+			parent = _root;
 
 		CMyListUI* pListElement = new CMyListUI;
 		Node* node = new Node;
@@ -180,8 +181,6 @@ public:
 		pListElement->SetText(node->data()._text);
 		pListElement->SetTag((UINT_PTR)node);
 		pListElement->SetFixedHeight(65);	//高度160
-		//pListElement->SetAttribute(_T("style"),_T("list"));
-		//pListElement->SetBkImage(_T("file='Button\\锁2.png' dest='825,20,851,52' fade='100'"));
 		int index = 0;
 
 		if (parent == _root)
@@ -252,6 +251,9 @@ public:
 		szExpander.cy = szExpander.cx + 16 + 8/*适当放大一点*/;
 		return szExpander;
 	}
+
+	Node* AddHeadNode(CString sText, int nID, CVideoListUI *pList);
+	Node* AddChildNode(CString sText, CVideoListUI *pList,CVideoListUI::Node *HeadNode, int nID);
 
 private:
 	Node* _root;

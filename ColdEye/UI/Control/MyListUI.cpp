@@ -5,8 +5,8 @@
 
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
-	:lock(false),
-	prereadMessage(0)
+	:mIsLocked(false),
+	prereadMessageNum(0)
 {
 }
 
@@ -27,7 +27,7 @@ void CMyListUI::DoPaint(HDC hDC, const RECT & rcPaint)
 
 void CMyListUI::PaintStatusImage(HDC hDC)
 {
-	if (!lock)
+	if (!mIsLocked)
 	{
 		CRect rcPos;
 		CDuiString dest;
@@ -36,7 +36,7 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 		DrawImage(hDC, dest);
 	}
 
-	if(prereadMessage!=0)
+	if(prereadMessageNum!=0)
 	{
 		CRect rcPos;
 		CDuiString dest;
@@ -72,11 +72,9 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 		pInfo->nFont = 2;
 	else pInfo->nFont = 3;	//вс╫з╣Ц
 
-	//if (pInfo->bShowHtml)
-		//CRenderEngine::DrawHtmlText(hDC, m_pManager, rcText, sText, iTextColor, \
-		//	NULL, NULL, nLinks, pInfo->uTextStyle);
-	//else
+	pInfo->uTextStyle &= ~(DT_LEFT | DT_RIGHT);
+	pInfo->uTextStyle |= DT_CENTER;
 	CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, iTextColor, \
-		pInfo->nFont,NULL, NULL, pInfo->uTextStyle);
+		pInfo->nFont, pInfo->uTextStyle);
 }
 

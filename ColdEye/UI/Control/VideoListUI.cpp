@@ -67,3 +67,27 @@ void CVideoListUI::DoEvent(TEventUI& event)
 		break;
 	}
 }
+
+CVideoListUI::Node * CVideoListUI::AddHeadNode(CString sText, int nID, CVideoListUI * pList)
+{
+	if (!pList) return NULL;
+	CVideoListUI::Node* pNode = pList->AddNode(sText, nID);
+	pNode->data()._pListElement->SetBkColor(0XFFF3F3F3);
+	return pNode;
+}
+
+CVideoListUI::Node * CVideoListUI::AddChildNode(CString sText, CVideoListUI *pList, CVideoListUI::Node * HeadNode, int nID)
+{
+	if (!pList) return NULL;
+	CVideoListUI::Node* pNode = pList->AddNode(sText, nID, HeadNode);
+	if (HeadNode->num_children() % 2)
+	{
+		pNode->data()._pListElement->SetBkColor(0xFFF3F3F3);
+	}
+	else
+	{
+		pNode->data()._pListElement->SetBkColor(0xFFE5E5E5);
+	}
+	return pNode;
+}
+
