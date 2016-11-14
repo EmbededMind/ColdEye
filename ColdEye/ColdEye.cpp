@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "ColdEye.h"
-//#include "ColdEyeDlg.h"
+#include "ColdEyeDlg.h"
 
 #include "netsdk.h"
 
@@ -146,32 +146,31 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CAlarmLightUI);
 	REGIST_DUICONTROL(CMyListUI);
 
-	_m_pMainWnd = new CMainWnd();
-	_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	_m_pMainWnd->CenterWindow();
-	_m_pMainWnd->ShowModal();
+	//_m_pMainWnd = new CMainWnd();
+	//_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
+	//_m_pMainWnd->CenterWindow();
+	//_m_pMainWnd->ShowModal();
 
 
 
-
-	//CColdEyeDlg dlg;
-	//m_pMainWnd = &dlg;
-	//INT_PTR nResponse = dlg.DoModal();
-	//if (nResponse == IDOK)
-	//{
-	//	// TODO: 在此放置处理何时用
-	//	//  “确定”来关闭对话框的代码
-	//}
-	//else if (nResponse == IDCANCEL)
-	//{
-	//	// TODO: 在此放置处理何时用
-	//	//  “取消”来关闭对话框的代码
-	//}
-	//else if (nResponse == -1)
-	//{
-	//	TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
-	//	TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
-	//}
+	CColdEyeDlg dlg;
+	m_pMainWnd = &dlg;
+	INT_PTR nResponse = dlg.DoModal();
+	if (nResponse == IDOK)
+	{
+		// TODO: 在此放置处理何时用
+		//  “确定”来关闭对话框的代码
+	}
+	else if (nResponse == IDCANCEL)
+	{
+		// TODO: 在此放置处理何时用
+		//  “取消”来关闭对话框的代码
+	}
+	else if (nResponse == -1)
+	{
+		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
+		TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
+	}
 
 	// 删除上面创建的 shell 管理器。
 	if (pShellManager != NULL)
@@ -232,6 +231,19 @@ void CColdEyeApp::SetMenuWnd(CMyMenuWnd* pMenuWnd)
 {
 	this->m_pMenuWnd = pMenuWnd;
 }
+
+
+void CColdEyeApp::SetWallDlg(CWallDlg* pWall)
+{
+	this->m_pWallDlg = pWall;
+}
+
+
+CWallDlg* CColdEyeApp::GetWallDlg()
+{
+	return this->m_pWallDlg;
+}
+
 
 void CColdEyeApp::CheckFileDirectory()
 {
@@ -296,7 +308,8 @@ UINT __stdcall LoginThread(PVOID pM)
 						 int iDevNumber = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
 						 if (iDevNumber > 0)
 						 {
-							 PostMessage(((CColdEyeApp*)AfxGetApp())->GetMainWndHandle(), USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);
+							 /*PostMessage(((CColdEyeApp*)AfxGetApp())->GetMainWndHandle(), USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);*/
+							 PostMessage( AfxGetApp()->m_pMainWnd->m_hWnd, USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);
 						 }
 					 }
 					 else {
@@ -308,16 +321,19 @@ UINT __stdcall LoginThread(PVOID pM)
 			 case USER_MSG_LOGIN:
 		    	 {
 					CCamera* pCamera = (CCamera*)msg.lParam;
-					CWallWnd* pWallWnd = ((CColdEyeApp*)AfxGetApp())->GetWallWnd();
-					ASSERT(pWallWnd != nullptr);
+					/*CWallWnd* pWallWnd = ((CColdEyeApp*)AfxGetApp())->GetWallWnd();*/
+					CWallDlg* pWallDlg = ((CColdEyeApp*)AfxGetApp())->GetWallDlg();
+					ASSERT(pWallDlg != nullptr);
 
 					if (pCamera->Login())
 					{
-						PostMessage(pWallWnd->GetHWND(), USER_MSG_LOGIN, true, msg.lParam);
+						//PostMessage(pWallWnd->GetHWND(), USER_MSG_LOGIN, true, msg.lParam);
+						PostMessage(pWallDlg->m_hWnd, USER_MSG_LOGIN, true, msg.lParam);
 					}
 					else
 					{
-						PostMessage(pWallWnd->GetHWND(), USER_MSG_LOGIN, false, msg.lParam);
+						/*PostMessage(pWallWnd->GetHWND(), USER_MSG_LOGIN, false, msg.lParam);*/
+						PostMessage(pWallDlg->m_hWnd, USER_MSG_LOGIN, false, msg.lParam);
 					}
 			     }
 				 break;
@@ -327,15 +343,18 @@ UINT __stdcall LoginThread(PVOID pM)
 					 CCamera* pCamera = (CCamera*)msg.lParam;
 					 CWallWnd* pWallWnd = ((CColdEyeApp*)AfxGetApp())->GetWallWnd();
 
+
 					 if (pCamera->Login()) {
+						 Print("Post to wnd:%d", msg.wParam);
 						 PostMessage(pWallWnd->GetHWND(), USER_MSG_RELOGIN, 0, msg.lParam);
 					 }
 				 }
 				 break;
 			//-----------------------------------------------------------------------------------
 		}
+		DispatchMessage(&msg);
 	}
-	DispatchMessage(&msg);
+	
 
 	return 0;
 }
