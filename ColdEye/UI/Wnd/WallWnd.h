@@ -1,14 +1,14 @@
 #pragma once
 
 #include "UIlib.h"
-#include "Control\UISurface.h"
+//#include "Control\UISurface.h"
+
+#include "SurfaceHolder.h"
 
 
 #include "Device\Camera.h"
 
-#include <map>
 
-typedef std::map<long, CCamera*> Device_Map;
 
 using namespace DuiLib;
 
@@ -16,9 +16,7 @@ class CWallWnd : public CWindowWnd, public INotifyUI
 {
 public :
 	CWallWnd();
-	//CWallWnd(CWindowWnd* pDuiWnd);
-	//CWallWnd(CWnd* pMfcWnd);
-	//CWallWnd(HWND hWnd);
+
 
 	~CWallWnd();
 
@@ -31,18 +29,16 @@ public :
 	void DesignSurfaceLayout();
 	void ExecuteSurfaceLayout();
 
-	//void ReConnect(LONG loginId, char* szIp, LONG port);
 	void OnDisConnect(LONG loginId, char* szIp, LONG port);
-	//CCamera* FindCamera(long loginId);
-	CSurfaceUI* FindSurface(long loginId);
+	//CSurfaceUI* FindSurface(long loginId);
 	
 protected:
 	CPaintManagerUI m_PaintManager;
 	CContainerUI*   m_pContainer;
-	CSurfaceUI* mSurfaces[6];
+	//CSurfaceUI* mSurfaces[6];
 
-	Device_Map mReconnectDevMap;
-
+	
+	CSurfaceHolder* mHolders[6];
 
 	DWORD       mRows;
 	DWORD       mCols;

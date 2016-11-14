@@ -7,8 +7,6 @@
 #include "ColdEyeDlg.h"
 #include "afxdialogex.h"
 
-#include "Pattern\MsgSquare.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -21,15 +19,15 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// 对话框数据
+	// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-// 实现
+														// 实现
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -57,6 +55,18 @@ CColdEyeDlg::CColdEyeDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
+
+
+void CColdEyeDlg::UpdateLayout()
+{
+	CRect  rClient;
+	GetClientRect(rClient);
+
+
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top, rClient.Width(), rClient.Height(), 0);
+}
+
+
 void CColdEyeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -66,6 +76,8 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_MESSAGE(USER_MSG_SCAN_DEV, &CColdEyeDlg::OnUserMsgScanDev)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -74,8 +86,6 @@ END_MESSAGE_MAP()
 BOOL CColdEyeDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-
-
 
 	// 将“关于...”菜单项添加到系统菜单中。
 
@@ -103,6 +113,16 @@ BOOL CColdEyeDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	mWall.Create(IDD_WALL, this);
+	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
+	mWall.ShowWindow(SW_SHOW);
+
+	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
+	mMenu.ShowWindow(false);
+
+
+	SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
+	mWall.SetFocus();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -158,3 +178,44 @@ HCURSOR CColdEyeDlg::OnQueryDragIcon()
 
 
 
+afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
+{
+	for (int i = 0; i < wParam; i++) {
+		CCamera* pCamera = new CCamera();
+		pCamera->SetCommonNetConfig(&((SDK_CONFIG_NET_COMMON_V2*)lParam)[i]);
+		PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_LOGIN, 0, (LPARAM)pCamera);
+	}
+	return 0;
+}
+
+
+BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (mWall.IsWindowVisible()) {
+			mWall.ShowWindow(false);
+			mMenu.ShowWindow(true);
+		}
+		else {
+			mWall.ShowWindow(true);
+			mMenu.ShowWindow(false);
+			mWall.SetFocus();
+		}
+		
+	}
+
+
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CColdEyeDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	// TODO: 在此处添加消息处理程序代码
+	if (IsWindow(mWall.m_hWnd)) {
+		UpdateLayout();
+	}
+}

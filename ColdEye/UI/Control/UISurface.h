@@ -31,7 +31,6 @@ public:
 
 	CCamera*   m_BindedCamera;
 	CRecordFileButler m_RecordFileButler;
-	//CAlarmFileManager  m_AlarmFileMgr;
 	CRecordFileButler  m_AlarmFileButler;
 
 	virtual LPCTSTR GetClass() const;
