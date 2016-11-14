@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MyListUI.h"
 #include "VideoListUI.h"
-#include "conio.h"
 
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
@@ -10,6 +9,12 @@ CMyListUI::CMyListUI()
 {
 }
 
+
+CMyListUI::CMyListUI(CRecordFileInfo & pInfo)
+{
+	mBeginTime = pInfo.tBegin;
+	mEndTime = pInfo.tEnd;
+}
 
 CMyListUI::~CMyListUI()
 {
@@ -49,9 +54,8 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 {
 	CVideoListUI::Node* node = (CVideoListUI::Node*)this->GetTag();
-	_cprintf("level=%d\n",node->data()._level);
 
-	CDuiString sText = GetText();
+	CDuiString sText = node->data()._text;
 	if (sText.IsEmpty()) return;
 
 	if (m_pOwner == NULL) return;
@@ -77,4 +81,5 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 	CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, iTextColor, \
 		pInfo->nFont, pInfo->uTextStyle);
 }
+
 

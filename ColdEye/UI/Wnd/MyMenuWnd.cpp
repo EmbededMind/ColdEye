@@ -118,12 +118,6 @@ void CMyMenuWnd::InitWindow()
 
 	//添加摄像头
 	AddCamear();
-
-	CRecordFileInfo *pRecord = new CRecordFileInfo;
-	pRecord->nOwner = 1;
-	pRecord->tBegin = CTime::GetCurrentTime().GetTime();
-	pRecord->tEnd = CTime::GetCurrentTime().GetTime();
-	//Record_AddFile(1, *pRecord);
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -132,20 +126,28 @@ void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
-	if (msg.sType == _T("itemactivate")) {
-		CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_alarmlist1")));
-		if (pList->GetItemIndex(msg.pSender) != -1)
-		{
-			if (_tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0) {
-				CVideoListUI::Node* node = (CVideoListUI::Node*)msg.pSender->GetTag();
-				pList->ExpandNode(node, !node->data()._expand);
-
-				if (node->data()._level == 0 && node->data()._expand) {
-					pList->SelectItem(pList->GetItemIndex(msg.pSender) + 1);
-				}
-			}
+	if (msg.sType == DUI_MSGTYPE_CLICK){
+		if (msg.pSender->GetName() == _T("button_home")){
+			CTabLayoutUI *pLayout;
+			pLayout = (CTabLayoutUI *)m_pm.FindControl(_T("home"));
+			pLayout->SelectItem(1);
 		}
 	}
+
+	//if (msg.sType == _T("itemactivate")) {
+	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_alarmlist1")));
+	//	if (pList->GetItemIndex(msg.pSender) != -1)
+	//	{
+	//		if (_tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0) {
+	//			CVideoListUI::Node* node = (CVideoListUI::Node*)msg.pSender->GetTag();
+	//			pList->ExpandNode(node, !node->data()._expand);
+
+	//			if (node->data()._level == 0 && node->data()._expand) {
+	//				pList->SelectItem(pList->GetItemIndex(msg.pSender) + 1);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)
@@ -165,6 +167,34 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	//	ListName.Format(_T("list%d", wParam));
 	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(ListName));
 	//}
+	if (uMsg == WM_KEYDOWN)
+	{
+		switch (wParam)
+		{
+		case VK_SPACE:
+			{
+				CRecordFileInfo *pRecord = new CRecordFileInfo;
+				pRecord->nOwner = 1;
+ 				pRecord->tBegin = CTime::GetCurrentTime().GetTime();
+				pRecord->tEnd = CTime::GetCurrentTime().GetTime();
+				CDuiString listName;
+				int record_type = 1;
+				if (record_type == 1)//全部视频
+				{
+					listName.Format(_T("video_list%d"), pRecord->nOwner);
+					CVideoListUI* pLsit= (CVideoListUI *)m_pm.FindControl(listName);
+					pLsit->Record_AddFile(*pRecord);
+				}
+				else if (record_type == 2)//报警视频
+				{
+					listName.Format(_T("video_alarmlist%d"), pRecord->nOwner);
+					CVideoListUI* pLsit = (CVideoListUI *)m_pm.FindControl(listName);
+					pLsit->Record_AddFile(*pRecord);
+				}
+			}
+			break;
+		}
+	}
 
 	return LRESULT();
 }
@@ -208,47 +238,3 @@ void CMyMenuWnd::AddCamear()
 	static_cast<CMenuItemUI*>(pLayout->GetItemAt((Count + 1) * 2))->SetPrevItem((CControlUI*)pMenuItem); //系统设置
 }
 
-
-//void CMyMenuWnd::Record_AddFile(UINT8 record_type, CRecordFileInfo& pInfo)
-//{
-//	CTime refTime = GetCurrentTime();
-//	CTime tbegin, tend;
-//	CDuiString name;
-//	CVideoListUI *pList;
-//	CMyListUI *pItem;
-//	//全部视频
-//	if (record_type == 1) {
-//		name.Format(_T("video_list%d"), pInfo.nOwner);
-//		CVideoListUI *pList = (CVideoListUI*)m_pm.FindControl(name);
-//		pItem = (CMyListUI*)pList->GetItemAt(0);
-//		if (pItem) {
-//			if (pItem->mBeginTime.GetTime() / (3600 * 24) == refTime.GetTime() / (3600 * 24)) {
-//			}
-//			else {
-//				pList->AddHeadNode(_T("今天"), 0, pList);
-//			}
-//		}
-//		else {
-//			pList->AddHeadNode(_T("今天"), 0, pList);
-//
-//		}
-//	}
-//	else {//报警视频
-//		name.Format(_T("video_alarmlist%d"), pInfo.nOwner);
-//		pList = (CVideoListUI*)m_pm.FindControl(name);
-//		pItem = (CMyListUI*)pList->GetItemAt(0);
-//		if (pItem) {
-//			if (pItem->mBeginTime.GetTime() / (3600 * 24) == refTime.GetTime() / (3600 * 24)) {
-//			}
-//			else {
-//				pList->AddHeadNode(_T("今天"), 0, pList);
-//			}
-//		}
-//		else { //第一次添加
-//			CVideoListUI::Node* pNode = pList->AddHeadNode(_T("今天"), 0, pList);
-//			tbegin = CTime(pInfo.tBegin);
-//			tend = CTime(pInfo.tEnd);
-//			pList->AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"),pList, pNode, 0);
-//		}
-//	}
-//}

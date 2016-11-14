@@ -1,6 +1,8 @@
 #pragma once
 
 #include "UIlib.h"
+#include "File/RecordFileInfo.h"
+#include "conio.h"
 using namespace DuiLib;
 
 class CMyListUI : public CListLabelElementUI
@@ -9,6 +11,7 @@ class CMyListUI : public CListLabelElementUI
 
 public:
 	CMyListUI();
+	CMyListUI(CRecordFileInfo& pInfo);
 	~CMyListUI();
 	void DoPaint(HDC hDC, const RECT& rcPaint);
 	void PaintStatusImage(HDC hDC);
