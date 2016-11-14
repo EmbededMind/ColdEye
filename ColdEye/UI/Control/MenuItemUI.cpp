@@ -85,7 +85,7 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 					if (userData < 6) {
 						pFocusedItem = static_cast<CPopupMenuUI*>(m_pManager->FindControl(_T("alarmvideo")));
 					}
-					else if (userData > 6  &&  userData < 14) {
+					else if (userData >= 6  &&  userData < 14) {
 						pFocusedItem = static_cast<CPopupMenuUI*>(m_pManager->FindControl(_T("setting")));
 					}
 					else if (userData >= 14 && userData < 18) {

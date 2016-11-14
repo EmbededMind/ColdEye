@@ -1,12 +1,14 @@
 #pragma once
 
 #include "UIlib.h"
+#include "File\RecordFileInfo.h"
 
 using namespace DuiLib;
 
 class CMyMenuWnd :
 	public WindowImplBase
 {
+
 public :
 	CMyMenuWnd();
 	~CMyMenuWnd();
@@ -20,4 +22,5 @@ public :
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	void AddCamear();
+	//void Record_AddFile(UINT8 record_type, CRecordFileInfo& pInfo);
 };

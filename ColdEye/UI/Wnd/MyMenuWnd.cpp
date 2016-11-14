@@ -4,6 +4,8 @@
 #include "Control\PopupMenuUI.h"
 #include "Control\MenuItemUI.h"
 #include "Control\TimeButtonUI.h"
+#include "Control\VideoListUI.h"
+
 
 CMyMenuWnd::CMyMenuWnd()
 {
@@ -59,6 +61,27 @@ void CMyMenuWnd::InitWindow()
 	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
 	pNextItem->SetItemRelation(pMenuItem, NULL);
 
+	pMenuItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera1_video")));
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera2_video")));
+	pMenuItem->SetItemRelation(NULL, pNextItem);
+	pPrevItem = pMenuItem;
+	pMenuItem = pNextItem;
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera3_video")));
+	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
+	pPrevItem = pMenuItem;
+	pMenuItem = pNextItem;
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera4_video")));
+	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
+	pPrevItem = pMenuItem;
+	pMenuItem = pNextItem;
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera5_video")));
+	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
+	pPrevItem = pMenuItem;
+	pMenuItem = pNextItem;
+	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera6_video")));
+	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
+	pNextItem->SetItemRelation(pMenuItem, NULL);
+
 	//-------------------------看船时间控件关联---------------------------------
 	CTimeButtonUI *pTimeBt[4]; 
 	pTimeBt[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
@@ -95,6 +118,12 @@ void CMyMenuWnd::InitWindow()
 
 	//添加摄像头
 	AddCamear();
+
+	CRecordFileInfo *pRecord = new CRecordFileInfo;
+	pRecord->nOwner = 1;
+	pRecord->tBegin = CTime::GetCurrentTime().GetTime();
+	pRecord->tEnd = CTime::GetCurrentTime().GetTime();
+	//Record_AddFile(1, *pRecord);
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -103,6 +132,20 @@ void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
+	if (msg.sType == _T("itemactivate")) {
+		CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_alarmlist1")));
+		if (pList->GetItemIndex(msg.pSender) != -1)
+		{
+			if (_tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0) {
+				CVideoListUI::Node* node = (CVideoListUI::Node*)msg.pSender->GetTag();
+				pList->ExpandNode(node, !node->data()._expand);
+
+				if (node->data()._level == 0 && node->data()._expand) {
+					pList->SelectItem(pList->GetItemIndex(msg.pSender) + 1);
+				}
+			}
+		}
+	}
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)
@@ -116,6 +159,13 @@ LRESULT CMyMenuWnd::OnDestroy(UINT, WPARAM, LPARAM, BOOL & bHandled)
 
 LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
+	//if (uMsg == UIMSG_ADDNODE)
+	//{
+	//	CDuiString ListName;
+	//	ListName.Format(_T("list%d", wParam));
+	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(ListName));
+	//}
+
 	return LRESULT();
 }
 
@@ -157,3 +207,48 @@ void CMyMenuWnd::AddCamear()
 	pMenuItem->SetNextItem((CControlUI*)pLayout->GetItemAt((Count+1)*2)); 
 	static_cast<CMenuItemUI*>(pLayout->GetItemAt((Count + 1) * 2))->SetPrevItem((CControlUI*)pMenuItem); //系统设置
 }
+
+
+//void CMyMenuWnd::Record_AddFile(UINT8 record_type, CRecordFileInfo& pInfo)
+//{
+//	CTime refTime = GetCurrentTime();
+//	CTime tbegin, tend;
+//	CDuiString name;
+//	CVideoListUI *pList;
+//	CMyListUI *pItem;
+//	//全部视频
+//	if (record_type == 1) {
+//		name.Format(_T("video_list%d"), pInfo.nOwner);
+//		CVideoListUI *pList = (CVideoListUI*)m_pm.FindControl(name);
+//		pItem = (CMyListUI*)pList->GetItemAt(0);
+//		if (pItem) {
+//			if (pItem->mBeginTime.GetTime() / (3600 * 24) == refTime.GetTime() / (3600 * 24)) {
+//			}
+//			else {
+//				pList->AddHeadNode(_T("今天"), 0, pList);
+//			}
+//		}
+//		else {
+//			pList->AddHeadNode(_T("今天"), 0, pList);
+//
+//		}
+//	}
+//	else {//报警视频
+//		name.Format(_T("video_alarmlist%d"), pInfo.nOwner);
+//		pList = (CVideoListUI*)m_pm.FindControl(name);
+//		pItem = (CMyListUI*)pList->GetItemAt(0);
+//		if (pItem) {
+//			if (pItem->mBeginTime.GetTime() / (3600 * 24) == refTime.GetTime() / (3600 * 24)) {
+//			}
+//			else {
+//				pList->AddHeadNode(_T("今天"), 0, pList);
+//			}
+//		}
+//		else { //第一次添加
+//			CVideoListUI::Node* pNode = pList->AddHeadNode(_T("今天"), 0, pList);
+//			tbegin = CTime(pInfo.tBegin);
+//			tend = CTime(pInfo.tEnd);
+//			pList->AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"),pList, pNode, 0);
+//		}
+//	}
+//}

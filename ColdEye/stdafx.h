@@ -48,6 +48,9 @@
 #define USER_MSG_SCAN_DEV      (WM_USER + 110)
 #define USER_MSG_LOGIN         (WM_USER + 111)
 #define USER_MSG_RELOGIN       (WM_USER + 112)
+#define USER_MSG_INITFILE	   (WM_USER + 113)
+#define USER_MSG_ADDFILE	   (WM_USER + 114)
+#define USER_MSG_DELFILE	   (WM_USER + 115)
 
 
 

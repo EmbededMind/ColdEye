@@ -78,44 +78,55 @@
 			</VerticalLayout>
 			
 			<VerticalLayout name="layout_submenu_videoget" >	<!--视频调取-->
-				
+				<MenuItem name="camera1_video" text="摄像头1" userdata="18" />
+				<Control/>
+				<MenuItem name="camera2_video" text="摄像头2" userdata="19" />
+				<Control/>
+				<MenuItem name="camera3_video" text="摄像头3" userdata="20" />
+				<Control/>
+				<MenuItem name="camera4_video" text="摄像头4" userdata="21" />
+				<Control/>
+				<MenuItem name="camera5_video" text="摄像头5" userdata="22" />
+				<Control/>
+				<MenuItem name="camera6_video" text="摄像头6" userdata="23" />
+				<Control/>
 			</VerticalLayout>
 		</TabLayout>
 <!--24页 第三级菜单 -->
 		<TabLayout name="layout_thirdmenu" visible="false" bkcolor="0xFFEFEFF4">  
 <!--报警视频-->
 			<VerticalLayout name="camera1list">	
-				<VideoList name="list1">
+				<VideoList name="video_alarmlist1">
 				
 				</VideoList>			
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera2list">
-				<VideoList name="list2">
+				<VideoList name="video_alarmlist2">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera3list">
-				<VideoList name="list3">
+				<VideoList name="video_alarmlist3">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera4list">
-				<VideoList name="list4">
+				<VideoList name="video_alarmlist4">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera5list">
-				<VideoList name="list5">
+				<VideoList name="video_alarmlist5">
 				
 				</VideoList>
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera6list">
-				<VideoList name="list6">
+				<VideoList name="video_alarmlist6">
 				
 				</VideoList>	
 			</VerticalLayout>
@@ -242,22 +253,34 @@
 			</VerticalLayout>	
 <!--视频调取-->
 			<VerticalLayout>
-				<Button text="摄像机1"/>
+				<VideoList name="video_list1">
+				
+				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<Button text="摄像机2"/>
+				<VideoList name="video_list2">
+				
+				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<Button text="摄像机3"/>
+				<VideoList name="video_list3">
+				
+				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<Button text="摄像机4"/>
+				<VideoList name="video_list4">
+				
+				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<Button text="摄像机5"/>
+				<VideoList name="video_list5">
+				
+				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<Button text="摄像机6"/>
+				<VideoList name="video_list6">
+				
+				</VideoList>	
 			</VerticalLayout>
 		</TabLayout>
 	</HorizontalLayout>
