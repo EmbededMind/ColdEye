@@ -161,12 +161,12 @@ public:
 
 	Node* GetRoot() { return _root; }
 
-	Node* AddNode(LPCTSTR text, int id, Node* parent = NULL) //添加节点
+	Node* AddNode(LPCTSTR text, int id,CRecordFileInfo& pInfo, Node* parent = NULL ) //添加节点
 	{
 		if (!parent) 
 			parent = _root;
 
-		CMyListUI* pListElement = new CMyListUI;
+		CMyListUI* pListElement = new CMyListUI(pInfo);
 		Node* node = new Node;
 		node->data().id = id;
 		node->data()._level = parent->data()._level + 1;
@@ -252,9 +252,9 @@ public:
 		return szExpander;
 	}
 
-	Node* AddHeadNode(CString sText, int nID, CVideoListUI *pList);
-	Node* AddChildNode(CString sText, CVideoListUI *pList,CVideoListUI::Node *HeadNode, int nID);
-
+	Node* AddHeadNode(CString sText, int nID, CRecordFileInfo& pInfo);
+	Node* AddChildNode(CString sText, CVideoListUI::Node *HeadNode, int nID, CRecordFileInfo& pInfo);
+	void Record_AddFile(CRecordFileInfo& pInfo);
 private:
 	Node* _root;
 

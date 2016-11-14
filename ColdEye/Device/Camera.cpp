@@ -273,6 +273,7 @@ BOOL CCamera::UnsubscribeAlarmMessage()
 
 void CCamera::OnDisConnnect()
 {
+	Print("Camera on disconnect");
 	Logout();
 	//StopRealPlay();
 }

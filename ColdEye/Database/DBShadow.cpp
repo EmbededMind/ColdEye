@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Database\DBShadow.h"
+#include "Pattern\MsgSquare.h"
 
 
 CDBShadow::CDBShadow()
@@ -28,43 +29,59 @@ CDBShadow* CDBShadow::GetInstance()
 
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
-	if (wParam == 1) {
-		Print("Normal record come");
+	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
+	MSG msg;
 
-		switch (opt)
-		{
-			case FILE_OPT_ADD:
-				AddFileInfo(mReocrdFileInfoList, (CRecordFileInfo*)lParam);
-				break;
-
-			case FILE_OPT_END:
-				EndFileInfo(mReocrdFileInfoList, (CRecordFileInfo*)lParam);
-				break;
-
-			case FILE_OPT_DEL:
-				DelFileInfo(mReocrdFileInfoList, (CRecordFileInfo*)lParam);
-				break;
-		}
-	}
-	else if (wParam == 2) {
-		Print("Alarm record come");
-
-		switch (opt)
-		{
+	switch (opt) 
+	{
 		case FILE_OPT_ADD:
-			AddFileInfo(mAlarmFileInfoList, (CRecordFileInfo*)lParam);
+			AddFileInfo(infoList,  (CRecordFileInfo*)lParam);
 			break;
-
+		//-----------------------------------------------
 		case FILE_OPT_END:
-			EndFileInfo(mAlarmFileInfoList, (CRecordFileInfo*)lParam);
-			break;
+			EndFileInfo(infoList, (CRecordFileInfo*)lParam);
 
-		case FILE_OPT_DEL:
-			DelFileInfo(mAlarmFileInfoList, (CRecordFileInfo*)lParam);
+			msg.message = USER_MSG_ADDFILE;
+			msg.wParam = wParam;
+			msg.lParam = lParam;
+			CMsgSquare::GetInstance()->Broadcast(msg);
 			break;
-		}
-	}
+		//------------------------------------------------
+		case FILE_OPT_DEL:
+			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
+
+			msg.message = USER_MSG_DELFILE;
+			msg.wParam = wParam;
+			msg.lParam = lParam;
+			CMsgSquare::GetInstance()->Broadcast(msg);
+			break;
+	}	
 }
+
+
+/**@brief 初始化数据库Shadow
+ *
+ * @note  由于此方法过程中会向窗口发送消息，所以必须在窗口创建完成后执行。
+ */
+void CDBShadow::Init()
+{
+
+	SynchronizeWithDB();
+
+	CMsgSquare* pSquare = CMsgSquare::GetInstance();
+	MSG msg;
+	msg.wParam = RECORD_NORMAl;
+	msg.message = USER_MSG_INITFILE;	
+	msg.lParam = (LPARAM) (&mReocrdFileInfoList);
+	pSquare->Broadcast(msg);
+
+	msg.wParam = RECORD_ALARM;
+	msg.lParam = (LPARAM)(&mAlarmFileInfoList);
+	pSquare->Broadcast(msg);
+}
+
+
+
 
 
 /**@biref 录像文件信息与数据库中的记录同步
@@ -161,6 +178,7 @@ void CDBShadow::DelFileInfo(list<CRecordFileInfo*>& infoList, CRecordFileInfo* p
 
 	for (; iter != infoList.end(); iter++) {
 		if ((*iter) == pInfo) {
+			delete *iter;
 			infoList.erase(iter);
 			break;
 		}

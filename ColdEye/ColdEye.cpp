@@ -189,23 +189,6 @@ BOOL CColdEyeApp::InitInstance()
 
 
 
-HWND  CColdEyeApp::GetMainWndHandle()
-{
-	return _m_pMainWnd->GetHWND();
-}
-
-
-HWND  CColdEyeApp::GetWallWndHandle()
-{
-	return m_pWallWnd->GetHWND();
-}
-
-
-CWallWnd* CColdEyeApp::GetWallWnd()
-{
-	return m_pWallWnd;
-}
-
 
 HWND CColdEyeApp::GetMenuWndHandle()
 {
@@ -221,10 +204,7 @@ UINT CColdEyeApp::GetLoginThreadPID()
 
 
 
-void CColdEyeApp::SetWallWnd(CWallWnd* pWallWnd)
-{
-	this->m_pWallWnd = pWallWnd;
-}
+
 
 
 void CColdEyeApp::SetMenuWnd(CMyMenuWnd* pMenuWnd)
@@ -285,6 +265,7 @@ void CColdEyeApp::CheckFileDirectory()
 
 void CColdEyeApp::CheckDatabase()
 {
+
 }
 
 
@@ -308,7 +289,6 @@ UINT __stdcall LoginThread(PVOID pM)
 						 int iDevNumber = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
 						 if (iDevNumber > 0)
 						 {
-							 /*PostMessage(((CColdEyeApp*)AfxGetApp())->GetMainWndHandle(), USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);*/
 							 PostMessage( AfxGetApp()->m_pMainWnd->m_hWnd, USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);
 						 }
 					 }
@@ -321,18 +301,15 @@ UINT __stdcall LoginThread(PVOID pM)
 			 case USER_MSG_LOGIN:
 		    	 {
 					CCamera* pCamera = (CCamera*)msg.lParam;
-					/*CWallWnd* pWallWnd = ((CColdEyeApp*)AfxGetApp())->GetWallWnd();*/
 					CWallDlg* pWallDlg = ((CColdEyeApp*)AfxGetApp())->GetWallDlg();
 					ASSERT(pWallDlg != nullptr);
 
 					if (pCamera->Login())
 					{
-						//PostMessage(pWallWnd->GetHWND(), USER_MSG_LOGIN, true, msg.lParam);
 						PostMessage(pWallDlg->m_hWnd, USER_MSG_LOGIN, true, msg.lParam);
 					}
 					else
-					{
-						/*PostMessage(pWallWnd->GetHWND(), USER_MSG_LOGIN, false, msg.lParam);*/
+					{				
 						PostMessage(pWallDlg->m_hWnd, USER_MSG_LOGIN, false, msg.lParam);
 					}
 			     }
@@ -341,12 +318,9 @@ UINT __stdcall LoginThread(PVOID pM)
 			 case USER_MSG_RELOGIN:
 				 {
 					 CCamera* pCamera = (CCamera*)msg.lParam;
-					 CWallWnd* pWallWnd = ((CColdEyeApp*)AfxGetApp())->GetWallWnd();
-
 
 					 if (pCamera->Login()) {
-						 Print("Post to wnd:%d", msg.wParam);
-						 PostMessage(pWallWnd->GetHWND(), USER_MSG_RELOGIN, 0, msg.lParam);
+						 PostMessage((HWND)msg.wParam, USER_MSG_RELOGIN, true, msg.lParam);
 					 }
 				 }
 				 break;
