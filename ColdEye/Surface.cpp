@@ -77,6 +77,7 @@ void CSurface::ExecuteLocalConfig()
 	if (m_BindedCamera->m_LocalConfig.IsActivate) {
 		//摄像机原本是关闭状态则开启
 		if (this->m_hRealPlay == 0) {
+			Print("Config--Acivate: false-->true");
 			ConnectRealPlay();
 		}
 
@@ -85,7 +86,6 @@ void CSurface::ExecuteLocalConfig()
 			//视频存储原本是关闭状态则开启
 			if (!m_bIsRecording) {
 				//StartRecord("E:\\Record\\normal\\test.h264");
-
 				StartAutoRecord();
 			}
 		}
@@ -210,13 +210,12 @@ void CSurface::DisconnectRealPlay()
 		//else {
 		//	m_hRealPlay = 0;
 		//}
+		m_hRealPlay = 0;
 
 		H264_PLAY_Stop(m_lPlayPort);
 		H264_PLAY_CloseStream(m_lPlayPort);
 		H264_PLAY_FreePort(m_lPlayPort);
 		m_lPlayPort = 0;
-
-		Print("After disconnect hRealPlay:%d", m_hRealPlay);
 
 		Invalidate();
 	}
@@ -263,7 +262,7 @@ BOOL CSurface::StartAutoRecord()
 	CFile* pf = m_RecordFileButler.AllocRecordFile();
 	if (pf) {
 		StartRecord(pf);
-		SetTimer(TIMER_ID_AUTO_RECORD, 30 * 1000, NULL);
+		SetTimer(TIMER_ID_AUTO_RECORD, RECORD_PACK_TIMER_ELAPSE * 1000, NULL);
 		return TRUE;
 	}
 	else {
@@ -377,6 +376,7 @@ void CSurface::OnAlarmStop()
 
 void CSurface::OnDisconnect()
 {
+	Print("Surface on disconnect");
 	if (m_bIsRecording) {
 		StopAutoRecord();
 	}
@@ -390,10 +390,11 @@ void CSurface::OnDisconnect()
 	}
 
 	DisconnectRealPlay();
+	Invalidate();
 
 	m_BindedCamera->OnDisConnnect();
 
-	SetTimer(TIMER_ID_RECONNECT, 10 * 1000, NULL);
+	SetTimer(TIMER_ID_RECONNECT, RECONNECT_TIMER_ELAPSE * 1000, NULL);
 }
 
 
@@ -450,6 +451,8 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_WM_SETFOCUS()
 	ON_WM_NCPAINT()
 	ON_WM_KILLFOCUS()
+	ON_WM_TIMER()
+	ON_MESSAGE(USER_MSG_RELOGIN, &CSurface::OnUserMsgRelogin)
 END_MESSAGE_MAP()
 
 
@@ -507,3 +510,45 @@ void CSurface::OnNcPaint()
 
 
 
+
+
+void CSurface::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	switch (nIDEvent) {
+		case TIMER_ID_AUTO_RECORD:
+			PackageRecordFile();
+			break;
+		//----------------------------------------
+		case TIMER_ID_ALARM:
+			if (m_wAlarmStamp > 0) {
+				m_wAlarmStamp--;
+			}
+
+			if (m_wAlarmStamp == 0) {
+				OnAlarmStop();
+			}
+			break;
+		//----------------------------------------
+		case TIMER_ID_AUTO_WATCH:
+
+			break;
+		//----------------------------------------
+		case TIMER_ID_RECONNECT:
+			PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, (WPARAM)this->m_hWnd, (LPARAM)m_BindedCamera);
+			break;
+	}
+
+	CWnd::OnTimer(nIDEvent);
+}
+
+
+afx_msg LRESULT CSurface::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam) {
+		Print("^_^ ReLogin ^_^");
+		ExecuteLocalConfig();
+		KillTimer(TIMER_ID_RECONNECT);
+	}
+	return 0;
+}

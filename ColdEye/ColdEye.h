@@ -10,9 +10,6 @@
 
 #include "resource.h"		// Ö÷·ûºÅ
 
-
-#include "Wnd\MainWnd.h"
-#include "Wnd\WallWnd.h"
 #include "Wnd\MyMenuWnd.h"
 
 #include "WallDlg.h"
@@ -30,13 +27,11 @@ public:
 public:
 	virtual BOOL InitInstance();
 
-	HWND      GetMainWndHandle();
-	HWND      GetWallWndHandle();
-	CWallWnd* GetWallWnd();
+
+
 	HWND      GetMenuWndHandle();
 	UINT      GetLoginThreadPID();
 
-	void      SetWallWnd(CWallWnd* pWallWnd);
 	void      SetMenuWnd(CMyMenuWnd* pMenuWnd);
 
 	void      SetWallDlg(CWallDlg* pWallDlg);
@@ -45,8 +40,6 @@ public:
 
 
 private:
-	CMainWnd* _m_pMainWnd;
-	CWallWnd* m_pWallWnd;
 	CMyMenuWnd* m_pMenuWnd;
 
 	CWallDlg*  m_pWallDlg;

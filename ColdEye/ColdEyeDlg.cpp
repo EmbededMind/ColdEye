@@ -62,8 +62,10 @@ void CColdEyeDlg::UpdateLayout()
 	CRect  rClient;
 	GetClientRect(rClient);
 
+	LONG   titileHeight = rClient.Height() / 10;
 
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top, rClient.Width(), rClient.Height(), 0);
+
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titileHeight, rClient.Width(), rClient.Height()-titileHeight, 0);
 }
 
 
