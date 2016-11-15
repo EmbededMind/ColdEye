@@ -3,7 +3,6 @@
 #include "Database\DBShadow.h"
 #include "Pattern\MsgSquare.h"
 
-CRITICAL_SECTION g_cs;
 CDBShadow::CDBShadow()
 {
 	bool bRet  = sqlite.Open("cold_eye.db");
@@ -11,13 +10,15 @@ CDBShadow::CDBShadow()
 		Print("Database open failed");
 		ASSERT(FALSE);
 	}
-
+	InitializeCriticalSection(&g_cs);
 	CheckTables();
 }
 
 
 CDBShadow::~CDBShadow()
-{}
+{
+	DeleteCriticalSection(&g_cs);
+}
 
 
 CDBShadow* CDBShadow::GetInstance()
