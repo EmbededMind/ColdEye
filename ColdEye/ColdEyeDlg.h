@@ -6,7 +6,7 @@
 
 #include "WallDlg.h"
 #include "Wnd\MyMenuWnd.h"
-
+#include "Com\SerialPort.h"
 
 // CColdEyeDlg ¶Ô»°¿ò
 class CColdEyeDlg : public CDialogEx
@@ -43,7 +43,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT OnUserMsgScanDev(WPARAM wParam, LPARAM lParam);
+	BOOL SetVolumeLevel(int type);
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg LONG OnCommReceive(WPARAM pData, LPARAM port);
 };

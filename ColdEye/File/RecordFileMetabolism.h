@@ -1,18 +1,29 @@
 #pragma once
 #include "stdafx.h"
-#include "File\RecordFileInfo.h"
-class CRecordFileMetabolism
+#include "File\RecordFileButler.h"
+
+class CRecordFileMetabolism:
+	public Subject
 {
 	~CRecordFileMetabolism();
 private:
 	CRecordFileMetabolism(){};
 public:
-	static CRecordFileMetabolism* getInstance() {
+	static CRecordFileMetabolism* GetInstance() {
 		static CRecordFileMetabolism instance;
 		return &instance;
 	};
-	void SetATrigger();
+	bool SetATrigger();
+	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);
 private:
-	bool DelFile(CFile &RecordFile);
+	float SurplusSpaceNormal;
+	float SurplusSpaceAlarm;
+private:
+	bool DelFile(CString DelPsth);
+	ULONGLONG KillAlarmFile();
+	ULONGLONG KillNormalFile();
+	ULONGLONG GetDiskFreeSpaceAsMB(CString DiskName);
+	bool IsTimeOutNormalFile();
+	static UINT FileMetabolismThread(LPVOID pParam);
 };
 
