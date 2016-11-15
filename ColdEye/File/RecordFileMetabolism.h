@@ -1,11 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "File\RecordFileButler.h"
-#define SURPLUSSPACENORMAL 100
-#define SURPLUSSPACEALARM  100
-#define NORMAL_TIME        30//∑÷÷”
-#define NORMALDISK _T("d")
-#define ALARMDISK  _T("e")
+
 class CRecordFileMetabolism:
 	public Subject
 {
