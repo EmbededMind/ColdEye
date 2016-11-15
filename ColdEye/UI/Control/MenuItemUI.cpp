@@ -39,22 +39,33 @@ CMenuItemUI::~CMenuItemUI()
 {}
 
 
-void CMenuItemUI::SetItemBkColor(DWORD color1, DWORD color2)
+void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Color2)
 {
-	CTabLayoutUI* pTab;
-	CVerticalLayoutUI* pLayout;
+	//焦点移动到一级菜单上
+	if (pfocusItem) {
+		CContainerUI *layout = (CContainerUI*)pfocusItem->GetParent();
+		layout->SetBkColor(Color2);
+		for (int i = 0; i < layout->GetCount(); i += 2) {
+			if (layout->GetItemAt(i) != pfocusItem)
+				layout->GetItemAt(i)->SetBkColor(Color2);
+		}
+		static_cast<CButtonUI*>(pfocusItem)->SetTextColor(0xFF666666);
 
-	pTab = static_cast<CTabLayoutUI*> (m_pManager->FindControl(_T("layout_secondmenu")));
-	pTab->SetBkColor(color1);
+		layout = (CContainerUI*)GetParent();
+		layout->SetBkColor(Color1);
+		for (int i = 0; i < layout->GetCount(); i += 2) {
+			layout->GetItemAt(i)->SetBkColor(Color1);
+		}
+	}//焦点移动下一级
+	else{
+		CContainerUI *layout = (CContainerUI*)GetParent();
+		layout->SetBkColor(Color1);
+		for (int i = 0; i < layout->GetCount(); i += 2) {
+			layout->GetItemAt(i)->SetBkColor(Color1);
+		}
 
-	pLayout = (CVerticalLayoutUI*)pTab->GetItemAt(pTab->GetCurSel());
-
-	for (int i = 0; i < pLayout->GetCount(); i+=2){
-		pLayout->GetItemAt(i)->SetBkColor(0xFFEFEFF4);
 	}
 
-	pTab = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-	pTab->SetBkColor(color2);
 }
 
 
@@ -78,27 +89,27 @@ void CMenuItemUI::DoEvent(TEventUI& event)
  			//----------------------------------------------------
 			case VK_LEFT:
 				{
-					CPopupMenuUI* pFocusedItem = NULL;
+					CControlUI* pFocusedItem = NULL;
+					CContainerUI *layout;
 					static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(false);
 					int userData = StrToInt(GetUserData());
 
 					if (userData < 6) {
-						pFocusedItem = static_cast<CPopupMenuUI*>(m_pManager->FindControl(_T("alarmvideo")));
+						pFocusedItem = m_pManager->FindControl(_T("alarmvideo"));
 					}
 					else if (userData >= 6  &&  userData < 14) {
-						pFocusedItem = static_cast<CPopupMenuUI*>(m_pManager->FindControl(_T("setting")));
+						pFocusedItem = m_pManager->FindControl(_T("setting"));
 					}
 					else if (userData >= 14 && userData < 18) {
-						pFocusedItem = static_cast<CPopupMenuUI*>(m_pManager->FindControl(_T("autowatch")));
+						pFocusedItem = m_pManager->FindControl(_T("autowatch"));
 					}
 					else if (userData >= 18 && userData < 25) {
-						pFocusedItem = static_cast<CPopupMenuUI*>(m_pManager->FindControl(_T("videoget")));
+						pFocusedItem = m_pManager->FindControl(_T("videoget"));
 					}
 
 					if (pFocusedItem) {
-						pFocusedItem->SetTextColor(0xFF666666);
-						m_pManager->SetFocus(pFocusedItem);
-						SetItemBkColor(0xFFFFFFFF, 0xFFE6E6EF);
+						SetItemBkColor(pFocusedItem,0xFFE6E6EF,0xFFFFFFFF);
+						pFocusedItem->SetFocus();
 					}
 				}
 				break;
@@ -109,26 +120,27 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 				int sel;
 				CTabLayoutUI *pThirdMenu = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
 				CVerticalLayoutUI *pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(pThirdMenu->GetCurSel());
-
-				if (userdata >= 0 && userdata < 6)//报警视频列表
-				{
+				//报警视频列表
+				if (userdata >= 0 && userdata < 6){
 					CDuiString name;
 					CListUI *pList;
-					name.Format(_T("list%d"), userdata + 1);
+					name.Format(_T("video_alarmlist%d"), userdata + 1);
 					pList = static_cast<CListUI*>(m_pManager->FindControl(name));
 					int Count = pList->GetCount();
-					if (Count > 0)
-					{
+					if (Count > 0){
 						pList->GetItemAt(0)->SetFocus();
 						pList->SelectItem(0);
 					}
+					else{
+						return;
+					}
 				}
-				else if (userdata == 6)//主机名称
-				{
+				else if (userdata == 6){
+					//主机名称
 					m_pManager->FindControl(_T("edit_shipname"))->SetFocus();
 				}
-				else if (userdata >= 7 && userdata < 13)//摄像机设置
-				{
+				else if (userdata >= 7 && userdata < 13){
+					//摄像机设置
 					CButtonUI *pEdit;
 					sel = pThirdMenu->GetCurSel();
 					pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(sel);
@@ -136,16 +148,16 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 					pEdit = (CButtonUI*)pChildLayout->GetItemAt(2); //船名编辑框
 					pEdit->SetFocus();
 				}
-				else if (userdata == 13) //系统设置
-				{
+				else if (userdata == 13){
+					//系统设置
 					pChildLayout->GetItemAt(2)->SetFocus();
 				}
-				else if (userdata == 14)//看船时间
-				{
+				else if (userdata == 14){
+					//看船时间
 					static_cast<CButtonUI*>(m_pManager->FindControl(_T("time1_hour")))->SetFocus();
 				}
-				else if (userdata == 15)//报警音
-				{
+				else if (userdata == 15){
+					//报警音
 					CButtonUI *pAlarmVoiceSwitch;
 					sel = pThirdMenu->GetCurSel();
 					pChildLayout = (CVerticalLayoutUI*)pThirdMenu->GetItemAt(sel);
@@ -153,28 +165,56 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 					pAlarmVoiceSwitch = (CButtonUI*)pChildLayout->GetItemAt(2); //报警音开关
 					pAlarmVoiceSwitch->SetFocus();
 				}
-				else if (userdata == 16)//警告灯光
-				{
+				else if (userdata == 16){
+					//警告灯光
 					m_pManager->FindControl(_T("alarmlight_switch"))->SetFocus();
 				}
-				else if (userdata == 17) //看船开关记录
-				{
-
+				else if (userdata == 17){
+					//看船开关记录
 				}
-				SetItemBkColor(0xFFEFEFF4, 0xFFFFFFFF);
-				SetBkColor(0xFF4178B7);
-				SetTextColor(0xFFFFFFFF);
+				else if (userdata >= 18 && userdata < 24) {
+					//视频列表
+					CDuiString name;
+					CListUI *pList;
+					name.Format(_T("video_list%d"), userdata - 17);
+					pList = static_cast<CListUI*>(m_pManager->FindControl(name));
+					int Count = pList->GetCount();
+					if (Count > 0) {
+						pList->GetItemAt(0)->SetFocus();
+						pList->SelectItem(0);
+					}
+					else {
+						return;
+					}
+				}
+				SetItemBkColor(NULL,0xFFEFEFF4, 0xFFFFFFFF);
 				break;
 		}
 	}
 
 	if (event.Type == UIEVENT_SETFOCUS) {
+		CContainerUI *layout = (CContainerUI*)GetParent();
+		if (layout->GetBkColor() == 0xFFEFEFF4)
+		{
+			layout->SetBkColor(0xFFFFFFFF);
+			for (int i = 0; i < layout->GetCount(); i += 2)
+			{
+				layout->GetItemAt(i)->SetBkColor(0xFFFFFFFF);
+			}
+			SetTextColor(0xFF666666);
+		}
 		SetBkColor(0xFF4198FE);
 		static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SelectItem(StrToInt(GetUserData()));
 	}
 	else if(event.Type == UIEVENT_KILLFOCUS){
-		SetBkColor(0xFFFFFFFF);
+		if(GetParent()->GetBkColor()==0xFFFFFFFF)
+			SetBkColor(0xFFFFFFFF);
 	}
 
 	CButtonUI::DoEvent(event);
+}
+
+LPCTSTR CMenuItemUI::GetClass()
+{
+	return _T("MenuItem");
 }

@@ -5,15 +5,15 @@
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
 	:mIsLocked(false),
-	prereadMessageNum(0)
+	prereadMessageNum(0),
+	Info(0)
 {
 }
 
 
-CMyListUI::CMyListUI(CRecordFileInfo & pInfo)
+CMyListUI::CMyListUI(CRecordFileInfo* pInfo)
 {
-	mBeginTime = pInfo.tBegin;
-	mEndTime = pInfo.tEnd;
+	Info = pInfo;
 }
 
 CMyListUI::~CMyListUI()

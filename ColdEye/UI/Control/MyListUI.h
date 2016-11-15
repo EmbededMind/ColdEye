@@ -11,7 +11,7 @@ class CMyListUI : public CListLabelElementUI
 
 public:
 	CMyListUI();
-	CMyListUI(CRecordFileInfo& pInfo);
+	CMyListUI(CRecordFileInfo* pInfo);
 	~CMyListUI();
 	void DoPaint(HDC hDC, const RECT& rcPaint);
 	void PaintStatusImage(HDC hDC);
@@ -20,8 +20,6 @@ public:
 public:
 	bool mIsLocked;
 	int	prereadMessageNum;
-	__time64_t mBeginTime;
-	__time64_t mEndTime;
-	ULONGLONG mTotalSize;
+	CRecordFileInfo* Info;
 };
 

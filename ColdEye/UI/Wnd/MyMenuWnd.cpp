@@ -183,13 +183,13 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				{
 					listName.Format(_T("video_list%d"), pRecord->nOwner);
 					CVideoListUI* pLsit= (CVideoListUI *)m_pm.FindControl(listName);
-					pLsit->Record_AddFile(*pRecord);
+					pLsit->Record_AddFile(pRecord);
 				}
 				else if (record_type == 2)//±¨¾¯ÊÓÆµ
 				{
 					listName.Format(_T("video_alarmlist%d"), pRecord->nOwner);
 					CVideoListUI* pLsit = (CVideoListUI *)m_pm.FindControl(listName);
-					pLsit->Record_AddFile(*pRecord);
+					pLsit->Record_AddFile(pRecord);
 				}
 			}
 			break;
