@@ -4,6 +4,8 @@
 #include "Device\Camera.h"
 #include "File\RecordFileButler.h"
 
+#include "OSDPainter.h"
+
 // CSurface
 
 class CSurface : public CWnd
@@ -15,12 +17,13 @@ public:
 	virtual ~CSurface();
 
 public:
-	long m_hRealPlay;
+
 	LONG m_lPlayPort;
 
 	CFile*     m_pAlmFile;
 	CFile*     m_pRdFile;
-
+	
+	bool m_bIsRealPlaying;
 	bool m_bIsRecording;
 	bool m_bIsAlarming;
 	bool m_bIsWatching;
@@ -29,6 +32,8 @@ public:
 	CRecordFileButler  m_RecordFileButler;
 	CRecordFileButler  m_AlarmFileButler;
 
+	COSDPainter   mOsdPainter;
+
 	void          BindCamera(CCamera* pCamera);
 
 	void          ExecuteLocalConfig();
@@ -36,6 +41,10 @@ public:
 
 	void          ConnectRealPlay();
 	void          DisconnectRealPlay();
+
+
+	void          StartRealPlay();
+	void          StopRealPlay();
 
 	void          StartRecord(CFile* pf);
 	void          StopRecord();
@@ -58,12 +67,20 @@ public:
 	void          OnReconnect();
 
 
+
 protected:
+	CWnd          mControlWnd;
+	CWnd          mSurface;
+
+
 	BOOL          mHasFocused;
 	BOOL          RegisterWindowClass(HINSTANCE hInstance = NULL);
 
 
+
+
 private:
+	long          m_hRealPlay;
 	WORD          m_wAlarmStamp;
 	BOOL          ShouldWatch();
 
@@ -79,6 +96,9 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 protected:
 	afx_msg LRESULT OnUserMsgRelogin(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

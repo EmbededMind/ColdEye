@@ -65,7 +65,7 @@ void CColdEyeDlg::UpdateLayout()
 	LONG   titileHeight = rClient.Height() / 10;
 
 
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titileHeight, rClient.Width(), rClient.Height()-titileHeight, 0);
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titileHeight, rClient.Width(), rClient.Height()-titileHeight-titileHeight/5, 0);
 }
 
 
@@ -163,10 +163,25 @@ void CColdEyeDlg::OnPaint()
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
 		// »æÖÆÍ¼±ê
-		dc.DrawIcon(x, y, m_hIcon);
+		//dc.DrawIcon(x, y, m_hIcon);
+
+
 	}
 	else
 	{
+		CPaintDC dc(this);
+		CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
+		BITMAP bmp;
+		bitmap.GetBitmap(&bmp);
+
+		CDC mSrcDC;
+
+		mSrcDC.CreateCompatibleDC(&dc);
+
+		mSrcDC.SelectObject(bitmap);
+
+		dc.BitBlt(10, 50, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, SRCCOPY);
+
 		CDialogEx::OnPaint();
 	}
 }
@@ -182,6 +197,7 @@ HCURSOR CColdEyeDlg::OnQueryDragIcon()
 
 afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 {
+	Print("Find %d camera", wParam);
 	for (int i = 0; i < wParam; i++) {
 		CCamera* pCamera = new CCamera();
 		pCamera->SetCommonNetConfig(&((SDK_CONFIG_NET_COMMON_V2*)lParam)[i]);

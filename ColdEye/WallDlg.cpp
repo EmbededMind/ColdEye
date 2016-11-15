@@ -57,6 +57,7 @@ BOOL CWallDlg::Invest(CCamera* pCamera)
 
 
 			mSurfaces[i]->BindCamera(pCamera);
+
 			mSurfaces[i]->ExecuteLocalConfig();
 
 			DesignSurfaceLayout();
@@ -122,7 +123,7 @@ void CWallDlg::ExecuteSurfaceLayout()
 	GetClientRect(rClient);
 
 	long nWidth = rClient.Width() / mCols;
-	long nHeight = nWidth * 8 / 16;
+	long nHeight = nWidth * 9 / 16;
 	long nOrgX = (rClient.Width() - nWidth*mCols) / 2;
 	long nOrgY = (rClient.Height() - nHeight* mRows) / 2;
 
@@ -183,8 +184,12 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 		Print("Login...");
 		Invest( (CCamera*)lParam);
 	}
-
+	else {
+		AfxMessageBox(_T("µÇÂ¼Ê§°Ü"));
+		delete ((CCamera*)lParam);
+	}
 	return 0;
 }
+
 
 
