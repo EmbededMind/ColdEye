@@ -13,9 +13,9 @@ bool CRecordFileMetabolism::SetATrigger()
 {
 	if (!AfxBeginThread(FileMetabolismThread, this))
 	{
-		return false;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 void CRecordFileMetabolism::Notify(UINT opt, WPARAM wParam, LPARAM lParam)

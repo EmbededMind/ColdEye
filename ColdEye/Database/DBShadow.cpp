@@ -3,7 +3,7 @@
 #include "Database\DBShadow.h"
 #include "Pattern\MsgSquare.h"
 
-
+CRITICAL_SECTION g_cs;
 CDBShadow::CDBShadow()
 {
 	bool bRet  = sqlite.Open("cold_eye.db");
@@ -31,7 +31,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
 	MSG msg;
-
+	EnterCriticalSection(&g_cs);
 	switch (opt) 
 	{
 		case FILE_OPT_ADD:
@@ -55,7 +55,8 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			msg.lParam = lParam;
 			CMsgSquare::GetInstance()->Broadcast(msg);
 			break;
-	}	
+	}
+	LeaveCriticalSection(&g_cs);
 }
 
 
