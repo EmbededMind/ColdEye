@@ -7,6 +7,7 @@
 #include "ColdEyeDlg.h"
 #include "afxdialogex.h"
 #include "Com\SerialPort.h"
+#include "Com\Communication.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -443,21 +444,39 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			switch (p->ch[3])
 			{
 			case 0x01:
-				TRACE("声音设置返回\n");
+				CCommunication::GetInstance()->RecSetVolumeProc(p->ch);
 				break;
 			case 0x02:
-				TRACE("工控机请求通话返回\n");
+				switch (p->ch[4])
+				{
+				case 1:
+					CCommunication::GetInstance()->RecTalkProc(p->ch);
+					break;
+				case 2:
+					CCommunication::GetInstance()->RecYouTalkProc(p->ch);
+					break;
+				case 3:
+					CCommunication::GetInstance()->RecOverTalkProc(p->ch);
+					break;
+				default:
+					break;
+				}
 				break;
 			case 0x03:
-			{
-				TRACE("语音附件请求通话\n");
+				CCommunication::GetInstance()->ReplyTalk(p->ch);
 				break;
-			}
 			case 0x04:
 				TRACE("控制灯泡\n");
 				break;
 			case 0x05:
-				TRACE("报警信息\n");
+				if (p->ch[4] == 1)
+				{
+					CCommunication::GetInstance()->RecAlarmProc(p->ch);
+				}
+				if (p->ch[4] == 2)
+				{
+					CCommunication::GetInstance()->RecOverAlarmProc(p->ch);
+				}
 				break;
 			default:
 				break;
