@@ -135,7 +135,7 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	}
 
 	//if (msg.sType == _T("itemactivate")) {
-	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_alarmlist1")));
+	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_list1")));
 	//	if (pList->GetItemIndex(msg.pSender) != -1)
 	//	{
 	//		if (_tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0) {

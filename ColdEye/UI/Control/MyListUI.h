@@ -16,6 +16,7 @@ public:
 	void DoPaint(HDC hDC, const RECT& rcPaint);
 	void PaintStatusImage(HDC hDC);
 	void DrawItemText(HDC hDC, const RECT& rcItem);
+	void DoEvent(TEventUI &event);
 public:
 	bool mIsLocked;
 	int	prereadMessageNum;

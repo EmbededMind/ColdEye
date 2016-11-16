@@ -5,17 +5,24 @@
 IMPLEMENT_DUICONTROL(CVideoListUI)
 void CVideoListUI::DoEvent(TEventUI& event)
 {
+	_cprintf("type=%d\n",event.Type);
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
 		{
-			CListLabelElementUI *pItem = (CListLabelElementUI*)m_pList->GetItemAt(GetMaxSelItemIndex());
+			CListLabelElementUI *pItem = (CListLabelElementUI*)GetItemAt(GetMaxSelItemIndex());
 			CVideoListUI::Node* node = (CVideoListUI::Node*)pItem->GetTag();
 			switch (event.wParam) {
 				case VK_UP:
 				{
+					//头结点移动和子节点移动
 					if (node->data()._level != 0)
 					{
-						if (m_aSelItems.GetSize() > 0) {
+						pItem = (CListLabelElementUI*)GetItemAt(GetMaxSelItemIndex() - 1);
+						node = (CVideoListUI::Node*)pItem->GetTag();
+						if (node->data()._level == 0){
+
+						}
+						else if (m_aSelItems.GetSize() > 0) {
 							int index = GetMinSelItemIndex() - 1;
 							UnSelectAllItems();
 							index > 0 ? SelectItem(index, true) : SelectItem(0, true);
@@ -23,8 +30,8 @@ void CVideoListUI::DoEvent(TEventUI& event)
 					}
 					else
 					{
-						if (GetMaxSelItemIndex() != 0) //上限
-						{
+						
+						if (GetMaxSelItemIndex() != 0){
 							pItem = (CListLabelElementUI*)m_pList->GetItemAt(GetMaxSelItemIndex() - 1);
 							node = (CVideoListUI::Node*)pItem->GetTag();
 							CVideoListUI::Node* parentnode = node->parent();
@@ -60,29 +67,9 @@ void CVideoListUI::DoEvent(TEventUI& event)
 					}
 				}
 				break;
-				//------------------------------------------------------------
-				case VK_RETURN:
-				{
-					if (node->has_children())
-					{
-						ExpandNode(node, !node->data()._expand);
 
-						if (node->data()._level == 0 && node->data()._expand) {
-							SelectItem(GetItemIndex(event.pSender) + 1);
-						}
-					}
-					else
-					{
-
-					}
-				}
-				break;
 			}
 		}
-		break;
-
-	case UIEVENT_BUTTONDOWN:
-		CListUI:DoEvent(event);
 		break;
 	}
 }
