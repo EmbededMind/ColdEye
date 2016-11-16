@@ -46,12 +46,13 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 			iInx = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetCurSel();
 			pFocused = (CContainerUI*)static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetItemAt(iInx);
 
-			if (pFocused->GetCount() > 0) {
-				static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(true);
-				pFocused->GetItemAt(0)->SetFocus();
-				//SetMenuBkColor(0xFFE6EF, 0xFFFFFFFF);
-				SetBkColor(0xFF477688F);
-				SetTextColor(0xFFFFFFFF);
+			if (GetUserData() == _T("4")){
+				m_pManager->FindControl(_T("button_home"))->SetFocus();
+			}
+			else if (pFocused->GetCount() > 0) {
+					static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(true);
+					pFocused->GetItemAt(0)->SetFocus();
+					SetMenuBkColor(0xFFE6E6E6, 0xFFFFFFFF);
 			}
 			break;
 		}
@@ -59,7 +60,18 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 
 	if (event.Type == UIEVENT_SETFOCUS) {
 		SetBkColor(0xFF4198FE);
-		static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->SelectItem(StrToInt(GetUserData()));
+		if (GetUserData() == _T("4")) //»Ø¼Ò¿´´¬
+		{
+			m_pManager->FindControl(_T("home"))->SetVisible(true);
+		}
+		else
+		{
+			if (m_pManager->FindControl(_T("home"))->IsVisible())
+			{
+				m_pManager->FindControl(_T("home"))->SetVisible(false);
+			}
+			static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->SelectItem(StrToInt(GetUserData()));
+		}
 	}
 	else if (event.Type == UIEVENT_KILLFOCUS) {
 		SetBkColor(0xFFFFFFFF);
@@ -76,25 +88,24 @@ void CPopupMenuUI::SetItemRelation(CPopupMenuUI * pPrevMenu, CPopupMenuUI * pNex
 
 void CPopupMenuUI::SetMenuBkColor(DWORD menuColor, DWORD itemColor)
 {
-	static_cast<CVerticalLayoutUI*> (m_pManager->FindControl(_T("menuLayout")))->SetBkColor(menuColor);
-	static_cast<CPopupMenuUI*> (m_pManager->FindControl(_T("alarmVideo")))->SetBkColor(menuColor);
-	static_cast<CPopupMenuUI*> (m_pManager->FindControl(_T("setting")))->SetBkColor(menuColor);
-	static_cast<CPopupMenuUI*> (m_pManager->FindControl(_T("autowatch")))->SetBkColor(menuColor);
-	static_cast<CPopupMenuUI*> (m_pManager->FindControl(_T("videoget")))->SetBkColor(menuColor);
-	static_cast<CPopupMenuUI*> (m_pManager->FindControl(_T("homewatch")))->SetBkColor(menuColor);
+	CContainerUI *layout;
+	layout = (CContainerUI*)GetParent();
+	layout->SetBkColor(menuColor);
+	for (int i = 0; i < layout->GetCount(); i+=2)
+		layout->GetItemAt(i)->SetBkColor(menuColor);
 
-	CTabLayoutUI* pTab;
-	CVerticalLayoutUI* pLayout;
+	SetBkColor(0xFF47688F);
+	SetTextColor(0xFFFFFFFF);
 
-	pTab = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")));
-	pTab->SetBkColor(itemColor);
-	pLayout = (CVerticalLayoutUI*)pTab->GetItemAt(pTab->GetCurSel());
-
-	for (int i = 0; i < pLayout->GetCount(); i+=2) {
-		pLayout->GetItemAt(i)->SetBkColor(itemColor);
+	CControlUI *pItem;
+	pItem =m_pManager->GetFocus();
+	layout = (CContainerUI*)pItem->GetParent();
+	layout->SetBkColor(itemColor);
+	for (int i = 0; i < layout->GetCount(); i += 2) {
+		if(layout->GetItemAt(i)!= pItem)
+			layout->GetItemAt(i)->SetBkColor(itemColor);
 	}
-
-	m_pManager->GetFocus()->SetBkColor(0xFF4198FE);
+	
 }
 
 void CPopupMenuUI::PaintStatusImage(HDC hDC)

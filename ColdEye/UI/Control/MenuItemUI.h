@@ -16,10 +16,10 @@ public:
 	CMenuItemUI(CContainerUI* pParent, CDuiString& text, int iInx);	
 	~CMenuItemUI();
 
-	void SetItemBkColor(DWORD color_1, DWORD color_2);
+	void SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Color2);
 
 	virtual void DoEvent(TEventUI& event);
-
+	virtual LPCTSTR GetClass();
 	//void SetItemRelation(CMenuItemUI* pPrevItem, CMenuItemUI* pNextItem);
 	
 //private:

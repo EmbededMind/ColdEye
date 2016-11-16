@@ -1,15 +1,20 @@
 #include "stdafx.h"
 #include "MyListUI.h"
 #include "VideoListUI.h"
-#include "conio.h"
 
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
 	:mIsLocked(false),
-	prereadMessageNum(0)
+	prereadMessageNum(0),
+	Info(0)
 {
 }
 
+
+CMyListUI::CMyListUI(CRecordFileInfo* pInfo)
+{
+	Info = pInfo;
+}
 
 CMyListUI::~CMyListUI()
 {
@@ -49,9 +54,8 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 {
 	CVideoListUI::Node* node = (CVideoListUI::Node*)this->GetTag();
-	_cprintf("level=%d\n",node->data()._level);
 
-	CDuiString sText = GetText();
+	CDuiString sText = node->data()._text;
 	if (sText.IsEmpty()) return;
 
 	if (m_pOwner == NULL) return;
@@ -77,4 +81,34 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 	CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, iTextColor, \
 		pInfo->nFont, pInfo->uTextStyle);
 }
+
+void CMyListUI::DoEvent(TEventUI & event)
+{
+	if (event.Type == UIEVENT_KEYDOWN){
+		if (event.wParam == VK_RETURN){
+			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
+			int num;
+			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+			if (node->has_children()){
+				static_cast<CVideoListUI*>(pList)->ExpandNode(node, !node->data()._expand);
+			}
+			else
+			{
+
+			}
+			if (node->data()._level == 0 && node->data()._expand) {
+				pList->SelectItem(pList->GetItemIndex(this) + 1);
+				pList->GetItemAt(pList->GetItemIndex(this) + 1)->SetFocus();
+			}
+		}
+	/*	else{
+			CListLabelElementUI::DoEvent(event);
+		}*/
+	}
+	//else{
+	//	CListLabelElementUI::DoEvent(event);
+	//}
+	CListLabelElementUI::DoEvent(event);
+}
+
 

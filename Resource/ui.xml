@@ -5,6 +5,7 @@
 	<Font shared="true" id="2" name="方正兰亭中黑_GBK" size="30"/>
 	<Font shared="true" id="3" name="方正兰亭中黑_GBK" size="28"/>
 	<Font shared="true" id="4" name="方正兰亭中黑_GBK" size="64"/>
+	<Font shared="true" id="5" name="方正兰亭中黑_GBK" size="36"/>
 	
 	<!---------------------Default---------------------><!--控件默认属性-->
 	<!--菜单一级控件-->
@@ -41,15 +42,15 @@
 	<Style name="list" value="textcolor=&quot;#FFFFFF00&quot;"/>
 	<HorizontalLayout name="root" bkcolor="FFEFEFF4">
 		<VerticalLayout name="menuLayout" width="328" bkcolor="#FFFFFFFF">
-			<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/报警视频.png' source='0,0,328,106'" focusedimage="file='image/报警视频.png' source='329,0,656,106'" />
+			<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/报警视频.png' source='0,0,328,106'" focusedimage="file='image/报警视频.png' source='328,0,657,106'" />
 			<Control />
-			<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/主机设置.png' source='0,0,328,106'" focusedimage="file='image/主机设置.png' source='329,0,656,106'" />
+			<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/主机设置.png' source='0,0,328,106'" focusedimage="file='image/主机设置.png' source='328,0,657,106'" />
 			<Control />
-			<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='image/自动看船.png' source='0,0,328,106'" focusedimage="file='image/自动看船.png' source='329,0,656,106'" />
+			<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='image/自动看船.png' source='0,0,328,106'" focusedimage="file='image/自动看船.png' source='328,0,657,106'" />
 			<Control />
-			<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='image/视频调取.png' source='0,0,328,106'" focusedimage="file='image/视频调取.png' source='329,0,656,106'" />
+			<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='image/视频调取.png' source='0,0,328,106'" focusedimage="file='image/视频调取.png' source='328,0,657,106'" />
 			<Control />
-			<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='image/回家看船.png' source='0,0,328,106'" focusedimage="file='image/回家看船.png' source='329,0,656,106'" />
+			<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='image/回家看船.png' source='0,0,328,106'" focusedimage="file='image/回家看船.png' source='328,0,657,106'" />
 			<Control />
 		</VerticalLayout>
 		
@@ -225,7 +226,7 @@
 				<Label float="true" pos="150,280,0,0" width="15" height="60" bkcolor="#FFF3F3F3" font="4" textcolor="#FF333333" text=":"/>
 				<Label float="true" pos="628,280,0,0" width="15" height="60" bkcolor="#FFF3F3F3" font="4" textcolor="#FF333333" text=":"/>
 				<Text text="本时间段开启报警" font="2" textpadding="283,139,0,0" textcolor="#FF9B9B9B" />
-				<Label name="morrow" visible="false" float="true" pos="633,358,0,0" width="89" height="45" borderround="4,4" bkcolor="#FFFF0000" font="3" textcolor="#FFFFFFFF" align="center" text="次日"/>
+				<Label name="morrow" visible="false" float="true" pos="588,404,0,0" width="89" height="45" borderround="4,4" bkcolor="#FFFF0000" font="3" textcolor="#FFFFFFFF" align="center" text="次日"/>
 			</VerticalLayout>
 			
 			<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0">	<!--报警音-->
@@ -235,7 +236,7 @@
 					<AlarmVoiceSwitch  text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666" textpadding="45,0,605,0" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 					<Control height="10" bkcolor="#FFF3F3F3"/>
 				</VerticalLayout>
-				<VerticalLayout visible="false" bkcolor="#FFF3F3F3" heigh="348">
+				<VerticalLayout visible="false" bkcolor="#FFF3F3F3" height="348">
 					<Control padding="45,0,45,0" height="2"/>
 					<Text height="98" textpadding="45,31,0,0" text="报警音选择" font="3" textcolor="#FF666666"/>
 					<AlarmVoiceList height="80" font="3" textcolor="#FF666666" text="默认声音" textpadding="105,0,0,0" align="left" normalimage="file='image/unsel.png' dest='679,29,704,54'" pushedimage="file='image/sel.png' dest='679,29,704,54'"/>
@@ -282,6 +283,16 @@
 				
 				</VideoList>	
 			</VerticalLayout>
+		</TabLayout>
+		<TabLayout visible="false" name="home" float="true" pos="328,0,1600,1038" >
+			<HorizontalLayout bkcolor="#FFEFEFF4">
+				<Text float="true" pos="217,202,0,0" width="839" height="89" font="4" textcolor="#FF4198FE" text="渔船防盗利器   回家帮你看船"/>
+				<Text float="true" pos="217,312,0,0" width="839" height="200" font="5" textcolor="#FF666666" text="       回家看船开启后，有人上船偷盗，设备会发出报警声音并且发出警告灯光，吓退盗贼，同时向你的手机报警，拍摄盗贼照片到您手机上，存留证据，减少看船支出，全方面保障船舶的财产生命安全。"/>
+				<Button name="button_home" float="true" pos="511,562,0,0" width="250" height="94" borderround="6,6" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" font="0" text="开启" focusedimage="file='image/按钮-选中.png'"/>
+			</HorizontalLayout>
+			<HorizontalLayout bkcolor="#FFFFFFFF">
+				<Text float="true" pos="366,247,0,0" width="540" height="50" font="3" textcolor="#FF666666" text="未连接设备，请联系当地经销商！"/>
+			</HorizontalLayout>
 		</TabLayout>
 	</HorizontalLayout>
 </Window>
