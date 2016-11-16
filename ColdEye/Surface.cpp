@@ -9,7 +9,7 @@
 #include "H264Play.h"
 
 #include "Database\DBShadow.h"
-
+#include "Com\Communication.h"
 
 int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dwUser)
 {
@@ -345,7 +345,7 @@ void CSurface::OnAlarmTrigged()
 	if (!m_bIsAlarming) {
 		m_bIsAlarming = true;
 		Print("Alarm trigged");
-
+		CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 		CFile* pf = m_AlarmFileButler.AllocRecordFile();
 
 		if (pf) {
@@ -365,6 +365,8 @@ void CSurface::OnAlarmStop()
 	m_bIsAlarming = false;
 
 	Print("Alarm stop");
+
+	CCommunication::GetInstance()->OverAlarm(this->m_BindedCamera);//向摄像头的语音附件发送 报警关闭请求
 
 	m_wAlarmStamp = 0;
 	KillTimer(TIMER_ID_ALARM);

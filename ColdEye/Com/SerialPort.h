@@ -72,7 +72,7 @@ public:
 			static CSerialPort ComCam;
 			return &ComCam;
 		}
-	}
+	};
 	virtual        ~CSerialPort();
     // port initialisation                                            
     BOOL        InitPort(CWnd* pPortOwner, UINT portnr = 1, UINT baud = 19200, 

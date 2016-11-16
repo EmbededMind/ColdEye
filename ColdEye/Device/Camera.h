@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 #include "netsdk.h"
-
 #define DEFAULT_VOL           3
 #define DEFAULT_AWT_START     (9*60)
 #define DEFAULT_AWT_END       (22*60)
@@ -64,10 +63,6 @@ public:
 
 	BOOL Login();
 	void Logout();
-	//BOOL StartRealPlay();
-	//BOOL StartRealPlay(HWND hWnd);
-
-	//void StopRealPlay();
 
 	BOOL LoadLocalConfig();
 
@@ -76,7 +71,6 @@ public:
 
 	void OnDisConnnect();
 
-protected:
 	SDK_CONFIG_NET_COMMON_V2 mCommonNetConfig;
 
 private:

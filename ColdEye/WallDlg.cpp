@@ -5,7 +5,7 @@
 #include "ColdEye.h"
 #include "WallDlg.h"
 #include "afxdialogex.h"
-
+#include "Com\Communication.h"
 
 bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, long dwUser)
 {
@@ -174,6 +174,53 @@ BOOL CWallDlg::OnInitDialog()
 	PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, 0);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
+}
+
+BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN) {
+		switch (pMsg->wParam)
+		{
+		case VK_LEFT:
+			break;
+		case VK_RIGHT:
+			break;
+		case VK_UP:
+			break;
+		case VK_DOWN:
+			break;
+
+		default:
+			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
+				CSurface* pSurface = (CSurface*)GetFocus();
+				CCamera* pDev = pSurface->m_BindedCamera;
+
+				switch (pMsg->wParam)
+				{
+				case 'T':
+					CCommunication::GetInstance()->AskTalk(pDev);
+					return TRUE;
+
+				case 'O':
+					CCommunication::GetInstance()->YouTalk();
+					return true;
+
+				case 'S':
+					CCommunication::GetInstance()->OverTalk();
+					return true;
+
+				default:
+					break;
+				}
+			}
+			break;
+		}
+	}
+	else if (pMsg->message == WM_CONTEXTMENU)
+	{
+		TRACE("CWallDlg case contextmenu\n");
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
 

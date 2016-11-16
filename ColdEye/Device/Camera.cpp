@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Camera.h"
+#include "Com\Util.h"
 
 
 CCamera::CCamera()
@@ -132,6 +133,7 @@ BOOL CCamera::Login()
 	if (lRet > 0)
 	{
 		m_LoginId = lRet;
+		CUtil::LoadMap(this);
 		return TRUE;
 	}
 	else
