@@ -4,6 +4,9 @@
 #include "Com\Util.h"
 
 
+extern int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dwUser);
+
+
 CCamera::CCamera()
 {
 	m_nPort = 34567;
@@ -123,6 +126,13 @@ BOOL CCamera::SetClientWindow(HWND hWnd)
 	
 	return FALSE;
 }
+
+
+
+
+
+
+
 
 
 BOOL CCamera::Login()

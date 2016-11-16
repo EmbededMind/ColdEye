@@ -14,11 +14,13 @@
 int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dwUser)
 {
 	CSurface* pSurface = (CSurface*)dwUser;
+	
+	if (pSurface->m_bIsRealPlaying) {
+		BOOL bRet = H264_PLAY_InputData(pSurface->m_lPlayPort, (unsigned char*)pFrame->pPacketBuffer, pFrame->dwPacketSize);
 
-	BOOL bRet = H264_PLAY_InputData(pSurface->m_lPlayPort, (unsigned char*)pFrame->pPacketBuffer, pFrame->dwPacketSize);
-
-	if (!bRet) {
-		TRACE("InputData failed:%d\n", H264_PLAY_GetLastError(pSurface->m_lPlayPort));
+		if (!bRet) {
+			TRACE("InputData failed:%d\n", H264_PLAY_GetLastError(pSurface->m_lPlayPort));
+		}
 	}
 
 	if (pSurface->m_pAlmFile  &&  pSurface->m_pAlmFile->m_hFile != CFile::hFileNull) {
@@ -30,6 +32,54 @@ int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dw
 	}
 
 	return 1;
+}
+
+
+
+void CALLBACK cbDefaultDrawOSD(LONG nPort, HDC hDC, LONG nUser)
+{
+	static bool flag = false;
+	CSurface* pSurface = (CSurface*)nUser;
+	static BITMAP bmp;
+
+	static CDC mSrcDC;
+	static long lImgWidth = 0;
+	static long lImgHeight = 0;
+
+
+	CDC* pDstDC = CDC::FromHandle(hDC);
+
+	if (!flag) {
+		flag = true;
+		CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
+		bitmap.GetBitmap(&bmp);
+
+		CImage img;
+		img.Load(_T("Icon_Min.png"));
+
+
+		lImgWidth = img.GetWidth();
+		lImgHeight = img.GetHeight();
+		
+
+		mSrcDC.CreateCompatibleDC(pDstDC);
+
+		//mSrcDC.SelectObject(img);
+		mSrcDC.SelectObject(bitmap);
+	}
+		pDstDC->BitBlt(10, 500, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, NOTSRCCOPY | SRCAND);
+		//pDstDC->BitBlt(10, 50, lImgWidth, lImgHeight, &mSrcDC, 0, 0, SRCAND);
+
+		//pDstDC->MoveTo(10, 50);
+		//pDstDC->LineTo(10+bmp.bmWidth,  50);
+		//pDstDC->LineTo(10+bmp.bmWidth,  50+bmp.bmHeight);
+
+		//pDstDC->MoveTo(10, 50);
+		//pDstDC->LineTo(10, 400);
+
+	
+	//pSurface->mOsdPainter.ShowBitmap(hDC);
+
 }
 
 
@@ -65,6 +115,9 @@ void CSurface::BindCamera(CCamera* pCamera)
 
 	m_AlarmFileButler.SetFileType(RECORD_ALARM);
 	m_AlarmFileButler.Attach(CDBShadow::GetInstance());
+
+
+	mOsdPainter.SetBitmap( &((CColdEyeApp*)AfxGetApp())->m_Bitmap );
 }
 
 
@@ -79,6 +132,7 @@ void CSurface::ExecuteLocalConfig()
 		if (this->m_hRealPlay == 0) {
 			Print("Config--Acivate: off-->on");
 			ConnectRealPlay();
+			StartRealPlay();
 		}
 
 		//视频存储需要开启 
@@ -107,7 +161,7 @@ void CSurface::ExecuteLocalConfig()
 			Print("Going to off");
 			//如果正在自动看船则停止自动看船
 			if (m_bIsWatching) {
-				Print();
+				//Print();
 				StopAutoWatch();
 			}
 
@@ -117,6 +171,7 @@ void CSurface::ExecuteLocalConfig()
 			}
 
 			//关闭摄像机(画面)
+			StopRealPlay();
 			DisconnectRealPlay();
 		}
 	}
@@ -161,24 +216,7 @@ BOOL CSurface::ShouldWatch()
 */
 void CSurface::ConnectRealPlay()
 {
-	BYTE byFileHeadBuf;
-	H264_PLAY_GetPort(&m_lPlayPort);
 
-
-	if (H264_PLAY_OpenStream(m_lPlayPort, &byFileHeadBuf, 1, SOURCE_BUF_MIN * 100)) {
-		if (!H264_PLAY_SetStreamOpenMode(m_lPlayPort, STREAME_REALTIME)) {
-			TRACE("Play set stream open mode failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
-		}
-
-		if (m_hWnd > 0) {
-			if (!H264_PLAY_Play(m_lPlayPort, m_hWnd)) {
-				TRACE("Play failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
-			}
-		}
-	}
-	else {
-		TRACE("Open stream failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
-	}
 
 
 	H264_DVR_CLIENTINFO playstru;
@@ -222,6 +260,69 @@ void CSurface::DisconnectRealPlay()
 		Invalidate();
 	}
 }
+
+
+
+void CSurface::StartRealPlay()
+{
+	BYTE byFileHeadBuf;
+	H264_PLAY_GetPort(&m_lPlayPort);
+
+
+	if (H264_PLAY_OpenStream(m_lPlayPort, &byFileHeadBuf, 1, SOURCE_BUF_MIN * 100)) {
+		OSD_INFO_TXT osd;
+		osd.bkColor = RGB(72, 209, 204);
+		osd.color = RGB(0,0,0);
+		osd.pos_x = 10;
+		osd.pos_y = 80;
+		osd.isTransparent = 1;
+		osd.isBold = 1;
+		strcpy_s(osd.text,  "SealedGhost");
+
+		H264_PLAY_SetOsdTex(m_lPlayPort, &osd);
+
+
+		H264_PLAY_RigisterDrawFun(m_lPlayPort, cbDefaultDrawOSD, (LONG)this);
+
+
+		SDK_OSDInfo Osd;
+		Osd.index = 1;
+		Osd.nChannel = 0;
+		Osd.nX = 100;
+		Osd.nY = 100;
+		
+		strcpy_s(Osd.pOSDStr, "LOL");
+		long lRet = H264_DVR_SetDevConfig(m_BindedCamera->GetLoginId(), E_SDK_SET_OSDINFO, 0, (char*)&Osd, sizeof(SDK_OSDInfo));
+
+
+		if (!H264_PLAY_SetStreamOpenMode(m_lPlayPort, STREAME_REALTIME)) {
+			TRACE("Play set stream open mode failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
+		}
+
+		if (m_hWnd > 0) {
+			if (!H264_PLAY_Play(m_lPlayPort, m_hWnd)) {
+				TRACE("Play failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
+			}
+			else {
+				m_bIsRealPlaying = true;
+			}
+		}
+	}
+	else {
+		TRACE("Open stream failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
+	}
+}
+
+
+
+
+void CSurface::StopRealPlay()
+{
+	m_bIsRealPlaying = false;
+
+	H264_PLAY_Stop(m_lPlayPort);
+}
+
 
 
 
@@ -457,6 +558,11 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_WM_KILLFOCUS()
 	ON_WM_TIMER()
 	ON_MESSAGE(USER_MSG_RELOGIN, &CSurface::OnUserMsgRelogin)
+	ON_WM_CREATE()
+	ON_WM_SIZE()
+	ON_BN_CLICKED(1, &CSurface::OnBnClickedRevsese)
+	ON_BN_CLICKED(2, &CSurface::OnBnClickedDelete)
+	ON_MESSAGE(USER_MSG_NOFITY_KEYDOWN, &CSurface::OnUserMsgNofityKeydown)
 END_MESSAGE_MAP()
 
 
@@ -473,6 +579,7 @@ void CSurface::OnPaint()
 
 					   //dc.MoveTo(0, 0);
 					   //dc.LineTo(rect.right, rect.bottom);
+
 }
 
 
@@ -553,6 +660,130 @@ afx_msg LRESULT CSurface::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
 		Print("^_^ ReLogin ^_^");
 		ExecuteLocalConfig();
 		KillTimer(TIMER_ID_RECONNECT);
+	}
+	return 0;
+}
+
+
+
+int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CWnd::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+
+	mReverseBtn.Create(_T("倒着放"), WS_CHILD, {0,0,0,0}, this, 1 );
+	mReverseBtn.ShowWindow(SW_HIDE);
+
+	mDelBtn.Create(_T("删除"), WS_CHILD, {0,0,0,0}, this, 2);
+	mDelBtn.ShowWindow(SW_HIDE);
+
+	return 0;
+}
+
+
+void CSurface::OnSize(UINT nType, int cx, int cy)
+{
+	CWnd::OnSize(nType, cx, cy);
+
+	// TODO: 在此处添加消息处理程序代码
+	//if (IsWindow(mControlWnd)) {
+	//	CRect rClient;
+	//	GetClientRect(rClient);
+
+	//	long surface_height = rClient.Height() * 4 / 5;
+	//	long control_height = rClient.Height() / 5;
+
+	//	mSurface.SetWindowPos(NULL, rClient.left, rClient.top, rClient.Width(), surface_height, 0);
+	//	mControlWnd.SetWindowPos(NULL, rClient.left, rClient.bottom-control_height, rClient.Width(), control_height, 0);
+	//}
+
+	if (IsWindow(mDelBtn)) {
+		CRect rClient;
+		GetClientRect(rClient);
+
+		long btn_width = rClient.Width() / 5;
+		long btn_height = rClient.Height() / 5;
+
+		long margin_left = rClient.Width() / 5;
+		long margin_top = rClient.Height() * 2 / 5;
+
+
+		mReverseBtn.SetWindowPos(NULL, rClient.left + margin_left, rClient.top + margin_top,
+			btn_width, btn_height, 0);
+
+		mDelBtn.SetWindowPos(NULL, rClient.left+ margin_left*2 + btn_width, rClient.top + margin_top,
+			btn_width, btn_height, 0);
+	}
+}
+
+
+BOOL CSurface::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN) { 
+		CWnd* pWnd = GetFocus();
+		CString text;
+		pWnd->GetWindowText(text);
+		TRACE("--->%S\n", text);
+
+		switch (pMsg->wParam)
+		{
+			case VK_F8:
+
+				//StopRealPlay();
+				H264_PLAY_Pause(this->m_lPlayPort, 1);
+				mReverseBtn.ShowWindow(SW_SHOW);
+				
+				mDelBtn.ShowWindow(SW_SHOW);
+				mReverseBtn.SetFocus();
+				break;
+		}
+	}
+
+	return CWnd::PreTranslateMessage(pMsg);
+}
+
+
+
+void CSurface::OnBnClickedRevsese()
+{
+	Print("Reserve Clicked");
+}
+
+
+void CSurface::OnBnClickedDelete()
+{
+	Print("Delete Clicked");
+}
+
+afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+		case VK_LEFT:
+		case VK_RIGHT:
+			if ((LPARAM)&mReverseBtn == lParam) {
+				TRACE("Rec reserve btn key msg\n");
+				mDelBtn.SetFocus();
+			}
+			else {
+				TRACE("Rec del btn key msg\n");
+				mReverseBtn.SetFocus();
+			}
+			break;
+		//---------------------------------------------------
+		case VK_BACK:
+			mReverseBtn.ShowWindow(SW_HIDE);
+			mDelBtn.ShowWindow(SW_HIDE);
+			
+			this->SetFocus();
+			if (m_bIsRealPlaying) {
+				H264_PLAY_Pause(m_lPlayPort, 0);
+			}
+			break;
+
 	}
 	return 0;
 }

@@ -59,6 +59,7 @@ public:
 
 	BOOL SetClientWindow(HWND hWnd);
 
+
 	void OnLogin();
 
 	BOOL Login();

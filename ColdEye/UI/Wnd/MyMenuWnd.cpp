@@ -117,7 +117,7 @@ void CMyMenuWnd::InitWindow()
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
 	//添加摄像头
-	AddCamear();
+	AddCamera();
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -135,7 +135,7 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	}
 
 	//if (msg.sType == _T("itemactivate")) {
-	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_alarmlist1")));
+	//	CVideoListUI* pList = static_cast<CVideoListUI*>(m_pm.FindControl(_T("video_list1")));
 	//	if (pList->GetItemIndex(msg.pSender) != -1)
 	//	{
 	//		if (_tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0) {
@@ -183,13 +183,13 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				{
 					listName.Format(_T("video_list%d"), pRecord->nOwner);
 					CVideoListUI* pLsit= (CVideoListUI *)m_pm.FindControl(listName);
-					pLsit->Record_AddFile(*pRecord);
+					pLsit->Record_AddFile(pRecord);
 				}
 				else if (record_type == 2)//报警视频
 				{
 					listName.Format(_T("video_alarmlist%d"), pRecord->nOwner);
 					CVideoListUI* pLsit = (CVideoListUI *)m_pm.FindControl(listName);
-					pLsit->Record_AddFile(*pRecord);
+					pLsit->Record_AddFile(pRecord);
 				}
 			}
 			break;
@@ -199,7 +199,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	return LRESULT();
 }
 
-void CMyMenuWnd::AddCamear()
+void CMyMenuWnd::AddCamera()
 { 
 	CVerticalLayoutUI *pLayout;
 	CMenuItemUI *pMenuItem;

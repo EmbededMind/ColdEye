@@ -5,15 +5,15 @@
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
 	:mIsLocked(false),
-	prereadMessageNum(0)
+	prereadMessageNum(0),
+	Info(0)
 {
 }
 
 
-CMyListUI::CMyListUI(CRecordFileInfo & pInfo)
+CMyListUI::CMyListUI(CRecordFileInfo* pInfo)
 {
-	mBeginTime = pInfo.tBegin;
-	mEndTime = pInfo.tEnd;
+	Info = pInfo;
 }
 
 CMyListUI::~CMyListUI()
@@ -80,6 +80,35 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 	pInfo->uTextStyle |= DT_CENTER;
 	CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, iTextColor, \
 		pInfo->nFont, pInfo->uTextStyle);
+}
+
+void CMyListUI::DoEvent(TEventUI & event)
+{
+	if (event.Type == UIEVENT_KEYDOWN){
+		if (event.wParam == VK_RETURN){
+			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
+			int num;
+			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+			if (node->has_children()){
+				static_cast<CVideoListUI*>(pList)->ExpandNode(node, !node->data()._expand);
+			}
+			else
+			{
+
+			}
+			if (node->data()._level == 0 && node->data()._expand) {
+				pList->SelectItem(pList->GetItemIndex(this) + 1);
+				pList->GetItemAt(pList->GetItemIndex(this) + 1)->SetFocus();
+			}
+		}
+	/*	else{
+			CListLabelElementUI::DoEvent(event);
+		}*/
+	}
+	//else{
+	//	CListLabelElementUI::DoEvent(event);
+	//}
+	CListLabelElementUI::DoEvent(event);
 }
 
 

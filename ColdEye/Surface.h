@@ -4,6 +4,10 @@
 #include "Device\Camera.h"
 #include "File\RecordFileButler.h"
 
+#include "OSDPainter.h"
+
+#include "FuckButton.h"
+
 // CSurface
 
 class CSurface : public CWnd
@@ -15,12 +19,13 @@ public:
 	virtual ~CSurface();
 
 public:
-	long m_hRealPlay;
+
 	LONG m_lPlayPort;
 
 	CFile*     m_pAlmFile;
 	CFile*     m_pRdFile;
-
+	
+	bool m_bIsRealPlaying;
 	bool m_bIsRecording;
 	bool m_bIsAlarming;
 	bool m_bIsWatching;
@@ -29,41 +34,60 @@ public:
 	CRecordFileButler  m_RecordFileButler;
 	CRecordFileButler  m_AlarmFileButler;
 
+	COSDPainter   mOsdPainter;
+
 	void          BindCamera(CCamera* pCamera);
 
 	void          ExecuteLocalConfig();
 	void          ExecuteLocalConfig(LocalConfig* pConfig);
 
-	void          ConnectRealPlay();
-	void          DisconnectRealPlay();
+	void          ConnectRealPlay();         //打开实时播放数据流
+	void          DisconnectRealPlay();      //关闭实时播放
+	 
 
-	void          StartRecord(CFile* pf);
-	void          StopRecord();
+	void          StartRealPlay();           //解码实时播放数据流，播放实时视频
+	void          StopRealPlay();            //停止播放实时视频
 
-	BOOL          StartAutoRecord();
-	void          StopAutoRecord();
+	void          StartRecord(CFile* pf);    //开始录像
+	void          StopRecord();              //停止录像
 
-	void          StartAlarmRecord(CFile* pFile);
-	void          StopAlarmRecord();
+	BOOL          StartAutoRecord();         //开始自动打包录像
+	void          StopAutoRecord();          //停止自动打包录像
 
-	BOOL          StartAutoWatch();
-	void          StopAutoWatch();
+	void          StartAlarmRecord(CFile* pFile);  //开始录制报警视频
+	void          StopAlarmRecord();               //停止录制报警视频
 
-	void          PackageRecordFile();
+	BOOL          StartAutoWatch();                 //开始自动看船
+	void          StopAutoWatch();                  //停止自动看船
 
-	void          OnAlarmTrigged();
-	void          OnAlarmStop();
+	void          PackageRecordFile();              //录像文件按打包
 
-	void          OnDisconnect();
-	void          OnReconnect();
+	void          OnAlarmTrigged();                 //报警触发响应
+	void          OnAlarmStop();                    //报警结束响应
+
+	void          OnDisconnect();                   //设备掉线响应
+	void          OnReconnect();                    //设备重连响应
+
 
 
 protected:
+	//CWnd          mControlWnd;
+	//CWnd          mSurface;
+
+	//CButton       mDelBtn;
+	//CButton       mReverseBtn;
+	CFuckButton     mReverseBtn;
+	CFuckButton     mDelBtn;
+
+
 	BOOL          mHasFocused;
 	BOOL          RegisterWindowClass(HINSTANCE hInstance = NULL);
 
 
+
+
 private:
+	long          m_hRealPlay;
 	WORD          m_wAlarmStamp;
 	BOOL          ShouldWatch();
 
@@ -79,6 +103,14 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 protected:
 	afx_msg LRESULT OnUserMsgRelogin(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedRevsese();
+	afx_msg void OnBnClickedDelete();
+protected:
+	afx_msg LRESULT OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam);
 };
 
 
