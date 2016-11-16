@@ -300,7 +300,7 @@ void CSurface::StartRealPlay()
 		}
 
 		if (m_hWnd > 0) {
-			if (!H264_PLAY_Play(m_lPlayPort, mSurface.m_hWnd)) {
+			if (!H264_PLAY_Play(m_lPlayPort, m_hWnd)) {
 				TRACE("Play failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
 			}
 			else {
@@ -558,6 +558,9 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_MESSAGE(USER_MSG_RELOGIN, &CSurface::OnUserMsgRelogin)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_BN_CLICKED(1, &CSurface::OnBnClickedRevsese)
+	ON_BN_CLICKED(2, &CSurface::OnBnClickedDelete)
+	ON_MESSAGE(USER_MSG_NOFITY_KEYDOWN, &CSurface::OnUserMsgNofityKeydown)
 END_MESSAGE_MAP()
 
 
@@ -574,6 +577,7 @@ void CSurface::OnPaint()
 
 					   //dc.MoveTo(0, 0);
 					   //dc.LineTo(rect.right, rect.bottom);
+
 }
 
 
@@ -666,11 +670,12 @@ int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
-	mSurface.Create(NULL, _T("Surface"), WS_CHILD | WS_VISIBLE, {0,0,0,0}, this, 1);
-	mSurface.ShowWindow(SW_SHOW);
 
-	mControlWnd.Create(NULL, _T("ControlPanel"), WS_OVERLAPPED | WS_VISIBLE, {0,0,0,0}, this, 2);
-	mControlWnd.ShowWindow(SW_SHOW);
+	mReverseBtn.Create(_T("倒着放"), WS_CHILD, {0,0,0,0}, this, 1 );
+	mReverseBtn.ShowWindow(SW_HIDE);
+
+	mDelBtn.Create(_T("删除"), WS_CHILD, {0,0,0,0}, this, 2);
+	mDelBtn.ShowWindow(SW_HIDE);
 
 	return 0;
 }
@@ -681,14 +686,102 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 	CWnd::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
-	if (IsWindow(mControlWnd)) {
+	//if (IsWindow(mControlWnd)) {
+	//	CRect rClient;
+	//	GetClientRect(rClient);
+
+	//	long surface_height = rClient.Height() * 4 / 5;
+	//	long control_height = rClient.Height() / 5;
+
+	//	mSurface.SetWindowPos(NULL, rClient.left, rClient.top, rClient.Width(), surface_height, 0);
+	//	mControlWnd.SetWindowPos(NULL, rClient.left, rClient.bottom-control_height, rClient.Width(), control_height, 0);
+	//}
+
+	if (IsWindow(mDelBtn)) {
 		CRect rClient;
 		GetClientRect(rClient);
 
-		long surface_height = rClient.Height() * 4 / 5;
-		long control_height = rClient.Height() / 5;
+		long btn_width = rClient.Width() / 5;
+		long btn_height = rClient.Height() / 5;
 
-		mSurface.SetWindowPos(NULL, rClient.left, rClient.top, rClient.Width(), surface_height, 0);
-		mControlWnd.SetWindowPos(NULL, rClient.left, rClient.bottom-control_height, rClient.Width(), control_height, 0);
+		long margin_left = rClient.Width() / 5;
+		long margin_top = rClient.Height() * 2 / 5;
+
+
+		mReverseBtn.SetWindowPos(NULL, rClient.left + margin_left, rClient.top + margin_top,
+			btn_width, btn_height, 0);
+
+		mDelBtn.SetWindowPos(NULL, rClient.left+ margin_left*2 + btn_width, rClient.top + margin_top,
+			btn_width, btn_height, 0);
 	}
+}
+
+
+BOOL CSurface::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN) { 
+		CWnd* pWnd = GetFocus();
+		CString text;
+		pWnd->GetWindowText(text);
+		TRACE("--->%S\n", text);
+
+		switch (pMsg->wParam)
+		{
+			case VK_F8:
+
+				//StopRealPlay();
+				H264_PLAY_Pause(this->m_lPlayPort, 1);
+				mReverseBtn.ShowWindow(SW_SHOW);
+				
+				mDelBtn.ShowWindow(SW_SHOW);
+				mReverseBtn.SetFocus();
+				break;
+		}
+	}
+
+	return CWnd::PreTranslateMessage(pMsg);
+}
+
+
+
+void CSurface::OnBnClickedRevsese()
+{
+	Print("Reserve Clicked");
+}
+
+
+void CSurface::OnBnClickedDelete()
+{
+	Print("Delete Clicked");
+}
+
+afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+		case VK_LEFT:
+		case VK_RIGHT:
+			if ((LPARAM)&mReverseBtn == lParam) {
+				TRACE("Rec reserve btn key msg\n");
+				mDelBtn.SetFocus();
+			}
+			else {
+				TRACE("Rec del btn key msg\n");
+				mReverseBtn.SetFocus();
+			}
+			break;
+		//---------------------------------------------------
+		case VK_BACK:
+			mReverseBtn.ShowWindow(SW_HIDE);
+			mDelBtn.ShowWindow(SW_HIDE);
+			
+			this->SetFocus();
+			if (m_bIsRealPlaying) {
+				H264_PLAY_Pause(m_lPlayPort, 0);
+			}
+			break;
+
+	}
+	return 0;
 }

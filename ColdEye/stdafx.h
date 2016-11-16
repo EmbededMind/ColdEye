@@ -52,6 +52,8 @@
 #define USER_MSG_ADDFILE	   (WM_USER + 114)
 #define USER_MSG_DELFILE	   (WM_USER + 115)
 
+#define USER_MSG_NOFITY_KEYDOWN   (WM_USER + 120)
+
 
 
  /*****************************************
