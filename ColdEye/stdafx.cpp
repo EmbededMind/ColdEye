@@ -5,3 +5,5 @@
 
 #include "stdafx.h"
 
+int mutex = 0;
+

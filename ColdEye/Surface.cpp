@@ -15,7 +15,15 @@ int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dw
 {
 	CSurface* pSurface = (CSurface*)dwUser;
 	
+	if (mutex != 0) {
+		Print("Mutex error:%d", mutex);
+		ASSERT(false);
+	}
+
+	mutex = 1;
+
 	if (pSurface->m_bIsRealPlaying) {
+
 		BOOL bRet = H264_PLAY_InputData(pSurface->m_lPlayPort, (unsigned char*)pFrame->pPacketBuffer, pFrame->dwPacketSize);
 
 		if (!bRet) {
@@ -30,6 +38,8 @@ int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dw
 	if (pSurface->m_pRdFile  &&  pSurface->m_pRdFile->m_hFile != CFile::hFileNull) {
 		pSurface->m_pRdFile->Write((unsigned char*)pFrame->pPacketBuffer, pFrame->dwPacketSize);
 	}
+
+	mutex = 0;
 
 	return 1;
 }
@@ -561,6 +571,9 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_BN_CLICKED(1, &CSurface::OnBnClickedRevsese)
 	ON_BN_CLICKED(2, &CSurface::OnBnClickedDelete)
 	ON_MESSAGE(USER_MSG_NOFITY_KEYDOWN, &CSurface::OnUserMsgNofityKeydown)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_OO_CHANGE, &CSurface::OnUserMsgCameraConfigOoChange)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_RD_CHANGE, &CSurface::OnUserMsgCameraConfigRdChange)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
 END_MESSAGE_MAP()
 
 
@@ -783,5 +796,23 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 			break;
 
 	}
+	return 0;
+}
+
+
+afx_msg LRESULT CSurface::OnUserMsgCameraConfigOoChange(WPARAM wParam, LPARAM lParam)
+{
+	return 0;
+}
+
+
+afx_msg LRESULT CSurface::OnUserMsgCameraConfigRdChange(WPARAM wParam, LPARAM lParam)
+{
+	return 0;
+}
+
+
+afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lParam)
+{
 	return 0;
 }

@@ -111,6 +111,9 @@ public:
 	afx_msg void OnBnClickedDelete();
 protected:
 	afx_msg LRESULT OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigOoChange(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigRdChange(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lParam);
 };
 
 
