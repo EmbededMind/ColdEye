@@ -21,5 +21,5 @@ public :
 	void OnLClick(CControlUI* pControl);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	void AddCamear();
+	void AddCamera();
 };

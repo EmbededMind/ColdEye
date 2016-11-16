@@ -117,7 +117,7 @@ void CMyMenuWnd::InitWindow()
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
 	//添加摄像头
-	AddCamear();
+	AddCamera();
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -199,7 +199,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	return LRESULT();
 }
 
-void CMyMenuWnd::AddCamear()
+void CMyMenuWnd::AddCamera()
 { 
 	CVerticalLayoutUI *pLayout;
 	CMenuItemUI *pMenuItem;
