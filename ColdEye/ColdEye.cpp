@@ -120,12 +120,16 @@ BOOL CColdEyeApp::InitInstance()
 #ifdef USE_PRINT
 	InitConsoleWindow();
 #endif
-	//
+	
 
+
+	m_Bitmap.LoadBitmap(IDB_NSLIENT);
 
 	CheckFileDirectory();
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
+
+
 
 	CPaintManagerUI::SetInstance(AfxGetInstanceHandle());
 	
@@ -293,6 +297,7 @@ UINT __stdcall LoginThread(PVOID pM)
 						 int iDevNumber = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
 						 if (iDevNumber > 0)
 						 {
+							 Print("Device number:%d", iDevNumber);
 							 PostMessage( AfxGetApp()->m_pMainWnd->m_hWnd, USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);
 						 }
 					 }

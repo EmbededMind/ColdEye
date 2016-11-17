@@ -7,6 +7,7 @@
 #include "ColdEyeDlg.h"
 #include "afxdialogex.h"
 #include "Com\SerialPort.h"
+#include "Com\Communication.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -69,7 +70,7 @@ void CColdEyeDlg::UpdateLayout()
 	LONG   titileHeight = rClient.Height() / 10;
 
 
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titileHeight, rClient.Width(), rClient.Height()-titileHeight, 0);
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titileHeight, rClient.Width(), rClient.Height()-titileHeight-titileHeight/5, 0);
 }
 
 
@@ -176,10 +177,25 @@ void CColdEyeDlg::OnPaint()
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
 		// 绘制图标
-		dc.DrawIcon(x, y, m_hIcon);
+		//dc.DrawIcon(x, y, m_hIcon);
+
+
 	}
 	else
 	{
+		CPaintDC dc(this);
+		CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
+		BITMAP bmp;
+		bitmap.GetBitmap(&bmp);
+
+		CDC mSrcDC;
+
+		mSrcDC.CreateCompatibleDC(&dc);
+
+		mSrcDC.SelectObject(bitmap);
+
+		dc.BitBlt(10, 50, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, SRCCOPY);
+
 		CDialogEx::OnPaint();
 	}
 }
@@ -195,6 +211,7 @@ HCURSOR CColdEyeDlg::OnQueryDragIcon()
 
 afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 {
+	Print("Find %d camera", wParam);
 	for (int i = 0; i < wParam; i++) {
 		CCamera* pCamera = new CCamera();
 		pCamera->SetCommonNetConfig(&((SDK_CONFIG_NET_COMMON_V2*)lParam)[i]);
@@ -277,6 +294,7 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		if (mWall.IsWindowVisible()) {
 			mWall.ShowWindow(false);
 			mMenu.ShowWindow(true);
+
 		}
 		else {
 			mWall.ShowWindow(true);
@@ -426,21 +444,39 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			switch (p->ch[3])
 			{
 			case 0x01:
-				TRACE("声音设置返回\n");
+				CCommunication::GetInstance()->RecSetVolumeProc(p->ch);
 				break;
 			case 0x02:
-				TRACE("工控机请求通话返回\n");
+				switch (p->ch[4])
+				{
+				case 1:
+					CCommunication::GetInstance()->RecTalkProc(p->ch);
+					break;
+				case 2:
+					CCommunication::GetInstance()->RecYouTalkProc(p->ch);
+					break;
+				case 3:
+					CCommunication::GetInstance()->RecOverTalkProc(p->ch);
+					break;
+				default:
+					break;
+				}
 				break;
 			case 0x03:
-			{
-				TRACE("语音附件请求通话\n");
+				CCommunication::GetInstance()->ReplyTalk(p->ch);
 				break;
-			}
 			case 0x04:
 				TRACE("控制灯泡\n");
 				break;
 			case 0x05:
-				TRACE("报警信息\n");
+				if (p->ch[4] == 1)
+				{
+					CCommunication::GetInstance()->RecAlarmProc(p->ch);
+				}
+				if (p->ch[4] == 2)
+				{
+					CCommunication::GetInstance()->RecOverAlarmProc(p->ch);
+				}
 				break;
 			default:
 				break;

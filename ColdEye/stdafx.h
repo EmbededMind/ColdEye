@@ -52,6 +52,14 @@
 #define USER_MSG_ADDFILE	   (WM_USER + 114)
 #define USER_MSG_DELFILE	   (WM_USER + 115)
 
+#define USER_MSG_NOFITY_KEYDOWN   (WM_USER + 120)
+
+
+#define USER_MSG_SYSTEM_STATUS_CHANGE      (WM_USER + 121)
+#define USER_MSG_CAMERA_CONFIG_OO_CHANGE   (WM_USER + 122)  //摄像机开关设置改变
+#define USER_MSG_CAMERA_CONFIG_AW_CHANGE   (WM_USER + 123)  //自动看船设置改变
+#define USER_MSG_CAMERA_CONFIG_RD_CHANGE   (WM_USER + 124)  //录像设置改变
+
 
 
  /*****************************************
@@ -144,6 +152,9 @@
 #define NORMAL_VOLUME   1
 #define ENLARGE_VOLUME  2
 #define REDUCE_VOLUME   3
+
+
+extern int mutex;
 
 
 #define USE_PRINT

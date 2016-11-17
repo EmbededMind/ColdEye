@@ -25,6 +25,8 @@ public:
 
 // ÷ÿ–¥
 public:
+	CBitmap m_Bitmap;
+
 	virtual BOOL InitInstance();
 
 
@@ -39,6 +41,8 @@ public:
 
 
 
+
+
 private:
 	CMyMenuWnd* m_pMenuWnd;
 
@@ -49,6 +53,7 @@ private:
 
 	void CheckFileDirectory();
 	void CheckDatabase();
+
 
 
 //  µœ÷

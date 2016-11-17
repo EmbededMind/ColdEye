@@ -1,6 +1,10 @@
 #include "stdafx.h"
 
 #include "Camera.h"
+#include "Com\Util.h"
+
+
+extern int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dwUser);
 
 
 CCamera::CCamera()
@@ -124,6 +128,13 @@ BOOL CCamera::SetClientWindow(HWND hWnd)
 }
 
 
+
+
+
+
+
+
+
 BOOL CCamera::Login()
 {
 	int iErrCode = 0;
@@ -132,6 +143,7 @@ BOOL CCamera::Login()
 	if (lRet > 0)
 	{
 		m_LoginId = lRet;
+		CUtil::LoadMap(this);
 		return TRUE;
 	}
 	else

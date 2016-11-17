@@ -47,11 +47,20 @@ void CRecordFileButler::ReleaseRecordFile()
 			m_pFileInfo->dlSize = status.m_size;
 		}
 
+		if (mutex != 0) {
+			Print("Mutex error:%d", mutex);
+			ASSERT(false);
+		}
+
+		mutex = 2;
+
 		m_File.Close();
 
 		if (m_pFileInfo->dlSize == 0) {
 			CFile::Remove(status.m_szFullName);
 		}
+
+		mutex = 0;
 
 		this->Notify(FILE_OPT_END, m_FileType, (LPARAM)m_pFileInfo);
 	}
