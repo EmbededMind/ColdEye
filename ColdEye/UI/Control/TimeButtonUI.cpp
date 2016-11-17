@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "TimeButtonUI.h"
+#include "Wnd/MsgWnd.h"
 
 IMPLEMENT_DUICONTROL(CTimeButtonUI)
 
@@ -96,7 +97,7 @@ void CTimeButtonUI::IncreaseMinute()
 
 bool CTimeButtonUI::isMorrow()
 {
-	if (tMinute_1 <= tMinute_2)
+	if (tMinute_1_New <= tMinute_2_New)
 		return false;
 	else
 		return true;
@@ -114,8 +115,8 @@ void CTimeButtonUI::SetTime()
 	tHour2 = StrToInt(pHour2->GetText());
 	tMinute1 = StrToInt(pMinute1->GetText());
 	tMinute2 = StrToInt(pMinute2->GetText());
-	tMinute_1 = tHour1 * 60 + tMinute1;
-	tMinute_2 = tHour2 * 60 + tMinute2;
+	tMinute_1_New = tHour1 * 60 + tMinute1;
+	tMinute_2_New = tHour2 * 60 + tMinute2;
 
 }
 
@@ -174,6 +175,12 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 				break;
 			//---------------------------------------------------
 			case VK_BACK:
+				if (tMinute_1_New != tMinute_1 || tMinute_2_New != tMinute_2) {
+
+					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
+					tMinute_1 = tMinute_1_New;
+					tMinute_2 = tMinute_2_New;
+				}
 				m_pManager->FindControl(_T("watchtime"))->SetFocus();
 				break;
 		}

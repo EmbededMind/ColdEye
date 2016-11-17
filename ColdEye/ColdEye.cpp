@@ -27,6 +27,8 @@
 #include "Control\ShipNameItemUI.h"
 #include "Control\TimeButtonUI.h"
 #include "Control\VideoListUI.h"
+#include "Control\RecordvoiceUI.h"
+#include "Control\MyButtonUI.h"
 
 #ifdef USE_PRINT
 #include <io.h>
@@ -148,6 +150,8 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CAlarmVoiceListUI);
 	REGIST_DUICONTROL(CAlarmLightUI);
 	REGIST_DUICONTROL(CMyListUI);
+	REGIST_DUICONTROL(CRecordvoiceUI);
+	REGIST_DUICONTROL(CMyButtonUI);
 
 	//_m_pMainWnd = new CMainWnd();
 	//_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
