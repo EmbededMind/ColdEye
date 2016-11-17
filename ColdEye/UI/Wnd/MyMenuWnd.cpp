@@ -149,7 +149,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	return LRESULT();
 }
 
-<<<<<<< HEAD
 void CMyMenuWnd::CameraSetItemInit(CVerticalLayoutUI * pLayout)
 {
 	CTabLayoutUI *pTabLayout;
