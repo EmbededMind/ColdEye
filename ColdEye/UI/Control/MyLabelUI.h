@@ -21,6 +21,7 @@ public:
 	void SetSelBkImage(LPCTSTR pstrValue);
 	void SetFocusedSelBkImage(LPCTSTR pstrValue);
 	void DoEvent(TEventUI &event);
+	void StatusUpdate();
 public:
 	CDuiString m_stateEnableText;
 	CDuiString m_stateDisableText;

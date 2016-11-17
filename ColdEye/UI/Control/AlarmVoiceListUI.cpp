@@ -8,6 +8,12 @@ CAlarmVoiceListUI::CAlarmVoiceListUI()
 {
 }
 
+CAlarmVoiceListUI::CAlarmVoiceListUI(CDuiString text, CDuiString name)
+	: state(false)
+{
+	SetText(text);
+	SetName(name);
+}
 
 CAlarmVoiceListUI::~CAlarmVoiceListUI()
 {
@@ -51,6 +57,14 @@ void CAlarmVoiceListUI::DoEvent(TEventUI & event)
 	switch (event.Type){
 		case UIEVENT_KEYDOWN:{
 			switch (event.wParam){
+			case VK_UP:
+				m_pManager->FindControl(_T("alarmvoice_switch"))->SetFocus();
+				break;
+
+			case VK_DOWN:
+				m_pManager->FindControl(_T("record_btn"))->SetFocus();
+				break;
+
 			case VK_RETURN:
 				break;
 			}

@@ -8,6 +8,7 @@ class CAlarmVoiceListUI : public CButtonUI
 DECLARE_DUICONTROL(CAlarmVoiceListUI)
 public:
 	CAlarmVoiceListUI();
+	CAlarmVoiceListUI(CDuiString text,CDuiString name);
 	~CAlarmVoiceListUI();
 	void PaintBkColor(HDC hDC);
 	void PaintStatusImage(HDC hDC);
