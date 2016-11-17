@@ -120,7 +120,6 @@ BOOL CColdEyeApp::InitInstance()
 #endif
 	
 
-
 	m_Bitmap.LoadBitmap(IDB_NSLIENT);
 
 	CheckFileDirectory();
@@ -330,6 +329,17 @@ UINT __stdcall LoginThread(PVOID pM)
 				 }
 				 break;
 			//-----------------------------------------------------------------------------------
+			 case USER_MSG_CAMERA_PARAM:
+				 {
+					 CCamera* pCamera = (CCamera*)msg.lParam;
+					 if (msg.wParam) {
+						 pCamera->SetSDKCameraParam();
+					 }
+					 else {
+						 pCamera->GetSDKCameraParam();
+					 }
+				 }
+				 break;
 		}
 		DispatchMessage(&msg);
 	}

@@ -14,6 +14,9 @@ typedef enum {
 }VIDEO_DIRECTION;
 
 
+
+
+
 #define LOCAL_CONFIG_MASK_ACTIVE       0x00000001
 #define LOCAL_CONFIG_MASK_RECORD       0x00000002
 #define LOCAL_CONFIG_MASK_AW           0x00000004
@@ -21,6 +24,8 @@ typedef enum {
 #define LOCAL_CONFIG_MASK_VOL          0x00000010
 #define LOCAL_CONFIG_MASK_NAME         0x00000020
 #define LOCAL_CONFIG_MASK_AWT          0x00000040
+
+
 
 typedef struct {
 	bool IsActivate;           //摄像机是否开机
@@ -40,8 +45,17 @@ public:
 	~CCamera();
 
 	H264_DVR_CLIENTINFO m_ClientInfo;
+	H264_DVR_DEVICEINFO m_DeviceInfo;
 	LocalConfig         m_LocalConfig;
+	SDK_CameraParam     m_Param;
+	SDK_CameraAbility   m_Ability;
+
 	UINT                m_Id;
+
+#ifdef _DEBUG
+	void DumpParam();
+	void DumpAbility();
+#endif
 
 	void GetIp(char* pBuf);
 	void GetUserName(char* pBuf);
@@ -66,6 +80,8 @@ public:
 	void Logout();
 
 	BOOL LoadLocalConfig();
+	void SetSDKCameraParam();
+	void GetSDKCameraParam();
 
 	BOOL SubscribeAlarmMessage();
 	BOOL UnsubscribeAlarmMessage();
@@ -82,7 +98,4 @@ private:
 	char m_szIp[20];
 	char m_szUserName[20];
 	char m_szPassword[20];
-
-	H264_DVR_DEVICEINFO m_DeviceInfo;
-
 };

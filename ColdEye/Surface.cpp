@@ -796,6 +796,12 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 				H264_PLAY_Pause(m_lPlayPort, 0);
 			}
 			break;
+		//--------------------------------------------------------
+		case VK_RETURN:
+			if (lParam == (LPARAM)&(mReverseBtn)) {
+
+			}
+			break;
 
 	}
 	return 0;
