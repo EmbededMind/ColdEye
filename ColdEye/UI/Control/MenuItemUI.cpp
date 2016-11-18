@@ -8,7 +8,7 @@ IMPLEMENT_DUICONTROL(CMenuItemUI)
 CMenuItemUI::CMenuItemUI()
 {}
 
-CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CDuiString& text)
+CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text)
 {
 	mHintNumber = _T("0");
 	SetText(text);
@@ -22,7 +22,7 @@ CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CDuiString& text)
 }
 
 
-CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CDuiString& text, int iInx)
+CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text, int iInx)
 {
 	mHintNumber = _T("0");
 

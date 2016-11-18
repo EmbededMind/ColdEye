@@ -36,6 +36,16 @@ public:
 		return pWnd->ShowModal();
 	}
 
+	static void ShowMessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2)
+	{
+		CMsgWnd* pWnd = new CMsgWnd();
+		pWnd->SkinType = skinType;
+		pWnd->Create(hParent, _T("msgwnd"), UI_WNDSTYLE_FRAME, 0);
+		pWnd->CenterWindow();
+		pWnd->SetMsg(text1, text2);
+		pWnd->ShowWindow(true);
+	}
+
 public:
 	virtual void OnFinalMessage(HWND);
 	virtual CDuiString GetSkinFile();

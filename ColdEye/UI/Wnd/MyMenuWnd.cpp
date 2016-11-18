@@ -124,7 +124,13 @@ void CMyMenuWnd::InitWindow()
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
 	//添加摄像头
-	AddCamear(1);
+	CameraInfo cameraInfo;
+	cameraInfo.Name = _T("摄像头1");
+	cameraInfo.Volumn = 5;
+	cameraInfo.IsActivate = true;
+	cameraInfo.id = 2;
+	AddCamear(cameraInfo);
+
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -146,6 +152,89 @@ LRESULT CMyMenuWnd::OnDestroy(UINT, WPARAM, LPARAM, BOOL & bHandled)
 
 LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
+	if (uMsg == USER_MSG_MESSAGE_BOX) {
+		switch (wParam) {
+		case SHIPNAME_LIMIT:
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_camera_switch.xml"), NULL, NULL));
+			break;
+			
+		case CLOSE_CAMERA:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			break;
+
+		case CLOSE_STROAGE:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"),_T("关闭储存摄像机视频后，您将无法回"), _T("放视频，是否确定关闭？"));
+			break;
+
+		case CLOSE_AUTOWATCH:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"),_T("关闭摄像机自动看船后，该摄像头将"), _T("不会发生报警，是否确定关闭？"));
+			break;
+
+		case SAVE_CHANGES:
+			break;
+
+		case UPDATE_REQUEST:
+			CMsgWnd::ShowMessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_request.xml"), NULL, NULL);
+			break;
+			
+		case NO_UPDATE_FILE:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_ok.xml"), _T("U盘未发现更改版本的软件更新程"), _T("序！"));
+			break;
+
+		case NO_UPDATE_DRIVE:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"));
+			break;
+
+		case SOFT_UPDATING:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			break;
+
+		case SOFT_UPDATE_SUCCESS:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
+			break;
+
+		case FACTORY_RESET:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"));
+			break;
+
+		case RECORD:
+			break;
+
+		case SAVE_RECORDED:
+			break;
+
+		case DELETE_CAMERA:
+			break;
+
+		case DISPLAY_MATCH:
+			break;
+
+		case CANNOT_COPY:
+			break;
+
+		case NO_COPY_DRIVE:
+			break;
+
+		case NO_ENOUGH_MEMORY:
+			break;
+
+		case CONFIRM_COPY:
+			break;
+
+		case COPYING:
+			break;
+
+		case STOP_COPY:
+			break;
+
+		case COPY_SUCCESS:
+			break;
+
+		case COPY_FAILURE:
+			break;
+		}
+	}
 	return LRESULT();
 }
 
@@ -165,17 +254,55 @@ void CMyMenuWnd::CameraSetItemInit(CVerticalLayoutUI * pLayout)
 	cameraset[iInx].pAutoWatch = (CMyLabelUI*)pChildLayout->GetItemAt(8);//自动看船设置
 }
 
-void CMyMenuWnd::AddCamear(UINT8 iInx)
-{ 
+//void CMyMenuWnd::AddCamear(UINT8 iInx)
+//{ 
+//	//--二级菜单--
+//	//报警视频
+//	CContainerUI* pLayout;
+//	CMenuItemUI *pMenuItem;
+//	CDuiString text, userdata, name;
+//	UINT8 Count,order=0;
+//	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_alarm")));
+//	userdata.Format(_T("%d"), iInx - 1);
+//	Count = pLayout->GetCount() / 2;
+//	text.Format(_T("摄像头%d"), iInx);
+//	for (int i = 0; i < Count; i++) {
+//		userdata = static_cast<CControlUI*>(pLayout->GetItemAt(i))->GetUserData();
+//		if (iInx < StrToInt(userdata)+1) {
+//			break;
+//		}
+//		else {
+//			order++;
+//		}
+//	}
+//	order *= 2;
+//	pMenuItem = new CMenuItemUI(pLayout, text, order);
+//	pMenuItem->SetUserData(userdata);
+//	pMenuItem->SetPrevItem(pLayout->GetItemAt(order - 2));
+//	pMenuItem->SetNextItem(pLayout->GetItemAt(order + 2));
+//}
+
+void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
+{
 	CVerticalLayoutUI *pLayout;
 	CMenuItemUI *pMenuItem;
-	CDuiString text, userdata, name;
+	CDuiString  userdata, name;
 	int Count;
+
+
+
+
+
+
+
+
+
+
+
 	//报警视频二级菜单
 	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_alarm")));
 	Count = pLayout->GetCount()/2+1;
-	text.Format(_T("摄像头%d"), Count);
-	pMenuItem = new CMenuItemUI(pLayout, text);
+	pMenuItem = new CMenuItemUI(pLayout, cameraInfo.Name);
 	userdata.Format(_T("%d"), Count - 1);
 	pMenuItem->SetUserData(userdata);
 	if (Count == 1)
@@ -192,8 +319,7 @@ void CMyMenuWnd::AddCamear(UINT8 iInx)
 	
 	//摄像头设置控件
 	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_setting")));
-	text.Format(_T("摄像头%d"), Count);
-	pMenuItem = new CMenuItemUI(pLayout, text, (Count * 2));
+	pMenuItem = new CMenuItemUI(pLayout, cameraInfo.Name, (Count * 2));
 	userdata.Format(_T("%d"), Count + 6);	//设置控件数据
 	name.Format(_T("cameraset%d"), Count);
 	pMenuItem->SetName(name);					//设置控件名称

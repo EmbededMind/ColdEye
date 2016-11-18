@@ -16,7 +16,7 @@ public:
 
 
 	void   SetDirection(CString& dir);
-        void   SetFileType(RECORD_FILE_TYPE fileType);
+    void   SetFileType(RECORD_FILE_TYPE fileType);
 
 
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);

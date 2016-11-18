@@ -157,6 +157,34 @@
 #define ENLARGE_VOLUME  2
 #define REDUCE_VOLUME   3
 
+/**  type of messagebox  **/
+#define SHIPNAME_LIMIT		0	//船名已满
+#define CLOSE_CAMERA		1	//关闭摄像头
+#define CLOSE_STROAGE		2	//关闭视频存储
+#define CLOSE_AUTOWATCH		3	//关闭自动看船
+#define SAVE_CHANGES		4	//保存设置
+#define UPDATE_REQUEST		5	//软件更新提示
+#define NO_UPDATE_FILE		6	//无更新文件提示
+#define NO_UPDATE_DRIVE		7	//未检测到U盘提示
+#define	SOFT_UPDATING		8	//软件更新中
+#define	SOFT_UPDATE_SUCCESS	9	//软件更新成功
+#define FACTORY_RESET		10	//出厂设置
+#define RECORD				11	//录制报警音
+#define SAVE_RECORDED		12	//保存录制的报警音
+#define DELETE_CAMERA		13	//删除摄像头
+#define DISPLAY_MATCH		14  //显示器匹配提示
+#define CANNOT_COPY			15	//无法复制视频
+#define	NO_COPY_DRIVE		16	//未检测出U盘
+#define NO_ENOUGH_MEMORY	17	//U盘内容空间不足
+#define CONFIRM_COPY		18	//复制确认
+#define COPYING				19	//复制中
+#define STOP_COPY			20	//停止复制
+#define	COPY_SUCCESS		21	//复制成功
+#define	COPY_FAILURE		22	//复制失败
+
+
+
+
 
 extern int mutex;
 

@@ -14,7 +14,8 @@ public:
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 	void SetOnImage(LPCTSTR pstrValue);
 	void SetOffImage(LPCTSTR pstrValue);
-
+	void SetSwitch(bool value);
+	bool GetSwitch();
 protected:
 	bool Switch;
 	CDuiString m_OnImage;
