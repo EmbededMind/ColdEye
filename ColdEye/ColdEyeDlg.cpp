@@ -212,10 +212,19 @@ HCURSOR CColdEyeDlg::OnQueryDragIcon()
 afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 {
 	Print("Find %d camera", wParam);
+	if (wParam > 1) {
+		ASSERT(FALSE);
+	}
 	for (int i = 0; i < wParam; i++) {
+		static bool hasPostLogin = false;
 		CCamera* pCamera = new CCamera();
 		pCamera->SetCommonNetConfig(&((SDK_CONFIG_NET_COMMON_V2*)lParam)[i]);
 		PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_LOGIN, 0, (LPARAM)pCamera);
+		if (hasPostLogin) {
+			Print("What a fuck! Has post login");
+			ASSERT(FALSE);
+		}
+		hasPostLogin = true;
 	}
 	return 0;
 }

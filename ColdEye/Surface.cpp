@@ -128,6 +128,9 @@ void CSurface::BindCamera(CCamera* pCamera)
 	m_AlarmFileButler.SetFileType(RECORD_ALARM);
 	m_AlarmFileButler.Attach(CDBShadow::GetInstance());
 
+	m_RecordFileButler.SetOwner(m_BindedCamera->m_Id);
+	m_AlarmFileButler.SetOwner(m_BindedCamera->m_Id);
+
 
 	mOsdPainter.SetBitmap( &((CColdEyeApp*)AfxGetApp())->m_Bitmap );
 }

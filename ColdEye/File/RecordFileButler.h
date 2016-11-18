@@ -16,7 +16,8 @@ public:
 
 
 	void   SetDirection(CString& dir);
-        void   SetFileType(RECORD_FILE_TYPE fileType);
+    void   SetFileType(RECORD_FILE_TYPE fileType);
+	void   SetOwner(UINT owner);
 
 
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);
@@ -26,5 +27,6 @@ protected:
 	CRecordFileInfo* m_pFileInfo;
 	CString      m_Direction;
 	UINT         m_FileType;
+	UINT         m_Owner;
 };
 

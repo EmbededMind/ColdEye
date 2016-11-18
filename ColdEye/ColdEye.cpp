@@ -10,6 +10,8 @@
 
 #include "Device\Camera.h"
 
+#include "Database\DBShadow.h"
+
 #include "UIlib.h"
 
 
@@ -125,6 +127,7 @@ BOOL CColdEyeApp::InitInstance()
 	m_Bitmap.LoadBitmap(IDB_NSLIENT);
 
 	CheckFileDirectory();
+	CDBShadow::GetInstance()->Init();
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
 
@@ -294,6 +297,11 @@ UINT __stdcall LoginThread(PVOID pM)
 					 if (bRet)
 					 {
 						 int iDevNumber = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
+
+						 if (iDevNumber > 1) {
+							 Print("What a fuck! Find more that 1 camera");
+						 }
+
 						 if (iDevNumber > 0)
 						 {
 							 Print("Device number:%d", iDevNumber);
