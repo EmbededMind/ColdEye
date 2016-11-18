@@ -799,7 +799,16 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 		//--------------------------------------------------------
 		case VK_RETURN:
 			if (lParam == (LPARAM)&(mReverseBtn)) {
+				if (m_BindedCamera->m_Param.PictureFlip) {
+					m_BindedCamera->m_Param.PictureFlip = 0;
+					m_BindedCamera->m_Param.PictureMirror = 0;
+				}
+				else {
+					m_BindedCamera->m_Param.PictureFlip = 1;
+					m_BindedCamera->m_Param.PictureMirror = 1;
+				}
 
+				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
 			}
 			break;
 

@@ -62,6 +62,8 @@
 
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
 
+#define USER_MSG_MESSAGE_BOX               (WM_USER + 140)
+
 
 
  /*****************************************

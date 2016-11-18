@@ -337,7 +337,7 @@ UINT __stdcall LoginThread(PVOID pM)
 				 {
 					 CCamera* pCamera = (CCamera*)msg.lParam;
 					 if (msg.wParam) {
-						 pCamera->SetSDKCameraParam();
+						 pCamera->SetSDKCameraParam() ;
 					 }
 					 else {
 						 pCamera->GetSDKCameraParam();
