@@ -24,11 +24,12 @@ CFile* CRecordFileButler::AllocRecordFile()
 	fileName  = time.Format(_T("%Y%m%d%H%M%S"));
 
 	CFileException fException;
-	if (!m_File.Open(m_Direction + fileName, CFile::modeCreate | CFile::modeWrite, &fException) ){
+	if (!m_File.Open(m_Direction + fileName + _T(".h264"), CFile::modeCreate | CFile::modeWrite, &fException) ){
 		return NULL;
 	}
 
 	m_pFileInfo = new CRecordFileInfo();
+	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
@@ -62,6 +63,8 @@ void CRecordFileButler::ReleaseRecordFile()
 
 		mutex = 0;
 
+		m_pFileInfo->tEnd = time.GetTime();
+
 		this->Notify(FILE_OPT_END, m_FileType, (LPARAM)m_pFileInfo);
 	}
 	else {
@@ -80,4 +83,11 @@ void CRecordFileButler::SetDirection(CString& dir)
 void CRecordFileButler::SetFileType(RECORD_FILE_TYPE type)
 {
 	m_FileType = type;
+}
+
+
+
+void CRecordFileButler::SetOwner(UINT owner)
+{
+	m_Owner = owner;
 }

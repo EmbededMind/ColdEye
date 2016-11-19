@@ -31,25 +31,46 @@ CDBShadow* CDBShadow::GetInstance()
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
-	MSG msg;
-	EnterCriticalSection(&g_cs);
-	switch (opt) 
-	{
-		case FILE_OPT_ADD:
-			AddFileInfo(infoList,  (CRecordFileInfo*)lParam);
-			break;
-		//-----------------------------------------------
-		case FILE_OPT_END:
-			EndFileInfo(infoList, (CRecordFileInfo*)lParam);
 
-			msg.message = USER_MSG_ADDFILE;
-			msg.wParam = wParam;
-			msg.lParam = lParam;
-			CMsgSquare::GetInstance()->Broadcast(msg);
-			break;
+	char sqlStmt[128];
+	CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
+
+	MSG msg;  
+	EnterCriticalSection(&g_cs);
+	switch (opt)
+	{
+	case FILE_OPT_ADD:
+		AddFileInfo(infoList, pInfo);
+		sprintf_s(sqlStmt, "INSERT INTO %s (owner, begin_sec, end_sec) VALUES(%d,%I64d, 0);", wParam == RECORD_ALARM ? "alarm_record" : "normal_record",
+			pInfo->nOwner, pInfo->tBegin);
+		if (!sqlite.DirectStatement(sqlStmt)) {
+			Print("Sql error:%s", sqlStmt);
+		}
+		break;
+		//-----------------------------------------------
+	case FILE_OPT_END:
+		EndFileInfo(infoList, pInfo);
+
+		sprintf_s(sqlStmt, "UPDATE %s SET end_sec = %I64d, size = %lld, status = 0 WHERE owner = %d AND begin_sec = %I64d;",
+			wParam == RECORD_ALARM?"alarm_record":"normal_record",pInfo->tEnd, pInfo->dlSize, pInfo->nOwner, pInfo->tBegin);
+		if (!sqlite.DirectStatement(sqlStmt)) {
+			Print("Sql error:%s", sqlStmt);
+		}
+
+		msg.message = USER_MSG_ADDFILE;
+		msg.wParam = wParam;
+		msg.lParam = lParam;
+		CMsgSquare::GetInstance()->Broadcast(msg);
+		break;
 		//------------------------------------------------
 		case FILE_OPT_DEL:
 			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
+
+			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d begin_sec = %I64d;", 
+				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
+			if (sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
 
 			msg.message = USER_MSG_DELFILE;
 			msg.wParam = wParam;
@@ -110,7 +131,20 @@ void CDBShadow::SynchronizeWithDB()
 			mReocrdFileInfoList.push_back(pInfo);
 		}
 		else {
-			Print("Invali record information");
+			Print("Invalid record information");
+			
+			CTime t(pInfo->tBegin);
+			CString filename;
+			filename.Format(_T("%d\\%d%02d%02d%02d%02d%02d.h264"), pInfo->nOwner,
+				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
+
+			filename = _T(NORMAL_RECORD_PATH) + filename;
+
+			CFile::Remove(filename);
+			sprintf_s(sqlStmt, "DELETE FROM normal_record WHERE owner = %d AND begin_sec = %I64d;",pInfo->nOwner, pInfo->tBegin);
+			if (!sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
 		}
 	}
 
@@ -130,7 +164,19 @@ void CDBShadow::SynchronizeWithDB()
 			mAlarmFileInfoList.push_back(pInfo);
 		}
 		else {
-			Print("Invali record information");
+			Print("Invalid alarm record information");
+			CTime t(pInfo->tBegin);
+			CString filename;
+			filename.Format(_T("%d\\%d%02d%02d%02d%02d%02d.h264"), pInfo->nOwner,
+				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
+
+			filename = _T(ALARM_RECORD_PATH) + filename;
+
+			CFile::Remove(filename);
+			sprintf_s(sqlStmt, "DELETE FROM alarm_record WHERE owner = %d AND begin_sec = %I64d;", pInfo->nOwner, pInfo->tBegin);
+			if (!sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
 		}
 	}
 }

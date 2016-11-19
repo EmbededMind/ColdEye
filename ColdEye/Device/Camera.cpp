@@ -20,12 +20,12 @@ CCamera::CCamera()
 
 	m_Param.whiteBalance = 0;         //白平衡
 	m_Param.dayNightColor = 0;        //日夜模式，取值有彩色、自动切换和黑白
-	m_Param.elecLevel = 0;            //参考电平值
-	m_Param.apertureMode = 0;         //自动光圈模式
+	m_Param.elecLevel = 20;            //参考电平值
+	m_Param.apertureMode = 1;         //自动光圈模式
 	m_Param.BLCMode = 1;              //背光补偿模式
 
 	//曝光设置
-	m_Param.exposureConfig.level  = 10;  //曝光等级
+	m_Param.exposureConfig.level  = 20;  //曝光等级
 	m_Param.exposureConfig.leastTime = 0; //自动曝光时间下限或手动曝光时间，单位微秒
 	m_Param.exposureConfig.mostTime = 80; //自动曝光时间上限，单位微秒
 

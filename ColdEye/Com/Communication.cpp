@@ -28,6 +28,7 @@ bool CCommunication::CleanChannel()
 
 bool CCommunication::AskTalk(CCamera * pDev)
 {
+	printf("AskTalk\n");
 	if (IsChannelCleaning())
 	{
 		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x01, 0x00, pDev);
@@ -108,8 +109,7 @@ bool CCommunication::RecOverTalkProc(uint8_t *pch)
 			{
 				if (H264_DVR_StopVoiceCom(this->mTalkHandle))
 				{
-					this->mTalkHandle = NULL;
-					this->mPdev = NULL;
+					CleanChannel();
 					return true;
 				}
 				else
@@ -181,10 +181,6 @@ uint8_t CCommunication::RecSetVolumeProc(uint8_t *pch)
 
 bool CCommunication::Alarm(CCamera * pDev)
 {
-	if (!IsChannelCleaning())
-	{
-		this->OverTalk();
-	}
 	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, pDev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 	return true;
@@ -194,6 +190,8 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 {
 	if (pch[5] == 1)
 	{
+		H264_DVR_StopVoiceCom(this->mTalkHandle);
+		CleanChannel();
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
 		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64));

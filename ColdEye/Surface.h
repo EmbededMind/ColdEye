@@ -68,7 +68,7 @@ public:
 	void          OnDisconnect();                   //设备掉线响应
 	void          OnReconnect();                    //设备重连响应
 
-
+	void          OnCameraLogOff();                 //删除摄像机
 
 protected:
 	//CWnd          mControlWnd;

@@ -2,6 +2,7 @@
 
 #include "Control\MenuItemUI.h"
 #include "Control\MyEditUI.h"
+#include "ExHardDrive\ExHardDrive.h"
 
 IMPLEMENT_DUICONTROL(CMenuItemUI)
 

@@ -5,6 +5,8 @@
 #include "ColdEye.h"
 #include "Surface.h"
 
+#include "Pattern\MsgSquare.h"
+
 
 #include "H264Play.h"
 
@@ -125,6 +127,9 @@ void CSurface::BindCamera(CCamera* pCamera)
 
 	m_AlarmFileButler.SetFileType(RECORD_ALARM);
 	m_AlarmFileButler.Attach(CDBShadow::GetInstance());
+
+	m_RecordFileButler.SetOwner(m_BindedCamera->m_Id);
+	m_AlarmFileButler.SetOwner(m_BindedCamera->m_Id);
 
 
 	mOsdPainter.SetBitmap( &((CColdEyeApp*)AfxGetApp())->m_Bitmap );
@@ -524,6 +529,32 @@ void CSurface::OnReconnect()
 
 
 
+void CSurface::OnCameraLogOff()
+{
+	ASSERT(m_BindedCamera != NULL);
+
+	Print("On camera delete");
+
+	if (m_bIsRecording) {
+		StopAutoRecord();
+	}
+
+	if (m_bIsAlarming) {
+		StopAlarmRecord();
+	}
+
+	if (m_bIsWatching) {
+		StopAutoWatch();
+	}
+
+	DisconnectRealPlay();
+	m_BindedCamera->OnDisConnnect();
+	Invalidate();
+
+	::SendMessage(GetParent()->m_hWnd, USER_MSG_LOGOFF, 0, (LPARAM)this);
+}
+
+
 
 BOOL CSurface::RegisterWindowClass(HINSTANCE hInstance)
 {
@@ -808,7 +839,18 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 					m_BindedCamera->m_Param.PictureMirror = 1;
 				}
 
+				MSG msg;
+				msg.message = USER_MSG_CAMERA_PARAM;
+				msg.lParam = (LPARAM)m_BindedCamera;
+				CMsgSquare::GetInstance()->Broadcast(msg);
+
 				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
+			}
+			else if (lParam == (LPARAM)&mDelBtn) {
+
+				// if (IDOK)
+
+				OnCameraLogOff();
 			}
 			break;
 
