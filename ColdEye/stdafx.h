@@ -62,8 +62,7 @@
 
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
 
-#define USER_MSG_MESSAGE_BOX               (WM_USER + 140)
-
+#define USER_MSG_MESSAGE_BOX                (WM_USER + 140)
 
 
  /*****************************************
@@ -182,7 +181,10 @@
 #define	COPY_SUCCESS		21	//复制成功
 #define	COPY_FAILURE		22	//复制失败
 
-
+/**  MenuIten base userdata  **/
+#define ALARM_VIDEO			0
+#define CAMERA_SET			7
+#define VIDEO_OBTAIN		18
 
 
 

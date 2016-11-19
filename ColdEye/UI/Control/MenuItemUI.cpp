@@ -22,13 +22,14 @@ CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text)
 }
 
 
-CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text, int iInx)
+CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text, CDuiString userdata, int iInx)
 {
 	mHintNumber = _T("0");
 
 	SetText(text);
 	pParent->AddAt(this, iInx);
 	SetAttribute(_T("style"), _T("MenuItem"));
+	SetUserData(userdata);
 
 	CControlUI* p = new CControlUI;
 	pParent->AddAt(p, iInx+1);

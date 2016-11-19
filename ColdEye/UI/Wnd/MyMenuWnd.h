@@ -7,6 +7,8 @@
 #include "Control\MySliderUI.h"
 #include "Control\MyLabelUI.h"
 #include "Device\Camera.h"
+#include "Control\MenuItemUI.h"
+#include "Control\VideoListUI.h"
 
 using namespace DuiLib;
 
@@ -28,11 +30,14 @@ public:
 
 	struct CameraItem {
 		UINT8 id;	//物理接口
+		CLabelUI *pTitle;	//标题
 		CMyEditUI *pShipname;	//船名
 		CCameraSwitchUI *pSwitch;	//开关
 		CMySliderUI *pVolum;	//音量
-		CMyLabelUI *pVideoSave;	//视频保存设置
+		CMyLabelUI *pSaveVideo;	//视频保存设置
 		CMyLabelUI *pAutoWatch;	//自动看船设置
+		CVideoListUI *pNormalList; //视频列表
+		CVideoListUI *pAlarmList;	//报警视频列表
 	};
 
 public :
@@ -47,9 +52,27 @@ public :
 	void OnLClick(CControlUI* pControl);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	void CameraSetItemInit(CVerticalLayoutUI *pLayout);
-	void AddCamear(CameraInfo cameraInfo);
-	void SetCameraInfo();
+
+	void AddCamear(CameraInfo);
+	void AddAlarmCtl(CameraInfo);
+	void AddCameraSetCtl(CameraInfo);
+	void AddVideoObtain(CameraInfo);
+	void DeleteAlarmCtl(CameraInfo);
+	void DeleteCameraSetCtl(CameraInfo);
+	void DeleteVideoObtain(CameraInfo);
+
+	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
+	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
+	void AddCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
+	void DeleteCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
+	void GetCameraItem(CVerticalLayoutUI *pLayout);
+	void CameraInfoInit(CameraInfo cameraInfo);
+	CameraInfo GetCameraSetInfo(int id);
+
+	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+
+	//test
+	CameraInfo cameraInfo;
 private:
-	CameraItem cameraset[6];
+	CameraItem camera[6];
 };

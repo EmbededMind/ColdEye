@@ -113,10 +113,11 @@ public:
 		if (!pControl) return false;
 		if (_tcscmp(pControl->GetClass(), _T("ListLabelElementUI")) != 0) return false;
 
-		if (reinterpret_cast<Node*>(static_cast<CListLabelElementUI*>(pControl->GetInterface(_T("ListLabelElement")))->GetTag()) == NULL)
-			return CListUI::Remove(pControl);
-		else
-			return RemoveNode(reinterpret_cast<Node*>(static_cast<CListLabelElementUI*>(pControl->GetInterface(_T("ListLabelElement")))->GetTag()));
+		return CListUI::Remove(pControl);
+		//if (reinterpret_cast<Node*>(static_cast<CListLabelElementUI*>(pControl->GetInterface(_T("ListLabelElement")))->GetTag()) == NULL)
+		//	return CListUI::Remove(pControl);
+		//else
+		//	return RemoveNode(reinterpret_cast<Node*>(static_cast<CListLabelElementUI*>(pControl->GetInterface(_T("ListLabelElement")))->GetTag()));
 	}
 
 	bool RemoveAt(int iIndex) //移除指定的节点
@@ -254,7 +255,8 @@ public:
 
 	Node* AddHeadNode(CString sText, int nID, CRecordFileInfo* pInfo);
 	Node* AddChildNode(CString sText, CVideoListUI::Node *HeadNode, int nID, CRecordFileInfo* pInfo);
-	void Record_AddFile(CRecordFileInfo* pInfo);
+	void AddRecordFile(CRecordFileInfo* pInfo);
+	void DeleteRecordFile(CRecordFileInfo* pInfo);
 private:
 	Node* _root;
 

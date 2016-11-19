@@ -25,6 +25,8 @@ public:
 	void SetHintNum(CDuiString num);
 	void SetPrevItem(CControlUI *PrevItem);
 	void SetNextItem(CControlUI *NextItem);
+	CControlUI* GetPrevItem();
+	CControlUI* GetNextItem();
 	CDuiString& GetHintNum();
 
 protected:

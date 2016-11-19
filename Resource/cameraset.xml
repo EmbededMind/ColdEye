@@ -7,7 +7,7 @@
 
 	<VerticalLayout name="camareset">	
 		<VerticalLayout float="true" bkcolor="#FFF3F3F3" pos="70,80,0,0" width="790" height="155">
-			<Label name ="title" bkcolor="#FFE5E3E3" height="80" font="3" textpadding="316,21,315,20" textcolor="#FF333333" text=""/>
+			<Label name ="title" bkcolor="#FFE5E3E3" height="80" font="3" textcolor="#FF333333" align="center"/>
 			<Text float="true" pos="45,111,165,150" font="3" textcolor="#FF666666" text="船舶名称" />
 			<MyEdit name="cameraset_shipname" pos="245,105,0,0"/>
 		</VerticalLayout>

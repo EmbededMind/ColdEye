@@ -6,7 +6,7 @@ IMPLEMENT_DUICONTROL(CMyLabelUI)
 CMyLabelUI::CMyLabelUI()
 	:m_stateEnableText(_T("")),
 	m_stateDisableText(_T("")),
-	Value(false)
+	m_Value(false)
 {
 }
 
@@ -22,7 +22,7 @@ void CMyLabelUI::PaintText(HDC hDC)
 	RECT rc = m_rcItem;
 	RECT m_rcTextPadding = CLabelUI::m_rcTextPadding;
 	UINT TextStyle;
-	if (Value)
+	if (m_Value)
 	{
 		if (m_stateEnableText.IsEmpty())return;
 
@@ -123,7 +123,7 @@ void CMyLabelUI::SetStateTextFocusColor(DWORD Color)
 void CMyLabelUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
-	if (Value)
+	if (m_Value)
 	{
 		if (m_bFocused)
 		{
@@ -209,18 +209,18 @@ void CMyLabelUI::StatusUpdate()
 {
 	if (GetName() == _T("camera_set_video_save")\
 		|| GetName() == _T("camera_set_shipwatch")) {
-		if (Value) {
+		if (m_Value) {
 			if (GetName() == _T("camera_set_video_save")) {
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_STROAGE, 0);
-					Value = false;
+				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_STROAGE, 0);
+				m_Value = false;
 			}
 			else {
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_AUTOWATCH, 0);
-					Value = false; 
+				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_AUTOWATCH, 0);
+				m_Value = false;
 			}
 		}
 		else {
-			Value = true;
+			m_Value = true;
 		}
 		Invalidate();
 	}
@@ -243,8 +243,18 @@ void CMyLabelUI::StatusUpdate()
 				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, SOFT_UPDATE_SUCCESS, 0);
 		}
 		else if (GetName() == _T("sysset_reset")) {
-			SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, FACTORY_RESET, 0);
+			//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, FACTORY_RESET, 0);
 		}
 	}
+}
+
+bool CMyLabelUI::GetValue()
+{
+	return m_Value;
+}
+
+void CMyLabelUI::SetValue(bool value)
+{
+	m_Value = value;
 }
 
