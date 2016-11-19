@@ -10,6 +10,8 @@
 
 #include "Device\Camera.h"
 
+#include "Database\DBShadow.h"
+
 #include "UIlib.h"
 
 
@@ -27,6 +29,8 @@
 #include "Control\ShipNameItemUI.h"
 #include "Control\TimeButtonUI.h"
 #include "Control\VideoListUI.h"
+#include "Control\RecordvoiceUI.h"
+#include "Control\MyButtonUI.h"
 
 #ifdef USE_PRINT
 #include <io.h>
@@ -120,10 +124,10 @@ BOOL CColdEyeApp::InitInstance()
 #endif
 	
 
-
 	m_Bitmap.LoadBitmap(IDB_NSLIENT);
 
 	CheckFileDirectory();
+	CDBShadow::GetInstance()->Init();
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
 
@@ -149,6 +153,8 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CAlarmVoiceListUI);
 	REGIST_DUICONTROL(CAlarmLightUI);
 	REGIST_DUICONTROL(CMyListUI);
+	REGIST_DUICONTROL(CRecordvoiceUI);
+	REGIST_DUICONTROL(CMyButtonUI);
 
 	//_m_pMainWnd = new CMainWnd();
 	//_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
@@ -291,6 +297,11 @@ UINT __stdcall LoginThread(PVOID pM)
 					 if (bRet)
 					 {
 						 int iDevNumber = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
+
+						 if (iDevNumber > 1) {
+							 Print("What a fuck! Find more that 1 camera");
+						 }
+
 						 if (iDevNumber > 0)
 						 {
 							 Print("Device number:%d", iDevNumber);
@@ -330,6 +341,17 @@ UINT __stdcall LoginThread(PVOID pM)
 				 }
 				 break;
 			//-----------------------------------------------------------------------------------
+			 case USER_MSG_CAMERA_PARAM:
+				 {
+					 CCamera* pCamera = (CCamera*)msg.lParam;
+					 if (msg.wParam) {
+						 pCamera->SetSDKCameraParam() ;
+					 }
+					 else {
+						 pCamera->GetSDKCameraParam();
+					 }
+				 }
+				 break;
 		}
 		DispatchMessage(&msg);
 	}

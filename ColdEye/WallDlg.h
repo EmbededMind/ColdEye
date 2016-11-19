@@ -20,6 +20,8 @@ public:
 public:
 	BOOL Invest(CCamera* pCamera);
 
+	void Delete(CSurface* pSurface);
+
 	CSurface* FindSurface(long loginId);
 
 	void OnDisconnect(LONG loginId, char* szIp, LONG port);
@@ -44,4 +46,5 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
 	afx_msg LRESULT OnUserMsgLogin(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgLogoff(WPARAM wParam, LPARAM lParam);
 };

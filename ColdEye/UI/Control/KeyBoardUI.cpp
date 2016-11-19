@@ -2,6 +2,7 @@
 #include "conio.h" 
 
 #include "Control\KeyBoardUI.h"
+#include "Wnd\MsgWnd.h"
 
 IMPLEMENT_DUICONTROL(CKeyBoardUI)
 CKeyBoardUI::CKeyBoardUI()
@@ -59,35 +60,33 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 			}
 			break;
 
-		case VK_RETURN:
-			if ((pEdit->GetText().GetLength()) < 32)
-			{
-				CDuiString oldText, newText;
-				oldText = pEdit->GetText();
-				newText = GetText();
-				if (newText.GetLength()>0)
-				{
+		case VK_RETURN: {
+			CDuiString oldText, newText;
+			oldText = pEdit->GetText();
+			newText = GetText();
+			if (newText.GetLength() > 0) {
+				if ((pEdit->GetText().GetLength()) < 32) {
 					oldText.Append(newText);
 					pEdit->SetText(oldText);
 				}
-				else //删除按键
-				{
-					if (row == 9) //全部删除
-					{
-						pEdit->SetText(_T(""));
-					}
-					else//删除一位
-					{
-						if (oldText.GetLength() > 0)
-						{
-							oldText.Assign(oldText, oldText.GetLength() - 1);
-							pEdit->SetText(oldText);
-						}
-						
-					}
+				else {
+					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_shipname_input.xml"), NULL, NULL);
 				}
 			}
-			break;
+			else {//删除按键
+				if (row == 9) {//全部删除
+					pEdit->SetText(_T(""));
+				}
+				else {//删除一位
+					if (oldText.GetLength() > 0) {
+						oldText.Assign(oldText, oldText.GetLength() - 1);
+						pEdit->SetText(oldText);
+					}
+
+				}
+			}
+		}
+		break;
 
 		case VK_BACK:
 			GetParent()->GetParent()->SetVisible(false);

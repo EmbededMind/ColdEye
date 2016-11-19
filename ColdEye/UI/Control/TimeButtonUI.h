@@ -32,4 +32,6 @@ public:
 private:
 	DWORD  tMinute_1;
 	DWORD  tMinute_2;
+	DWORD  tMinute_1_New;
+	DWORD  tMinute_2_New;
 };

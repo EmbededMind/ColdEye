@@ -16,11 +16,70 @@ CCamera::CCamera()
 	m_ClientInfo.nMode = 0;
 	m_ClientInfo.nStream = 1;
 	m_DeviceInfo.deviceTye = SDK_DEVICE_TYPE_DVR;
+	
+
+	m_Param.whiteBalance = 0;         //白平衡
+	m_Param.dayNightColor = 0;        //日夜模式，取值有彩色、自动切换和黑白
+	m_Param.elecLevel = 20;            //参考电平值
+	m_Param.apertureMode = 1;         //自动光圈模式
+	m_Param.BLCMode = 1;              //背光补偿模式
+
+	//曝光设置
+	m_Param.exposureConfig.level  = 20;  //曝光等级
+	m_Param.exposureConfig.leastTime = 0; //自动曝光时间下限或手动曝光时间，单位微秒
+	m_Param.exposureConfig.mostTime = 80; //自动曝光时间上限，单位微秒
+
+	//增益配置
+	m_Param.gainConfig.autoGain = 1; //自动增益是否启用，0:不开启  1:开启
+	m_Param.gainConfig.gain = 4;     //自动增益上限(自动增益启用)或固定增益值
+
+	m_Param.PictureFlip = 0;  //上下翻转
+	m_Param.PictureMirror = 0; //镜像
+	m_Param.RejectFlicker = 0; //日光灯防闪功能
+	m_Param.EsShutter = 0; //电子慢快门功能
+	m_Param.ircut_mode = 1;//IR-CUT切换 0 = 红外灯同步切换 1 = 自动切换
+	m_Param.dnc_thr = 50;//日夜转换阈值
+	m_Param.ae_sensitivity = 4;//ae灵敏度配置
+	m_Param.Day_nfLevel = 0;//noise filter 等级，0-5,0不滤波，1-5 值越大滤波效果越明显
+	m_Param.Night_nfLevel = 0;
+	m_Param.Ircut_swap = 0;//ircut 正常序= 0        反序= 1
 }
 
 CCamera::~CCamera()
 {
 }
+
+
+
+#ifdef _DEBUG
+void   CCamera::DumpParam()
+{
+	Print("白平衡：%d", m_Param.whiteBalance);
+	Print("色彩模式：%d", m_Param.dayNightColor);
+	Print("参考电平值：%d", m_Param.elecLevel);
+	Print("自动光圈模式：%d", m_Param.apertureMode);
+	Print("背光补偿模式：%d", m_Param.BLCMode);
+	Print("上下翻转：%d", m_Param.PictureFlip);
+	Print("镜像：%d", m_Param.PictureMirror);
+	Print("日光灯防闪：%d", m_Param.RejectFlicker);
+	Print("电子慢快门：%d", m_Param.EsShutter);
+	Print("IR-CUT切换：%d", m_Param.ircut_mode);
+	Print("日夜转换阈值：%d", m_Param.dnc_thr);
+	Print("ae灵敏度：%d", m_Param.ae_sensitivity);
+	Print("白天噪音过滤等级：%d", m_Param.Day_nfLevel);
+	Print("夜晚噪音过滤等级：%d", m_Param.Night_nfLevel);
+	Print("IR-CUT顺序：%d", m_Param.Ircut_swap);
+}
+
+
+void CCamera::DumpAbility()
+{
+	Print("支持曝光速度数量：%d", m_Ability.count);
+	Print("工作状态：%d", m_Ability.status);
+	Print("参考点评：%d", m_Ability.elecLevel);
+}
+#endif
+
 
 void CCamera::GetIp(char* pBuf)
 {
@@ -240,6 +299,40 @@ BOOL CCamera::LoadLocalConfig()
 	m_LocalConfig.AutoWatchTimeStart   = DEFAULT_AWT_START;
 	m_LocalConfig.AutoWatchTimeEnd     = DEFAULT_AWT_END;
 	return TRUE;
+}
+
+
+
+void CCamera::SetSDKCameraParam()
+{
+	ASSERT(m_LoginId > 0);
+
+	long lRet = H264_DVR_SetDevConfig(m_LoginId, E_SDK_CONFIG_CAMERA, 0, 
+		(char*)&m_Param, sizeof(SDK_CameraParam), 2000);
+	if (lRet < 0) {
+		Print("Set camear param failed:%d", H264_DVR_GetLastError());
+	}
+
+}
+
+
+void CCamera::GetSDKCameraParam()
+{
+	ASSERT(m_LoginId > 0);
+
+	DWORD dwResBytes = 0;
+
+	long lRet = H264_DVR_GetDevConfig(m_LoginId, E_SDK_CONFIG_CAMERA, 0, 
+		(char*)&m_Param, sizeof(SDK_CameraParam), &dwResBytes, 2000);
+
+	if (lRet < 0) {
+		Print("Get camera param failed:%d", H264_DVR_GetLastError());
+	}
+#ifdef _DEBUG
+	else if (lRet > 0) {
+		DumpParam();
+	}
+#endif
 }
 
 

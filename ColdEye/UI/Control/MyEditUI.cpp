@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MyEditUI.h"
+#include "Wnd/MsgWnd.h"
 
 IMPLEMENT_DUICONTROL(CMyEditUI)
 CMyEditUI::CMyEditUI()
@@ -64,6 +65,7 @@ void CMyEditUI::DoEvent(TEventUI &event)
 				m_pManager->FindControl(_T("mastername"))->SetFocus();
 			}
 			else if (GetName() == _T("cameraset_shipname")) {
+				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
 				int index;
 				CTabLayoutUI *ChildLayout;
 				index = pTabLayout->GetItemIndex(GetParent()->GetParent());

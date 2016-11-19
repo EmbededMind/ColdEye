@@ -71,6 +71,12 @@ BOOL CWallDlg::Invest(CCamera* pCamera)
 
 
 
+void CWallDlg::Delete(CSurface* pSurface)
+{
+
+}
+
+
 CSurface* CWallDlg::FindSurface(long loginId)
 {
 	for (int i = 0; i < 6; i++) {
@@ -158,6 +164,7 @@ void CWallDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_LOGIN, &CWallDlg::OnUserMsgLogin)
+	ON_MESSAGE(USER_MSG_LOGOFF, &CWallDlg::OnUserMsgLogoff)
 END_MESSAGE_MAP()
 
 
@@ -183,13 +190,17 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		switch (pMsg->wParam)
 		{
 		case VK_LEFT:
-			break;
 		case VK_RIGHT:
-			break;
 		case VK_UP:
-			break;
 		case VK_DOWN:
-			break;
+			Print("Wall case key");
+			for (int i = 0; i < 6; i++) {
+				if (mSurfaces[i] != NULL) {
+					mSurfaces[i]->SetFocus();
+					return true;
+				}
+			}
+			return true;
 
 		default:
 			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
@@ -240,3 +251,18 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 
 
 
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgLogoff(WPARAM wParam, LPARAM lParam)
+{
+	CSurface* pSurface = (CSurface*)lParam;
+	for (int i = 0; i < 6; i++) {
+		if (mSurfaces[i] == pSurface) {
+			Delete(pSurface);
+			delete mSurfaces[i];
+			mSurfaces[i] = NULL;
+			break;
+		}
+	}
+	return 0;
+}

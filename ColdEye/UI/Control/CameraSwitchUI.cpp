@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CameraSwitchUI.h"
-#include "conio.h"
+#include "Wnd\MsgWnd.h"
 
 IMPLEMENT_DUICONTROL(CCameraSwitchUI)
 CCameraSwitchUI::CCameraSwitchUI()
@@ -37,7 +37,8 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 
 		case VK_LEFT:
 			if (Switch == true){
-				Switch = false;
+				if(MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_camera_switch.xml"), NULL, NULL))
+					Switch = false;
 				Invalidate();
 			}
 			break;
