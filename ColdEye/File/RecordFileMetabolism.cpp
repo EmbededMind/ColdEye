@@ -27,16 +27,16 @@ void CRecordFileMetabolism::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-bool CRecordFileMetabolism::DelFile(CString DelPsth)
+bool CRecordFileMetabolism::DelFile(CString DelPath)
 {
 	WIN32_FIND_DATA findFileData;
-	HANDLE hfind = ::FindFirstFile(DelPsth, &findFileData);
+	HANDLE hfind = ::FindFirstFile(DelPath, &findFileData);
 	if (hfind == INVALID_HANDLE_VALUE)
 	{
 		return false;
 	}
-	DeleteFile(DelPsth);
-	hfind = ::FindFirstFile(DelPsth, &findFileData);
+	DeleteFile(DelPath);
+	hfind = ::FindFirstFile(DelPath, &findFileData);
 	if (hfind == INVALID_HANDLE_VALUE)
 	{
 		return true;

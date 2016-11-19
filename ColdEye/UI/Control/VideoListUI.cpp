@@ -5,7 +5,7 @@
 IMPLEMENT_DUICONTROL(CVideoListUI)
 void CVideoListUI::DoEvent(TEventUI& event)
 {
-	_cprintf("type=%d\n",event.Type);
+	//_cprintf("type=%d\n",event.Type);
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
 		{
