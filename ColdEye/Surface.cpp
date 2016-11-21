@@ -13,6 +13,10 @@
 #include "Database\DBShadow.h"
 #include "Com\Communication.h"
 
+
+/**@brief 实时数据回调
+ *
+ */
 int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dwUser)
 {
 	CSurface* pSurface = (CSurface*)dwUser;
@@ -47,7 +51,9 @@ int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dw
 }
 
 
-
+/**@brief 缺省OSD绘制回调
+ *
+ */
 void CALLBACK cbDefaultDrawOSD(LONG nPort, HDC hDC, LONG nUser)
 {
 	static bool flag = false;
@@ -110,7 +116,9 @@ CSurface::~CSurface()
 }
 
 
-
+/**@brief 绑定一个摄像头
+ *
+ */
 void CSurface::BindCamera(CCamera* pCamera)
 {
 	m_BindedCamera = pCamera;
@@ -136,7 +144,9 @@ void CSurface::BindCamera(CCamera* pCamera)
 }
 
 
-
+/**@brief 根据本地配置进行设置
+ *
+ */
 void CSurface::ExecuteLocalConfig()
 {
 	ASSERT(m_BindedCamera != NULL);
@@ -193,13 +203,18 @@ void CSurface::ExecuteLocalConfig()
 }
 
 
-
+/**@brief 更改设置项
+ *
+ */
 void CSurface::ExecuteLocalConfig(LocalConfig* pConfig)
 {
 	ASSERT(m_BindedCamera != NULL);
 }
 
 
+/**@brief 判断是否需要开启看船
+ *
+ */
 BOOL CSurface::ShouldWatch()
 {
 	if (m_BindedCamera == NULL) {
@@ -231,9 +246,6 @@ BOOL CSurface::ShouldWatch()
 */
 void CSurface::ConnectRealPlay()
 {
-
-
-
 	H264_DVR_CLIENTINFO playstru;
 	playstru.nChannel = 0;
 	playstru.nStream = 1;
@@ -277,7 +289,9 @@ void CSurface::DisconnectRealPlay()
 }
 
 
-
+/**@brief 打开播放器通道，使之处于播放状态
+ *
+ */
 void CSurface::StartRealPlay()
 {
 	BYTE byFileHeadBuf;
@@ -330,7 +344,9 @@ void CSurface::StartRealPlay()
 
 
 
-
+/**@brief 关闭播放器通道
+ *
+ */
 void CSurface::StopRealPlay()
 {
 	m_bIsRealPlaying = false;
@@ -341,7 +357,9 @@ void CSurface::StopRealPlay()
 
 
 
-
+/**@brief 开始录制报警视频
+ *
+ */
 void CSurface::StartAlarmRecord(CFile* pFile)
 {
 	ASSERT(pFile && pFile->m_hFile != CFile::hFileNull);
@@ -349,7 +367,9 @@ void CSurface::StartAlarmRecord(CFile* pFile)
 }
 
 
-
+/**@brief 停止录制报警视频
+ *
+ */
 void CSurface::StopAlarmRecord()
 {
 	m_bIsAlarming = false;
@@ -357,6 +377,9 @@ void CSurface::StopAlarmRecord()
 }
 
 
+/**@brief 录像文件赋值，在回调中将视频数据存于文件
+ *
+ */
 void CSurface::StartRecord(CFile* pf)
 {
 	if (m_lPlayPort > 0) {
@@ -365,6 +388,9 @@ void CSurface::StartRecord(CFile* pf)
 }
 
 
+/**@brief 录像文件赋 NULL，不存视频数据
+ *
+ */
 void CSurface::StopRecord()
 {
 	TRACE("Stop record\n");
@@ -372,7 +398,9 @@ void CSurface::StopRecord()
 }
 
 
-
+/**@brief 开启自动打包录像
+ *
+ */
 BOOL CSurface::StartAutoRecord()
 {
 	m_bIsRecording = true;
@@ -391,6 +419,9 @@ BOOL CSurface::StartAutoRecord()
 }
 
 
+/**@brief 关闭自动打包录像
+ *
+ */
 void CSurface::StopAutoRecord()
 {
 	KillTimer(TIMER_ID_AUTO_RECORD);
@@ -402,7 +433,9 @@ void CSurface::StopAutoRecord()
 }
 
 
-
+/**@brief 自动看船开启
+ *
+ */
 BOOL  CSurface::StartAutoWatch()
 {
 	CTime  time = CTime::GetCurrentTime();
@@ -428,7 +461,9 @@ BOOL  CSurface::StartAutoWatch()
 }
 
 
-
+/**@brief 自动看船关闭
+ *
+ */
 void CSurface::StopAutoWatch()
 {
 	KillTimer(TIMER_ID_AUTO_WATCH);
@@ -437,7 +472,9 @@ void CSurface::StopAutoWatch()
 }
 
 
-
+/**@brief 打包录像文件
+ *
+ */
 void CSurface::PackageRecordFile()
 {
 	m_pRdFile = NULL;
@@ -454,6 +491,9 @@ void CSurface::PackageRecordFile()
 }
 
 
+/**@brief 报警事件发生响应
+ *
+ */
 void CSurface::OnAlarmTrigged()
 {
 	m_wAlarmStamp = ALARM_TIMEOUT_CNT;
@@ -475,7 +515,9 @@ void CSurface::OnAlarmTrigged()
 }
 
 
-
+/**@brief 报警事件结束响应
+ *
+ */
 void CSurface::OnAlarmStop()
 {
 	m_bIsAlarming = false;
@@ -493,7 +535,9 @@ void CSurface::OnAlarmStop()
 
 
 
-
+/**@brief 掉线响应
+ *
+ */
 void CSurface::OnDisconnect()
 {
 	Print("Surface on disconnect");
@@ -520,7 +564,9 @@ void CSurface::OnDisconnect()
 
 
 
-
+/**@brief 重连响应
+ *
+ */
 void CSurface::OnReconnect()
 {
 	ConnectRealPlay();
@@ -528,7 +574,9 @@ void CSurface::OnReconnect()
 }
 
 
-
+/**@brief  摄像头注销响应
+ *
+ */
 void CSurface::OnCameraLogOff()
 {
 	ASSERT(m_BindedCamera != NULL);
@@ -829,6 +877,7 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 			break;
 		//--------------------------------------------------------
 		case VK_RETURN:
+			//倒着放
 			if (lParam == (LPARAM)&(mReverseBtn)) {
 				if (m_BindedCamera->m_Param.PictureFlip) {
 					m_BindedCamera->m_Param.PictureFlip = 0;
@@ -846,6 +895,7 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 
 				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
 			}
+			// 删除摄像头
 			else if (lParam == (LPARAM)&mDelBtn) {
 
 				// if (IDOK)
@@ -859,18 +909,21 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 }
 
 
+// 摄像头开关切换的消息处理
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigOoChange(WPARAM wParam, LPARAM lParam)
 {
 	return 0;
 }
 
 
+// 摄像头视频存储切换的消息处理
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigRdChange(WPARAM wParam, LPARAM lParam)
 {
 	return 0;
 }
 
 
+// 摄像头自动看船切换的消息处理
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lParam)
 {
 	return 0;

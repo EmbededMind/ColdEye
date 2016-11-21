@@ -5,6 +5,10 @@
 #include "Control\PopupMenuUI.h"
 #include "Control\TimeButtonUI.h"
 
+#include "Pattern\MsgSquare.h"
+
+#include "Database\DBShadow.h"
+
 
 CMyMenuWnd::CMyMenuWnd()
 {
@@ -116,6 +120,13 @@ void CMyMenuWnd::InitWindow()
 	cameraInfo.IsVideoRecordEnabled = false;
 	cameraInfo.IsAutoWatchEnabled = true;
 	AddCamear(cameraInfo);
+
+
+	CMsgSquare* pSquare = CMsgSquare::GetInstance();
+	if (pSquare != NULL) {
+		pSquare->AddAudience(m_hWnd, USER_MSG_LOGIN);
+		pSquare->AddAudience(m_hWnd, USER_MSG_LOGOFF);
+	}
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -149,6 +160,27 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			DeleteCameraSetCtl(cameraInfo);
 			DeleteVideoObtain(cameraInfo);
 		}
+	}
+
+	switch (uMsg)
+	{
+		case USER_MSG_LOGIN:
+			Print("Menu case login msg");
+			AddCamera((CCamera*)lParam);
+			break;
+		//-------------------------------------------
+		case USER_MSG_LOGOFF:
+			Print("Menu case logoff msg");
+			break;
+
+		case USER_MSG_INITFILE:
+			break;
+		//--------------------------------------------
+		case USER_MSG_ADDFILE:
+			break;
+        //--------------------------------------------
+		case USER_MSG_DELFILE:
+			break;
 	}
 	return LRESULT();
 }
@@ -194,6 +226,14 @@ void CMyMenuWnd::AddAlarmCtl(CameraInfo cameraInfo)
 {
 	AddCtl(cameraInfo, _T("layout_submenu_alarm"), ALARM_VIDEO);
 }
+
+
+void CMyMenuWnd::AddAlarmMenuItem(CCamera* pCamera)
+{
+
+}
+
+
 
 void CMyMenuWnd::AddCameraSetCtl(CameraInfo cameraInfo)
 {

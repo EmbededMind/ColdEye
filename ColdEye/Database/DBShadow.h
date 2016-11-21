@@ -17,6 +17,9 @@ private:
 	CRITICAL_SECTION g_cs;
 	static CDBShadow* mInstance_1;
 
+	int mRecordFileCnts[6];
+	int mAlarmFileCnts[6];
+
 
 	void  CheckTables();
 
@@ -29,10 +32,14 @@ public:
 	list<CRecordFileInfo*> mAlarmFileInfoList;
 
 
+
 	static CDBShadow* GetInstance();
 
 	virtual void Update(UINT opt, WPARAM wParam, LPARAM lParam);
 
 	void Init();
-	void SynchronizeWithDB();			
+	void SynchronizeWithDB();	
+
+	int  GetRecordFileNumber(int owner);
+	int  GetAlarmFileNumber(int owner);
 };

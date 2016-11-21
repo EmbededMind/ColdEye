@@ -10,6 +10,13 @@ CDBShadow::CDBShadow()
 		Print("Database open failed");
 		ASSERT(FALSE);
 	}
+
+	for (int i = 0; i < 6; i++) {
+		mRecordFileCnts[i] = 0;
+		mAlarmFileCnts[i] = 0;
+	}
+
+
 	InitializeCriticalSection(&g_cs);
 	CheckTables();
 }
@@ -31,6 +38,8 @@ CDBShadow* CDBShadow::GetInstance()
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
+
+	int* pFileCnts = (wParam == RECORD_ALARM ? mAlarmFileCnts : mRecordFileCnts);
 
 	char sqlStmt[128];
 	CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
@@ -57,6 +66,9 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			Print("Sql error:%s", sqlStmt);
 		}
 
+		
+		pFileCnts[pInfo->nOwner - 1]++;
+
 		msg.message = USER_MSG_ADDFILE;
 		msg.wParam = wParam;
 		msg.lParam = lParam;
@@ -70,6 +82,13 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
 			if (sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
+			}
+
+			if (pFileCnts > 0) {
+				pFileCnts[pInfo->nOwner--];
+			}
+			else {
+				Print("file cnt error:%d", pInfo->nOwner);
 			}
 
 			msg.message = USER_MSG_DELFILE;
@@ -129,6 +148,7 @@ void CDBShadow::SynchronizeWithDB()
 
 		if (pInfo->tEnd > pInfo->tBegin) {
 			mReocrdFileInfoList.push_back(pInfo);
+			mRecordFileCnts[pInfo->nOwner - 1]++;
 		}
 		else {
 			Print("Invalid record information");
@@ -162,6 +182,7 @@ void CDBShadow::SynchronizeWithDB()
 
 		if (pInfo->tEnd > pInfo->tBegin) {
 			mAlarmFileInfoList.push_back(pInfo);
+			mAlarmFileCnts[pInfo->nOwner - 1]++;
 		}
 		else {
 			Print("Invalid alarm record information");
@@ -231,4 +252,18 @@ void CDBShadow::DelFileInfo(list<CRecordFileInfo*>& infoList, CRecordFileInfo* p
 			break;
 		}
 	}
+}
+
+
+int CDBShadow::GetRecordFileNumber(int owner)
+{
+	ASSERT(owner > 0  &&  owner <= 6);
+	return mRecordFileCnts[owner-1];
+}
+
+
+int CDBShadow::GetAlarmFileNumber(int owner)
+{
+	ASSERT(owner > 0 && owner <= 6);
+	return mAlarmFileCnts[owner-1];
 }

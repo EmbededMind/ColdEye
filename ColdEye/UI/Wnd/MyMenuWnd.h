@@ -62,6 +62,10 @@ public :
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
 
+
+	
+
+
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
 	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
 	void AddCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
@@ -76,4 +80,7 @@ public :
 	CameraInfo cameraInfo;
 private:
 	CameraItem camera[6];
+
+
+	void  AddAlarmMenuItem(CCamera* pCamera);
 };

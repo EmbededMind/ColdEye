@@ -28,7 +28,7 @@ void CDBLogger::LogPowerOn(CTime& t, int on_off)
 
 	/*sprintf_s(sqlStmt, "INSERT INTO log (time, opt) VALUES (%I64d, %d);", t.GetTime(), LOG_POWER_ON);*/
 
-	sprintf_s(sqlStmt, "insert into log (time, opt) values (%I64d, %d, %d);", t.GetTime(), LOG_POWER_ONOFF, on_off);
+	sprintf_s(sqlStmt, "insert into log (time, opt, tag) values (%I64d, %d, %d);", t.GetTime(), LOG_POWER_ONOFF, on_off);
 
 	
 	if (!sqlite.DirectStatement(sqlStmt)) {
