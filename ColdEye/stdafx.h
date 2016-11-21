@@ -160,7 +160,11 @@
 #define REDUCE_VOLUME   3
 
 
+
+#include "Database\sqlitewrapper.h"
 extern int mutex;
+
+extern 	SQLiteWrapper sqlite;
 
 
 #define USE_PRINT

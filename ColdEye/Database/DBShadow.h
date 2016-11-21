@@ -16,7 +16,7 @@ private:
 	~CDBShadow();
 	CRITICAL_SECTION g_cs;
 	static CDBShadow* mInstance_1;
-	SQLiteWrapper sqlite;
+
 
 	void  CheckTables();
 

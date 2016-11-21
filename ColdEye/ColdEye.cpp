@@ -11,6 +11,7 @@
 #include "Device\Camera.h"
 
 #include "Database\DBShadow.h"
+#include "Database\DBLogger.h"
 
 #include "UIlib.h"
 
@@ -128,6 +129,8 @@ BOOL CColdEyeApp::InitInstance()
 
 	CheckFileDirectory();
 	CDBShadow::GetInstance()->Init();
+	CDBLogger::GetInstance()->LogPowerOn(CTime::GetCurrentTime(), 1);
+	CDBLogger::GetInstance()->GenerateLastPowerOffLog();
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
 

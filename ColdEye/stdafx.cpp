@@ -5,5 +5,7 @@
 
 #include "stdafx.h"
 
+SQLiteWrapper sqlite;
+
 int mutex = 0;
 
