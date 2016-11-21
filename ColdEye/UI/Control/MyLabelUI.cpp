@@ -201,8 +201,6 @@ void CMyLabelUI::DoEvent(TEventUI & event)
 		CButtonUI::DoEvent(event);
 		break;
 	}
-
-	//CButtonUI::DoEvent(event);
 }
 
 void CMyLabelUI::StatusUpdate()

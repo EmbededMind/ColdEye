@@ -9,6 +9,7 @@
 #include "Device\Camera.h"
 #include "Control\MenuItemUI.h"
 #include "Control\VideoListUI.h"
+#include "Control\SwitchRecordListUI.h"
 
 using namespace DuiLib;
 
@@ -21,6 +22,12 @@ typedef struct {
 	UCHAR Volumn;              //“Ù¡ø
 	CString Name;				   //…„œÒª˙√˚≥∆
 }CameraInfo;
+
+
+typedef struct {
+	CTime time;
+	CDuiString record_type;
+} SwtichRecord;
 
 
 class CMyMenuWnd :
@@ -60,6 +67,7 @@ public :
 	void DeleteAlarmCtl(CameraInfo);
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
+	void ADDWatchRecord(SwtichRecord);
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
 	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
@@ -73,6 +81,7 @@ public :
 
 	//test
 	CameraInfo cameraInfo;
+	SwtichRecord recordInfo;
 private:
 	CameraItem camera[6];
 };

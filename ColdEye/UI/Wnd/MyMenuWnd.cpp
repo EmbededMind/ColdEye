@@ -116,6 +116,12 @@ void CMyMenuWnd::InitWindow()
 	cameraInfo.IsVideoRecordEnabled = false;
 	cameraInfo.IsAutoWatchEnabled = true;
 	AddCamear(cameraInfo);
+
+	//添加开关记录，测试
+	recordInfo.time = GetCurrentTime();
+	recordInfo.record_type = _T("开机");
+	ADDWatchRecord(recordInfo);
+
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -215,6 +221,22 @@ void CMyMenuWnd::DeleteVideoObtain(CameraInfo cameraInfo)
 	DeleteCtl(cameraInfo, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
 	camera[cameraInfo.id].pNormalList->RemoveAll();
 	camera[cameraInfo.id].pNormalList = NULL;
+}
+
+void CMyMenuWnd::ADDWatchRecord(SwtichRecord info)
+{
+	CListUI *pList;
+	int Count;
+	pList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
+	CSwitchRecordListUI *pListEle;
+	pListEle = new CSwitchRecordListUI(info.time, info.record_type);
+	pList->Add(pListEle);
+	pListEle->SetAttribute(_T("style"), _T("watch_record_style"));
+	Count = pList->GetCount();
+	if (Count % 2)
+		pListEle->SetBkColor(0xFFF3F3F3);
+	else
+		pListEle->SetBkColor(0xFFE5E5E5);
 }
 
 
@@ -343,7 +365,7 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case UPDATE_REQUEST:
-			//CMsgWnd::ShowMessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_request.xml"), NULL, NULL);
 			break;
 			
@@ -368,6 +390,8 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case RECORD:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_recordingvoice.xml"), NULL, NULL);
 			break;
 
 		case SAVE_RECORDED:

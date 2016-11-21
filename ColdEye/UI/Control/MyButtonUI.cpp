@@ -26,19 +26,26 @@ void CMyButtonUI::DoEvent(TEventUI & event)
 			break;
 
 		case VK_RETURN:
-			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_recordingvoice.xml"), NULL, NULL);
-			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_playvoice.xml"), NULL, NULL);
-			CContainerUI *layout;
-			SIZE size_bnt = GetFixedXY();
-			CAlarmVoiceListUI *pVoice = new CAlarmVoiceListUI(_T("录音1"),_T("voice1"));
-			size_bnt.cy += 64;
-			layout = (CContainerUI*)GetParent();
-			layout->SetFixedHeight(layout->GetHeight()+74);
-			SetFixedXY(size_bnt);
-			SetText(_T("重新录制报警音"));
-			layout->Add(pVoice);
-			pVoice->SetAttribute(_T("style"), _T("alarm_voice_list"));
-			pVoice->SetFixedXY({ 0,360 });
+			{
+				//SendMessage(m_pManager->GetPaintWindow(),USER_MSG_MESSAGE_BOX, RECORD, NULL);
+				//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_recordingvoice.xml"), NULL, NULL);
+				//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_playvoice.xml"), NULL, NULL);
+				CContainerUI *layout;
+				SIZE size_bnt = GetFixedXY();
+				CAlarmVoiceListUI *pVoice = new CAlarmVoiceListUI(_T("录音1"),_T("voice1"));
+				size_bnt.cy += 64;
+				layout = (CContainerUI*)GetParent();
+				layout->SetFixedHeight(layout->GetHeight()+74);
+				SetFixedXY(size_bnt);
+				SetText(_T("重新录制报警音"));
+				layout->Add(pVoice);
+				pVoice->SetAttribute(_T("style"), _T("alarm_voice_list"));
+				pVoice->SetFixedXY({ 0,360 });
+			}
+			break;
+
+		case VK_LEFT:
+			SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RECORD, NULL);
 			break;
 		}
 		break;

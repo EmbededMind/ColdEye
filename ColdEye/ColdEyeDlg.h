@@ -7,6 +7,7 @@
 #include "WallDlg.h"
 #include "Wnd\MyMenuWnd.h"
 #include "Com\SerialPort.h"
+#include "Wnd\MsgWnd.h"
 
 // CColdEyeDlg 对话框
 class CColdEyeDlg : public CDialogEx
@@ -15,10 +16,11 @@ class CColdEyeDlg : public CDialogEx
 public:
 	CColdEyeDlg(CWnd* pParent = NULL);	// 标准构造函数
 
-	CMyMenuWnd mMenu;
+
 protected:
 	CWallDlg  mWall;
-
+	CMsgWnd	mMessageBox;
+	CMyMenuWnd mMenu;
 
 
 	void UpdateLayout();

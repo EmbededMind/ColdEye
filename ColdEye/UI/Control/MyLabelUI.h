@@ -3,7 +3,8 @@
 #include "UIlib.h"
 using namespace DuiLib;
 
-class CMyLabelUI :public CButtonUI
+class CMyLabelUI 
+	:public CButtonUI
 {
 DECLARE_DUICONTROL(CMyLabelUI)
 public:
