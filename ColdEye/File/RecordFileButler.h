@@ -17,7 +17,7 @@ public:
 
 	void   SetDirection(CString& dir);
     void   SetFileType(RECORD_FILE_TYPE fileType);
-	void   SetOwner(UINT owner);
+    void   SetOwner(UINT owner);
 
 
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);

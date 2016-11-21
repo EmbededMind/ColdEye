@@ -6,21 +6,39 @@
 #include "Control\CameraSwitchUI.h"
 #include "Control\MySliderUI.h"
 #include "Control\MyLabelUI.h"
+#include "Device\Camera.h"
+#include "Control\MenuItemUI.h"
+#include "Control\VideoListUI.h"
 
 using namespace DuiLib;
+
+typedef struct {
+	UINT8 id;				   //摄像头ID
+	bool IsActivate;           //摄像机是否开机
+	bool IsVideoRecordEnabled; //视频存储开关
+	bool IsAutoWatchEnabled;   //自动看船开关
+	VIDEO_DIRECTION VideoDir;  //视频方向
+	UCHAR Volumn;              //音量
+	CString Name;				   //摄像机名称
+}CameraInfo;
+
 
 class CMyMenuWnd :
 	public WindowImplBase
 {
 public:
-	struct Cameraset {
-		CMyEditUI *pShipname;
-		CCameraSwitchUI *pSwitch;
-		CMySliderUI *pVolum;
-		CMyLabelUI *pVideoSave;
-		CMyLabelUI *pAutoWatch;
-	};
 
+	struct CameraItem {
+		UINT8 id;	//物理接口
+		CLabelUI *pTitle;	//标题
+		CMyEditUI *pShipname;	//船名
+		CCameraSwitchUI *pSwitch;	//开关
+		CMySliderUI *pVolum;	//音量
+		CMyLabelUI *pSaveVideo;	//视频保存设置
+		CMyLabelUI *pAutoWatch;	//自动看船设置
+		CVideoListUI *pNormalList; //视频列表
+		CVideoListUI *pAlarmList;	//报警视频列表
+	};
 
 public :
 	CMyMenuWnd();
@@ -34,9 +52,27 @@ public :
 	void OnLClick(CControlUI* pControl);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	void CameraSetItemInit(CVerticalLayoutUI *pLayout);
-	void AddCamear(UINT8 iInx);
-	void SetCameraInfo();
+
+	void AddCamear(CameraInfo);
+	void AddAlarmCtl(CameraInfo);
+	void AddCameraSetCtl(CameraInfo);
+	void AddVideoObtain(CameraInfo);
+	void DeleteAlarmCtl(CameraInfo);
+	void DeleteCameraSetCtl(CameraInfo);
+	void DeleteVideoObtain(CameraInfo);
+
+	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
+	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
+	void AddCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
+	void DeleteCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
+	void GetCameraItem(CVerticalLayoutUI *pLayout);
+	void CameraInfoInit(CameraInfo cameraInfo);
+	CameraInfo GetCameraSetInfo(int id);
+
+	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+
+	//test
+	CameraInfo cameraInfo;
 private:
-	Cameraset cameraset[6];
+	CameraItem camera[6];
 };

@@ -10,6 +10,11 @@ CUtil::~CUtil()
 {
 }
 
+
+
+
+
+
 void CUtil::LoadOrder(uint8_t * pOrder, uint8_t Header, uint8_t ScrType, uint8_t destType, uint8_t Cmd, uint8_t Prm1, uint8_t Parm2, CCamera * pCamear)
 {
 	memset(pOrder, 0, 17 * sizeof(uint8_t));

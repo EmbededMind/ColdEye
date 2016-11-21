@@ -3,9 +3,7 @@
 #include "Wnd\MyMenuWnd.h"
 #include "Wnd\MsgWnd.h"
 #include "Control\PopupMenuUI.h"
-#include "Control\MenuItemUI.h"
 #include "Control\TimeButtonUI.h"
-#include "Control\VideoListUI.h"
 
 
 CMyMenuWnd::CMyMenuWnd()
@@ -62,27 +60,6 @@ void CMyMenuWnd::InitWindow()
 	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
 	pNextItem->SetItemRelation(pMenuItem, NULL);
 
-	pMenuItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera1_video")));
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera2_video")));
-	pMenuItem->SetItemRelation(NULL, pNextItem);
-	pPrevItem = pMenuItem;
-	pMenuItem = pNextItem;
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera3_video")));
-	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
-	pPrevItem = pMenuItem;
-	pMenuItem = pNextItem;
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera4_video")));
-	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
-	pPrevItem = pMenuItem;
-	pMenuItem = pNextItem;
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera5_video")));
-	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
-	pPrevItem = pMenuItem;
-	pMenuItem = pNextItem;
-	pNextItem = static_cast<CMenuItemUI*>(m_pm.FindControl(_T("camera6_video")));
-	pMenuItem->SetItemRelation(pPrevItem, pNextItem);
-	pNextItem->SetItemRelation(pMenuItem, NULL);
-
 	//-------------------------看船时间控件关联---------------------------------
 	CTimeButtonUI *pTimeBt[4]; 
 	pTimeBt[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
@@ -100,31 +77,45 @@ void CMyMenuWnd::InitWindow()
 	CVerticalLayoutUI *CamareChildLayout;
 	CamareChildLayout = (CVerticalLayoutUI*)Camera1builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
 	pTabLayout->AddAt(CamareChildLayout, 7);
-	CameraSetItemInit(CamareChildLayout);
+	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头1设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera2builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
 	pTabLayout->AddAt(CamareChildLayout, 8);
-	CameraSetItemInit(CamareChildLayout);
+	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头2设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera3builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
 	pTabLayout->AddAt(CamareChildLayout, 9);
-	CameraSetItemInit(CamareChildLayout);
+	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头3设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera4builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
 	pTabLayout->AddAt(CamareChildLayout, 10);
-	CameraSetItemInit(CamareChildLayout);
+	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头4设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera5builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
 	pTabLayout->AddAt(CamareChildLayout, 11);
-	CameraSetItemInit(CamareChildLayout);
+	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头5设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera6builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
 	pTabLayout->AddAt(CamareChildLayout, 12);
-	CameraSetItemInit(CamareChildLayout);
+	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
-	//添加摄像头
-	AddCamear(1);
+	//添加2个摄像头  自己测试用 id:0~5
+	cameraInfo.id = 5;
+	cameraInfo.Name = _T("甲板");
+	cameraInfo.IsActivate = false;
+	cameraInfo.Volumn = 5;
+	cameraInfo.IsVideoRecordEnabled = true;
+	cameraInfo.IsAutoWatchEnabled = true;
+	AddCamear(cameraInfo);
+
+	cameraInfo.id = 3;
+	cameraInfo.Name = _T("驾驶室");
+	cameraInfo.IsActivate = true;
+	cameraInfo.Volumn = 8;
+	cameraInfo.IsVideoRecordEnabled = false;
+	cameraInfo.IsAutoWatchEnabled = true;
+	AddCamear(cameraInfo);
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -145,66 +136,273 @@ LRESULT CMyMenuWnd::OnDestroy(UINT, WPARAM, LPARAM, BOOL & bHandled)
 }
 
 LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{
+{ 
+	if (uMsg == USER_MSG_MESSAGE_BOX) {
+		MyMessageBox(uMsg, wParam, lParam, bHandled);
+	}
+
+	if (uMsg == WM_KEYDOWN)
+	{
+		if (wParam == VK_BACK)
+		{
+			DeleteAlarmCtl(cameraInfo);
+			DeleteCameraSetCtl(cameraInfo);
+			DeleteVideoObtain(cameraInfo);
+		}
+	}
 	return LRESULT();
 }
 
-void CMyMenuWnd::CameraSetItemInit(CVerticalLayoutUI * pLayout)
+void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 {
 	CTabLayoutUI *pTabLayout;
 	CContainerUI  *pChildLayout;
+	CDuiString name;
 	int iInx;
 	pTabLayout = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
 	iInx =pTabLayout->GetItemIndex(pLayout)-7;
 	pChildLayout = static_cast<CContainerUI*>(pLayout->GetItemAt(0));
-	cameraset[iInx].pShipname = (CMyEditUI*)pChildLayout->GetItemAt(2);	//船名
+	camera[iInx].pTitle = (CLabelUI*)pChildLayout->GetItemAt(0);		//标题
+	camera[iInx].pShipname = (CMyEditUI*)pChildLayout->GetItemAt(2);	//船名
 	pChildLayout = static_cast<CContainerUI*>(pLayout->GetItemAt(2));
-	cameraset[iInx].pSwitch = (CCameraSwitchUI*)pChildLayout->GetItemAt(1);//摄像头开关
-	cameraset[iInx].pVolum = (CMySliderUI*)pChildLayout->GetItemAt(4);//音量
-	cameraset[iInx].pVideoSave = (CMyLabelUI*)pChildLayout->GetItemAt(6);//视频存储设置
-	cameraset[iInx].pAutoWatch = (CMyLabelUI*)pChildLayout->GetItemAt(8);//自动看船设置
+	camera[iInx].pSwitch = (CCameraSwitchUI*)pChildLayout->GetItemAt(1);//摄像头开关
+	camera[iInx].pVolum = (CMySliderUI*)pChildLayout->GetItemAt(4);//音量
+	camera[iInx].pSaveVideo = (CMyLabelUI*)pChildLayout->GetItemAt(6);//视频存储设置
+	camera[iInx].pAutoWatch = (CMyLabelUI*)pChildLayout->GetItemAt(8);//自动看船设置
+	name.Format(_T("video_list%d"), iInx + 1);
+	camera[iInx].pNormalList = (CVideoListUI*)m_pm.FindControl(name);	//视频列表
+	name.Format(_T("video_alarmlist%d"), iInx + 1);
+	camera[iInx].pAlarmList = (CVideoListUI*)m_pm.FindControl(name);	//报警视频列表
 }
 
-void CMyMenuWnd::AddCamear(UINT8 iInx)
-{ 
+void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
+{
+	AddAlarmCtl(cameraInfo);
+	AddCameraSetCtl(cameraInfo);
+	AddVideoObtain(cameraInfo);
+	CameraInfoInit(cameraInfo);
+}
+
+void CMyMenuWnd::AddAlarmCtl(CameraInfo cameraInfo)
+{
+	AddCtl(cameraInfo, _T("layout_submenu_alarm"), ALARM_VIDEO);
+}
+
+void CMyMenuWnd::AddCameraSetCtl(CameraInfo cameraInfo)
+{
+	AddCtl(cameraInfo, _T("layout_submenu_setting"), CAMERA_SET);
+}
+
+void CMyMenuWnd::AddVideoObtain(CameraInfo cameraInfo)
+{
+	AddCtl(cameraInfo, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
+}
+
+void CMyMenuWnd::DeleteAlarmCtl(CameraInfo cameraInfo)
+{
+	DeleteCtl(cameraInfo, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	camera[cameraInfo.id].pAlarmList->RemoveAll();
+	camera[cameraInfo.id].pAlarmList = NULL;
+}
+
+void CMyMenuWnd::DeleteCameraSetCtl(CameraInfo cameraInfo)
+{
+	DeleteCtl(cameraInfo, _T("layout_submenu_setting"), CAMERA_SET);
+}
+
+void CMyMenuWnd::DeleteVideoObtain(CameraInfo cameraInfo)
+{
+	DeleteCtl(cameraInfo, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
+	camera[cameraInfo.id].pNormalList->RemoveAll();
+	camera[cameraInfo.id].pNormalList = NULL;
+}
+
+
+//返回插入的位置
+int CMyMenuWnd::InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData)
+{
+	int order=0;
+	CDuiString  userdata;
+	UINT8 Count,CtlId;
+
+	Count = pLayout->GetCount() / 2;
+	for (int i = 0; i < Count; i++) {
+		userdata = static_cast<CControlUI*>(pLayout->GetItemAt(i))->GetUserData();
+		CtlId = StrToInt(userdata)+ 1 - baseData ;
+		if (CtlId > 0) {
+			if (id < CtlId) 
+				break;
+			else 
+				order++;
+		}
+		else {
+			order++;
+		}
+	}
+	order *= 2;
+	return order;
+}
+
+void CMyMenuWnd::Relationship(CVerticalLayoutUI * pLayout, CMenuItemUI * pMenuItem)
+{
+	CMenuItemUI *pPreItem, *pNextItem;
+	int iInx = pLayout->GetItemIndex(pMenuItem);
+	pPreItem = (CMenuItemUI*)pLayout->GetItemAt(iInx - 2);
+	pNextItem = (CMenuItemUI*)pLayout->GetItemAt(iInx + 2);
+	pMenuItem->SetItemRelation(pPreItem, pNextItem);
+	if (pPreItem)
+		pPreItem->SetNextItem(pMenuItem);
+	if (pNextItem)
+		pNextItem->SetPrevItem(pMenuItem);
+}
+
+void CMyMenuWnd::AddCtl(CameraInfo cameraInfo,CDuiString layoutName, int BaseData)
+{
 	CVerticalLayoutUI *pLayout;
 	CMenuItemUI *pMenuItem;
-	CDuiString text, userdata, name;
-	int Count;
-	//报警视频二级菜单
-	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_alarm")));
-	Count = pLayout->GetCount()/2+1;
-	text.Format(_T("摄像头%d"), Count);
-	pMenuItem = new CMenuItemUI(pLayout, text);
-	userdata.Format(_T("%d"), Count - 1);
-	pMenuItem->SetUserData(userdata);
-	if (Count == 1)
-	{
-		pMenuItem->SetPrevItem(NULL);
-		pMenuItem->SetNextItem(NULL);
-	}
-	else
-	{
-		static_cast<CMenuItemUI*>(pLayout->GetItemAt(Count - 2))->SetNextItem((CControlUI*)pMenuItem);
-		pMenuItem->SetPrevItem((CControlUI*)pLayout->GetItemAt(Count - 2));
-		pMenuItem->SetNextItem(NULL);
-	}
-	
-	//摄像头设置控件
-	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_setting")));
-	text.Format(_T("摄像头%d"), Count);
-	pMenuItem = new CMenuItemUI(pLayout, text, (Count * 2));
-	userdata.Format(_T("%d"), Count + 6);	//设置控件数据
-	name.Format(_T("cameraset%d"), Count);
-	pMenuItem->SetName(name);					//设置控件名称
-	pMenuItem->SetUserData(userdata);
-	static_cast<CMenuItemUI*>(pLayout->GetItemAt((Count - 1) * 2))->SetNextItem((CControlUI*)pMenuItem); //主机名称
-	pMenuItem->SetPrevItem((CControlUI*)(pLayout->GetItemAt((Count - 1) * 2))); 
-	pMenuItem->SetNextItem((CControlUI*)pLayout->GetItemAt((Count+1)*2)); 
-	static_cast<CMenuItemUI*>(pLayout->GetItemAt((Count + 1) * 2))->SetPrevItem((CControlUI*)pMenuItem); //系统设置
+	CDuiString  userdata;
+
+	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
+	userdata.Format(_T("%d"), cameraInfo.id + BaseData);
+	pMenuItem = new CMenuItemUI(pLayout, cameraInfo.Name, userdata, InsertAt(cameraInfo.id, pLayout, BaseData));
+	Relationship(pLayout, pMenuItem);
 }
 
-void CMyMenuWnd::SetCameraInfo()
+void CMyMenuWnd::DeleteCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData)
 {
+	CVerticalLayoutUI *pLayout;
+	CMenuItemUI *pMenuItem = NULL, *pPrevItem, *pNextItem;
+	CDuiString  userdata;
+	int Count;
+	int id, order;
+	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
+	Count = pLayout->GetCount();
+	for (int i = 0; i < Count; i += 2) {
+		pMenuItem = (CMenuItemUI*)pLayout->GetItemAt(i);
+		id = StrToInt(pMenuItem->GetUserData()) - BaseData;
+		if (id == cameraInfo.id) {
+			order = pLayout->GetItemIndex(pMenuItem);
+			pLayout->RemoveAt(order);
+			pLayout->RemoveAt(order);//分割线
+			break;
+		}
+	}
+	if (pMenuItem) {
+		pPrevItem = (CMenuItemUI*)pMenuItem->GetPrevItem();
+		pNextItem = (CMenuItemUI*)pMenuItem->GetNextItem();
+		if (pPrevItem)
+			pPrevItem->SetNextItem(pNextItem);
+		if (pNextItem)
+			pNextItem->SetPrevItem(pPrevItem);
+	}
 }
+
+void CMyMenuWnd::CameraInfoInit(CameraInfo cameraInfo)
+{
+	int i= cameraInfo.id;
+	camera[i].id = cameraInfo.id;
+	camera[i].pTitle->SetText(cameraInfo.Name);
+	camera[i].pShipname->SetText(cameraInfo.Name);
+	camera[i].pSwitch->SetSwitch(cameraInfo.IsActivate);
+	camera[i].pVolum->SetValue(cameraInfo.Volumn);
+	camera[i].pSaveVideo->SetValue(cameraInfo.IsVideoRecordEnabled);
+	camera[i].pAutoWatch->SetValue(cameraInfo.IsAutoWatchEnabled);
+}
+
+CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
+{
+	CameraInfo setInfo;
+	setInfo.Name = camera[id].pShipname->GetText();
+	setInfo.IsActivate = camera[id].pSwitch->GetSwitch();
+	setInfo.Volumn = camera[id].pVolum->GetValue();
+	setInfo.IsVideoRecordEnabled = camera[id].pSaveVideo->GetValue();
+	setInfo.IsAutoWatchEnabled = camera[id].pAutoWatch->GetValue();
+	return setInfo;
+}
+
+void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
+{		
+	switch (wParam) {
+		case SHIPNAME_LIMIT:
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_camera_switch.xml"), NULL, NULL));
+			break;
+			
+		case CLOSE_CAMERA:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			break;
+
+		case CLOSE_STROAGE:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"),_T("关闭储存摄像机视频后，您将无法回"), _T("放视频，是否确定关闭？"));
+			break;
+
+		case CLOSE_AUTOWATCH:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"),_T("关闭摄像机自动看船后，该摄像头将"), _T("不会发生报警，是否确定关闭？"));
+			break;
+
+		case SAVE_CHANGES:
+			break;
+
+		case UPDATE_REQUEST:
+			//CMsgWnd::ShowMessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_request.xml"), NULL, NULL);
+			break;
+			
+		case NO_UPDATE_FILE:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_ok.xml"), _T("U盘未发现更改版本的软件更新程"), _T("序！"));
+			break;
+
+		case NO_UPDATE_DRIVE:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"));
+			break;
+
+		case SOFT_UPDATING:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			break;
+
+		case SOFT_UPDATE_SUCCESS:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
+			break;
+
+		case FACTORY_RESET:
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"));
+			break;
+
+		case RECORD:
+			break;
+
+		case SAVE_RECORDED:
+			break;
+
+		case DELETE_CAMERA:
+			break;
+
+		case DISPLAY_MATCH:
+			break;
+
+		case CANNOT_COPY:
+			break;
+
+		case NO_COPY_DRIVE:
+			break;
+
+		case NO_ENOUGH_MEMORY:
+			break;
+
+		case CONFIRM_COPY:
+			break;
+
+		case COPYING:
+			break;
+
+		case STOP_COPY:
+			break;
+
+		case COPY_SUCCESS:
+			break;
+
+		case COPY_FAILURE:
+			break;
+	}
+}
+
 

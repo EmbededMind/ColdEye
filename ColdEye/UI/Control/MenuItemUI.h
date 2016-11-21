@@ -12,8 +12,8 @@ class CMenuItemUI :
 
 public:
 	CMenuItemUI();
-	CMenuItemUI(CContainerUI* pParent, CDuiString& text);
-	CMenuItemUI(CContainerUI* pParent, CDuiString& text, int iInx);	
+	CMenuItemUI(CContainerUI* pParent, CString& text);
+	CMenuItemUI(CContainerUI* pParent, CString& text, CDuiString userdata,int iInx);
 	~CMenuItemUI();
 
 	void SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Color2);

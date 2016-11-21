@@ -153,6 +153,16 @@ void CPopupMenuUI::SetNextItem(CControlUI * NextItem)
 	mNextItem = NextItem;
 }
 
+CControlUI * CPopupMenuUI::GetPrevItem()
+{
+	return mPrevItem;
+}
+
+CControlUI * CPopupMenuUI::GetNextItem()
+{
+	return mNextItem;
+}
+
 CDuiString& CPopupMenuUI::GetHintNum()
 {
 	return mHintNumber;

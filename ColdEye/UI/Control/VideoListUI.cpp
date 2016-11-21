@@ -5,7 +5,10 @@
 IMPLEMENT_DUICONTROL(CVideoListUI)
 void CVideoListUI::DoEvent(TEventUI& event)
 {
-	_cprintf("type=%d\n",event.Type);
+<<<<<<< HEAD
+=======
+	//_cprintf("type=%d\n",event.Type);
+>>>>>>> 4f0fec285dfdfce8a91342ed0e10934932420208
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
 		{
@@ -95,20 +98,20 @@ CVideoListUI::Node * CVideoListUI::AddChildNode(CString sText, CVideoListUI::Nod
 	return pNode;
 }
 
-void CVideoListUI::Record_AddFile(CRecordFileInfo* pInfo)
+void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 {
 	CTime refTime = CTime::GetCurrentTime();
 	CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
 	CTime tbegin = CTime(pInfo->tBegin);
 	CTime tend = CTime(pInfo->tEnd);
 	CVideoListUI::Node* pNode;
-	//如果第一次添加，先添加头结点，再添加子节点
-	if (pItem){
-		if (pItem->Info->tBegin / (3600 * 24) == refTime.GetTime() / (3600 * 24)){//同一天记录
+	//List 中有文件已存在文件
+	if (pItem){//与第一个节点属于同一天，添加到当前节点中
+		if (pItem->Info->tBegin / (3600 * 24) == refTime.GetTime() / (3600 * 24)){
 			pNode = (CVideoListUI::Node*)pItem->GetTag();
 			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"),pNode, 0, pInfo);
 		}
-		else {
+		else {//非同一天，新增一个节点，将第一个节点更改昨天，第二个节点显示更改为该节点的时间
 			pNode = (CVideoListUI::Node*)pItem->GetTag();
 			pNode->data()._text = _T("昨天");
 			pNode = AddHeadNode(_T("今天"),0,pInfo);
@@ -122,12 +125,36 @@ void CVideoListUI::Record_AddFile(CRecordFileInfo* pInfo)
 			}
 		}
 	}
-	else //第一次添加
+	else //List中未添加任何文件
 	{
 		pNode = AddHeadNode(_T("今天"), 0, pInfo);
 		tbegin = CTime(pInfo->tBegin);
 		tend = CTime(pInfo->tEnd);
 		AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 	}
+}
+
+void CVideoListUI::DeleteRecordFile(CRecordFileInfo* pInfo)
+{
+	int Count=GetCount();
+	CMyListUI *pListItem;
+  	Node *node;
+	for (int i = 0; i < Count; i++) {
+		pListItem = (CMyListUI*)GetItemAt(i);
+		node = (Node*)pListItem->GetTag();
+		if (node->data()._pListElement->Info->tBegin == pInfo->tBegin) {
+			if (node->data()._level==0) {  //删除的结点如果在当天记录中最后一个则将头结点也删除
+				if (node->num_children() == 1) {
+					RemoveNode(node);
+					break;
+				}
+			}
+			else
+				RemoveNode(node);
+				break;
+		}
+		
+	}
+	
 }
 

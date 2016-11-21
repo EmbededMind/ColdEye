@@ -2,13 +2,14 @@
 
 #include "Control\MenuItemUI.h"
 #include "Control\MyEditUI.h"
+#include "ExHardDrive\ExHardDrive.h"
 
 IMPLEMENT_DUICONTROL(CMenuItemUI)
 
 CMenuItemUI::CMenuItemUI()
 {}
 
-CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CDuiString& text)
+CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text)
 {
 	mHintNumber = _T("0");
 	SetText(text);
@@ -22,13 +23,14 @@ CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CDuiString& text)
 }
 
 
-CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CDuiString& text, int iInx)
+CMenuItemUI::CMenuItemUI(CContainerUI* pParent, CString& text, CDuiString userdata, int iInx)
 {
 	mHintNumber = _T("0");
 
 	SetText(text);
 	pParent->AddAt(this, iInx);
 	SetAttribute(_T("style"), _T("MenuItem"));
+	SetUserData(userdata);
 
 	CControlUI* p = new CControlUI;
 	pParent->AddAt(p, iInx+1);

@@ -15,10 +15,10 @@ class CColdEyeDlg : public CDialogEx
 public:
 	CColdEyeDlg(CWnd* pParent = NULL);	// 标准构造函数
 
-
+	CMyMenuWnd mMenu;
 protected:
 	CWallDlg  mWall;
-	CMyMenuWnd mMenu;
+
 
 
 	void UpdateLayout();
@@ -48,4 +48,7 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LONG OnCommReceive(WPARAM pData, LPARAM port);
+	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
+
+	CMyMenuWnd& GetMyMenu();
 };

@@ -6,7 +6,7 @@ IMPLEMENT_DUICONTROL(CMyLabelUI)
 CMyLabelUI::CMyLabelUI()
 	:m_stateEnableText(_T("")),
 	m_stateDisableText(_T("")),
-	Value(false)
+	m_Value(false)
 {
 }
 
@@ -22,7 +22,7 @@ void CMyLabelUI::PaintText(HDC hDC)
 	RECT rc = m_rcItem;
 	RECT m_rcTextPadding = CLabelUI::m_rcTextPadding;
 	UINT TextStyle;
-	if (Value)
+	if (m_Value)
 	{
 		if (m_stateEnableText.IsEmpty())return;
 
@@ -123,7 +123,7 @@ void CMyLabelUI::SetStateTextFocusColor(DWORD Color)
 void CMyLabelUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
-	if (Value)
+	if (m_Value)
 	{
 		if (m_bFocused)
 		{
@@ -209,44 +209,52 @@ void CMyLabelUI::StatusUpdate()
 {
 	if (GetName() == _T("camera_set_video_save")\
 		|| GetName() == _T("camera_set_shipwatch")) {
-		if (Value) {
+		if (m_Value) {
 			if (GetName() == _T("camera_set_video_save")) {
-				if(MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), \
-					_T("关闭储存摄像机视频后，您将无法回"), _T("放视频，是否确定关闭？")))
-					Value = false;
+				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_STROAGE, 0);
+				m_Value = false;
 			}
 			else {
-				if(MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), \
-					_T("关闭摄像机自动看船后，该摄像头将"), _T("不会发生报警，是否确定关闭？")))
-					Value = false;
+				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_AUTOWATCH, 0);
+				m_Value = false;
 			}
 		}
 		else {
-			Value = true;
+			m_Value = true;
 		}
 		Invalidate();
 	}
 	else {
 		if (GetName() == _T("sysset_version")) {
 			int i = 3;
-			if(i==0)
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"));
+			if (i == 0)
+				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_DRIVE, 0);
 			else if (i == 1) {
 				if (MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_request.xml"), NULL, NULL)) {
 					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
 				}
 			}
-			else if(i==2)
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), _T("U盘未发现更改版本的软件更新程"), _T("序！"));
-			else if(i==3)
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update.xml"), _T("V2.0.0"),NULL);
+			else if (i == 2)
+				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_FILE, 0);
+			else if (i == 3)
+				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, UPDATE_REQUEST,0);
 			else if(i==4)
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
+				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, SOFT_UPDATE_SUCCESS, 0);
 		}
 		else if (GetName() == _T("sysset_reset")) {
-			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"));
+			//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, FACTORY_RESET, 0);
 		}
 	}
+}
+
+bool CMyLabelUI::GetValue()
+{
+	return m_Value;
+}
+
+void CMyLabelUI::SetValue(bool value)
+{
+	m_Value = value;
 }
 

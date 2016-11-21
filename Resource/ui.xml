@@ -83,18 +83,6 @@
 			</VerticalLayout>
 			
 			<VerticalLayout name="layout_submenu_videoget" >	<!--视频调取-->
-				<MenuItem name="camera1_video" text="摄像头1" userdata="18" />
-				<Control/>
-				<MenuItem name="camera2_video" text="摄像头2" userdata="19" />
-				<Control/>
-				<MenuItem name="camera3_video" text="摄像头3" userdata="20" />
-				<Control/>
-				<MenuItem name="camera4_video" text="摄像头4" userdata="21" />
-				<Control/>
-				<MenuItem name="camera5_video" text="摄像头5" userdata="22" />
-				<Control/>
-				<MenuItem name="camera6_video" text="摄像头6" userdata="23" />
-				<Control/>
 			</VerticalLayout>
 		</TabLayout>
 <!--24页 第三级菜单 -->

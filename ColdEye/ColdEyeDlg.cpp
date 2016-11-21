@@ -8,6 +8,8 @@
 #include "afxdialogex.h"
 #include "Com\SerialPort.h"
 #include "Com\Communication.h"
+#include "Dbt.h"
+#include "ExHardDrive\ExHardDrive.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -86,6 +88,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_SCAN_DEV, &CColdEyeDlg::OnUserMsgScanDev)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_COMM_RXDATA, &CColdEyeDlg::OnCommReceive)
+	ON_WM_DEVICECHANGE()
 END_MESSAGE_MAP()
 
 
@@ -139,6 +142,10 @@ BOOL CColdEyeDlg::OnInitDialog()
 	if (!CSerialPort::GetInstance(COM_CAM)->InitPort(this, COM_CAM, 9600, 'N', 8, 2, EV_RXCHAR, 512))
 	{
 		AfxMessageBox(_T("COM_CAM 没有发现串口或串口被占用!"));
+	}
+	if (CExHardDrive::GetInstance()->ScanDisk(this))
+	{
+		CExHardDrive::GetInstance()->Updata();
 	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -502,4 +509,57 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		}
 	}
 	return 0;
+}
+
+BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
+{
+	int i = 0;
+	CString flag;
+	DWORD mask;
+	TCHAR diskname[5];
+	DEV_BROADCAST_VOLUME* pDisk;
+	switch (nEventType)
+	{
+	case DBT_DEVICEARRIVAL:
+		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
+		mask = pDisk->dbcv_unitmask;
+		for (i = 0; i < 32; i++)
+		{
+			if ((mask >> i) == 1)
+			{
+				diskname[0] = 'A' + i;
+				diskname[1] = '\0';
+				wcscat_s(diskname, TEXT(":\\"));
+				break;
+			}
+		}
+		flag.Format(_T("%s"), diskname);
+		CExHardDrive::GetInstance()->Init(this, flag);
+		CExHardDrive::GetInstance()->StartMonitoring();
+		printf("U盘插入 %S\n", flag);
+		break;
+	case DBT_DEVICEREMOVECOMPLETE:
+		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
+		mask = pDisk->dbcv_unitmask;
+		for (i = 0; i < 32; i++)
+		{
+			if ((mask >> i) == 1)
+			{
+				diskname[0] = 'A' + i;
+				diskname[1] = '\0';
+				wcscat_s(diskname, TEXT(":\\"));
+				break;
+			}
+		}
+		flag.Format(_T("%s"), diskname);
+		printf("U盘拔出 %S\n", flag);
+		CExHardDrive::GetInstance()->EndThread();
+		break;
+	}
+	return 0;
+}
+
+CMyMenuWnd& CColdEyeDlg::GetMyMenu()
+{
+	return mMenu;
 }
