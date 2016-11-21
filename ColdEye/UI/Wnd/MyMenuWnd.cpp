@@ -175,11 +175,18 @@ void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 	camera[iInx].pAlarmList = (CVideoListUI*)m_pm.FindControl(name);	//报警视频列表
 }
 
+
+void CMyMenuWnd::AddCamera(CCamera* pCamera) 
+{
+
+}
+
+
 void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
 {
-	AddAlarmCtl(cameraInfo);
-	AddCameraSetCtl(cameraInfo);
-	AddVideoObtain(cameraInfo);
+	AddAlarmCtl(cameraInfo);      //在报警视频菜单中添加菜单项
+	AddCameraSetCtl(cameraInfo);  //摄像头设置中添加菜单项
+	AddVideoObtain(cameraInfo);   //视频调取中
 	CameraInfoInit(cameraInfo);
 }
 

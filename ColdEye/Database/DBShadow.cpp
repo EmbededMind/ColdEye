@@ -124,7 +124,7 @@ void CDBShadow::SynchronizeWithDB()
 		pInfo->tBegin = stmt->ValueInt(DB_COL_BEGIN_SEC);
 		pInfo->tEnd = stmt->ValueInt(DB_COL_END_SEC);
 		pInfo->dlSize = stmt->ValueInt(DB_COL_SIZE);
-		pInfo->bIsLocked = stmt->ValueInt(DB_COL_STATUS);
+		pInfo->status = (RECORD_FILE_STATUS)stmt->ValueInt(DB_COL_STATUS);
 		pInfo->bIsOccupied = false;
 
 		if (pInfo->tEnd > pInfo->tBegin) {
@@ -157,7 +157,7 @@ void CDBShadow::SynchronizeWithDB()
 		pInfo->tBegin = stmt->ValueInt(DB_COL_BEGIN_SEC);
 		pInfo->tEnd = stmt->ValueInt(DB_COL_END_SEC);
 		pInfo->dlSize = stmt->ValueInt(DB_COL_SIZE);
-		pInfo->bIsLocked = stmt->ValueInt(DB_COL_STATUS);
+		pInfo->status = (RECORD_FILE_STATUS)stmt->ValueInt(DB_COL_STATUS);
 		pInfo->bIsOccupied = false;
 
 		if (pInfo->tEnd > pInfo->tBegin) {

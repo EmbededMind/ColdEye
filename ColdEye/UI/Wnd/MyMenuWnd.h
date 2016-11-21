@@ -53,6 +53,7 @@ public :
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+	void AddCamera(CCamera* pCamera);
 	void AddCamear(CameraInfo);
 	void AddAlarmCtl(CameraInfo);
 	void AddCameraSetCtl(CameraInfo);
