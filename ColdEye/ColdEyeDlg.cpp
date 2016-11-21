@@ -191,17 +191,26 @@ void CColdEyeDlg::OnPaint()
 	else
 	{
 		CPaintDC dc(this);
-		CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
-		BITMAP bmp;
-		bitmap.GetBitmap(&bmp);
+		CRect rClient;
+		GetClientRect(rClient);
 
-		CDC mSrcDC;
+		dc.FillSolidRect(&rClient, RGB(171, 130,255));
 
-		mSrcDC.CreateCompatibleDC(&dc);
 
-		mSrcDC.SelectObject(bitmap);
 
-		dc.BitBlt(10, 50, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, SRCCOPY);
+		//CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
+		//BITMAP bmp;
+		//bitmap.GetBitmap(&bmp);
+
+		//CDC mSrcDC;
+
+		//mSrcDC.CreateCompatibleDC(&dc);
+
+		//mSrcDC.SelectObject(bitmap);
+
+		//dc.BitBlt(10, 50, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, SRCCOPY);
+
+
 
 		CDialogEx::OnPaint();
 	}

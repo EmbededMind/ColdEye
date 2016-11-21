@@ -60,6 +60,7 @@ public :
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+	void AddCamera(CCamera* pCamera);
 	void AddCamear(CameraInfo);
 	void AddAlarmCtl(CameraInfo);
 	void AddCameraSetCtl(CameraInfo);
@@ -68,6 +69,10 @@ public :
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
 	void ADDWatchRecord(SwtichRecord);
+
+
+	
+
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
 	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
@@ -84,4 +89,7 @@ public :
 	SwtichRecord recordInfo;
 private:
 	CameraItem camera[6];
+
+
+	void  AddAlarmMenuItem(CCamera* pCamera);
 };

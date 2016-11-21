@@ -6,6 +6,13 @@ typedef enum {
 }RECORD_FILE_TYPE;
 
 
+typedef enum {
+	RECORD_HASSEEN = 0,
+	RECORD_NOTSEEN,
+	RECORD_LOCKED
+}RECORD_FILE_STATUS;
+
+
 class CRecordFileInfo
 {
 public:
@@ -16,6 +23,6 @@ public:
 	__time64_t tBegin;
 	__time64_t tEnd;
 	ULONGLONG  dlSize;
-	bool       bIsLocked;
+	RECORD_FILE_STATUS status;
 	bool       bIsOccupied;
 };

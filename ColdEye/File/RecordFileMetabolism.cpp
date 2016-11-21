@@ -49,7 +49,7 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mAlarmFileInfoList.begin();
 	for (; iter != CDBShadow::GetInstance()->mAlarmFileInfoList.end(); ++iter)
 	{
-		if (!((*iter)->bIsLocked || (*iter)->bIsOccupied))
+		if (!((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime time = (*iter)->tBegin;
 			CString FileName;
@@ -71,7 +71,7 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mReocrdFileInfoList.begin();
 	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end(); ++iter)
 	{
-		if (!((*iter)->bIsLocked || (*iter)->bIsOccupied))
+		if (!((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime time = (*iter)->tBegin;
 			CString FileName;
@@ -103,7 +103,7 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mReocrdFileInfoList.begin();
 	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end(); ++iter)
 	{
-		if (!((*iter)->bIsLocked || (*iter)->bIsOccupied))
+		if (!((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime FileTime = (*iter)->tBegin;
 			CTimeSpan TimeSpan = CTime::GetCurrentTime() - FileTime;

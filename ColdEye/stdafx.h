@@ -62,7 +62,7 @@
 
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
 
-#define USER_MSG_MESSAGE_BOX                (WM_USER + 140)
+#define USER_MSG_MESSAGE_BOX               (WM_USER + 140)
 
 
  /*****************************************
@@ -147,7 +147,11 @@
 
 
 /**  sqlite3 lib **/
+#ifdef _DEBUG
+#pragma comment(lib, "sqlite3_d.lib")
+#else
 #pragma comment(lib, "sqlite3.lib")
+#endif
 
 
 /**  Set Volume  **/
@@ -188,7 +192,11 @@
 
 
 
+
+#include "Database\sqlitewrapper.h"
 extern int mutex;
+
+extern 	SQLiteWrapper sqlite;
 
 
 #define USE_PRINT

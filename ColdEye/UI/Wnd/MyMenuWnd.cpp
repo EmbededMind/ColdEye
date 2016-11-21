@@ -5,6 +5,10 @@
 #include "Control\PopupMenuUI.h"
 #include "Control\TimeButtonUI.h"
 
+#include "Pattern\MsgSquare.h"
+
+#include "Database\DBShadow.h"
+
 
 CMyMenuWnd::CMyMenuWnd()
 {
@@ -122,6 +126,12 @@ void CMyMenuWnd::InitWindow()
 	recordInfo.record_type = _T("开机");
 	ADDWatchRecord(recordInfo);
 
+
+	CMsgSquare* pSquare = CMsgSquare::GetInstance();
+	if (pSquare != NULL) {
+		pSquare->AddAudience(m_hWnd, USER_MSG_LOGIN);
+		pSquare->AddAudience(m_hWnd, USER_MSG_LOGOFF);
+	}
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -156,6 +166,27 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			DeleteVideoObtain(cameraInfo);
 		}
 	}
+
+	switch (uMsg)
+	{
+		case USER_MSG_LOGIN:
+			Print("Menu case login msg");
+			AddCamera((CCamera*)lParam);
+			break;
+		//-------------------------------------------
+		case USER_MSG_LOGOFF:
+			Print("Menu case logoff msg");
+			break;
+
+		case USER_MSG_INITFILE:
+			break;
+		//--------------------------------------------
+		case USER_MSG_ADDFILE:
+			break;
+        //--------------------------------------------
+		case USER_MSG_DELFILE:
+			break;
+	}
 	return LRESULT();
 }
 
@@ -181,11 +212,18 @@ void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 	camera[iInx].pAlarmList = (CVideoListUI*)m_pm.FindControl(name);	//报警视频列表
 }
 
+
+void CMyMenuWnd::AddCamera(CCamera* pCamera) 
+{
+
+}
+
+
 void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
 {
-	AddAlarmCtl(cameraInfo);
-	AddCameraSetCtl(cameraInfo);
-	AddVideoObtain(cameraInfo);
+	AddAlarmCtl(cameraInfo);      //在报警视频菜单中添加菜单项
+	AddCameraSetCtl(cameraInfo);  //摄像头设置中添加菜单项
+	AddVideoObtain(cameraInfo);   //视频调取中
 	CameraInfoInit(cameraInfo);
 }
 
@@ -193,6 +231,14 @@ void CMyMenuWnd::AddAlarmCtl(CameraInfo cameraInfo)
 {
 	AddCtl(cameraInfo, _T("layout_submenu_alarm"), ALARM_VIDEO);
 }
+
+
+void CMyMenuWnd::AddAlarmMenuItem(CCamera* pCamera)
+{
+
+}
+
+
 
 void CMyMenuWnd::AddCameraSetCtl(CameraInfo cameraInfo)
 {

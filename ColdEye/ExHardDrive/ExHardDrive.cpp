@@ -225,7 +225,7 @@ BOOL CExHardDrive::Updata()
 BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 {
 	if (!mIsInsert) return 0;
-	if(FileInfo->bIsLocked)
+	if(FileInfo->status == RECORD_LOCKED)
 		return 0;
 	if (FileInfo->bIsOccupied)
 		return 0;
