@@ -150,7 +150,11 @@
 
 
 /**  sqlite3 lib **/
+#ifdef _DEBUG
+#pragma comment(lib, "sqlite3_d.lib")
+#else
 #pragma comment(lib, "sqlite3.lib")
+#endif
 
 
 /**  Set Volume  **/
