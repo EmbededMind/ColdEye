@@ -3,6 +3,7 @@
 
 #include "Control\KeyBoardUI.h"
 #include "Wnd\MsgWnd.h"
+#include "Control\MyEditUI.h"
 
 IMPLEMENT_DUICONTROL(CKeyBoardUI)
 CKeyBoardUI::CKeyBoardUI()
@@ -25,7 +26,7 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 		line = userdata / 10;
 		row = userdata % 10;
 		CVerticalLayoutUI *pLayout = static_cast<CVerticalLayoutUI*>(m_pManager->FindControl(_T("keyboard")));
-		CButtonUI* pEdit = (CButtonUI*)m_pManager->FindControl(_T("edit_shipname"));
+		CMyEditUI* pEdit = (CMyEditUI*)m_pManager->FindControl(_T("edit_shipname"));
 		switch (event.wParam)
 		{
 		case VK_UP:
@@ -70,7 +71,7 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 					pEdit->SetText(oldText);
 				}
 				else {
-					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_shipname_input.xml"), NULL, NULL);
+					//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_shipname_input.xml"), NULL, NULL);
 				}
 			}
 			else {//É¾³ý°´¼ü
@@ -91,6 +92,7 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 		case VK_BACK:
 			GetParent()->GetParent()->SetVisible(false);
 			m_pManager->FindControl(_T("prompt"))->SetVisible(false);
+			pEdit->isEditing = false;
 			pEdit->SetFocus();
 			break;
 

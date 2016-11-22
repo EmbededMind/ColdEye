@@ -104,29 +104,6 @@ void CMyMenuWnd::InitWindow()
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
-	//添加2个摄像头  自己测试用 id:0~5
-	//cameraInfo.id = 5;
-	//cameraInfo.Name = _T("甲板");
-	//cameraInfo.IsActivate = false;
-	//cameraInfo.Volumn = 5;
-	//cameraInfo.IsVideoRecordEnabled = true;
-	//cameraInfo.IsAutoWatchEnabled = true;
-	//AddCamear(cameraInfo);
-
-	//cameraInfo.id = 3;
-	//cameraInfo.Name = _T("驾驶室");
-	//cameraInfo.IsActivate = true;
-	//cameraInfo.Volumn = 8;
-	//cameraInfo.IsVideoRecordEnabled = false;
-	//cameraInfo.IsAutoWatchEnabled = true;
-	//AddCamear(cameraInfo);
-
-	//添加开关记录，测试
-	recordInfo.time = GetCurrentTime();
-	recordInfo.record_type = _T("开机");
-	ADDWatchRecord(recordInfo);
-
-
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	if (pSquare != NULL) {
 		pSquare->AddAudience(m_hWnd, USER_MSG_LOGIN);
@@ -157,16 +134,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 { 
 	if (uMsg == USER_MSG_MESSAGE_BOX) {
 		MyMessageBox(uMsg, wParam, lParam, bHandled);
-	}
-
-	if (uMsg == WM_KEYDOWN)
-	{
-		if (wParam == VK_BACK)
-		{
-			DeleteAlarmCtl(cameraInfo);
-			DeleteCameraSetCtl(cameraInfo);
-			DeleteVideoObtain(cameraInfo);
-		}
 	}
 
 	switch (uMsg)
@@ -230,6 +197,15 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				camera[pInfo->nOwner - 1].pNormalList->DeleteRecordFile(pInfo);
 			}
 			break;
+		//--------------------------------------------
+		case WM_KEYDOWN: {
+			if (GetKeyState(VK_CONTROL) && !(wParam & 0x20000000)) {
+					if (wParam == 'U'){
+
+					}
+				}
+			}
+			break;
 	}
 	return LRESULT();
 }
@@ -257,12 +233,6 @@ void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 }
 
 
-void CMyMenuWnd::AddCamera(CCamera* pCamera) 
-{
-	AddAlarmMenuItem(pCamera);
-	AddCameraConfigItem(pCamera);
-	AddVideoObtainItem(pCamera);
-}
 
 
 void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
@@ -273,20 +243,6 @@ void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
 	CameraInfoInit(cameraInfo);
 }
 
-
-void CMyMenuWnd::InitAlarmMenuItem()
-{
-	CDBShadow* pShadow = CDBShadow::GetInstance();
-
-	ASSERT(pShadow != NULL);
-
-	for (int i = 1; i <= 6; i++) {
-		int number = pShadow->GetAlarmFileNumber(i);
-		if (number > 0) {
-
-		}
-	}
-}
 
 
 
@@ -345,7 +301,7 @@ void CMyMenuWnd::DeleteVideoObtain(CameraInfo cameraInfo)
 	camera[cameraInfo.id].pNormalList = NULL;
 }
 
-void CMyMenuWnd::ADDWatchRecord(SwtichRecord info)
+void CMyMenuWnd::AddWatchRecord(SwtichRecord info)
 {
 	CListUI *pList;
 	int Count;
@@ -465,14 +421,14 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 }
 
 void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{		
+{
+	int result;
 	switch (wParam) {
 		case SHIPNAME_LIMIT:
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_camera_switch.xml"), NULL, NULL)) {
 
 			}
 			break;
-			
 		case CLOSE_CAMERA:
 			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 			break;
@@ -486,10 +442,16 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case SAVE_CHANGES:
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"))) {
+				;
+			}
+			else {
+
+			}
 			break;
 
 		case UPDATE_REQUEST:
-			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_request.xml"), NULL, NULL);
 			break;
 			
@@ -513,9 +475,18 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"));
 			break;
 
-		case RECORD:
-			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
-			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_recordingvoice.xml"), NULL, NULL);
+		case RECORD: 
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_recordingvoice.xml"), NULL, NULL);
+			result = CMsgWnd::MessageBox(this->GetHWND(), _T("mb_playvoice.xml"), NULL, NULL);
+			if (MSGID_OK == result) {
+
+			}
+			else if(MSGID_CANCEL == result) {
+
+			}
+			else {
+
+			}
 			break;
 
 		case SAVE_RECORDED:
@@ -540,6 +511,7 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case COPYING:
+
 			break;
 
 		case STOP_COPY:
@@ -568,56 +540,6 @@ void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 	Relationship(pLayout, pMenuItem);
 }
 
-
-void CMyMenuWnd::AddAlarmMenuItem(CCamera* pCamera)
-{
-	CVerticalLayoutUI* pLayout;
-	CMenuItemUI*       pItem;
-	CDuiString         userData;
-
-	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_alarm")));
-	userData.Format(_T("%d"), pCamera->m_Id - 1 + ALARM_VIDEO);
-
-	pItem = new CMenuItemUI(pLayout, CString("摄像机1"), userData, InsertAt(pCamera->m_Id - 1, pLayout, ALARM_VIDEO));
-	pItem->SetTag((UINT_PTR)pCamera);
-
-	Relationship(pLayout, pItem);
-}
-
-
-
-
-
-void CMyMenuWnd::AddCameraConfigItem(CCamera* pCamera)
-{
-	CVerticalLayoutUI*  pLayout;
-	CMenuItemUI*        pItem;
-	CDuiString          userData;
-
-	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_setting")));
-	userData.Format(_T("%d"), pCamera->m_Id - 1 + CAMERA_SET);
-
-	pItem = new CMenuItemUI(pLayout, CString("摄像机1"), userData, InsertAt(pCamera->m_Id - 1, pLayout, CAMERA_SET));
-	pItem->SetTag((UINT_PTR)pCamera);
-
-	Relationship(pLayout, pItem);
-}
-
-
-void CMyMenuWnd::AddVideoObtainItem(CCamera* pCamera)
-{
-	CVerticalLayoutUI* pLayout;
-	CMenuItemUI*       pItem;
-	CDuiString         userData;
-
-	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_videoget")));
-	userData.Format(_T("%d"), pCamera->m_Id - 1 + VIDEO_OBTAIN);
-
-	pItem = new CMenuItemUI(pLayout, CString("摄像机1"), userData, InsertAt(pCamera->m_Id - 1, pLayout, VIDEO_OBTAIN));
-	pItem->SetTag((UINT_PTR)pCamera);
-
-	Relationship(pLayout, pItem);
-}
 
 
 void CMyMenuWnd::AddAlarmMenuItem(CPort* pPort)

@@ -177,7 +177,7 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 			case VK_BACK:
 				if (tMinute_1_New != tMinute_1 || tMinute_2_New != tMinute_2) {
 
-					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
+					//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
 					tMinute_1 = tMinute_1_New;
 					tMinute_2 = tMinute_2_New;
 				}

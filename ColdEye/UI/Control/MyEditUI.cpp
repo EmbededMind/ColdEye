@@ -4,6 +4,7 @@
 
 IMPLEMENT_DUICONTROL(CMyEditUI)
 CMyEditUI::CMyEditUI()
+	:isEditing(false)
 {
 }
 
@@ -18,6 +19,7 @@ void CMyEditUI::DoEvent(TEventUI &event)
 	if (event.Type == UIEVENT_KEYDOWN){
 		CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
 		if (event.wParam == VK_RETURN){
+			isEditing = true; //更改中
 			if (GetName().CompareNoCase(_T("edit_shipname")) == 0){
 				CControlUI *pCtl =m_pManager->FindControl(_T("keyboard"));
 				if (!pCtl->IsVisible()){
@@ -65,13 +67,12 @@ void CMyEditUI::DoEvent(TEventUI &event)
 				m_pManager->FindControl(_T("mastername"))->SetFocus();
 			}
 			else if (GetName() == _T("cameraset_shipname")) {
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
-				int index;
-				CTabLayoutUI *ChildLayout;
-				index = pTabLayout->GetItemIndex(GetParent()->GetParent());
-				index -= 6;
-				ChildLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_submenu_setting")));
-				ChildLayout->GetItemAt(index * 2)->SetFocus();
+				//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
+				int isChange = 0; //是否更改内容
+				if(isChange)
+					SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, SAVE_CHANGES, 0);
+			
+				BackToPreviousItem(pTabLayout);
 			}
 		}
 		
@@ -82,6 +83,28 @@ void CMyEditUI::DoEvent(TEventUI &event)
 	if (event.Type == UIEVENT_SETFOCUS){
 		SetBkColor(0xFFD7E9FF);
 	}
+	else if (event.Type == UIEVENT_KILLFOCUS) {
+		if(isEditing==false)
+			SetBkColor(0xFFEBEBEB);
+	}
 
 	CButtonUI::DoEvent(event);
+}
+
+void CMyEditUI::BackToPreviousItem(CTabLayoutUI *pLayout)
+{
+	int sel,count,userdata;
+	CTabLayoutUI *pChildLayout;
+	CControlUI *pItem;
+	sel = pLayout->GetCurSel();
+	pChildLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_submenu_setting")));
+	count = pChildLayout->GetCount();
+	for (int i = 0; i < count; i+=2){
+		pItem = pChildLayout->GetItemAt(i);
+		userdata = StrToInt(pItem->GetUserData());
+		if (sel == userdata) {
+			pItem->SetFocus();
+			break;
+		}
+	}
 }

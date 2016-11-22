@@ -43,6 +43,7 @@ CMenuItemUI::~CMenuItemUI()
 
 void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Color2)
 {
+	CContainerUI *pItem;
 	//焦点移动到一级菜单上
 	if (pfocusItem) {
 		CContainerUI *layout = (CContainerUI*)pfocusItem->GetParent();
@@ -63,7 +64,13 @@ void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Colo
 		CContainerUI *layout = (CContainerUI*)GetParent();
 		layout->SetBkColor(Color1);
 		for (int i = 0; i < layout->GetCount(); i += 2) {
-			layout->GetItemAt(i)->SetBkColor(Color1);
+			pItem = (CContainerUI*)layout->GetItemAt(i);
+			if(pItem!=(CContainerUI*)this)
+				pItem->SetBkColor(Color1);
+			else {
+				SetBkColor(0xFF4178B7);
+				SetTextColor(0xFFFFFFFF);
+			}
 		}
 
 	}

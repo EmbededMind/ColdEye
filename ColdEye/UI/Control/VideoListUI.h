@@ -256,6 +256,8 @@ public:
 	Node* AddHeadNode(CString sText, int nID, CRecordFileInfo* pInfo);
 	Node* AddChildNode(CString sText, CVideoListUI::Node *HeadNode, int nID, CRecordFileInfo* pInfo);
 	void AddRecordFile(CRecordFileInfo* pInfo);
+	void AddItem(CRecordFileInfo* pInfo);
+	void RefreshList();
 	void DeleteRecordFile(CRecordFileInfo* pInfo);
 private:
 	Node* _root;

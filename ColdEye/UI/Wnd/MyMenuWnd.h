@@ -11,12 +11,14 @@
 #include "Control\VideoListUI.h"
 #include "Control\SwitchRecordListUI.h"
 
+
 #include "Device\Camera.h"
 #include "Device\PortManager.h"
 
 #include <list>
 
 using namespace std;
+
 
 using namespace DuiLib;
 
@@ -67,7 +69,7 @@ public :
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	void AddCamera(CCamera* pCamera);
+
 	void AddCamear(CameraInfo);
 	void AddAlarmCtl(CameraInfo);
 	void AddCameraSetCtl(CameraInfo);
@@ -75,11 +77,7 @@ public :
 	void DeleteAlarmCtl(CameraInfo);
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
-	void ADDWatchRecord(SwtichRecord);
-
-
-	
-
+	void AddWatchRecord(SwtichRecord);
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
 	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
@@ -88,6 +86,8 @@ public :
 	void GetCameraItem(CVerticalLayoutUI *pLayout);
 	void CameraInfoInit(CameraInfo cameraInfo);
 	CameraInfo GetCameraSetInfo(int id);
+
+	//void FindRecordFile();
 
 	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 
@@ -98,17 +98,12 @@ private:
 	CameraItem camera[6];
 
 
+
 	void  AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData);
 	void  AddAlarmMenuItem(CPort* pPort);
 	void  AddVideoObtainItem(CPort* pPort);
 
 
-	void  InitAlarmMenuItem();
-	//void  InitVideoObtainMenuItem();
-
-	void  AddAlarmMenuItem(CCamera* pCamera);
-	void  AddCameraConfigItem(CCamera* pCamera);
-	void  AddVideoObtainItem(CCamera* pCamera);
 
 	void  InitRecordFile(list<CRecordFileInfo*>* pList);
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);

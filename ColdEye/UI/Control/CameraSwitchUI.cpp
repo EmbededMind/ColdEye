@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CameraSwitchUI.h"
 #include "Wnd\MsgWnd.h"
+#include "conio.h"
 
 IMPLEMENT_DUICONTROL(CCameraSwitchUI)
 CCameraSwitchUI::CCameraSwitchUI()
@@ -50,6 +51,10 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 				Switch = true;
 				Invalidate();
 			}
+			break;
+
+		case VK_BACK:
+			BackPreviousItem(pTabLayout);
 			break;
 		}
 	}
@@ -113,4 +118,24 @@ void CCameraSwitchUI::SetSwitch(bool value)
 bool CCameraSwitchUI::GetSwitch()
 {
 	return Switch;
+}
+
+void CCameraSwitchUI::BackPreviousItem(CTabLayoutUI* pTabLayout)
+{
+	int sel,count,focus_userdata;
+	sel = pTabLayout->GetCurSel();
+	CControlUI *pItem;
+	if (sel > 5 && sel <= 13) { //主机设置菜单项
+		CTabLayoutUI *pPrevLayout=static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_submenu_setting")));
+		count = pPrevLayout->GetCount();
+		for (int i=0; i < count; i += 2) {
+			pItem = pPrevLayout->GetItemAt(i);
+			focus_userdata = StrToInt(pItem->GetUserData());
+			if (sel == focus_userdata) {
+				pItem->SetFocus();
+				break;
+			}
+		}
+	}
+
 }

@@ -224,21 +224,22 @@ void CMyLabelUI::StatusUpdate()
 	}
 	else {
 		if (GetName() == _T("sysset_version")) {
-			int i = 3;
-			if (i == 0)
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_DRIVE, 0);
-			else if (i == 1) {
-				if (MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_request.xml"), NULL, NULL)) {
-					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
-					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
-				}
-			}
-			else if (i == 2)
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_FILE, 0);
-			else if (i == 3)
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, UPDATE_REQUEST,0);
-			else if(i==4)
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, SOFT_UPDATE_SUCCESS, 0);
+			SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_FILE, 0);
+			//int i = 2;
+			//if (i == 0)
+			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_DRIVE, 0);
+			//else if (i == 1) {
+			//	if (MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_request.xml"), NULL, NULL)) {
+			//		CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//		CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
+			//	}
+			//}
+			//else if (i == 2)
+			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_FILE, 0);
+			//else if (i == 3)
+			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, UPDATE_REQUEST,0);
+			//else if(i==4)
+			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, SOFT_UPDATE_SUCCESS, 0);
 		}
 		else if (GetName() == _T("sysset_reset")) {
 			//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, FACTORY_RESET, 0);
