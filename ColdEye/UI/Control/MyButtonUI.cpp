@@ -27,7 +27,7 @@ void CMyButtonUI::DoEvent(TEventUI & event)
 
 		case VK_RETURN:
 			{
-				//SendMessage(m_pManager->GetPaintWindow(),USER_MSG_MESSAGE_BOX, RECORD, NULL);
+				SendMessage(m_pManager->GetPaintWindow(),USER_MSG_MESSAGE_BOX, RECORD, NULL);
 				//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_recordingvoice.xml"), NULL, NULL);
 				//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_playvoice.xml"), NULL, NULL);
 				CContainerUI *layout;

@@ -11,6 +11,7 @@
 #include "Control\VideoListUI.h"
 #include "Control\SwitchRecordListUI.h"
 
+
 using namespace DuiLib;
 
 typedef struct {
@@ -68,11 +69,7 @@ public :
 	void DeleteAlarmCtl(CameraInfo);
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
-	void ADDWatchRecord(SwtichRecord);
-
-
-	
-
+	void AddWatchRecord(SwtichRecord);
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
 	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
@@ -82,6 +79,8 @@ public :
 	void CameraInfoInit(CameraInfo cameraInfo);
 	CameraInfo GetCameraSetInfo(int id);
 
+	//void FindRecordFile();
+
 	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 
 	//test
@@ -89,7 +88,6 @@ public :
 	SwtichRecord recordInfo;
 private:
 	CameraItem camera[6];
-
 
 	void  AddAlarmMenuItem(CCamera* pCamera);
 };

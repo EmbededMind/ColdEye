@@ -196,7 +196,6 @@
 				<MySlider name="sysset_voice" float="true" pos="178,344,0,0" bkimage="file='image/volumbk.png' dest='102,7,682,75' " />
 				<Control float="true" pos="45,414,745,416" />
 				<MyLabel name="sysset_version" pos="0,426,790,506" text="软件版本：V1.0.0"  statedisabletext="更新"/>
-				<MyButton bkcolor="#FF112233"/>
 				<Control float="true" pos="45,516,745,518" />
 				<MyLabel name="sysset_reset" pos="0,528,790,608" text="恢复出厂设置"  statedisabletext="开启"/>
 				<Control float="true" pos="45,618,745,620" />

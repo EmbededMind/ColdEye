@@ -124,8 +124,12 @@ void CMyMenuWnd::InitWindow()
 	//添加开关记录，测试
 	recordInfo.time = GetCurrentTime();
 	recordInfo.record_type = _T("开机");
-	ADDWatchRecord(recordInfo);
+	AddWatchRecord(recordInfo);
 
+	CRecordFileInfo *info = new CRecordFileInfo;
+	info->tBegin = GetCurrentTime();
+	info->tEnd = GetCurrentTime();
+	camera[3].pAlarmList->AddRecordFile(info);
 
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	if (pSquare != NULL) {
@@ -157,16 +161,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		MyMessageBox(uMsg, wParam, lParam, bHandled);
 	}
 
-	if (uMsg == WM_KEYDOWN)
-	{
-		if (wParam == VK_BACK)
-		{
-			DeleteAlarmCtl(cameraInfo);
-			DeleteCameraSetCtl(cameraInfo);
-			DeleteVideoObtain(cameraInfo);
-		}
-	}
-
 	switch (uMsg)
 	{
 		case USER_MSG_LOGIN:
@@ -185,6 +179,15 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			break;
         //--------------------------------------------
 		case USER_MSG_DELFILE:
+			break;
+		//--------------------------------------------
+		case WM_KEYDOWN: {
+			if (GetKeyState(VK_CONTROL) && !(wParam & 0x20000000)) {
+					if (wParam == 'U'){
+
+					}
+				}
+			}
 			break;
 	}
 	return LRESULT();
@@ -269,7 +272,7 @@ void CMyMenuWnd::DeleteVideoObtain(CameraInfo cameraInfo)
 	camera[cameraInfo.id].pNormalList = NULL;
 }
 
-void CMyMenuWnd::ADDWatchRecord(SwtichRecord info)
+void CMyMenuWnd::AddWatchRecord(SwtichRecord info)
 {
 	CListUI *pList;
 	int Count;
@@ -389,10 +392,11 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 }
 
 void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{		
+{
+	int result;
 	switch (wParam) {
 		case SHIPNAME_LIMIT:
-			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_camera_switch.xml"), NULL, NULL));
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(),_T("mb_camera_switch.xml"), NULL, NULL));
 			break;
 			
 		case CLOSE_CAMERA:
@@ -408,10 +412,16 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case SAVE_CHANGES:
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"))) {
+				;
+			}
+			else {
+
+			}
 			break;
 
 		case UPDATE_REQUEST:
-			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_request.xml"), NULL, NULL);
 			break;
 			
@@ -435,9 +445,18 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"));
 			break;
 
-		case RECORD:
-			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
-			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_recordingvoice.xml"), NULL, NULL);
+		case RECORD: 
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_recordingvoice.xml"), NULL, NULL);
+			result = CMsgWnd::MessageBox(this->GetHWND(), _T("mb_playvoice.xml"), NULL, NULL);
+			if (MSGID_OK == result) {
+
+			}
+			else if(MSGID_CANCEL == result) {
+
+			}
+			else {
+
+			}
 			break;
 
 		case SAVE_RECORDED:
@@ -462,6 +481,7 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case COPYING:
+
 			break;
 
 		case STOP_COPY:

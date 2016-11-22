@@ -88,6 +88,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_SCAN_DEV, &CColdEyeDlg::OnUserMsgScanDev)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_COMM_RXDATA, &CColdEyeDlg::OnCommReceive)
+	ON_MESSAGE(USER_MSG_RECORDVOICE, &CColdEyeDlg::OnRecordVoice)
 	ON_WM_DEVICECHANGE()
 END_MESSAGE_MAP()
 
@@ -558,6 +559,14 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 	}
 	return 0;
 }
+
+afx_msg LRESULT CColdEyeDlg::OnRecordVoice(WPARAM wParm, LPARAM lParm)
+{
+	Print("begin record");
+	mMessageBox->SendMessage(USER_MSG_RECORDVOICE, NULL, NULL);
+	return 0;
+}
+
 
 CMyMenuWnd& CColdEyeDlg::GetMyMenu()
 {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ColdEyeDlg.h"
 #include "UIlib.h"
 using namespace DuiLib;
 
@@ -8,18 +9,15 @@ using namespace DuiLib;
 #define MSGID_OK		1
 #define MSGID_RECORD	2
 
+class CColdEyeDlg;
+class CMyMenuWnd;
+
 class CMsgWnd : public WindowImplBase
 {
 
 public:
 	CMsgWnd();
 	~CMsgWnd();
-
-	//struct textInfo {
-	//	LPCTSTR text;
-	//	LPCTSTR	textcolor;
-	//	CRect	pos;
-	//};
 
 	void SetMsg(LPCTSTR text1, LPCTSTR text2);
 	void SetTitle(LPCTSTR lpstrTitle);
@@ -29,6 +27,7 @@ public:
 	static int MessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2)
 	{
 		CMsgWnd* pWnd = new CMsgWnd();
+		pWnd->pMenuDlg = (CMyMenuWnd*)CWnd::FromHandle(hParent);
 		pWnd->SkinType = skinType;
 		pWnd->Create(hParent, _T("msgwnd"), WS_POPUP | WS_CLIPCHILDREN, WS_EX_TOOLWINDOW);
 		pWnd->CenterWindow();
@@ -60,10 +59,14 @@ public:
 	virtual LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+	void RecordVoice();
 public:
 	CDuiString SkinType;
 	CButtonUI *pButton_ok;
 	CButtonUI *pButton_cancel;
 	CButtonUI *pButton_record;
+	CColdEyeDlg *pMainDlg;
+	CMyMenuWnd *pMenuDlg;
+	UINT8 _time;
 };
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MsgWnd.h"
 #include "Control/RecordvoiceUI.h"
+#include "ExHardDrive\ExHardDrive.h"
 
 
 DUI_BEGIN_MESSAGE_MAP(CMsgWnd, WindowImplBase)
@@ -89,7 +90,7 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	case WM_TIMER:
 		lRes = OnTimer(uMsg,wParam,lParam,bHandled);
 		break;
-
+	//--------------------------------------------------------------------------
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case VK_LEFT:
@@ -106,7 +107,7 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 			}
 			
 			break;
-
+		//--------------------------------------------------------------------------
 		case VK_RIGHT:
 			if (m_pm.GetFocus()) {
 				sName = m_pm.GetFocus()->GetName();
@@ -120,13 +121,13 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 				}
 			}
 			break;
-				
+		//--------------------------------------------------------------------------
 		case VK_BACK:
 			if (!m_pm.GetFocus()) {
 				Close(0);
 			}
 			break;
-
+		//--------------------------------------------------------------------------
 		case VK_RETURN: //test
 			CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
 			if (pItem) {
@@ -140,10 +141,53 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 		}
 		break;
+
+	//--------------------------------------------------------------------------
+	case USER_MSG_RECORDVOICE: //开始录音
+		{
+			_time = 0;
+			SetTimer(m_pm.GetPaintWindow(),1,500,NULL);
+			CTextUI *pItem = static_cast<CTextUI*>(m_pm.FindControl(_T("Text2")));
+			pItem->SetText(_T("松开          按键，结束录制。"));
+		}
+
+		break;
+	//--------------------------------------------------------------------------
+	case USER_MSG_STOP_RECORD://停止录音
+		{
+			CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
+			pItem->RecordTime = 60;
+			KillTimer(m_pm.GetPaintWindow(), 1);
+			Close(MSGID_OK);
+		}
+		break;
 	}
+
 
 	bHandled = FALSE;
 	return 0;
+}
+
+void CMsgWnd::RecordVoice()
+{
+	CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
+	CDuiString text;
+	if (pItem->RecordTime != 0) {
+		_time++;
+		pItem->Blink = !pItem->Blink;
+		if (_time == 2) {
+			_time = 0;
+			pItem->RecordTime = pItem->RecordTime--;
+			text.Format(_T("%02d\""), pItem->RecordTime);
+			pItem->SetText(text);
+		}
+		pItem->Invalidate();
+	}
+	else {
+		pItem->RecordTime = 60;
+		KillTimer(m_pm.GetPaintWindow(), 1);
+		Close(MSGID_OK);
+	}
 }
 
 void CMsgWnd::Notify(TNotifyUI &msg)
@@ -159,38 +203,28 @@ LRESULT CMsgWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 void CMsgWnd::InitWindow()
 {
+	HWND MainDlg;
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));
 	pButton_record = (CButtonUI*)m_pm.FindControl(_T("record_btn"));
 	if (SkinType == _T("mb_recordingvoice.xml")) {
-		SetTimer(m_pm.GetPaintWindow(),1,1000,NULL);
-		CTextUI *pItem = static_cast<CTextUI*>(m_pm.FindControl(_T("Text2")));
-		pItem->SetText(_T("松开          按键，结束录制。"));
+		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
+		pMainDlg->mMessageBox = this;
+		pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
 	}
 	else if (SkinType == _T("mb_update.xml")) {
-		SetTimer(m_pm.GetPaintWindow(),2, 200, NULL);
+		UINT_PTR i;
+		//i = SetTimer(m_pm.GetPaintWindow(),1, 200, NULL);
+		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
+		printf("%d\n",i);
 	}
 }
 
 LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (wParam) {
-		case 1: {
-				CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
-				CDuiString text;
-				if (pItem->RecordTime != 0) {
-					pItem->Blink = !pItem->Blink;
-					pItem->RecordTime = pItem->RecordTime--;
-					text.Format(_T("%02d\""), pItem->RecordTime);
-					pItem->SetText(text);
-					pItem->Invalidate();
-				}
-				else {
-					pItem->RecordTime = 60;
-					KillTimer(m_pm.GetPaintWindow(),1);
-					Close(0);
-				}
-			}
+		case 1: 
+			RecordVoice();
 			break;
 
 		case 2:{

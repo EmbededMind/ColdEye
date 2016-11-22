@@ -9,6 +9,8 @@
 #include "Com\SerialPort.h"
 #include "Wnd\MsgWnd.h"
 
+class CMsgWnd;
+
 // CColdEyeDlg 对话框
 class CColdEyeDlg : public CDialogEx
 {
@@ -16,10 +18,10 @@ class CColdEyeDlg : public CDialogEx
 public:
 	CColdEyeDlg(CWnd* pParent = NULL);	// 标准构造函数
 
+	CMsgWnd	*mMessageBox; 
 
 protected:
 	CWallDlg  mWall;
-	CMsgWnd	mMessageBox;
 	CMyMenuWnd mMenu;
 
 
@@ -51,6 +53,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LONG OnCommReceive(WPARAM pData, LPARAM port);
 	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
-
+	afx_msg LRESULT OnRecordVoice(WPARAM wParm, LPARAM lParm);
 	CMyMenuWnd& GetMyMenu();
 };
