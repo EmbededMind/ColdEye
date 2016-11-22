@@ -36,7 +36,7 @@
 
 #include <afxsock.h>            // MFC Ì×½Ó×ÖÀ©Õ¹
 
-
+ 
 /*****************************************
  *             USER_MSG define           *
  *****************************************/
@@ -63,6 +63,11 @@
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
 
 #define USER_MSG_MESSAGE_BOX               (WM_USER + 140)
+
+
+
+#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 150)
+
 
 
  /*****************************************

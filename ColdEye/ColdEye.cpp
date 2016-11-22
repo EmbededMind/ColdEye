@@ -9,9 +9,11 @@
 
 
 #include "Device\Camera.h"
+#include "Device\Port.h"
 
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
+#include "Device\PortManager.h"
 
 #include "UIlib.h"
 
@@ -128,9 +130,12 @@ BOOL CColdEyeApp::InitInstance()
 	m_Bitmap.LoadBitmap(IDB_NSLIENT);
 
 	CheckFileDirectory();
-	CDBShadow::GetInstance()->Init();
+	CDBShadow::GetInstance()->SynchronizeWithDB();
 	CDBLogger::GetInstance()->LogPowerOn(CTime::GetCurrentTime(), 1);
 	CDBLogger::GetInstance()->GenerateLastPowerOffLog();
+
+	CPortManager::GetInstance()->LoadPortsParam();
+
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
 

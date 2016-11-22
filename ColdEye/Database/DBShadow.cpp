@@ -101,29 +101,26 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 }
 
 
-/**@brief 初始化数据库Shadow
- *
- * @note  由于此方法过程中会向窗口发送消息，所以必须在窗口创建完成后执行。
- */
-void CDBShadow::Init()
+
+void CDBShadow::BroadcaseInitFileMsg()
 {
-
-	SynchronizeWithDB();
-
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	MSG msg;
-	msg.wParam = RECORD_NORMAl;
-	msg.message = USER_MSG_INITFILE;	
+	msg.message = USER_MSG_INITFILE;
+
+
+	msg.wParam = RECORD_NORMAl;		
 	msg.lParam = (LPARAM) (&mReocrdFileInfoList);
+	Print("Broadcast initfile msg to normal");
 	pSquare->Broadcast(msg);
+	
 
-	msg.wParam = RECORD_ALARM;
+	msg.wParam = (WPARAM)RECORD_ALARM;
 	msg.lParam = (LPARAM)(&mAlarmFileInfoList);
+	Print("Broadcast initfile msg to alarm");
 	pSquare->Broadcast(msg);
+	
 }
-
-
-
 
 
 /**@biref 录像文件信息与数据库中的记录同步

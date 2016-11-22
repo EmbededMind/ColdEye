@@ -10,6 +10,8 @@
 #include "Com\Communication.h"
 #include "Dbt.h"
 #include "ExHardDrive\ExHardDrive.h"
+
+#include "Database\DBShadow.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -147,6 +149,11 @@ BOOL CColdEyeDlg::OnInitDialog()
 	{
 		CExHardDrive::GetInstance()->Updata();
 	}
+
+
+	CDBShadow::GetInstance()->BroadcaseInitFileMsg();
+
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 

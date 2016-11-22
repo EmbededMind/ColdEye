@@ -2,14 +2,21 @@
 
 #include "UIlib.h"
 #include "File\RecordFileInfo.h"
+
 #include "Control\MyEditUI.h"
 #include "Control\CameraSwitchUI.h"
 #include "Control\MySliderUI.h"
 #include "Control\MyLabelUI.h"
-#include "Device\Camera.h"
 #include "Control\MenuItemUI.h"
 #include "Control\VideoListUI.h"
 #include "Control\SwitchRecordListUI.h"
+
+#include "Device\Camera.h"
+#include "Device\PortManager.h"
+
+#include <list>
+
+using namespace std;
 
 using namespace DuiLib;
 
@@ -91,5 +98,18 @@ private:
 	CameraItem camera[6];
 
 
+	void  AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData);
+	void  AddAlarmMenuItem(CPort* pPort);
+	void  AddVideoObtainItem(CPort* pPort);
+
+
+	void  InitAlarmMenuItem();
+	//void  InitVideoObtainMenuItem();
+
 	void  AddAlarmMenuItem(CCamera* pCamera);
+	void  AddCameraConfigItem(CCamera* pCamera);
+	void  AddVideoObtainItem(CCamera* pCamera);
+
+	void  InitRecordFile(list<CRecordFileInfo*>* pList);
+	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
 };
