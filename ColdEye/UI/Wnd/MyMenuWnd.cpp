@@ -532,7 +532,9 @@ void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 
 	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
 	userData.Format(_T("%d"), pPort->GetId()-1 + baseData);
+
 	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, InsertAt(pPort->GetId()-1, pLayout, baseData));
+
 	pMenuItem->SetTag((UINT_PTR)pPort);
 
 	Relationship(pLayout, pMenuItem);
