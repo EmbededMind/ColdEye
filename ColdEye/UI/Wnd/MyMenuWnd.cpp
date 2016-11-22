@@ -149,7 +149,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 		case USER_MSG_INITFILE:
 			if (wParam == RECORD_ALARM) {
-				Print("init alarm file");
 				InitAlarmFile((list<CRecordFileInfo*>*)lParam);
 
 				CDBShadow* pShadow = CDBShadow::GetInstance();
@@ -164,7 +163,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				}
 			}
 			else {
-				Print("init record file");
 				InitRecordFile((list<CRecordFileInfo*>*)lParam);
 
 				CDBShadow* pShadow = CDBShadow::GetInstance();
@@ -172,11 +170,10 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 				if (pShadow) {
 					for (int i = 0; i < 6; i++) {
-						if (pShadow->GetRecordFileNumber(i + 1)) {
-							Print("%d has %d files", i+1, pShadow->GetRecordFileNumber(i+1));
+						if (pShadow->GetRecordFileNumber(i + 1)) {						
 							CPort* pPort = pPortMgr->GetPortById(i+1);
 							if (pPort) {
-								AddVideoObtainItem(pPort);
+								AddVideoObtainMenuItem(pPort);
 							}							
 						}
 					}
@@ -526,6 +523,7 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 }
 
 
+
 void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 {
 	CVerticalLayoutUI * pLayout;
@@ -533,8 +531,8 @@ void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 	CDuiString   userData;
 
 	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
-	userData.Format(_T("%d"), pPort->GetId() + baseData);
-	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, baseData);
+	userData.Format(_T("%d"), pPort->GetId()-1 + baseData);
+	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, InsertAt(pPort->GetId()-1, pLayout, baseData));
 	pMenuItem->SetTag((UINT_PTR)pPort);
 
 	Relationship(pLayout, pMenuItem);
@@ -547,7 +545,13 @@ void CMyMenuWnd::AddAlarmMenuItem(CPort* pPort)
 	AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
 }
 
-void CMyMenuWnd::AddVideoObtainItem(CPort* pPort)
+void CMyMenuWnd::AddVideoObtainMenuItem(CPort* pPort)
 {
 	AddMenuItem(pPort, _T("layout_submenu_videoget"),  VIDEO_OBTAIN);
+}
+
+
+void CMyMenuWnd::AddCameraConfigMenuItem(CCamera* pCamera)
+{
+	AddMenuItem(pCamera->GetAttachedPort(), _T("layout_submenu_setting"), CAMERA_SET);
 }

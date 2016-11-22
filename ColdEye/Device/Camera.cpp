@@ -382,3 +382,15 @@ void CCamera::OnDisConnnect()
 	Logout();
 	//StopRealPlay();
 }
+
+
+void CCamera::AttachPort(CPort* pPort)
+{
+	this->m_pAttachedPort = pPort;
+}
+
+
+CPort*  CCamera::GetAttachedPort()
+{
+	return this->m_pAttachedPort;
+}

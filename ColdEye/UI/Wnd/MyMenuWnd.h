@@ -97,13 +97,11 @@ public :
 private:
 	CameraItem camera[6];
 
-
-
 	void  AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData);
+
 	void  AddAlarmMenuItem(CPort* pPort);
-	void  AddVideoObtainItem(CPort* pPort);
-
-
+	void  AddVideoObtainMenuItem(CPort* pPort);
+	void  AddCameraConfigMenuItem(CCamera* pCamera);
 
 	void  InitRecordFile(list<CRecordFileInfo*>* pList);
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);

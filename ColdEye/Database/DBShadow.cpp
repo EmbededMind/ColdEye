@@ -115,7 +115,7 @@ void CDBShadow::BroadcaseInitFileMsg()
 	pSquare->Broadcast(msg);
 	
 
-	msg.wParam = (WPARAM)RECORD_ALARM;
+	msg.wParam = RECORD_ALARM;
 	msg.lParam = (LPARAM)(&mAlarmFileInfoList);
 	Print("Broadcast initfile msg to alarm");
 	pSquare->Broadcast(msg);
@@ -157,7 +157,8 @@ void CDBShadow::SynchronizeWithDB()
 
 			filename = _T(NORMAL_RECORD_PATH) + filename;
 
-			CFile::Remove(filename);
+			/*CFile::Remove(filename);*/
+			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM normal_record WHERE owner = %d AND begin_sec = %I64d;",pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
@@ -190,7 +191,8 @@ void CDBShadow::SynchronizeWithDB()
 
 			filename = _T(ALARM_RECORD_PATH) + filename;
 
-			CFile::Remove(filename);
+			//CFile::Remove(filename);
+			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM alarm_record WHERE owner = %d AND begin_sec = %I64d;", pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
