@@ -533,8 +533,8 @@ void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 	CDuiString   userData;
 
 	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
-	userData.Format(_T("%d"), pPort->GetId() + baseData);
-	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, baseData);
+	userData.Format(_T("%d"), pPort->GetId()-1 + baseData);
+	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, InsertAt(cameraInfo.id-1, pLayout, baseData));
 	pMenuItem->SetTag((UINT_PTR)pPort);
 
 	Relationship(pLayout, pMenuItem);

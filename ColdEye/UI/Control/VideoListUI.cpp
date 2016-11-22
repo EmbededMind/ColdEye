@@ -96,7 +96,7 @@ CVideoListUI::Node * CVideoListUI::AddChildNode(CString sText, CVideoListUI::Nod
 void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 {
 	AddItem(pInfo);
-	//RefreshList();
+	RefreshList();
 }
 
 void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
@@ -145,7 +145,7 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	else {
 		if (pItem) {
 			if (pItem->Info->tBegin / (3600 * 24) != pInfo->tBegin / (3600 * 24)) {//当天没有头结点
-				pNode = AddHeadNode(_T("%Y-%m-%d"), 0, pInfo);
+				pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
 				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 			}
 			else {
@@ -153,7 +153,7 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 			}
 		}
 		else {
-			pNode = AddHeadNode(_T("%Y-%m-%d"), 0, pInfo);
+			pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
 			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 		}
 	}
@@ -167,35 +167,40 @@ void CVideoListUI::RefreshList()
 	CVideoListUI::Node* pNode  = NULL;
 	CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
 
-	if (pItem) {
-		pNode = (CVideoListUI::Node*)pItem->GetTag();
-	}	
+	if (!pItem) return;
+		
+
+	pNode = (CVideoListUI::Node*)pItem->GetTag();
 	num = pNode->num_children();
-	pItem = (CMyListUI*)GetItemAt(num + 1); //第二个头节点
-	int Day;
-	if (pItem) {
-		Day = refTime.GetTime() / (3600 * 24) - pItem->Info->tBegin / (3600 * 24);
-		if (Day == 1) {
-			pNode->data()._text = _T("昨天");
+	if (!num) {
+		pItem = (CMyListUI*)GetItemAt(num + 1); //第二个头节点
+		if (!pItem) return;
+		int Day;
+		if (pItem) {
+			Day = refTime.GetTime() / (3600 * 24) - pItem->Info->tBegin / (3600 * 24);
+			if (Day == 1) {
+				pNode->data()._text = _T("昨天");
+			}
+			else {
+				tbegin = CTime(pItem->Info->tBegin);
+				pNode->data()._text = tbegin.Format("%Y-%m-%d");
+			}
 		}
 		else {
 			tbegin = CTime(pItem->Info->tBegin);
 			pNode->data()._text = tbegin.Format("%Y-%m-%d");
 		}
-	}
-	else {
-		tbegin = CTime(pItem->Info->tBegin);
-		pNode->data()._text = tbegin.Format("%Y-%m-%d");
-	}
 
-	num += pNode->num_children(); //第三个头结点
-	pItem = (CMyListUI*)GetItemAt(num + 1);
-	pNode = (CVideoListUI::Node*)pItem->GetTag();
-	if (pItem)
-	{
-		tbegin = CTime(pItem->Info->tBegin);
-		pNode->data()._text = tbegin.Format("%Y-%m-%d");
+		num += pNode->num_children(); //第三个头结点
+		if (!num) {
+			pItem = (CMyListUI*)GetItemAt(num);
+			if (!pItem) return;
+			pNode = (CVideoListUI::Node*)pItem->GetTag();
+			if (!pItem) return;
 
+			tbegin = CTime(pItem->Info->tBegin);
+			pNode->data()._text = tbegin.Format("%Y-%m-%d");
+		}
 	}
 
 }
