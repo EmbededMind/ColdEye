@@ -80,6 +80,7 @@
  /*****************************************
  *             Timer ID define            *
  ******************************************/
+#define TIMER_ID_SECOND_TICK              1
 #define TIMER_ID_AUTO_RECORD              2
 #define TIMER_ID_AUTO_WATCH               3
 #define TIMER_ID_ALARM                    4

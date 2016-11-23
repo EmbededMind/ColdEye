@@ -55,4 +55,5 @@ public:
 	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
 	afx_msg LRESULT OnRecordVoice(WPARAM wParm, LPARAM lParm);
 	CMyMenuWnd& GetMyMenu();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
