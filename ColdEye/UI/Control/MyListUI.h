@@ -17,9 +17,12 @@ public:
 	void PaintStatusImage(HDC hDC);
 	void DrawItemText(HDC hDC, const RECT& rcItem);
 	void DoEvent(TEventUI &event);
+	void FindRecordFile();
+
 public:
 	bool mIsLocked;
 	int	prereadMessageNum;
 	CRecordFileInfo* Info;
+	//list<CRecordFileInfo*> RecordInfoList;
 };
 

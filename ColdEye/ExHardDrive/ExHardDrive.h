@@ -3,10 +3,6 @@
 #include "stdint.h"
 #include "File\RecordFileInfo.h"
 
-#define COPY_START         WM_USER+1
-#define COPY_INFO          WM_USER+2
-#define COPY_END           WM_USER+3
-
 #define COPY_END_SUCCEED   1
 #define COPY_END_FAIL      0
 

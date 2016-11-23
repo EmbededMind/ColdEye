@@ -10,5 +10,9 @@ public:
 	CMyEditUI();
 	~CMyEditUI();
 	void DoEvent(TEventUI &event);
+	void BackToPreviousItem(CTabLayoutUI*);
+	
+public:
+	bool isEditing;
 };
 

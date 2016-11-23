@@ -5,11 +5,12 @@
 
 CDBShadow::CDBShadow()
 {
-	bool bRet  = sqlite.Open("cold_eye.db");
-	if (bRet == false) {
-		Print("Database open failed");
-		ASSERT(FALSE);
+	for (int i = 0; i < 6; i++) {
+		mRecordFileCnts[i] = 0;
+		mAlarmFileCnts[i] = 0;
 	}
+
+
 	InitializeCriticalSection(&g_cs);
 	/*CheckTables();*/
 }
@@ -31,6 +32,8 @@ CDBShadow* CDBShadow::GetInstance()
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
+
+	int* pFileCnts = (wParam == RECORD_ALARM ? mAlarmFileCnts : mRecordFileCnts);
 
 	char sqlStmt[128];
 	CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
@@ -57,6 +60,9 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			Print("Sql error:%s", sqlStmt);
 		}
 
+		
+		pFileCnts[pInfo->nOwner - 1]++;
+
 		msg.message = USER_MSG_ADDFILE;
 		msg.wParam = wParam;
 		msg.lParam = lParam;
@@ -72,6 +78,13 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 				Print("Sql error:%s", sqlStmt);
 			}
 
+			if (pFileCnts > 0) {
+				pFileCnts[pInfo->nOwner--];
+			}
+			else {
+				Print("file cnt error:%d", pInfo->nOwner);
+			}
+
 			msg.message = USER_MSG_DELFILE;
 			msg.wParam = wParam;
 			msg.lParam = lParam;
@@ -82,29 +95,26 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 }
 
 
-/**@brief 初始化数据库Shadow
- *
- * @note  由于此方法过程中会向窗口发送消息，所以必须在窗口创建完成后执行。
- */
-void CDBShadow::Init()
+
+void CDBShadow::BroadcaseInitFileMsg()
 {
-
-	SynchronizeWithDB();
-
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	MSG msg;
-	msg.wParam = RECORD_NORMAl;
-	msg.message = USER_MSG_INITFILE;	
+	msg.message = USER_MSG_INITFILE;
+
+
+	msg.wParam = RECORD_NORMAl;		
 	msg.lParam = (LPARAM) (&mReocrdFileInfoList);
+	Print("Broadcast initfile msg to normal");
 	pSquare->Broadcast(msg);
+	
 
 	msg.wParam = RECORD_ALARM;
 	msg.lParam = (LPARAM)(&mAlarmFileInfoList);
+	Print("Broadcast initfile msg to alarm");
 	pSquare->Broadcast(msg);
+	
 }
-
-
-
 
 
 /**@biref 录像文件信息与数据库中的记录同步
@@ -124,11 +134,12 @@ void CDBShadow::SynchronizeWithDB()
 		pInfo->tBegin = stmt->ValueInt(DB_COL_BEGIN_SEC);
 		pInfo->tEnd = stmt->ValueInt(DB_COL_END_SEC);
 		pInfo->dlSize = stmt->ValueInt(DB_COL_SIZE);
-		pInfo->bIsLocked = stmt->ValueInt(DB_COL_STATUS);
+		pInfo->status = (RECORD_FILE_STATUS)stmt->ValueInt(DB_COL_STATUS);
 		pInfo->bIsOccupied = false;
 
 		if (pInfo->tEnd > pInfo->tBegin) {
 			mReocrdFileInfoList.push_back(pInfo);
+			mRecordFileCnts[pInfo->nOwner - 1]++;
 		}
 		else {
 			Print("Invalid record information");
@@ -139,7 +150,6 @@ void CDBShadow::SynchronizeWithDB()
 				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
 
 			filename = _T(NORMAL_RECORD_PATH) + filename;
-
 			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM normal_record WHERE owner = %d AND begin_sec = %I64d;",pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
@@ -157,11 +167,12 @@ void CDBShadow::SynchronizeWithDB()
 		pInfo->tBegin = stmt->ValueInt(DB_COL_BEGIN_SEC);
 		pInfo->tEnd = stmt->ValueInt(DB_COL_END_SEC);
 		pInfo->dlSize = stmt->ValueInt(DB_COL_SIZE);
-		pInfo->bIsLocked = stmt->ValueInt(DB_COL_STATUS);
+		pInfo->status = (RECORD_FILE_STATUS)stmt->ValueInt(DB_COL_STATUS);
 		pInfo->bIsOccupied = false;
 
 		if (pInfo->tEnd > pInfo->tBegin) {
 			mAlarmFileInfoList.push_back(pInfo);
+			mAlarmFileCnts[pInfo->nOwner - 1]++;
 		}
 		else {
 			Print("Invalid alarm record information");
@@ -171,7 +182,6 @@ void CDBShadow::SynchronizeWithDB()
 				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
 
 			filename = _T(ALARM_RECORD_PATH) + filename;
-
 			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM alarm_record WHERE owner = %d AND begin_sec = %I64d;", pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
@@ -231,4 +241,18 @@ void CDBShadow::DelFileInfo(list<CRecordFileInfo*>& infoList, CRecordFileInfo* p
 			break;
 		}
 	}
+}
+
+
+int CDBShadow::GetRecordFileNumber(int owner)
+{
+	ASSERT(owner > 0  &&  owner <= 6);
+	return mRecordFileCnts[owner-1];
+}
+
+
+int CDBShadow::GetAlarmFileNumber(int owner)
+{
+	ASSERT(owner > 0 && owner <= 6);
+	return mAlarmFileCnts[owner-1];
 }

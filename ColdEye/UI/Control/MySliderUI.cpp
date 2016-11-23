@@ -37,6 +37,11 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		case VK_RIGHT:
 			SetValue(GetValue() + 1);
 			break;
+
+		case VK_BACK:
+			CTabLayoutUI *pLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
+			BackPreviousItem(pLayout);
+			break;
 		}
 
 	}
@@ -75,4 +80,21 @@ void CMySliderUI::PaintBkImage(HDC hDC)
 	m_rc.right += 184;
 	CRenderEngine::DrawImageString(hDC, m_pManager, m_rc, m_rc, (LPCTSTR)m_sBkImage, NULL, NULL);
 	Invalidate();
+}
+
+void CMySliderUI::BackPreviousItem(CTabLayoutUI* pParentLayout)
+{
+	int sel, count, focus_userdata;
+	sel = pParentLayout->GetCurSel();
+	CControlUI *pItem;
+	CTabLayoutUI *pPrevLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_submenu_setting")));
+	count = pPrevLayout->GetCount();
+	for (int i = 0; i < count; i += 2) {
+		pItem = pPrevLayout->GetItemAt(i);
+		focus_userdata = StrToInt(pItem->GetUserData());
+		if (sel == focus_userdata) {
+			pItem->SetFocus();
+			break;
+		}
+	}
 }

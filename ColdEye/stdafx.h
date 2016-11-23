@@ -36,7 +36,7 @@
 
 #include <afxsock.h>            // MFC 套接字扩展
 
-
+ 
 /*****************************************
  *             USER_MSG define           *
  *****************************************/
@@ -62,7 +62,19 @@
 
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
 
-#define USER_MSG_MESSAGE_BOX                (WM_USER + 140)
+#define USER_MSG_MESSAGE_BOX               (WM_USER + 140)
+
+#define USER_MSG_RECORDVOICE			   (WM_USER + 150)	//录制报警音
+#define USER_MSG_STOP_RECORD			   (WM_USER + 151)	//停止录音
+
+#define USER_MSG_COPY_STATR				   (WM_USER + 160)	//开始复制
+#define USER_MSG_COPY_STOP				   (WM_USER + 161)	//停止复制
+#define USER_MSG_COPY_INFO				   (WM_USER + 162)	//复制信息
+
+
+
+#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 150)
+
 
 
  /*****************************************

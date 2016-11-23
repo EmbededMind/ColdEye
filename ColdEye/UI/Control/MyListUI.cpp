@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MyListUI.h"
 #include "VideoListUI.h"
+#include <list>
 
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
@@ -101,14 +102,30 @@ void CMyListUI::DoEvent(TEventUI & event)
 				pList->GetItemAt(pList->GetItemIndex(this) + 1)->SetFocus();
 			}
 		}
-	/*	else{
-			CListLabelElementUI::DoEvent(event);
-		}*/
+
+		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
+			if (event.wParam == 'U') { //UÅÌ¼ü
+				FindRecordFile();
+				//SendMessage(m_pManager->GetPaintWindow(), CONFIRM_COPY, NULL,NULL);
+			}
+		}
+
 	}
-	//else{
-	//	CListLabelElementUI::DoEvent(event);
-	//}
 	CListLabelElementUI::DoEvent(event);
+}
+
+void CMyListUI::FindRecordFile()
+{
+	int num;
+	CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+	num = node->num_children();
+	if (num){//ÕûÌì
+		for (int i = 0; i < num; i++);
+			//RecordInfoList.push_back(node->data()._pListElement->Info);
+	}
+	else {
+
+	}
 }
 
 

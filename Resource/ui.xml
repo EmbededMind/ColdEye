@@ -43,6 +43,7 @@
 	<Style name="slider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; bkimage=&quot;file='123.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; foreimage=&quot;file='321.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; thumbimage=&quot;file='3.png' mask='#FFDAEBF9'&quot; " />
 	<Style name="list" value="textcolor=&quot;#FFFFFF00&quot;"/>
 	<Style name="alarm_voice_list"  value="height=&quot;80&quot; font=&quot;3&quot; textcolor=&quot;#FF666666&quot; textpadding=&quot;105,0,0,0&quot; align=&quot;left&quot; normalimage=&quot;file='image/unsel.png' dest='679,29,704,54'&quot; pushedimage=&quot;file='image/sel.png' dest='679,29,704,54'&quot; "/>
+	<Style name="watch_record_style" value="height=&quot;65&quot; "/>
 	
 	<HorizontalLayout name="root" bkcolor="FFEFEFF4">
 		<VerticalLayout name="menuLayout" width="328" bkcolor="#FFFFFFFF">
@@ -185,11 +186,7 @@
 				</VerticalLayout>
 				<Text text="【确认】按键弹出输入键盘" float="true" pos="276,948,0,0" width="377" height="30" font="2" textcolor="#FF666666"/>
 			</VerticalLayout>
-			<!--
-			<VerticalLayout name="camareset1">	
 
-			</VerticalLayout>
-			-->
 			<VerticalLayout bkcolor="#FFF3F3F3" padding="70,80,69,136">
 				<Label text="系统设置" font="3" height="80" textpadding="339,21,339,20" bkcolor="#FFE5E3E3" textcolor="#FF333333" />
 				<Label text="亮度调节" font="3" height="68" textpadding="45,20,633,10" bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
@@ -241,8 +238,15 @@
 				<AlarmLight name="alarmlight_switch" text="开启报警音" height="80" font="3" textcolor="#FF666666" textpadding="45,0,605,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 				<Control height="10" bkcolor="#FFF3F3F3"/>
 			</VerticalLayout>
+			
 			<VerticalLayout>	<!--看船开关记录-->
-				<Button text="看船开关记录"/>
+				 <List name="watch_record" itemvalign="vcenter" padding="24,25,30,0" itemtextpadding="45,0,0,0" itemfont="3" itemtextcolor="#FF666666" itemselectedtextcolor="#FFFFFFFF">
+					<ListHeader height="65" bkcolor="#FFF3F3F3">
+						<ListHeaderItem text="看船开关记录" align="center" textcolor="#FF333333" font="2"/>
+					</ListHeader>
+                <!--<Include source="listitem.xml"/>-->
+              </List>
+			  <Label name="page" float="true" pos="385,979,0,0" width="200" height="30" font="3" textcolor="#FF666666" text="第1/2页"/>
 			</VerticalLayout>	
 <!--视频调取-->
 			<VerticalLayout>

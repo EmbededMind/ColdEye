@@ -1,7 +1,10 @@
 #pragma once
 
 
-#include "Device\Camera.h"
+//#include "Device\Camera.h"
+
+#include "Device\Port.h"
+
 #include "File\RecordFileButler.h"
 
 #include "OSDPainter.h"
@@ -31,15 +34,22 @@ public:
 	bool m_bIsWatching;
 
 	CCamera* m_BindedCamera;
+
+	CPort*   m_BindedPort;
+
 	CRecordFileButler  m_RecordFileButler;
 	CRecordFileButler  m_AlarmFileButler;
 
 	COSDPainter   mOsdPainter;
 
-	void          BindCamera(CCamera* pCamera);
+	//void          BindCamera(CCamera* pCamera);
 
-	void          ExecuteLocalConfig();
-	void          ExecuteLocalConfig(LocalConfig* pConfig);
+	void          BindPort(CPort* pPort);
+
+	void          ExecuteConfig();
+
+	//void          ExecuteLocalConfig();
+	//void          ExecuteLocalConfig(LocalConfig* pConfig);
 
 	void          ConnectRealPlay();         //打开实时播放数据流
 	void          DisconnectRealPlay();      //关闭实时播放

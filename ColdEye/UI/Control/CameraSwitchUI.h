@@ -16,6 +16,7 @@ public:
 	void SetOffImage(LPCTSTR pstrValue);
 	void SetSwitch(bool value);
 	bool GetSwitch();
+	void BackPreviousItem(CTabLayoutUI*);
 protected:
 	bool Switch;
 	CDuiString m_OnImage;

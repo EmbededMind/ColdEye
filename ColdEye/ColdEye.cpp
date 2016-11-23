@@ -9,9 +9,11 @@
 
 
 #include "Device\Camera.h"
+#include "Device\Port.h"
 
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
+#include "Device\PortManager.h"
 
 #include "UIlib.h"
 
@@ -128,9 +130,26 @@ BOOL CColdEyeApp::InitInstance()
 	m_Bitmap.LoadBitmap(IDB_NSLIENT);
 
 	CheckFileDirectory();
-	CDBShadow::GetInstance()->Init();
+
+	// 打开数据库
+	bool bRet = sqlite.Open("cold_eye.db");
+	if (bRet == false) {
+		Print("Database open failed");
+		ASSERT(FALSE);
+	}
+
+
+	//  载入主机设置项，如果载入失败设置项设为默认值。
+	if (!LoadSystemConfig()) {
+		MakeSystemConfigDefault();
+	}
+
+	CDBShadow::GetInstance()->SynchronizeWithDB();
 	CDBLogger::GetInstance()->LogPowerOn(CTime::GetCurrentTime(), 1);
 	CDBLogger::GetInstance()->GenerateLastPowerOffLog();
+
+	CPortManager::GetInstance()->LoadPortsParam();
+
 	// Start login thread
 	m_hLoginThread = (HANDLE)_beginthreadex(NULL, 0, LoginThread, NULL, 0, &m_LoginPID);
 
@@ -198,6 +217,52 @@ BOOL CColdEyeApp::InitInstance()
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
+}
+
+bool CColdEyeApp::LoadSystemConfig()
+{
+	char sqlStmt[64];
+	sprintf_s(sqlStmt, "SELECT * FROM host_config;");
+
+	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+
+	if (stmt->NextRow()) {
+		m_SysConfig.boat_name = stmt->ValueString(0);
+		m_SysConfig.watch_time_begining = stmt->ValueInt(1);
+		m_SysConfig.watch_time_span = stmt->ValueInt(2);
+		m_SysConfig.auto_watch_status = stmt->ValueInt(3);
+		m_SysConfig.alarm_sound = stmt->ValueInt(4);
+		m_SysConfig.brightness = stmt->ValueInt(5);
+
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+
+
+
+void CColdEyeApp::MakeSystemConfigDefault()
+{
+	char sqlStmt[128];
+
+	m_SysConfig.boat_name = "SealedGhost";
+	m_SysConfig.watch_time_begining = 18 * 60;
+	m_SysConfig.watch_time_span = 12 * 60;
+	m_SysConfig.auto_watch_status = 1;
+	m_SysConfig.alarm_sound = 0;
+	m_SysConfig.brightness = 0;
+
+	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d, %d, %d);",
+		m_SysConfig.boat_name.c_str(), m_SysConfig.watch_time_begining, m_SysConfig.watch_time_span,
+		m_SysConfig.auto_watch_status, m_SysConfig.alarm_sound, m_SysConfig.brightness);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
 }
 
 

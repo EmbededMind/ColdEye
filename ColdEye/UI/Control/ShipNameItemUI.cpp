@@ -96,6 +96,7 @@ void CShipNameItemUI::DoEvent(TEventUI &event)
 					pChildLayout2->SetFixedXY(size);
 					CVerticalLayoutUI *pLayout = (CVerticalLayoutUI*)(GetParent()->GetParent()->GetParent()->GetParent());
 					CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+					pItem->isEditing = false;
 					pItem->SetFocus();
 				}
 

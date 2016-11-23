@@ -10,6 +10,8 @@
 #include "Com\Communication.h"
 #include "Dbt.h"
 #include "ExHardDrive\ExHardDrive.h"
+
+#include "Database\DBShadow.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -88,7 +90,9 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_SCAN_DEV, &CColdEyeDlg::OnUserMsgScanDev)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_COMM_RXDATA, &CColdEyeDlg::OnCommReceive)
+	ON_MESSAGE(USER_MSG_RECORDVOICE, &CColdEyeDlg::OnRecordVoice)
 	ON_WM_DEVICECHANGE()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -155,6 +159,12 @@ BOOL CColdEyeDlg::OnInitDialog()
 	{
 		CExHardDrive::GetInstance()->Updata();
 	}
+
+
+	CDBShadow::GetInstance()->BroadcaseInitFileMsg();
+
+
+	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -567,7 +577,24 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 	return 0;
 }
 
+afx_msg LRESULT CColdEyeDlg::OnRecordVoice(WPARAM wParm, LPARAM lParm)
+{
+	Print("begin record");
+	mMessageBox->SendMessage(USER_MSG_RECORDVOICE, NULL, NULL);
+	return 0;
+}
+
+
 CMyMenuWnd& CColdEyeDlg::GetMyMenu()
 {
 	return mMenu;
+}
+
+
+void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//发送握手
+
+	CDialogEx::OnTimer(nIDEvent);
 }

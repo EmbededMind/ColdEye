@@ -2,8 +2,13 @@
 //
 #include "Wnd\MyMenuWnd.h"
 #include "Wnd\MsgWnd.h"
+
 #include "Control\PopupMenuUI.h"
 #include "Control\TimeButtonUI.h"
+
+#include "Pattern\MsgSquare.h"
+
+#include "Database\DBShadow.h"
 
 
 CMyMenuWnd::CMyMenuWnd()
@@ -100,22 +105,13 @@ void CMyMenuWnd::InitWindow()
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
-	//添加2个摄像头  自己测试用 id:0~5
-	cameraInfo.id = 5;
-	cameraInfo.Name = _T("甲板");
-	cameraInfo.IsActivate = false;
-	cameraInfo.Volumn = 5;
-	cameraInfo.IsVideoRecordEnabled = true;
-	cameraInfo.IsAutoWatchEnabled = true;
-	AddCamear(cameraInfo);
-
-	cameraInfo.id = 3;
-	cameraInfo.Name = _T("驾驶室");
-	cameraInfo.IsActivate = true;
-	cameraInfo.Volumn = 8;
-	cameraInfo.IsVideoRecordEnabled = false;
-	cameraInfo.IsAutoWatchEnabled = true;
-	AddCamear(cameraInfo);
+	CMsgSquare* pSquare = CMsgSquare::GetInstance();
+	if (pSquare != NULL) {
+		pSquare->AddAudience(m_hWnd, USER_MSG_LOGIN);
+		pSquare->AddAudience(m_hWnd, USER_MSG_LOGOFF);
+		pSquare->AddAudience(m_hWnd, USER_MSG_INITFILE);
+		pSquare->AddAudience(m_hWnd, USER_MSG_ADDFILE);
+	}
 }
 
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
@@ -141,14 +137,75 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		MyMessageBox(uMsg, wParam, lParam, bHandled);
 	}
 
-	if (uMsg == WM_KEYDOWN)
+	switch (uMsg)
 	{
-		if (wParam == VK_BACK)
-		{
-			DeleteAlarmCtl(cameraInfo);
-			DeleteCameraSetCtl(cameraInfo);
-			DeleteVideoObtain(cameraInfo);
-		}
+		case USER_MSG_LOGIN:
+			Print("Menu case login msg");
+
+			AddPortConfigMenuItem( (CPort*)lParam);
+			FillPortConfig( (CPort*)lParam);
+			break;
+		//-------------------------------------------
+		case USER_MSG_LOGOFF:
+			Print("Menu case logoff msg");
+			break;
+
+		case USER_MSG_INITFILE:
+			if (wParam == RECORD_ALARM) {
+				InitAlarmFile((list<CRecordFileInfo*>*)lParam);
+
+				CDBShadow* pShadow = CDBShadow::GetInstance();
+				CPortManager* pPortMgr = CPortManager::GetInstance();
+
+				if (pShadow) {
+					for (int i = 0; i < 6; i++) {
+						if (pShadow->GetAlarmFileNumber(i + 1)) {
+							AddAlarmMenuItem(pPortMgr->GetPortById(i+1));
+						}
+					}
+				}
+			}
+			else {
+				InitRecordFile((list<CRecordFileInfo*>*)lParam);
+
+				CDBShadow* pShadow = CDBShadow::GetInstance();
+				CPortManager* pPortMgr = CPortManager::GetInstance();
+
+				if (pShadow) {
+					for (int i = 0; i < 6; i++) {
+						if (pShadow->GetRecordFileNumber(i + 1)) {						
+							CPort* pPort = pPortMgr->GetPortById(i+1);
+							if (pPort) {
+								AddVideoObtainMenuItem(pPort);
+							}							
+						}
+					}
+				}
+			}
+			break;
+		//---------------------------------------------------------------------------
+		case USER_MSG_ADDFILE:
+			if (wParam == RECORD_NORMAl) {
+				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
+				camera[pInfo->nOwner - 1].pNormalList->AddRecordFile(pInfo);
+			}
+			break;
+        //--------------------------------------------
+		case USER_MSG_DELFILE:
+			if (wParam == RECORD_NORMAl) {
+				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
+				camera[pInfo->nOwner - 1].pNormalList->DeleteRecordFile(pInfo);
+			}
+			break;
+		//--------------------------------------------
+		case WM_KEYDOWN: {
+			if (GetKeyState(VK_CONTROL) && !(wParam & 0x20000000)) {
+					if (wParam == 'U'){
+
+					}
+				}
+			}
+			break;
 	}
 	return LRESULT();
 }
@@ -175,18 +232,45 @@ void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 	camera[iInx].pAlarmList = (CVideoListUI*)m_pm.FindControl(name);	//报警视频列表
 }
 
+
+
+
 void CMyMenuWnd::AddCamear(CameraInfo cameraInfo)
 {
-	AddAlarmCtl(cameraInfo);
-	AddCameraSetCtl(cameraInfo);
-	AddVideoObtain(cameraInfo);
+	AddAlarmCtl(cameraInfo);      //在报警视频菜单中添加菜单项
+	AddCameraSetCtl(cameraInfo);  //摄像头设置中添加菜单项
+	AddVideoObtain(cameraInfo);   //视频调取中
 	CameraInfoInit(cameraInfo);
 }
+
+
+
 
 void CMyMenuWnd::AddAlarmCtl(CameraInfo cameraInfo)
 {
 	AddCtl(cameraInfo, _T("layout_submenu_alarm"), ALARM_VIDEO);
 }
+
+
+
+
+
+void CMyMenuWnd::InitRecordFile(list<CRecordFileInfo*>* pList)
+{
+	list<CRecordFileInfo*>::iterator  iter;
+	for (iter = pList->begin(); iter != pList->end(); iter++) {
+		camera[(*iter)->nOwner - 1].pNormalList->AddRecordFile(*iter);
+	}
+}
+
+void CMyMenuWnd::InitAlarmFile(list<CRecordFileInfo*>* pList)
+{
+	list<CRecordFileInfo*>::iterator iter;
+	for (iter = pList->begin(); iter != pList->end(); iter++) {
+		camera[(*iter)->nOwner - 1].pAlarmList->AddRecordFile(*iter);
+	}
+}
+
 
 void CMyMenuWnd::AddCameraSetCtl(CameraInfo cameraInfo)
 {
@@ -215,6 +299,22 @@ void CMyMenuWnd::DeleteVideoObtain(CameraInfo cameraInfo)
 	DeleteCtl(cameraInfo, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
 	camera[cameraInfo.id].pNormalList->RemoveAll();
 	camera[cameraInfo.id].pNormalList = NULL;
+}
+
+void CMyMenuWnd::AddWatchRecord(SwtichRecord info)
+{
+	CListUI *pList;
+	int Count;
+	pList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
+	CSwitchRecordListUI *pListEle;
+	pListEle = new CSwitchRecordListUI(info.time, info.record_type);
+	pList->Add(pListEle);
+	pListEle->SetAttribute(_T("style"), _T("watch_record_style"));
+	Count = pList->GetCount();
+	if (Count % 2)
+		pListEle->SetBkColor(0xFFF3F3F3);
+	else
+		pListEle->SetBkColor(0xFFE5E5E5);
 }
 
 
@@ -321,12 +421,14 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 }
 
 void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{		
+{
+	int result;
 	switch (wParam) {
 		case SHIPNAME_LIMIT:
-			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_camera_switch.xml"), NULL, NULL));
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_camera_switch.xml"), NULL, NULL)) {
+
+			}
 			break;
-			
 		case CLOSE_CAMERA:
 			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 			break;
@@ -340,10 +442,16 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case SAVE_CHANGES:
+			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"))) {
+				;
+			}
+			else {
+
+			}
 			break;
 
 		case UPDATE_REQUEST:
-			//CMsgWnd::ShowMessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
+			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
 			//CMsgWnd::MessageBox(this->GetHWND(), _T("mb_update_request.xml"), NULL, NULL);
 			break;
 			
@@ -367,7 +475,18 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"));
 			break;
 
-		case RECORD:
+		case RECORD: 
+			CMsgWnd::MessageBox(this->GetHWND(), _T("mb_recordingvoice.xml"), NULL, NULL);
+			result = CMsgWnd::MessageBox(this->GetHWND(), _T("mb_playvoice.xml"), NULL, NULL);
+			if (MSGID_OK == result) {
+
+			}
+			else if(MSGID_CANCEL == result) {
+
+			}
+			else {
+
+			}
 			break;
 
 		case SAVE_RECORDED:
@@ -392,6 +511,7 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 
 		case COPYING:
+
 			break;
 
 		case STOP_COPY:
@@ -406,3 +526,62 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 }
 
 
+
+CMenuItemUI* CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
+{
+	CVerticalLayoutUI * pLayout;
+	CMenuItemUI* pMenuItem;
+	CDuiString   userData;
+
+	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
+	userData.Format(_T("%d"), pPort->GetId()-1 + baseData);
+
+	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, InsertAt(pPort->GetId()-1, pLayout, baseData));
+
+	Relationship(pLayout, pMenuItem);
+
+	return pMenuItem;
+}
+
+
+
+void CMyMenuWnd::AddAlarmMenuItem(CPort* pPort)
+{
+	CMenuItemUI* pItem  = AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	pItem->SetTag((UINT_PTR)pPort);
+}
+
+void CMyMenuWnd::AddVideoObtainMenuItem(CPort* pPort)
+{
+	CMenuItemUI* pItem = AddMenuItem(pPort, _T("layout_submenu_videoget"),  VIDEO_OBTAIN);
+	pItem->SetTag((UINT_PTR)pPort);
+}
+
+
+//void CMyMenuWnd::AddCameraConfigMenuItem(CCamera* pCamera)
+//{
+//	CMenuItemUI* pItem = AddMenuItem(pCamera->GetAttachedPort(), _T("layout_submenu_setting"), CAMERA_SET);
+//	pItem->SetTag((UINT_PTR)pCamera);
+//}
+void CMyMenuWnd::AddPortConfigMenuItem(CPort* pPort)
+{
+	CMenuItemUI* pItem  = AddMenuItem(pPort, _T("layout_submenu_setting"), CAMERA_SET);
+	pItem->SetTag( (UINT_PTR)pPort);
+}
+
+
+
+
+
+
+void CMyMenuWnd::FillPortConfig(CPort* pPort)
+{
+	int inx = pPort->GetId() - 1;
+
+	camera[inx].pTitle->SetText(pPort->GetName());
+	camera[inx].pShipname->SetText(pPort->GetName());
+	camera[inx].pSwitch->SetSwitch(pPort->m_DevConfig.IsCameraOn);
+	camera[inx].pVolum->SetValue(pPort->m_DevConfig.Volumn);
+	camera[inx].pSaveVideo->SetValue(pPort->m_DevConfig.IsRecordEnabled);
+	camera[inx].pAutoWatch->SetValue(pPort->m_DevConfig.IsAutoWatchEnabled);
+}

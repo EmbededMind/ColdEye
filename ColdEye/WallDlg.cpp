@@ -7,6 +7,14 @@
 #include "afxdialogex.h"
 #include "Com\Communication.h"
 
+#include "Pattern\MsgSquare.h"
+
+
+#include "Device\PortManager.h"
+
+/**@brief 报警消息回调
+ *
+ */
 bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, long dwUser)
 {
 	CWallDlg* pWall = (CWallDlg*)dwUser;
@@ -17,6 +25,9 @@ bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, lon
 }
 
 
+/**@brief 掉线回调
+ *
+ */
 void __stdcall _cbDisconnect(LONG loginId, char* szDVRIP, LONG DVRPort, DWORD userData)
 {
 	Print("---------------Disconnect-----------%s", szDVRIP);
@@ -41,33 +52,56 @@ CWallDlg::~CWallDlg()
 {
 }
 
-
-
-BOOL CWallDlg::Invest(CCamera* pCamera)
+bool CWallDlg::Invest(CPort* pPort)
 {
-	pCamera->LoadLocalConfig();
+     ASSERT(pPort->m_Id > 0);
+	 
+	 int pos  = pPort->GetId() - 1;
 
-	for (int i = 0; i < 6; i++) {
-		if (mSurfaces[i] == NULL) {
-			pCamera->m_Id = i + 1;
+	 ASSERT(mSurfaces[pos] == NULL);
 
-			mSurfaces[i] = new CSurface();
-			mSurfaces[i]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER|WS_THICKFRAME, CRect(0,0,0,0), this, pCamera->m_Id);
-			mSurfaces[i]->ShowWindow(SW_SHOW);
+	 mSurfaces[pos]  = new CSurface();
+	 mSurfaces[pos]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER|WS_THICKFRAME, CRect(0,0,0,0), this, pPort->GetId());
+	 mSurfaces[pos]->ShowWindow(SW_SHOW);
+	 mSurfaces[pos]->BindPort(pPort);
+	 mSurfaces[pos]->ExecuteConfig();
+	 DesignSurfaceLayout();
+	 ExecuteSurfaceLayout();
 
-
-			mSurfaces[i]->BindCamera(pCamera);
-
-			mSurfaces[i]->ExecuteLocalConfig();
-
-			DesignSurfaceLayout();
-			ExecuteSurfaceLayout();
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	 return true;
 }
+
+
+/**@brief 视频墙新加一个摄像头
+ *
+ */
+//BOOL CWallDlg::Invest(CCamera* pCamera)
+//{
+////	pCamera->LoadLocalConfig();
+////
+////	pCamera->AttachPort(CPortManager::GetInstance()->GetPortById(1));
+//
+//	for (int i = 0; i < 6; i++) {
+//		if (mSurfaces[i] == NULL) {
+//			pCamera->m_Id = i + 1;
+//
+//			mSurfaces[i] = new CSurface();
+//			mSurfaces[i]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER|WS_THICKFRAME, CRect(0,0,0,0), this, pCamera->m_Id);
+//			mSurfaces[i]->ShowWindow(SW_SHOW);
+//
+//
+//			mSurfaces[i]->BindCamera(pCamera);
+//
+//			mSurfaces[i]->ExecuteLocalConfig();
+//
+//			DesignSurfaceLayout();
+//			ExecuteSurfaceLayout();
+//			return TRUE;
+//		}
+//	}
+//
+//	return FALSE;
+//}
 
 
 
@@ -77,13 +111,22 @@ void CWallDlg::Delete(CSurface* pSurface)
 }
 
 
+/**@brief 根据设想头loginId找到对应此摄像头的Surface
+ *
+ */
 CSurface* CWallDlg::FindSurface(long loginId)
 {
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] != NULL) {
-			ASSERT(mSurfaces[i]->m_BindedCamera != NULL);
+			//ASSERT(mSurfaces[i]->m_BindedCamera != NULL);
 
-			if (mSurfaces[i]->m_BindedCamera->GetLoginId() == loginId) {
+
+			//if (mSurfaces[i]->m_BindedCamera->GetLoginId() == loginId) {
+			//	return mSurfaces[i];
+			//}
+
+			ASSERT(mSurfaces[i]->m_BindedPort != NULL);
+			if (mSurfaces[i]->m_BindedPort->m_pCamera->GetLoginId() == loginId) {
 				return mSurfaces[i];
 			}
 		}
@@ -93,6 +136,9 @@ CSurface* CWallDlg::FindSurface(long loginId)
 }
 
 
+/**@brief 计算视频墙应该显示几行几列
+ *
+ */
 void CWallDlg::DesignSurfaceLayout()
 {
 	int i = 0;
@@ -123,6 +169,9 @@ void CWallDlg::DesignSurfaceLayout()
 }
 
 
+/**@brief 根据DesignSurfaceLayout计算的结果执行Surface的布局
+ *
+ */
 void CWallDlg::ExecuteSurfaceLayout()
 {
 	CRect rClient;
@@ -146,6 +195,9 @@ void CWallDlg::ExecuteSurfaceLayout()
 }
 
 
+/**@brief 视频墙的掉线响应
+ *
+ */
 void CWallDlg::OnDisconnect(LONG loginId, char* szIp, LONG port)
 {
 	CSurface* pSurface = FindSurface(loginId);
@@ -205,7 +257,8 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		default:
 			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
 				CSurface* pSurface = (CSurface*)GetFocus();
-				CCamera* pDev = pSurface->m_BindedCamera;
+				//CCamera* pDev = pSurface->m_BindedCamera;
+				CCamera* pDev  = pSurface->m_BindedPort->m_pCamera;
 
 				switch (pMsg->wParam)
 				{
@@ -236,11 +289,24 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 }
 
 
+/**@brief 设备登录响应
+ *
+ */
 afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam) {
 		Print("Login...");
-		Invest( (CCamera*)lParam);
+
+		CPort* pPort  = CPortManager::GetInstance()->AllocPort();
+
+		pPort->SetCamera( (CCamera*)lParam );
+
+		Invest( pPort);        //视频墙增加surface
+
+		MSG msg;
+		msg.message = USER_MSG_LOGIN;
+		msg.lParam = (LPARAM)pPort;
+		CMsgSquare::GetInstance()->Broadcast(msg);
 	}
 	else {
 		AfxMessageBox(_T("登录失败"));
@@ -252,14 +318,30 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 
 
 
-
+/**@brief 设备注销响应
+ *
+ */
 afx_msg LRESULT CWallDlg::OnUserMsgLogoff(WPARAM wParam, LPARAM lParam)
 {
 	CSurface* pSurface = (CSurface*)lParam;
+
+
+
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] == pSurface) {
-			Delete(pSurface);
+			//Delete(pSurface);
+
+			MSG msg;
+			msg.message = USER_MSG_LOGOFF;
+			//msg.lParam = (LPARAM)pSurface->m_BindedCamera;
+			msg.lParam = (LPARAM)pSurface->m_BindedPort->m_pCamera;
+			CMsgSquare::GetInstance()->Broadcast(msg);
+
+
+		/*	delete pSurface->m_BindedCamera;*/
+		    delete pSurface->m_BindedPort->m_pCamera;
 			delete mSurfaces[i];
+
 			mSurfaces[i] = NULL;
 			break;
 		}
