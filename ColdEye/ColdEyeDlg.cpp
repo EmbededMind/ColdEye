@@ -92,6 +92,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(WM_COMM_RXDATA, &CColdEyeDlg::OnCommReceive)
 	ON_MESSAGE(USER_MSG_RECORDVOICE, &CColdEyeDlg::OnRecordVoice)
 	ON_WM_DEVICECHANGE()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -155,6 +156,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	CDBShadow::GetInstance()->BroadcaseInitFileMsg();
 
 
+	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -578,4 +580,13 @@ afx_msg LRESULT CColdEyeDlg::OnRecordVoice(WPARAM wParm, LPARAM lParm)
 CMyMenuWnd& CColdEyeDlg::GetMyMenu()
 {
 	return mMenu;
+}
+
+
+void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//发送握手
+
+	CDialogEx::OnTimer(nIDEvent);
 }
