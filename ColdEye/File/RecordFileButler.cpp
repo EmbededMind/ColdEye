@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "RecordFileButler.h"
 
+extern CMutex mutex_RealData;
+
+
 CRecordFileButler::CRecordFileButler()
 {}
 
@@ -44,6 +47,9 @@ void CRecordFileButler::ReleaseRecordFile()
 
 	if (m_pFileInfo != CFile::hFileNull) {
 		CFileStatus  status;
+
+mutex_RealData.Lock();
+
 		if (m_File.GetStatus(status)) {
 			m_pFileInfo->dlSize = status.m_size;
 		}
@@ -56,6 +62,8 @@ void CRecordFileButler::ReleaseRecordFile()
 		mutex = 2;
 
 		m_File.Close();
+
+mutex_RealData.Unlock();
 
 		if (m_pFileInfo->dlSize == 0) {
 			CFile::Remove(status.m_szFullName);

@@ -21,6 +21,12 @@ bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, lon
 
 	ASSERT(pWall != NULL);
 
+	CSurface* pSurface  = pWall->FindSurface(loginId);
+
+	if (pSurface) {
+		pSurface->OnAlarmTrigged();
+	}
+
 	return 0;
 }
 
