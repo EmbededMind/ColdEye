@@ -924,6 +924,27 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				mDelBtn.ShowWindow(SW_SHOW);
 				mReverseBtn.SetFocus();
 				break;
+			default:
+				if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
+					switch (pMsg->wParam)
+					{
+					case 'T':
+						CCommunication::GetInstance()->AskTalk(this->m_BindedCamera);
+						return TRUE;
+
+					case 'O':
+						CCommunication::GetInstance()->YouTalk();
+						return true;
+
+					case 'S':
+						CCommunication::GetInstance()->OverTalk();
+						return true;
+
+					default:
+						break;
+					}
+				}
+				break;
 		}
 	}
 

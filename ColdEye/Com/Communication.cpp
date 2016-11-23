@@ -179,7 +179,7 @@ uint8_t CCommunication::RecSetVolumeProc(uint8_t *pch)
 
 bool CCommunication::Alarm(CCamera * pDev)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, pDev);
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 	return true;
 }
@@ -203,7 +203,7 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 
 bool CCommunication::OverAlarm(CCamera * pDev)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, pDev);
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 	return true;
 }
@@ -221,5 +221,18 @@ bool CCommunication::RecOverAlarmProc(uint8_t *pch)
 	{
 		return false;
 	}
+	return true;
+}
+
+bool CCommunication::Handle(uint8_t prm)
+{
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, NULL);
+	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	return true;
+}
+
+uint8_t CCommunication::RecHandleProc(uint8_t * pch)
+{
+
 	return true;
 }
