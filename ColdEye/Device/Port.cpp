@@ -151,5 +151,5 @@ bool  CPort::IsActive()
 
 void CPort::Config(DeviceConfig& config)
 {
-	
+	//this->m_DevConfig.
 }
