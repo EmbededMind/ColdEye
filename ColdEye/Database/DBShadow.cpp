@@ -5,12 +5,6 @@
 
 CDBShadow::CDBShadow()
 {
-	bool bRet  = sqlite.Open("cold_eye.db");
-	if (bRet == false) {
-		Print("Database open failed");
-		ASSERT(FALSE);
-	}
-
 	for (int i = 0; i < 6; i++) {
 		mRecordFileCnts[i] = 0;
 		mAlarmFileCnts[i] = 0;
@@ -18,7 +12,7 @@ CDBShadow::CDBShadow()
 
 
 	InitializeCriticalSection(&g_cs);
-	CheckTables();
+	/*CheckTables();*/
 }
 
 
@@ -115,7 +109,7 @@ void CDBShadow::BroadcaseInitFileMsg()
 	pSquare->Broadcast(msg);
 	
 
-	msg.wParam = (WPARAM)RECORD_ALARM;
+	msg.wParam = RECORD_ALARM;
 	msg.lParam = (LPARAM)(&mAlarmFileInfoList);
 	Print("Broadcast initfile msg to alarm");
 	pSquare->Broadcast(msg);
@@ -156,8 +150,7 @@ void CDBShadow::SynchronizeWithDB()
 				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
 
 			filename = _T(NORMAL_RECORD_PATH) + filename;
-
-			CFile::Remove(filename);
+			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM normal_record WHERE owner = %d AND begin_sec = %I64d;",pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
@@ -189,8 +182,7 @@ void CDBShadow::SynchronizeWithDB()
 				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
 
 			filename = _T(ALARM_RECORD_PATH) + filename;
-
-			CFile::Remove(filename);
+			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM alarm_record WHERE owner = %d AND begin_sec = %I64d;", pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
@@ -203,7 +195,7 @@ void CDBShadow::SynchronizeWithDB()
 
 void CDBShadow::CheckTables()
 {
-	SQLiteStatement* stmt = sqlite.Statement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name='normal_reocrd';");
+	/*SQLiteStatement* stmt = sqlite.Statement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name='normal_reocrd';");
 	if (!stmt->NextRow()) {
 		Print("TABLE normal_record not exist");
 
@@ -221,7 +213,7 @@ void CDBShadow::CheckTables()
 			Print("Create table normal_record failed");
 			ASSERT(FALSE);
 		}
-	}
+	}*/
 }
 
 

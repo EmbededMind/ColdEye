@@ -20,8 +20,6 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 	BOOL bPlayOk = FALSE;
 	bPlayOk = H264_PLAY_CloseStream(nPort);
 	bPlayOk &= H264_PLAY_StopSoundShare(nPort);
-	bPlayOk &= H264_PLAY_StopSoundShare(nPort);
-
 	return bPlayOk;
 }
 BOOL CRecordAlarmSound::StopTalk()

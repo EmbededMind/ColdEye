@@ -2,6 +2,9 @@
 
 #include "stdafx.h"
 #include "netsdk.h"
+
+
+
 #define DEFAULT_VOL           3
 #define DEFAULT_AWT_START     (9*60)
 #define DEFAULT_AWT_END       (22*60)
@@ -91,6 +94,9 @@ public:
 
 	SDK_CONFIG_NET_COMMON_V2 mCommonNetConfig;
 
+	//void AttachPort(CPort* pPort);
+	//CPort* GetAttachedPort();
+
 private:
 	long m_LoginId;
 	long m_hRealPlay;
@@ -99,4 +105,6 @@ private:
 	char m_szIp[20];
 	char m_szUserName[20];
 	char m_szPassword[20];
+
+	//CPort*  m_pAttachedPort;
 };

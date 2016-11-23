@@ -6,30 +6,30 @@
 
 
 CString PortName[24] = {  //¶ÔÓ¦Ãû×Öid
-	_T("ÉãÏñ»ú1"),              // 1
-	_T("ÉãÏñ»ú2"),              // 2
-	_T("ÉãÏñ»ú3"),              // 3
-	_T("ÉãÏñ»ú4"),              // 4
-	_T("ÉãÏñ»ú5"),              // -5
-	_T("ÉãÏñ»ú6"),              // -6
-	_T("´¬Í·ÉãÏñ»ú"),           //  1
-	_T("´¬¼×°åÉãÏñ»ú"),         //  2
-	_T("´¬×óÏÏÉãÏñ»ú"),         //  3
-	_T("´¬ÓÒÏÏÉãÏñ»ú"),         //  4
-	_T("´¬ºó·½"),              //  5
-	_T("´¬ÀÂÉþ"),              //  6
-	_T("¼¯¿ØÌ¨"),              //  7
-	_T("¼à¿ØÌ¨"),              //  8
-	_T("´¬³¤ÊÒ"),              //  9
-	_T("´¬Ô±ÊÒ"),              // 10
-	_T("Ö÷»ú²Õ"),              // 11
-	_T("·¢µç»ú²Õ"),            // 12
-	_T("ÂÞ¾­¼×°å"),            // 13
-	_T("Ò»²ã¼×°å"),            // 14
-	_T("¶þ²ã¼×°å"),            // 15
-	_T("Èý²ã¼×°å"),            // 16
-	_T("ËÄ²ã¼×°å"),            // 17
-	_T("Îå²ã¼×°å")             // 18
+	_T("ÉãÏñ»ú1"),              
+	_T("ÉãÏñ»ú2"),              
+	_T("ÉãÏñ»ú3"),              
+	_T("ÉãÏñ»ú4"),             
+	_T("ÉãÏñ»ú5"),              
+	_T("ÉãÏñ»ú6"),              
+	_T("´¬Í·ÉãÏñ»ú"),           
+	_T("´¬¼×°åÉãÏñ»ú"),         
+	_T("´¬×óÏÏÉãÏñ»ú"),         
+	_T("´¬ÓÒÏÏÉãÏñ»ú"),         
+	_T("´¬ºó·½"),              
+	_T("´¬ÀÂÉþ"),              
+	_T("¼¯¿ØÌ¨"),             
+	_T("¼à¿ØÌ¨"),              
+	_T("´¬³¤ÊÒ"),             
+	_T("´¬Ô±ÊÒ"),              
+	_T("Ö÷»ú²Õ"),              
+	_T("·¢µç»ú²Õ"),            
+	_T("ÂÞ¾­¼×°å"),            
+	_T("Ò»²ã¼×°å"),           
+	_T("¶þ²ã¼×°å"),           
+	_T("Èý²ã¼×°å"),            
+	_T("ËÄ²ã¼×°å"),            
+	_T("Îå²ã¼×°å")             
 };
 
 
@@ -47,33 +47,51 @@ CPort::~CPort()
 
 
 
-void CPort::SetId(int id)
+void CPort::SetId(uint16_t id)
 {
-	this->m_Id = id;
+	m_Id  = id;
 }
 
-int CPort::GetId()
+
+void CPort::SetNameId(uint16_t id)
+{
+	m_DevConfig.NameId = id;
+}
+
+
+void CPort::SetCamera(CCamera* pCamera)
+{
+	m_pCamera  = pCamera;
+}
+
+
+
+uint16_t CPort::GetId()
 {
 	return m_Id;
 }
 
 
-void CPort::SetNameId(int id)
+uint16_t CPort::GetNameId()
 {
-	this->m_nameId = id;
+	return m_DevConfig.NameId;
 }
 
 
-
-int CPort::GetNameId()
+CCamera* CPort::GetCamera()
 {
-	return m_nameId;
+	return m_pCamera;
 }
+
+
 
 CString& CPort::GetName()
 {
-	return PortName[m_nameId];
+	return PortName[m_DevConfig.NameId-1];
 }
+
+
+
 
 
 
@@ -103,7 +121,7 @@ void CPort::SetVisibility(bool isVisible)
 		m_bIsVisible = isVisible;
 		
 		MSG msg;
-		msg.wParam = m_nameId;
+		msg.wParam = m_DevConfig.NameId;
 		msg.lParam = (LPARAM)this;
 		msg.message = USER_MSG_PORT_VISIBILITY_CHANGE;
 	}
@@ -114,4 +132,24 @@ void CPort::SetVisibility(bool isVisible)
 bool CPort::GetVisibility()
 {
 	return m_bIsVisible;
+}
+
+
+void CPort::SetActivate(bool newState)
+{
+	this->m_bIsActive  = newState;
+}
+
+
+
+bool  CPort::IsActive()
+{
+	return m_bIsActive;
+}
+
+
+
+void CPort::Config(DeviceConfig& config)
+{
+	//this->m_DevConfig.
 }

@@ -17,4 +17,6 @@ public:
 	void   LoadPortsParam();
 
 	CPort*  GetPortById(int id);
+
+	CPort*  AllocPort();
 };

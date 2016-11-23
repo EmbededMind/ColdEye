@@ -22,7 +22,7 @@ private:
 	bool DelFile(CString DelPsth);
 	ULONGLONG KillAlarmFile();
 	ULONGLONG KillNormalFile();
-	ULONGLONG GetDiskFreeSpaceAsMB(CString DiskName);
+	ULONGLONG GetDiskFreeSpaceAsB(CString DiskName);
 	bool IsTimeOutNormalFile();
 	static UINT FileMetabolismThread(LPVOID pParam);
 };

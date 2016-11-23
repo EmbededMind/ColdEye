@@ -35,8 +35,20 @@ void CPortManager::LoadPortsParam()
 
 	int i = 0;
 	while (stmt->NextRow()) {
-		mPorts[i].SetId(stmt->ValueInt(1));
-		mPorts[i].SetNameId(stmt->ValueInt(2));
+		mPorts[i].m_Id                            = stmt->ValueInt(1);
+		mPorts[i].m_DevConfig.NameId              = stmt->ValueInt(2);
+		mPorts[i].m_DevConfig.IsCameraOn          = stmt->ValueInt(3);
+		mPorts[i].m_DevConfig.IsVideoFlip         = stmt->ValueInt(4);
+		mPorts[i].m_DevConfig.Volumn              = stmt->ValueInt(5);
+		mPorts[i].m_DevConfig.IsRecordEnabled     = stmt->ValueInt(6);
+	    mPorts[i].m_DevConfig.IsAutoWatchEnabled  = stmt->ValueInt(7);
+
+		mPorts[i].m_AwConfig.Begining             = stmt->ValueInt(8);
+		mPorts[i].m_AwConfig.End                  = stmt->ValueInt(9);
+		mPorts[i].m_AwConfig.IsAlarmSoundOn       = stmt->ValueInt(10);
+		mPorts[i].m_AwConfig.AlarmSoundId         = stmt->ValueInt(11);
+		mPorts[i].m_AwConfig.IsAlarmLightOn       = stmt->ValueInt(12);
+
 		i++;
 	}
 }
@@ -55,3 +67,15 @@ CPort*  CPortManager::GetPortById(int id)
 }
 
 
+
+CPort* CPortManager::AllocPort()
+{
+	for (int i = 0; i < 6; i++) {
+		if (! mPorts[i].IsActive()) {
+		     mPorts[i].SetActivate(true);
+			 return &mPorts[i];
+		}
+	}
+
+	return NULL;
+}

@@ -14,6 +14,18 @@
 
 #include "WallDlg.h"
 
+
+
+typedef struct {
+	std::string boat_name;
+	DWORD       watch_time_begining;
+	DWORD       watch_time_span;
+	bool        auto_watch_status;
+	uint16_t    alarm_sound;
+	uint16_t    brightness;
+}HostConfig;
+
+
 // CColdEyeApp: 
 // 有关此类的实现，请参阅 ColdEye.cpp
 //
@@ -29,6 +41,11 @@ public:
 
 	virtual BOOL InitInstance();
 
+	HostConfig   m_SysConfig;
+	bool      LoadSystemConfig();
+	//bool      SetSystemConfig(CString& boat_name);
+	//bool      SetSystemConfig(uint16_t  brightness, uint16_t volumn);
+	void      MakeSystemConfigDefault();
 
 
 	HWND      GetMenuWndHandle();
@@ -53,7 +70,6 @@ private:
 
 	void CheckFileDirectory();
 	void CheckDatabase();
-
 
 
 // 实现

@@ -202,6 +202,7 @@ BOOL CCamera::Login()
 	if (lRet > 0)
 	{
 		m_LoginId = lRet;
+		printf("Login\n");
 		CUtil::LoadMap(this);
 		return TRUE;
 	}
@@ -224,6 +225,7 @@ void CCamera::Logout()
 {
 	if (m_LoginId > 0) {
 		if (H264_DVR_Logout(m_LoginId)) {
+			CUtil::RemoveDev(this);
 			m_LoginId = 0;
 		}
 		else {
@@ -382,3 +384,15 @@ void CCamera::OnDisConnnect()
 	Logout();
 	//StopRealPlay();
 }
+
+
+//void CCamera::AttachPort(CPort* pPort)
+//{
+//	this->m_pAttachedPort = pPort;
+//}
+//
+//
+//CPort*  CCamera::GetAttachedPort()
+//{
+//	return this->m_pAttachedPort;
+//}

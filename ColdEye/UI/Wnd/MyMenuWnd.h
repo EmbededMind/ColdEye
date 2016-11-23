@@ -12,8 +12,8 @@
 #include "Control\SwitchRecordListUI.h"
 
 
-#include "Device\Camera.h"
 #include "Device\PortManager.h"
+
 
 #include <list>
 
@@ -96,14 +96,16 @@ public :
 	CameraItem camera[6];
 private:
 
+	CMenuItemUI*  AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData);
 
-
-	void  AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData);
 	void  AddAlarmMenuItem(CPort* pPort);
-	void  AddVideoObtainItem(CPort* pPort);
-
-
+	void  AddVideoObtainMenuItem(CPort* pPort);
+	//void  AddCameraConfigMenuItem(CCamera* pCamera);
+	void  AddPortConfigMenuItem(CPort * pPort);
 
 	void  InitRecordFile(list<CRecordFileInfo*>* pList);
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
+
+	//void  FillCameraConfig(CCamera* pCamera);
+	void   FillPortConfig(CPort* pPort);
 };

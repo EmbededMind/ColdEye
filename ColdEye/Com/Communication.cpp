@@ -29,32 +29,30 @@ bool CCommunication::CleanChannel()
 bool CCommunication::AskTalk(CCamera * pDev)
 {
 	printf("AskTalk\n");
-	if (IsChannelCleaning())
-	{
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x01, 0x00, pDev);
-		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-		return true;
-	}
-	return false;
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x01, 0x00, pDev);
+	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	return true;
 }
 
 bool CCommunication::RecTalkProc(uint8_t *pch)
 {
-	if (IsChannelCleaning())
+	if (pch[5] == 0x01)
 	{
-		if (pch[5] == 0x01)
+		uint64_t mac64;
+		mac64 = CUtil::ArrayToUint64(&pch[6]);
+		if (this->mPdev && this->mPdev != Mac_CCamera_Map[mac64])
 		{
-			uint64_t mac64;
-			mac64 = CUtil::ArrayToUint64(&pch[6]);
-			if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map.at(mac64)->GetLoginId()))
-			{
-				this->mPdev = Mac_CCamera_Map.at(mac64);
-				return false;
-			}
+			H264_DVR_StopVoiceCom(this->mTalkHandle);
+			CleanChannel();
 		}
-		else
+		if (this->mPdev == Mac_CCamera_Map[mac64])
 		{
-			return false;
+			return true;
+		}
+		if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map[mac64]->GetLoginId()))
+		{
+			this->mPdev = Mac_CCamera_Map.at(mac64);
+			return true;
 		}
 	}
 	else
