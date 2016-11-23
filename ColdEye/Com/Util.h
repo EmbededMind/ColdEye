@@ -3,7 +3,7 @@
 #include "Device\Camera.h"
 #include <map>
 using namespace std;
-static map<uint64_t, CCamera*> Mac_CCamera_Map;
+extern map<uint64_t, CCamera*> Mac_CCamera_Map;
 class CUtil
 {
 public:
@@ -13,6 +13,7 @@ public:
 	static uint8_t CharToUint8(char ch);
     static uint64_t CharToUint64(char *pch);
 	static void LoadMap(CCamera *pCamera);
+	static void RemoveDev(CCamera *pCamera);
 	static uint64_t ArrayToUint64(uint8_t *pch);
 };
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Util.h"
 
+map<uint64_t, CCamera*> Mac_CCamera_Map;
+
 CUtil::CUtil()
 {
 }
@@ -9,10 +11,6 @@ CUtil::CUtil()
 CUtil::~CUtil()
 {
 }
-
-
-
-
 
 
 void CUtil::LoadOrder(uint8_t * pOrder, uint8_t Header, uint8_t ScrType, uint8_t destType, uint8_t Cmd, uint8_t Prm1, uint8_t Parm2, CCamera * pCamear)
@@ -86,8 +84,21 @@ void CUtil::LoadMap(CCamera * pCamera)
 {
 	uint64_t uint64mac;
 	uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
+	printf("LoadMap %llu\n", uint64mac);
 	Mac_CCamera_Map.insert(pair<uint64_t, CCamera*>(uint64mac, pCamera));
-	/*Mac_CCamera_Map[uint64mac] = pCamera;*/
+}
+
+void CUtil::RemoveDev(CCamera * pCamera)
+{
+	uint64_t uint64mac;
+	uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
+	map<uint64_t, CCamera*>::iterator iter;
+	iter = Mac_CCamera_Map.find(uint64mac);
+	if (iter != Mac_CCamera_Map.end())
+	{
+		printf("RemoveDev %llu\n", uint64mac);
+		Mac_CCamera_Map.erase(iter);
+	}
 }
 
 uint64_t CUtil::ArrayToUint64(uint8_t * pch)

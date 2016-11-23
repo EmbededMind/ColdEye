@@ -139,11 +139,19 @@ BOOL CColdEyeDlg::OnInitDialog()
 	SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
 	mWall.SetFocus();
 
-	if (!CSerialPort::GetInstance(COM_KB)->InitPort(this, COM_KB, 9600, 'N', 8, 1, EV_RXCHAR, 512))
+	if (CSerialPort::GetInstance(COM_KB)->InitPort(this, COM_KB, 9600, 'N', 8, 1, EV_RXCHAR, 512))
+	{
+		CSerialPort::GetInstance(COM_KB)->StartMonitoring();
+	}
+	else
 	{
 		AfxMessageBox(_T("COM_KB 没有发现串口或串口被占用!"));
 	}
-	if (!CSerialPort::GetInstance(COM_CAM)->InitPort(this, COM_CAM, 9600, 'N', 8, 2, EV_RXCHAR, 512))
+	if (CSerialPort::GetInstance(COM_CAM)->InitPort(this, COM_CAM, 9600, 'N', 8, 2, EV_RXCHAR, 512))
+	{
+		CSerialPort::GetInstance(COM_CAM)->StartMonitoring();
+	}
+	else
 	{
 		AfxMessageBox(_T("COM_CAM 没有发现串口或串口被占用!"));
 	}

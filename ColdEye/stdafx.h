@@ -90,11 +90,10 @@
  /*****************************************
  *            Direction define            *
  ******************************************/
-#define UI_RESOURCE_PATH    "..\\Resource"
-#define RECORD_PATH          "D:\\Record\\"
-#define NORMAL_RECORD_PATH   "D:\\Record\\Normal\\"
-#define ALARM_RECORD_PATH    "D:\\Record\\Alarm\\"
-#define SOUND_PATH           "D:\\Record\\Alarm\\"
+#define UI_RESOURCE_PATH     "..\\Resource"
+#define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
+#define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
+#define SOUND_PATH           "E:\\AlarmRecord\\"
 #define NORMALDISK _T("d")
 #define ALARMDISK  _T("e")
 

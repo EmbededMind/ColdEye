@@ -12,7 +12,7 @@ CDBShadow::CDBShadow()
 
 
 	InitializeCriticalSection(&g_cs);
-	CheckTables();
+	/*CheckTables();*/
 }
 
 
@@ -150,8 +150,6 @@ void CDBShadow::SynchronizeWithDB()
 				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
 
 			filename = _T(NORMAL_RECORD_PATH) + filename;
-
-			/*CFile::Remove(filename);*/
 			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM normal_record WHERE owner = %d AND begin_sec = %I64d;",pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
@@ -184,8 +182,6 @@ void CDBShadow::SynchronizeWithDB()
 				t.GetYear(), t.GetMonth(), t.GetDay(), t.GetHour(), t.GetMinute(), t.GetSecond());
 
 			filename = _T(ALARM_RECORD_PATH) + filename;
-
-			//CFile::Remove(filename);
 			DeleteFile(filename);
 			sprintf_s(sqlStmt, "DELETE FROM alarm_record WHERE owner = %d AND begin_sec = %I64d;", pInfo->nOwner, pInfo->tBegin);
 			if (!sqlite.DirectStatement(sqlStmt)) {
@@ -199,7 +195,7 @@ void CDBShadow::SynchronizeWithDB()
 
 void CDBShadow::CheckTables()
 {
-	SQLiteStatement* stmt = sqlite.Statement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name='normal_reocrd';");
+	/*SQLiteStatement* stmt = sqlite.Statement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name='normal_reocrd';");
 	if (!stmt->NextRow()) {
 		Print("TABLE normal_record not exist");
 
@@ -217,7 +213,7 @@ void CDBShadow::CheckTables()
 			Print("Create table normal_record failed");
 			ASSERT(FALSE);
 		}
-	}
+	}*/
 }
 
 

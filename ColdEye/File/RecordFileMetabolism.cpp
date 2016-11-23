@@ -88,7 +88,7 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 	return INT64();
 }
 
-ULONGLONG CRecordFileMetabolism::GetDiskFreeSpaceAsMB(CString DiskName)
+ULONGLONG CRecordFileMetabolism::GetDiskFreeSpaceAsB(CString DiskName)
 {
 	ULARGE_INTEGER space;
 	if (GetDiskFreeSpaceEx(DiskName, 0, &space, 0))
@@ -119,8 +119,8 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 UINT CRecordFileMetabolism::FileMetabolismThread(LPVOID pParam)
 {
 	CRecordFileMetabolism *pRecordFileMetabolism = (CRecordFileMetabolism*)pParam;
-	pRecordFileMetabolism->SurplusSpaceNormal = pRecordFileMetabolism->GetDiskFreeSpaceAsMB(NORMALDISK);
-	pRecordFileMetabolism->SurplusSpaceAlarm = pRecordFileMetabolism->GetDiskFreeSpaceAsMB(ALARMDISK);
+	pRecordFileMetabolism->SurplusSpaceNormal = pRecordFileMetabolism->GetDiskFreeSpaceAsB(NORMALDISK);
+	pRecordFileMetabolism->SurplusSpaceAlarm = pRecordFileMetabolism->GetDiskFreeSpaceAsB(ALARMDISK);
 	while( pRecordFileMetabolism->SurplusSpaceNormal < SURPLUSSPACENORMAL && pRecordFileMetabolism->SurplusSpaceNormal)
 	{
 		pRecordFileMetabolism->SurplusSpaceNormal -= pRecordFileMetabolism->KillNormalFile();
@@ -129,10 +129,10 @@ UINT CRecordFileMetabolism::FileMetabolismThread(LPVOID pParam)
 	{
 		pRecordFileMetabolism->SurplusSpaceAlarm -= pRecordFileMetabolism->KillAlarmFile();
 	}
-	while (pRecordFileMetabolism->IsTimeOutNormalFile())
-	{
-		pRecordFileMetabolism->KillNormalFile();
-	}
+	//while (pRecordFileMetabolism->IsTimeOutNormalFile())
+	//{
+	//	pRecordFileMetabolism->KillNormalFile();
+	//}
 	AfxEndThread(100);
 	return 0;
 }
