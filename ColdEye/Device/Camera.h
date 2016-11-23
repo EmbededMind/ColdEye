@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "netsdk.h"
 
-#include "Device\Port.h"
 
 
 #define DEFAULT_VOL           3
@@ -95,8 +94,8 @@ public:
 
 	SDK_CONFIG_NET_COMMON_V2 mCommonNetConfig;
 
-	void AttachPort(CPort* pPort);
-	CPort* GetAttachedPort();
+	//void AttachPort(CPort* pPort);
+	//CPort* GetAttachedPort();
 
 private:
 	long m_LoginId;
@@ -107,5 +106,5 @@ private:
 	char m_szUserName[20];
 	char m_szPassword[20];
 
-	CPort*  m_pAttachedPort;
+	//CPort*  m_pAttachedPort;
 };

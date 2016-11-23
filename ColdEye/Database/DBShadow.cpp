@@ -5,12 +5,6 @@
 
 CDBShadow::CDBShadow()
 {
-	bool bRet  = sqlite.Open("cold_eye.db");
-	if (bRet == false) {
-		Print("Database open failed");
-		ASSERT(FALSE);
-	}
-
 	for (int i = 0; i < 6; i++) {
 		mRecordFileCnts[i] = 0;
 		mAlarmFileCnts[i] = 0;

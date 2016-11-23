@@ -18,6 +18,9 @@ public:
 
 
 public:
+    bool      Invest(CPort* pPort);
+	
+
 	BOOL Invest(CCamera* pCamera);
 
 	void Delete(CSurface* pSurface);

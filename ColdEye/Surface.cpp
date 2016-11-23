@@ -116,16 +116,17 @@ CSurface::~CSurface()
 }
 
 
-/**@brief 绑定一个摄像头
+/**@brief 绑定到指定Port
  *
  */
-void CSurface::BindCamera(CCamera* pCamera)
+void CSurface::BindPort(CPort* pPort)
 {
-	m_BindedCamera = pCamera;
+	m_BindedPort  = pPort;
+
+	m_BindedCamera  = pPort->m_pCamera;
 
 	CString subDir;
-
-	subDir.Format(_T("%d\\"), m_BindedCamera->m_Id);
+	subDir.Format(_T("%d\\"), m_BindedPort->GetId());
 
 	m_RecordFileButler.SetDirection(_T(NORMAL_RECORD_PATH) + subDir);
 	m_AlarmFileButler.SetDirection(_T(ALARM_RECORD_PATH) + subDir);
@@ -136,49 +137,75 @@ void CSurface::BindCamera(CCamera* pCamera)
 	m_AlarmFileButler.SetFileType(RECORD_ALARM);
 	m_AlarmFileButler.Attach(CDBShadow::GetInstance());
 
-	m_RecordFileButler.SetOwner(m_BindedCamera->m_Id);
-	m_AlarmFileButler.SetOwner(m_BindedCamera->m_Id);
+	m_RecordFileButler.SetOwner(m_BindedPort->m_Id);
+	m_AlarmFileButler.SetOwner(m_BindedPort->m_Id);
 
 
-	mOsdPainter.SetBitmap( &((CColdEyeApp*)AfxGetApp())->m_Bitmap );
+	mOsdPainter.SetBitmap(&((CColdEyeApp*)AfxGetApp())->m_Bitmap);
 }
 
 
-/**@brief 根据本地配置进行设置
+/**@brief 绑定一个摄像头
  *
  */
-void CSurface::ExecuteLocalConfig()
-{
-	ASSERT(m_BindedCamera != NULL);
+//void CSurface::BindCamera(CCamera* pCamera)
+//{
+//	m_BindedCamera = pCamera;
+//
+//	CString subDir;
+//
+//	subDir.Format(_T("%d\\"), m_BindedCamera->m_Id);
+//
+//	m_RecordFileButler.SetDirection(_T(NORMAL_RECORD_PATH) + subDir);
+//	m_AlarmFileButler.SetDirection(_T(ALARM_RECORD_PATH) + subDir);
+//
+//	m_RecordFileButler.SetFileType(RECORD_NORMAl);
+//	m_RecordFileButler.Attach(CDBShadow::GetInstance());
+//
+//	m_AlarmFileButler.SetFileType(RECORD_ALARM);
+//	m_AlarmFileButler.Attach(CDBShadow::GetInstance());
+//
+//	m_RecordFileButler.SetOwner(m_BindedCamera->m_Id);
+//	m_AlarmFileButler.SetOwner(m_BindedCamera->m_Id);
+//
+//
+//	mOsdPainter.SetBitmap( &((CColdEyeApp*)AfxGetApp())->m_Bitmap );
+//}
 
-	// 摄像机需要开启
-	if (m_BindedCamera->m_LocalConfig.IsActivate) {
-		//摄像机原本是关闭状态则开启
+
+
+void CSurface::ExecuteConfig()
+{
+	ASSERT(m_BindedPort != NULL);
+
+	//摄像机需要开启
+	if (m_BindedPort->m_DevConfig.IsCameraOn) {
+	    // 摄像机原本是关闭状态则开启
 		if (this->m_hRealPlay == 0) {
-			Print("Config--Acivate: off-->on");
+			Print("Config--Active: off-->on");
 			ConnectRealPlay();
 			StartRealPlay();
 		}
 
-		//视频存储需要开启 
-		if (m_BindedCamera->m_LocalConfig.IsVideoRecordEnabled) {
-			//视频存储原本是关闭状态则开启
+		//视频存储需要开启
+		if (m_BindedPort->m_DevConfig.IsRecordEnabled) {
+			//视频原本是关闭状态则开启
 			if (!m_bIsRecording) {
 				Print("Config--Record: off-->on");
 				StartAutoRecord();
 			}
 		}
 
-		//自动看船需要开启并且现在属于自动看船时段
+		//自动看船需要开启且现在属于自动看船时段
 		if (ShouldWatch()) {
-			//还未开始自动看船则开启
+			// 还未开始看船则开启
 			if (!m_bIsWatching) {
-				// 开启自动看船，订阅报警消息
 				Print("Config--Watch: off-->on");
 				StartAutoWatch();
 			}
 		}
 	}
+	
 	//摄像机需要关闭
 	else {
 		//摄像机原本是开启状态则关闭摄像机
@@ -186,7 +213,6 @@ void CSurface::ExecuteLocalConfig()
 			Print("Going to off");
 			//如果正在自动看船则停止自动看船
 			if (m_bIsWatching) {
-				//Print();
 				StopAutoWatch();
 			}
 
@@ -195,21 +221,79 @@ void CSurface::ExecuteLocalConfig()
 
 			}
 
-			//关闭摄像机(画面)
+			//关闭摄像机（画面）
 			StopRealPlay();
 			DisconnectRealPlay();
 		}
 	}
 }
 
+/**@brief 根据本地配置进行设置
+ *
+ */
+//void CSurface::ExecuteLocalConfig()
+//{
+//	ASSERT(m_BindedCamera != NULL);
+//
+//	// 摄像机需要开启
+//	if (m_BindedCamera->m_LocalConfig.IsActivate) {
+//		//摄像机原本是关闭状态则开启
+//		if (this->m_hRealPlay == 0) {
+//			Print("Config--Acivate: off-->on");
+//			ConnectRealPlay();
+//			StartRealPlay();
+//		}
+//
+//		//视频存储需要开启 
+//		if (m_BindedCamera->m_LocalConfig.IsVideoRecordEnabled) {
+//			//视频存储原本是关闭状态则开启
+//			if (!m_bIsRecording) {
+//				Print("Config--Record: off-->on");
+//				StartAutoRecord();
+//			}
+//		}
+//
+//		//自动看船需要开启并且现在属于自动看船时段
+//		if (ShouldWatch()) {
+//			//还未开始自动看船则开启
+//			if (!m_bIsWatching) {
+//				// 开启自动看船，订阅报警消息
+//				Print("Config--Watch: off-->on");
+//				StartAutoWatch();
+//			}
+//		}
+//	}
+//	//摄像机需要关闭
+//	else {
+//		//摄像机原本是开启状态则关闭摄像机
+//		if (this->m_hRealPlay > 0) {
+//			Print("Going to off");
+//			//如果正在自动看船则停止自动看船
+//			if (m_bIsWatching) {
+//				//Print();
+//				StopAutoWatch();
+//			}
+//
+//			//如果正在录像则停止录像
+//			if (m_bIsRecording) {
+//
+//			}
+//
+//			//关闭摄像机(画面)
+//			StopRealPlay();
+//			DisconnectRealPlay();
+//		}
+//	}
+//}
+
 
 /**@brief 更改设置项
  *
  */
-void CSurface::ExecuteLocalConfig(LocalConfig* pConfig)
-{
-	ASSERT(m_BindedCamera != NULL);
-}
+//void CSurface::ExecuteLocalConfig(LocalConfig* pConfig)
+//{
+//	ASSERT(m_BindedCamera != NULL);
+//}
 
 
 /**@brief 判断是否需要开启看船
@@ -217,23 +301,31 @@ void CSurface::ExecuteLocalConfig(LocalConfig* pConfig)
  */
 BOOL CSurface::ShouldWatch()
 {
-	if (m_BindedCamera == NULL) {
+	//if (m_BindedCamera == NULL) {
+	//	return FALSE;
+	//}
+	
+	//if (!m_BindedCamera->m_LocalConfig.IsAutoWatchEnabled) {
+	//	return FALSE;
+	//}
+
+	if (m_BindedPort == NULL || m_BindedPort->m_pCamera == NULL) {
 		return FALSE;
 	}
 
-	if (!m_BindedCamera->m_LocalConfig.IsAutoWatchEnabled) {
+	if (!m_BindedPort->m_DevConfig.IsAutoWatchEnabled) {
 		return FALSE;
 	}
 
 	CTime time = CTime::GetCurrentTime();
 	UINT minute = time.GetHour() * 60 + time.GetMinute();
 
-	if (minute < m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd) {
-		if (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd < m_BindedCamera->m_LocalConfig.AutoWatchTimeStart
-			|| minute >= m_BindedCamera->m_LocalConfig.AutoWatchTimeStart) {
-			return TRUE;
-		}
-	}
+	//if (minute < m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd) {
+	//	if (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd < m_BindedCamera->m_LocalConfig.AutoWatchTimeStart
+	//		|| minute >= m_BindedCamera->m_LocalConfig.AutoWatchTimeStart) {
+	//		return TRUE;
+	//	}
+	//}
 
 	return FALSE;
 }
@@ -570,7 +662,8 @@ void CSurface::OnDisconnect()
 void CSurface::OnReconnect()
 {
 	ConnectRealPlay();
-	ExecuteLocalConfig();
+	//ExecuteLocalConfig();
+	ExecuteConfig();
 }
 
 
@@ -750,7 +843,7 @@ afx_msg LRESULT CSurface::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam) {
 		Print("^_^ ReLogin ^_^");
-		ExecuteLocalConfig();
+		ExecuteConfig();
 		KillTimer(TIMER_ID_RECONNECT);
 	}
 	return 0;

@@ -2,6 +2,7 @@
 //
 #include "Wnd\MyMenuWnd.h"
 #include "Wnd\MsgWnd.h"
+
 #include "Control\PopupMenuUI.h"
 #include "Control\TimeButtonUI.h"
 
@@ -140,7 +141,9 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	{
 		case USER_MSG_LOGIN:
 			Print("Menu case login msg");
-			//AddCamera((CCamera*)lParam);
+
+			AddPortConfigMenuItem( (CPort*)lParam);
+			FillPortConfig( (CPort*)lParam);
 			break;
 		//-------------------------------------------
 		case USER_MSG_LOGOFF:
@@ -524,7 +527,7 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 
 
 
-void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
+CMenuItemUI* CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 {
 	CVerticalLayoutUI * pLayout;
 	CMenuItemUI* pMenuItem;
@@ -535,25 +538,50 @@ void CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 
 	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, InsertAt(pPort->GetId()-1, pLayout, baseData));
 
-	pMenuItem->SetTag((UINT_PTR)pPort);
-
 	Relationship(pLayout, pMenuItem);
+
+	return pMenuItem;
 }
 
 
 
 void CMyMenuWnd::AddAlarmMenuItem(CPort* pPort)
 {
-	AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	CMenuItemUI* pItem  = AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	pItem->SetTag((UINT_PTR)pPort);
 }
 
 void CMyMenuWnd::AddVideoObtainMenuItem(CPort* pPort)
 {
-	AddMenuItem(pPort, _T("layout_submenu_videoget"),  VIDEO_OBTAIN);
+	CMenuItemUI* pItem = AddMenuItem(pPort, _T("layout_submenu_videoget"),  VIDEO_OBTAIN);
+	pItem->SetTag((UINT_PTR)pPort);
 }
 
 
-void CMyMenuWnd::AddCameraConfigMenuItem(CCamera* pCamera)
+//void CMyMenuWnd::AddCameraConfigMenuItem(CCamera* pCamera)
+//{
+//	CMenuItemUI* pItem = AddMenuItem(pCamera->GetAttachedPort(), _T("layout_submenu_setting"), CAMERA_SET);
+//	pItem->SetTag((UINT_PTR)pCamera);
+//}
+void CMyMenuWnd::AddPortConfigMenuItem(CPort* pPort)
 {
-	AddMenuItem(pCamera->GetAttachedPort(), _T("layout_submenu_setting"), CAMERA_SET);
+	CMenuItemUI* pItem  = AddMenuItem(pPort, _T("layout_submenu_setting"), CAMERA_SET);
+	pItem->SetTag( (UINT_PTR)pPort);
+}
+
+
+
+
+
+
+void CMyMenuWnd::FillPortConfig(CPort* pPort)
+{
+	int inx = pPort->GetId() - 1;
+
+	camera[inx].pTitle->SetText(pPort->GetName());
+	camera[inx].pShipname->SetText(pPort->GetName());
+	camera[inx].pSwitch->SetSwitch(pPort->m_DevConfig.IsCameraOn);
+	camera[inx].pVolum->SetValue(pPort->m_DevConfig.Volumn);
+	camera[inx].pSaveVideo->SetValue(pPort->m_DevConfig.IsRecordEnabled);
+	camera[inx].pAutoWatch->SetValue(pPort->m_DevConfig.IsAutoWatchEnabled);
 }

@@ -47,33 +47,51 @@ CPort::~CPort()
 
 
 
-void CPort::SetId(int id)
+void CPort::SetId(uint16_t id)
 {
-	this->m_Id = id;
+	m_Id  = id;
 }
 
-int CPort::GetId()
+
+void CPort::SetNameId(uint16_t id)
+{
+	m_DevConfig.NameId = id;
+}
+
+
+void CPort::SetCamera(CCamera* pCamera)
+{
+	m_pCamera  = pCamera;
+}
+
+
+
+uint16_t CPort::GetId()
 {
 	return m_Id;
 }
 
 
-void CPort::SetNameId(int id)
+uint16_t CPort::GetNameId()
 {
-	this->m_nameId = id;
+	return m_DevConfig.NameId;
 }
 
 
-
-int CPort::GetNameId()
+CCamera* CPort::GetCamera()
 {
-	return m_nameId;
+	return m_pCamera;
 }
+
+
 
 CString& CPort::GetName()
 {
-	return PortName[m_nameId-1];
+	return PortName[m_DevConfig.NameId-1];
 }
+
+
+
 
 
 
@@ -103,7 +121,7 @@ void CPort::SetVisibility(bool isVisible)
 		m_bIsVisible = isVisible;
 		
 		MSG msg;
-		msg.wParam = m_nameId;
+		msg.wParam = m_DevConfig.NameId;
 		msg.lParam = (LPARAM)this;
 		msg.message = USER_MSG_PORT_VISIBILITY_CHANGE;
 	}
@@ -114,4 +132,24 @@ void CPort::SetVisibility(bool isVisible)
 bool CPort::GetVisibility()
 {
 	return m_bIsVisible;
+}
+
+
+void CPort::SetActivate(bool newState)
+{
+	this->m_bIsActive  = newState;
+}
+
+
+
+bool  CPort::IsActive()
+{
+	return m_bIsActive;
+}
+
+
+
+void CPort::Config(DeviceConfig& config)
+{
+	
 }

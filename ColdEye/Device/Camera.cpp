@@ -384,13 +384,13 @@ void CCamera::OnDisConnnect()
 }
 
 
-void CCamera::AttachPort(CPort* pPort)
-{
-	this->m_pAttachedPort = pPort;
-}
-
-
-CPort*  CCamera::GetAttachedPort()
-{
-	return this->m_pAttachedPort;
-}
+//void CCamera::AttachPort(CPort* pPort)
+//{
+//	this->m_pAttachedPort = pPort;
+//}
+//
+//
+//CPort*  CCamera::GetAttachedPort()
+//{
+//	return this->m_pAttachedPort;
+//}
