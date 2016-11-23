@@ -39,5 +39,7 @@ public:
 	bool OverAlarm(CCamera *pDev);
 	bool RecOverAlarmProc(uint8_t *pch);
 
+	bool Handle(uint8_t prm);
+	uint8_t RecHandleProc(uint8_t *pch);
 };
 

@@ -259,32 +259,6 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 				}
 			}
 			return true;
-
-		default:
-			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
-				CSurface* pSurface = (CSurface*)GetFocus();
-				//CCamera* pDev = pSurface->m_BindedCamera;
-				CCamera* pDev  = pSurface->m_BindedPort->m_pCamera;
-
-				switch (pMsg->wParam)
-				{
-				case 'T':
-					CCommunication::GetInstance()->AskTalk(pDev);
-					return TRUE;
-
-				case 'O':
-					CCommunication::GetInstance()->YouTalk();
-					return true;
-
-				case 'S':
-					CCommunication::GetInstance()->OverTalk();
-					return true;
-
-				default:
-					break;
-				}
-			}
-			break;
 		}
 	}
 	else if (pMsg->message == WM_CONTEXTMENU)
