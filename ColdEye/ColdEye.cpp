@@ -240,10 +240,6 @@ CWallDlg* CColdEyeApp::GetWallDlg()
 
 void CColdEyeApp::CheckFileDirectory()
 {
-	if (!PathIsDirectory(_T(RECORD_PATH)))
-	{
-		CreateDirectory(_T(RECORD_PATH), NULL);
-	}
 	if (!PathIsDirectory(_T(NORMAL_RECORD_PATH)))
 	{
 		CreateDirectory(_T(NORMAL_RECORD_PATH), NULL);
