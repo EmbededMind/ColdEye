@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MyListUI.h"
 #include "VideoListUI.h"
+#include "Wnd\MsgWnd.h"
 #include <list>
 
 IMPLEMENT_DUICONTROL(CMyListUI)
@@ -105,8 +106,19 @@ void CMyListUI::DoEvent(TEventUI & event)
 
 		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
 			if (event.wParam == 'U') { //U盘键
+				CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+				CTime tbegin, tend;
+				CDuiString text;
+				if (node->data()._level == 0) {
+					text = GetText();
+				}
+				else {
+					tbegin = CTime(Info->tBegin);
+					tend = CTime(Info->tEnd);
+					text = tbegin.Format("%m月%d日   ") + tbegin.Format("%H:%M:%S") + _T("-") + tend.Format("%H:%M:%S");
+				}
+				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), text, NULL, NULL);
 				FindRecordFile();
-				//SendMessage(m_pManager->GetPaintWindow(), CONFIRM_COPY, NULL,NULL);
 			}
 		}
 
@@ -116,16 +128,22 @@ void CMyListUI::DoEvent(TEventUI & event)
 
 void CMyListUI::FindRecordFile()
 {
-	int num;
-	CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
-	num = node->num_children();
-	if (num){//整天
-		for (int i = 0; i < num; i++);
-			//RecordInfoList.push_back(node->data()._pListElement->Info);
+	int num_record;
+	CVideoListUI::Node* Headnode = (CVideoListUI::Node*)GetTag();
+	CVideoListUI::Node* pNode;
+	list<CRecordFileInfo*> RecordInfoList;
+	num_record = Headnode->num_children();
+	Print("num_record= %d\n",num_record);
+	if (num_record){//整天
+		for (int i = 0; i < num_record; i++) {
+			pNode = Headnode->child(i);
+			RecordInfoList.push_back(pNode->data()._pListElement->Info);
+		}
 	}
 	else {
-
+		RecordInfoList.push_back(Headnode->data()._pListElement->Info);
 	}
+	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, COPYING, (LPARAM)(&RecordInfoList));
 }
 
 

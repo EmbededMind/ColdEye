@@ -3,6 +3,7 @@
 #include "UIlib.h"
 #include "Control\PopupMenuUI.h"
 
+
 using namespace DuiLib;
 
 class CMenuItemUI :
@@ -20,6 +21,8 @@ public:
 
 	virtual void DoEvent(TEventUI& event);
 	virtual LPCTSTR GetClass();
+
+	void FindRecordFile();
 	//void SetItemRelation(CMenuItemUI* pPrevItem, CMenuItemUI* pNextItem);
 	
 //private:

@@ -3,6 +3,10 @@
 #include "Control\MenuItemUI.h"
 #include "Control\MyEditUI.h"
 #include "ExHardDrive\ExHardDrive.h"
+#include "File\RecordFileInfo.h"
+#include "Wnd\MyMenuWnd.h"
+#include "Wnd\MsgWnd.h"
+#include <list>
 
 IMPLEMENT_DUICONTROL(CMenuItemUI)
 
@@ -82,8 +86,18 @@ void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Colo
 void CMenuItemUI::DoEvent(TEventUI& event)
 {
 	if (event.Type == UIEVENT_KEYDOWN) {
+		if (GetKeyState(VK_CONTROL)) {
+			if (event.wParam=='U') {
+				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), GetText(), NULL, NULL);
+				FindRecordFile();
+				return;
+			}
+		}
+
 		switch (event.wParam)
 		{
+			
+			//----------------------------------------------------
 			case VK_UP:
 				if (mPrevItem) {
 					mPrevItem->SetFocus();
@@ -227,4 +241,39 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 LPCTSTR CMenuItemUI::GetClass()
 {
 	return _T("MenuItem");
+}
+
+void CMenuItemUI::FindRecordFile()
+{
+	int inx,num_record,level;
+	list<CRecordFileInfo*> recordInfo;
+	CVideoListUI *pList=NULL;
+	CMyListUI *pItem=NULL;
+	CDuiString Listname;
+	CVideoListUI::Node *node;
+	inx = StrToInt(GetUserData());
+	if (inx >= 0 && inx < 6) { //报警视频
+		Listname.Format(_T("video_alarmlisti%d"), inx+1);
+		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
+		num_record = pList->GetCount();
+
+	}
+	else if (inx > 17 && inx < 24) { //正常视频
+		Listname.Format(_T("video_list%d"), inx - 17);
+		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
+		num_record = pList->GetCount();
+		Print("num = %d\n",num_record);
+	}
+	for (int i = 0; i < num_record; i++) {
+		pItem = (CMyListUI*)pList->GetItemAt(i);
+		node = (CVideoListUI::Node*)pItem->GetTag();
+		level = node->data()._level;
+		if (level == 1){
+			recordInfo.push_back(pItem->Info);
+		}
+	}
+
+	if(!recordInfo.empty())
+		SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, COPYING, (LPARAM)(&recordInfo));
+
 }

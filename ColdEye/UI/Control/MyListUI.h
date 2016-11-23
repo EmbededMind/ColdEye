@@ -23,6 +23,5 @@ public:
 	bool mIsLocked;
 	int	prereadMessageNum;
 	CRecordFileInfo* Info;
-	//list<CRecordFileInfo*> RecordInfoList;
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColdEyeDlg.h"
+#include "Wnd\MsgWnd.h"
 #include "UIlib.h"
 using namespace DuiLib;
 
@@ -24,11 +25,12 @@ public:
 
 	
 public:
-	static int MessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2)
+	static int MessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2,LPARAM lparam)
 	{
 		CMsgWnd* pWnd = new CMsgWnd();
 		pWnd->pMenuDlg = (CMyMenuWnd*)CWnd::FromHandle(hParent);
 		pWnd->SkinType = skinType;
+		pWnd->pRecordInfo = (list<CRecordFileInfo*>*)lparam;
 		pWnd->Create(hParent, _T("msgwnd"), WS_POPUP | WS_CLIPCHILDREN, WS_EX_TOOLWINDOW);
 		pWnd->CenterWindow();
 		pWnd->SetMsg(text1,text2);
@@ -59,6 +61,7 @@ public:
 	virtual LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+	void ProgressReflash();
 	void RecordVoice();
 public:
 	CDuiString SkinType;
@@ -68,5 +71,7 @@ public:
 	CColdEyeDlg *pMainDlg;
 	CMyMenuWnd *pMenuDlg;
 	UINT8 _time;
+	list<CRecordFileInfo*>* pRecordInfo;
+	ULONGLONG totalSize;
 };
 

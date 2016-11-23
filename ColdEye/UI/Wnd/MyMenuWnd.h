@@ -69,7 +69,6 @@ public :
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-
 	void AddCamear(CameraInfo);
 	void AddAlarmCtl(CameraInfo);
 	void AddCameraSetCtl(CameraInfo);
@@ -94,8 +93,8 @@ public :
 	//test
 	CameraInfo cameraInfo;
 	SwtichRecord recordInfo;
-private:
 	CameraItem camera[6];
+private:
 
 
 

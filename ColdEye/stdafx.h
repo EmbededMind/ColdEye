@@ -202,6 +202,9 @@
 #define CAMERA_SET			7
 #define VIDEO_OBTAIN		18
 
+/**  Copy Status  **/
+#define STATUS_COPY_SUCCEED 1
+#define STATUS_COPY_FIAL	0
 
 
 

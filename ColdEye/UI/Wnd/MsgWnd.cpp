@@ -37,7 +37,7 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 			pText2->SetText(text2);
 		}
 	}
-	else if (SkinType == _T("MB_CopyVideo.xml")) {
+	else if (SkinType == _T("mb_copyvideo_request.xml")) {
 		CControlUI* pText2 = static_cast<CControlUI*>(m_pm.FindControl(_T("Text2")));
 		pText2->SetText(text1);
 	}
@@ -48,6 +48,10 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 	else if (SkinType == _T("mb_update.xml")) {
 		CControlUI* pText1 = static_cast<CControlUI*>(m_pm.FindControl(_T("Text1")));
 		pText1->SetText(text1);
+	}
+	else if (SkinType == _T("mb_copyvideo.xml")) {
+		CControlUI* pTitle = static_cast<CControlUI*>(m_pm.FindControl(_T("title")));
+		pTitle->SetText(text1);
 	}
 	
 }
@@ -161,11 +165,50 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 			Close(MSGID_OK);
 		}
 		break;
+	//--------------------------------------------------------------------------
+	case USER_MSG_COPY_INFO:
+		{
+			ProgressReflash();
+			double sendSize = wParam;
+			int num_progress = 100*(sendSize / (double)totalSize);
+			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
+			progress->SetMaxValue(num_progress);
+		}
+		break;
+
+	case USER_MSG_COPY_STOP:
+		if (wParam) {
+			list<CRecordFileInfo*>::iterator iter;
+			for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
+				if ((CRecordFileInfo*)lParam == (*iter)) {
+					totalSize -= (*iter)->dlSize;
+					iter++;
+					CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
+					return 0;
+				}
+			}
+			Close(1);//¸´ÖÆ½áÊø
+		}
+		break;
 	}
 
 
 	bHandled = FALSE;
 	return 0;
+}
+
+void CMsgWnd::ProgressReflash()
+{
+	int value;
+	CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
+	value = progress->GetValue();
+	if (value != progress->GetMaxValue()) {
+		value++;
+		progress->SetValue(value);
+	}
+	else {
+		KillTimer(m_pm.GetPaintWindow(), 3);
+	}
 }
 
 void CMsgWnd::RecordVoice()
@@ -218,6 +261,14 @@ void CMsgWnd::InitWindow()
 		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
 		printf("%d\n",i);
 	}
+	else if (SkinType == _T("mb_copyvideo.xml")) {
+		totalSize = 0;
+		list<CRecordFileInfo*>::iterator iter;
+		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++)
+			totalSize += (*iter)->dlSize;
+
+		CExHardDrive::GetInstance()->CopyRecord(pRecordInfo->front(), 0);
+	}
 }
 
 LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
@@ -244,6 +295,10 @@ LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandle
 					Close(0);
 				}
 			}
+			break;
+
+		case 3:
+			ProgressReflash();
 			break;
 	}
 	

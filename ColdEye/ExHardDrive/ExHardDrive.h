@@ -38,7 +38,7 @@ private:
 	ULONGLONG mTotalFileSize;
 	ULONGLONG mTotalBytesTransferred;
 
-
+	CRecordFileInfo *mFileInfo;
 
 	static UINT ExHardDriveThread(LPVOID pParam);
 	BOOL FindUpdataFile(CString path);
@@ -70,5 +70,6 @@ public:
 	BOOL CopyRecord(CRecordFileInfo *FileInfo, UINT FileType);
 	/******************/
 	BOOL ScanDisk(CWnd *pOwner);
+
 };
 
