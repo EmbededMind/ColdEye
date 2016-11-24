@@ -6,7 +6,6 @@
 #include "File\RecordFileInfo.h"
 #include "Wnd\MyMenuWnd.h"
 #include "Wnd\MsgWnd.h"
-#include <list>
 
 IMPLEMENT_DUICONTROL(CMenuItemUI)
 
@@ -273,7 +272,12 @@ void CMenuItemUI::FindRecordFile()
 			recordInfo.push_back(pItem->Info);
 		}
 	}
+	HardDriverStatus(recordInfo, RecordType);
+}
+
+void CMenuItemUI::HardDriverStatus(list<CRecordFileInfo*> recordInfo, UINT8 RecordType)
+{
+
 	if (!recordInfo.empty())
 		SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&recordInfo));
-
 }

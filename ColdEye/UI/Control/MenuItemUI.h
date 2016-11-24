@@ -2,7 +2,8 @@
 
 #include "UIlib.h"
 #include "Control\PopupMenuUI.h"
-
+#include "File\RecordFileInfo.h"
+#include <list>
 
 using namespace DuiLib;
 
@@ -23,6 +24,7 @@ public:
 	virtual LPCTSTR GetClass();
 
 	void FindRecordFile();
+	void HardDriverStatus(list<CRecordFileInfo*> , UINT8);
 	//void SetItemRelation(CMenuItemUI* pPrevItem, CMenuItemUI* pNextItem);
 	
 //private:
