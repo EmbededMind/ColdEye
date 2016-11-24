@@ -3,6 +3,9 @@
 #include "Control\MenuItemUI.h"
 #include "Control\MyEditUI.h"
 #include "ExHardDrive\ExHardDrive.h"
+#include "File\RecordFileInfo.h"
+#include "Wnd\MyMenuWnd.h"
+#include "Wnd\MsgWnd.h"
 
 IMPLEMENT_DUICONTROL(CMenuItemUI)
 
@@ -82,8 +85,17 @@ void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Colo
 void CMenuItemUI::DoEvent(TEventUI& event)
 {
 	if (event.Type == UIEVENT_KEYDOWN) {
+		if (GetKeyState(VK_CONTROL)) {
+			if (event.wParam=='U') {
+				FindRecordFile();
+				return;
+			}
+		}
+
 		switch (event.wParam)
 		{
+			
+			//----------------------------------------------------
 			case VK_UP:
 				if (mPrevItem) {
 					mPrevItem->SetFocus();
@@ -227,4 +239,66 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 LPCTSTR CMenuItemUI::GetClass()
 {
 	return _T("MenuItem");
+}
+
+void CMenuItemUI::FindRecordFile()
+{
+	UINT8 RecordType;
+	int inx,num_record,level;
+	list<CRecordFileInfo*> recordInfo;
+	CVideoListUI *pList=NULL;
+	CMyListUI *pItem=NULL;
+	CDuiString Listname;
+	CVideoListUI::Node *node;
+	inx = StrToInt(GetUserData());
+	if (inx >= 0 && inx < 6) { //报警视频
+		Listname.Format(_T("video_alarmlisti%d"), inx+1);
+		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
+		num_record = pList->GetCount();
+		RecordType = COPYING_ALARM;
+	}
+	else if (inx > 17 && inx < 24) { //正常视频
+		Listname.Format(_T("video_list%d"), inx - 17);
+		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
+		num_record = pList->GetCount();
+		RecordType = COPYING_NORMAL;
+	}
+	for (int i = 0; i < num_record; i++) {
+		pItem = (CMyListUI*)pList->GetItemAt(i);
+		node = (CVideoListUI::Node*)pItem->GetTag();
+		level = node->data()._level;
+		if (level == 1){
+			recordInfo.push_back(pItem->Info);
+		}
+	}
+	HardDriverStatus(recordInfo, RecordType);
+}
+
+void CMenuItemUI::HardDriverStatus(list<CRecordFileInfo*> recordInfo, UINT8 RecordType)
+{
+	CExHardDrive* pHardDriver = CExHardDrive::GetInstance();
+	USBFlashDiskStatus flashSize;
+	ULONGLONG totalSize=0;
+	//拷贝视频的总大小
+	list<CRecordFileInfo*>::iterator iter;
+	for (iter = recordInfo.begin(); iter != recordInfo.end(); iter++) {
+		totalSize += (*iter)->dlSize;
+	}
+
+	//U盘已插入
+	if(pHardDriver->IsInsert()){
+		pHardDriver->GetStatus(&flashSize);
+		if (flashSize.mSpaceLeft > totalSize) {
+			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), GetText(), NULL, NULL, NULL);
+			if (!recordInfo.empty())
+				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&recordInfo));
+		}
+		//空间不足
+		else {
+			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), _T("U盘没有足够的空间,请清除空间"), _T("或者更换U盘后，重试！"), NULL, NULL);
+		}
+	}
+	else {
+		CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"), NULL, NULL);
+	}
 }

@@ -49,6 +49,7 @@ BOOL CExHardDrive::Init(CWnd * pOwner, CString diskname)
 	mCOwner = pOwner;
 	mHOwner = static_cast<CColdEyeDlg*>(mCOwner)->GetMyMenu().GetHWND();
 	mIsInsert = TRUE;
+	mCancelCopy = false;
 	return TRUE;
 }
 
@@ -102,11 +103,13 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 				{
 					printf("copy succeed!\n");
 					//发送结束， 成功 消息号是 COPY_END 数据是 COPY_END_SUCCEED
+					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_SUCCEED, (LPARAM)ExHardDrive->mFileInfo);
 				}
 				else
 				{
 					printf("copy fail!\n");
 					//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
+					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
 				}
 			}
 			ResetEvent(ExHardDrive->mCopyEvent);
@@ -187,6 +190,12 @@ DWORD CExHardDrive::CopyProgressCall(LARGE_INTEGER TotalFileSize,
 		((CExHardDrive*)lpData)->mTotalBytesTransferred = TotalBytesTransferred.QuadPart;
 		printf("FILE COPY INFO : %lld, %lld\n", ((CExHardDrive*)lpData)->mTotalFileSize, ((CExHardDrive*)lpData)->mTotalBytesTransferred);
 		//发送文件复制中的信息，mTotalFileSize是文件的总大小， mTotalBytesTransferred是文件已经复制的大小, 消息号是 COPY_INFO
+		::SendMessage(static_cast<CColdEyeDlg*>(((CExHardDrive*)lpData)->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_INFO, TotalBytesTransferred.QuadPart, (LPARAM)((CExHardDrive*)lpData)->mFileInfo);
+	}
+	if (((CExHardDrive*)lpData)->mCancelCopy)
+	{
+		((CExHardDrive*)lpData)->mCancelCopy = FALSE;
+		return PROGRESS_CANCEL;
 	}
 	return PROGRESS_CONTINUE;
 }
@@ -229,6 +238,7 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 		return 0;
 	if (FileInfo->bIsOccupied)
 		return 0;
+	mFileInfo = FileInfo;
 	CTime time = FileInfo->tBegin;
 	CString filename, filepath, owner;
 	filename.Format(_T("%d%02d%02d%02d%02d%02d.h264"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
@@ -243,6 +253,16 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 	}
 	this->RecordFilePath(filepath, filename);
 	return TRUE;
+}
+
+BOOL CExHardDrive::IsInsert()
+{
+	return this->mIsInsert;
+}
+
+void CExHardDrive::CancelCopy()
+{
+	mCancelCopy = true;
 }
 
 BOOL CExHardDrive::ScanDisk(CWnd *pOwner)

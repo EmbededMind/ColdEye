@@ -564,9 +564,6 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				CCommunication::GetInstance()->ReplyTalk(p->ch);
 				break;
 			case 0x04:
-				TRACE("¿ØÖÆµÆÅİ\n");
-				break;
-			case 0x05:
 				if (p->ch[4] == 1)
 				{
 					CCommunication::GetInstance()->RecAlarmProc(p->ch);
@@ -575,6 +572,9 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				{
 					CCommunication::GetInstance()->RecOverAlarmProc(p->ch);
 				}
+				break;
+			case 0x05:
+				CCommunication::GetInstance()->RecHandleProc(p->ch);
 				break;
 			default:
 				break;

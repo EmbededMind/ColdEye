@@ -19,6 +19,7 @@ private:
 	CExHardDrive();
 	USBFlashDiskStatus* mPStatus;
 	bool mIsInsert;
+	bool mCancelCopy;
 	CWnd *mCOwner;//复制文件时用到
 	HWND mHOwner;
 	CString mDiskName;
@@ -38,7 +39,7 @@ private:
 	ULONGLONG mTotalFileSize;
 	ULONGLONG mTotalBytesTransferred;
 
-
+	CRecordFileInfo *mFileInfo;
 
 	static UINT ExHardDriveThread(LPVOID pParam);
 	BOOL FindUpdataFile(CString path);
@@ -68,7 +69,10 @@ public:
 	BOOL GetStatus(USBFlashDiskStatus *pStaus);
 	BOOL Updata();
 	BOOL CopyRecord(CRecordFileInfo *FileInfo, UINT FileType);
+	BOOL IsInsert();
+	void CancelCopy();
 	/******************/
 	BOOL ScanDisk(CWnd *pOwner);
+
 };
 

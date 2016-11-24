@@ -12,6 +12,6 @@
 		<Text name="title" pos="250,30,0,0" width="150" height="40" font="1"/>
 		<Text name="subtitle" text="视频复制进度" pos="221,96,0,0" width="200" height="39" textcolor="#FF666666"/>
 		<Progress name="copy_progress" float="true" pos="56,170,0,0" width="500" height="60" bkcolor="#FFC4C4C4" foreimage="file='image/progressbk.png'" min="0" max="100" font="0" textcolor="#FF333333" valign="vcenter"/>
-		<Button name="cacel_btn" text="取消" pos="180,290,0,0" width="250" height="94"/>
+		<Button name="cancel_copy" text="取消" pos="180,290,0,0" width="250" height="94"/>
 	</VerticalLayout>
 </Window>

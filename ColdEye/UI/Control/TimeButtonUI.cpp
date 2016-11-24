@@ -10,6 +10,7 @@
 IMPLEMENT_DUICONTROL(CTimeButtonUI)
 
 CTimeButtonUI::CTimeButtonUI()
+	:m_Value(0)
 {}
 
 CTimeButtonUI::~CTimeButtonUI()
@@ -42,9 +43,9 @@ void CTimeButtonUI::DecreaseHour()
 	else {
 		val = 23;
 	}
-	text.Format(_T("%02d"), val);
-	SetText(text);
-	GetTime();
+
+	SetValue(val*60);
+
 }
 
 void CTimeButtonUI::DecreaseMinute()
@@ -59,9 +60,8 @@ void CTimeButtonUI::DecreaseMinute()
 		val = 59;
 	}
 
-	text.Format(_T("%02d"), val);
-	SetText(text);
-	GetTime();
+	SetValue(val);
+
 }
 
 void CTimeButtonUI::IncreaseHour()
@@ -77,9 +77,8 @@ void CTimeButtonUI::IncreaseHour()
 		val = 0;
 	}
 
-	text.Format(_T("%02d"), val);
-	SetText(text);
-	GetTime();
+	SetValue(val*60);
+
 }
 
 void CTimeButtonUI::IncreaseMinute()
@@ -94,45 +93,46 @@ void CTimeButtonUI::IncreaseMinute()
 		val = 0;
 	}
 
-	text.Format(_T("%02d"), val);
-	SetText(text);
-	GetTime();
+	SetValue(val);
+
 }
 
 
 bool CTimeButtonUI::isMorrow()
 {
-	if (tMinute_1_New <= tMinute_2_New)
+	CTimeButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
+	DWORD tMinute1, tMinute2;
+	pHour1 = (CTimeButtonUI*)m_pManager->FindControl(_T("time1_hour"));
+	pHour2 = (CTimeButtonUI*)m_pManager->FindControl(_T("time2_hour"));
+	pMinute1 = (CTimeButtonUI*)m_pManager->FindControl(_T("time1_minute"));
+	pMinute2 = (CTimeButtonUI*)m_pManager->FindControl(_T("time2_minute"));
+
+
+	tMinute1 = pHour1->GetValue() + pMinute1->GetValue();
+	tMinute2 = pHour2->GetValue() + pMinute2->GetValue();
+
+	if (tMinute1 <= tMinute2)
 		return false;
 	else
 		return true;
 }
 
 
-void CTimeButtonUI::GetTime()
+
+
+void CTimeButtonUI::SetValue(int value)
 {
-	CButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
-	int tHour1, tHour2, tMinute1, tMinute2;
-	pHour1 = (CButtonUI*)m_pManager->FindControl(_T("time1_hour"));
-	pHour2 = (CButtonUI*)m_pManager->FindControl(_T("time2_hour"));
-	pMinute1 = (CButtonUI*)m_pManager->FindControl(_T("time1_minute"));
-	pMinute2 = (CButtonUI*)m_pManager->FindControl(_T("time2_minute"));
-	tHour1 = StrToInt(pHour1->GetText());
-	tHour2 = StrToInt(pHour2->GetText());
-	tMinute1 = StrToInt(pMinute1->GetText());
-	tMinute2 = StrToInt(pMinute2->GetText());
-	tMinute_1_New = tHour1 * 60 + tMinute1;
-	tMinute_2_New = tHour2 * 60 + tMinute2;
+	CString text;
+	m_Value = value;
+	text.Format(_T("%02d"), m_Value);
+	SetText(text);
+
 }
 
-
-
-void CTimeButtonUI::SetMinutes(DWORD tBegining, DWORD tEnd)
+int CTimeButtonUI::GetValue()
 {
-	tMinute_1  = tBegining;
-	tMinute_2  = tEnd;
+	return m_Value;
 }
-
 
 
 void CTimeButtonUI::DoEvent(TEventUI& event)
@@ -189,23 +189,13 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 				break;
 			//---------------------------------------------------
 			case VK_BACK:
-				if (tMinute_1_New != tMinute_1 || tMinute_2_New != tMinute_2) {
 
-					tMinute_1 = tMinute_1_New;
-					tMinute_2 = tMinute_2_New;
-					//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
-					
-					//if IDOK
-					if (true) {
-						if (((CColdEyeApp*)AfxGetApp())->SetAwTime(tMinute_1, tMinute_2)) {
-							MSG msg;
-							msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
-/*							msg.wParam = tMinute_1;
-							msg.lParam = tMinute_2*/;
-							CMsgSquare::GetInstance()->Broadcast(msg);
-						}
-					}
-				}
+//					if (true) {
+
+//					}
+
+                SendMessage(m_pManager->GetPaintWindow(), USER_MSG_CAMERA_CONFIG_AWTIME, 0, 0);
+	
 				m_pManager->FindControl(_T("watchtime"))->SetFocus();
 				break;
 		}

@@ -24,16 +24,13 @@ public:
 	void IncreaseHour();
 	void IncreaseMinute();
 	bool isMorrow();
-	void GetTime();
 
-	void SetMinutes(DWORD tBeginMinute, DWORD tEndMinute);
+	void SetValue(int value);
+	int GetValue();
 
 	void DoEvent(TEventUI& event);
 
 
 private:
-	DWORD  tMinute_1;
-	DWORD  tMinute_2;
-	DWORD  tMinute_1_New;
-	DWORD  tMinute_2_New;
+	int m_Value;
 };

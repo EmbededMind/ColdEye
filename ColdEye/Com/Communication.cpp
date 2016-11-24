@@ -224,15 +224,39 @@ bool CCommunication::RecOverAlarmProc(uint8_t *pch)
 	return true;
 }
 
-bool CCommunication::Handle(uint8_t prm)
+bool CCommunication::Handle(uint8_t param)//握手 param == 1: 返回注册表 
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, NULL);
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, param, 0x00, NULL);
+	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	return true;
+}
+
+bool CCommunication::Handle(uint8_t param, uint8_t port) //param == 2：返回摸个摄像头的MAC地址, port 端口号
+{
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, param, port, NULL);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 	return true;
 }
 
 uint8_t CCommunication::RecHandleProc(uint8_t * pch)
 {
-
-	return true;
+	if (pch[4] == 0x01)
+	{
+		//得到摄像头注册表信息
+		return true;
+	}
+	else if(pch[4] == 0x02)
+	{
+		//得到某个摄像头的MAC地址
+		return true;
+	}
+	return false;
 }
+
+bool CCommunication::ControlLED(CCamera * pDev, uint8_t Switch)
+{
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x06, Switch, 0x00, pDev);
+	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	return false;
+}
+
