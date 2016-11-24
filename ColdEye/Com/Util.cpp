@@ -22,12 +22,15 @@ void CUtil::LoadOrder(uint8_t * pOrder, uint8_t Header, uint8_t ScrType, uint8_t
 	pOrder[3] = Cmd;
 	pOrder[4] = Prm1;
 	pOrder[5] = Parm2;
-	pOrder[6] = CharToUint8(pCamear->mCommonNetConfig.sMac[0]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[1]);
-	pOrder[7] = CharToUint8(pCamear->mCommonNetConfig.sMac[3]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[4]);
-	pOrder[8] = CharToUint8(pCamear->mCommonNetConfig.sMac[6]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[7]);
-	pOrder[9] = CharToUint8(pCamear->mCommonNetConfig.sMac[9]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[10]);
-	pOrder[10] = CharToUint8(pCamear->mCommonNetConfig.sMac[12]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[13]);
-	pOrder[11] = CharToUint8(pCamear->mCommonNetConfig.sMac[15]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[16]);
+	if (pCamear)
+	{
+		pOrder[6] = CharToUint8(pCamear->mCommonNetConfig.sMac[0]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[1]);
+		pOrder[7] = CharToUint8(pCamear->mCommonNetConfig.sMac[3]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[4]);
+		pOrder[8] = CharToUint8(pCamear->mCommonNetConfig.sMac[6]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[7]);
+		pOrder[9] = CharToUint8(pCamear->mCommonNetConfig.sMac[9]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[10]);
+		pOrder[10] = CharToUint8(pCamear->mCommonNetConfig.sMac[12]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[13]);
+		pOrder[11] = CharToUint8(pCamear->mCommonNetConfig.sMac[15]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[16]);
+	}
 	pOrder[12] = 0x0;
 	pOrder[13] = 0x0;
 	pOrder[14] = 0x0;

@@ -149,6 +149,7 @@ void CMyListUI::FindRecordFile()
 	else {
 		RecordInfoList.push_back(Headnode->data()._pListElement->Info);
 	}
+	
 	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&RecordInfoList));
 }
 

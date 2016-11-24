@@ -185,14 +185,22 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			break;
 		//---------------------------------------------------------------------------
 		case USER_MSG_ADDFILE:
-			if (wParam == RECORD_NORMAl) {
+			if (wParam == RECORD_ALARM) {
+				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
+				camera[pInfo->nOwner - 1].pAlarmList->AddRecordFile(pInfo);
+			}
+			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pNormalList->AddRecordFile(pInfo);
 			}
 			break;
         //--------------------------------------------
 		case USER_MSG_DELFILE:
-			if (wParam == RECORD_NORMAl) {
+			if (wParam == RECORD_ALARM) {
+				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
+				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);
+			}
+			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pNormalList->DeleteRecordFile(pInfo);
 			}

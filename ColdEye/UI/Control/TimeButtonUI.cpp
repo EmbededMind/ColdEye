@@ -95,6 +95,7 @@ void CTimeButtonUI::IncreaseMinute()
 	SetTime();
 }
 
+
 bool CTimeButtonUI::isMorrow()
 {
 	if (tMinute_1_New <= tMinute_2_New)
@@ -102,6 +103,7 @@ bool CTimeButtonUI::isMorrow()
 	else
 		return true;
 }
+
 
 void CTimeButtonUI::SetTime()
 {

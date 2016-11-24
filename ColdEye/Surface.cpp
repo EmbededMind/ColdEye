@@ -13,6 +13,7 @@
 #include "Database\DBShadow.h"
 #include "Com\Communication.h"
 
+CMutex mutex_RealData;
 
 /**@brief 实时数据回调
  *
@@ -20,6 +21,8 @@
 int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dwUser)
 {
 	CSurface* pSurface = (CSurface*)dwUser;
+
+mutex_RealData.Lock();
 	
 	if (mutex != 0) {
 		Print("Mutex error:%d", mutex);
@@ -46,6 +49,8 @@ int __stdcall cbRealData(long lRealHandle, const PACKET_INFO_EX* pFrame, UINT dw
 	}
 
 	mutex = 0;
+
+mutex_RealData.Unlock();
 
 	return 1;
 }
@@ -197,10 +202,9 @@ void CSurface::ExecuteConfig()
 		}
 
 		//自动看船需要开启且现在属于自动看船时段
-		if (ShouldWatch()) {
-			// 还未开始看船则开启
-			if (!m_bIsWatching) {
-				Print("Config--Watch: off-->on");
+		if (m_BindedPort->m_DevConfig.IsAutoWatchEnabled) {
+			//自动看船是关闭状态则开启
+			if (!m_bIsAutoWatchEnabled) {
 				StartAutoWatch();
 			}
 		}
@@ -228,72 +232,25 @@ void CSurface::ExecuteConfig()
 	}
 }
 
-/**@brief 根据本地配置进行设置
- *
- */
-//void CSurface::ExecuteLocalConfig()
-//{
-//	ASSERT(m_BindedCamera != NULL);
-//
-//	// 摄像机需要开启
-//	if (m_BindedCamera->m_LocalConfig.IsActivate) {
-//		//摄像机原本是关闭状态则开启
-//		if (this->m_hRealPlay == 0) {
-//			Print("Config--Acivate: off-->on");
-//			ConnectRealPlay();
-//			StartRealPlay();
-//		}
-//
-//		//视频存储需要开启 
-//		if (m_BindedCamera->m_LocalConfig.IsVideoRecordEnabled) {
-//			//视频存储原本是关闭状态则开启
-//			if (!m_bIsRecording) {
-//				Print("Config--Record: off-->on");
-//				StartAutoRecord();
-//			}
-//		}
-//
-//		//自动看船需要开启并且现在属于自动看船时段
-//		if (ShouldWatch()) {
-//			//还未开始自动看船则开启
-//			if (!m_bIsWatching) {
-//				// 开启自动看船，订阅报警消息
-//				Print("Config--Watch: off-->on");
-//				StartAutoWatch();
-//			}
-//		}
-//	}
-//	//摄像机需要关闭
-//	else {
-//		//摄像机原本是开启状态则关闭摄像机
-//		if (this->m_hRealPlay > 0) {
-//			Print("Going to off");
-//			//如果正在自动看船则停止自动看船
-//			if (m_bIsWatching) {
-//				//Print();
-//				StopAutoWatch();
-//			}
-//
-//			//如果正在录像则停止录像
-//			if (m_bIsRecording) {
-//
-//			}
-//
-//			//关闭摄像机(画面)
-//			StopRealPlay();
-//			DisconnectRealPlay();
-//		}
-//	}
-//}
 
 
-/**@brief 更改设置项
- *
- */
-//void CSurface::ExecuteLocalConfig(LocalConfig* pConfig)
-//{
-//	ASSERT(m_BindedCamera != NULL);
-//}
+BOOL CSurface::ShouldWatch(CTime& refTime)
+{
+	UINT minute = refTime.GetHour() * 60 + refTime.GetMinute();
+
+
+	if (m_BindedPort->m_AwConfig.End < m_BindedPort->m_AwConfig.Begining) {
+		if (minute < m_BindedPort->m_AwConfig.End || minute >= m_BindedPort->m_AwConfig.Begining) {
+			return TRUE;
+		}
+	}
+	else if (m_BindedPort->m_AwConfig.End > m_BindedPort->m_AwConfig.Begining) {
+		if (minute >= m_BindedPort->m_AwConfig.Begining && minute < m_BindedPort->m_AwConfig.End) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
 
 
 /**@brief 判断是否需要开启看船
@@ -301,14 +258,6 @@ void CSurface::ExecuteConfig()
  */
 BOOL CSurface::ShouldWatch()
 {
-	//if (m_BindedCamera == NULL) {
-	//	return FALSE;
-	//}
-	
-	//if (!m_BindedCamera->m_LocalConfig.IsAutoWatchEnabled) {
-	//	return FALSE;
-	//}
-
 	if (m_BindedPort == NULL || m_BindedPort->m_pCamera == NULL) {
 		return FALSE;
 	}
@@ -318,20 +267,38 @@ BOOL CSurface::ShouldWatch()
 	}
 
 	CTime time = CTime::GetCurrentTime();
-	UINT minute = time.GetHour() * 60 + time.GetMinute();
-
-	//if (minute < m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd) {
-	//	if (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd < m_BindedCamera->m_LocalConfig.AutoWatchTimeStart
-	//		|| minute >= m_BindedCamera->m_LocalConfig.AutoWatchTimeStart) {
-	//		return TRUE;
-	//	}
-	//}
-
-	return FALSE;
+	return ShouldWatch(time);
 }
 
 
+UINT CSurface::GetNextWatchEventElapse(CTime& refTime)
+{
+	UINT elapse  = 0;
+	
+	UINT second  = refTime.GetHour()*3600 + refTime.GetMinute() * 60 + refTime.GetSecond();
 
+	UINT begin_sec  = m_BindedPort->m_AwConfig.Begining*60;
+	UINT end_sec    = m_BindedPort->m_AwConfig.End* 60;
+
+	if (m_bIsWatching) {
+		if ( end_sec < second) {
+			elapse  = end_sec + 24*3600 - second;
+		}
+		else {
+			elapse  = end_sec - second;
+		}
+	}
+	else {
+		if (begin_sec < second) {
+			elapse  = 24*3600-second+begin_sec;
+		}
+		else {
+			elapse = begin_sec  -second;
+		}
+	}
+
+	return elapse;
+}
 
 /**@brief 播放实时视频
 *
@@ -525,30 +492,54 @@ void CSurface::StopAutoRecord()
 }
 
 
+void  CSurface::StartWatch()
+{
+	if (! m_BindedCamera->SubscribeAlarmMessage()) {
+		Print("Start watch failed");
+		return ;
+	}
+	m_bIsWatching = true;
+}
+
+
+
+void CSurface::StopWatch()
+{
+	if (!m_BindedCamera->UnsubscribeAlarmMessage()) {
+		Print("Stop watch failed");
+		return ;
+	}
+	m_bIsWatching = false;
+
+	if (m_bIsAlarming) {
+		StopAlarmRecord();
+	}
+}
+
+
+
 /**@brief 自动看船开启
  *
  */
 BOOL  CSurface::StartAutoWatch()
 {
+    m_bIsAutoWatchEnabled   = true;
 	CTime  time = CTime::GetCurrentTime();
-	UINT minute = time.GetHour() * 60 + time.GetMinute();
-	UINT elapse = 0;
 
-	if (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd < minute) {
-		elapse = (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd + 24 * 60 - minute) * 60 * 1000;
-	}
-	else if (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd > minute) {
-		elapse = (m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd - minute) * 60 * 1000;
+	if (ShouldWatch(time)) {
+		StartWatch();
 	}
 	else {
-		return FALSE;
+		StopWatch();
 	}
 
-	m_BindedCamera->SubscribeAlarmMessage();
-	m_bIsWatching = true;
+	UINT elapse   = 0;
+	elapse  = GetNextWatchEventElapse(time);
 
-	SetTimer(TIMER_ID_AUTO_WATCH, elapse, NULL);
-	TRACE("elapse:%d before end:%d:%0d\n", elapse, m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd / 60, m_BindedCamera->m_LocalConfig.AutoWatchTimeEnd % 60);
+	Print("Next elapse %d--%02d:%02d:%02d", elapse, elapse / 3600, (elapse %3600)/60, elapse % 60);
+
+	SetTimer(TIMER_ID_AUTO_WATCH, elapse*1000, NULL);
+	
 	return TRUE;
 }
 
@@ -558,9 +549,9 @@ BOOL  CSurface::StartAutoWatch()
  */
 void CSurface::StopAutoWatch()
 {
+    m_bIsAutoWatchEnabled  = false;
 	KillTimer(TIMER_ID_AUTO_WATCH);
-	m_BindedCamera->UnsubscribeAlarmMessage();
-	m_bIsWatching = false;
+	StopWatch();
 }
 
 
@@ -588,6 +579,10 @@ void CSurface::PackageRecordFile()
  */
 void CSurface::OnAlarmTrigged()
 {
+	if (!m_bIsWatching) {
+		Print("Alarm trigged at not watch time");
+	}
+
 	m_wAlarmStamp = ALARM_TIMEOUT_CNT;
 
 	if (!m_bIsAlarming) {
@@ -745,9 +740,9 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_BN_CLICKED(1, &CSurface::OnBnClickedRevsese)
 	ON_BN_CLICKED(2, &CSurface::OnBnClickedDelete)
 	ON_MESSAGE(USER_MSG_NOFITY_KEYDOWN, &CSurface::OnUserMsgNofityKeydown)
-	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_OO_CHANGE, &CSurface::OnUserMsgCameraConfigOoChange)
-	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_RD_CHANGE, &CSurface::OnUserMsgCameraConfigRdChange)
-	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
+	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_OO_CHANGE, &CSurface::OnUserMsgCameraConfigOoChange)
+	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_RD_CHANGE, &CSurface::OnUserMsgCameraConfigRdChange)
+	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
 END_MESSAGE_MAP()
 
 
@@ -827,7 +822,20 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 			break;
 		//----------------------------------------
 		case TIMER_ID_AUTO_WATCH:
-
+		    // 到达看船结束时间
+			if (m_bIsWatching) {
+				 StopWatch();
+				 UINT elapse  = GetNextWatchEventElapse(CTime::GetCurrentTime());
+				 Print("Next elapse %d--%02d:%02d:%02d", elapse, elapse / 3600, (elapse % 3600) / 60, elapse % 60);
+				 SetTimer(TIMER_ID_AUTO_WATCH, elapse, NULL);
+			}
+			// 来到看船开始时间
+			else {
+				StartWatch();
+				UINT elapse = GetNextWatchEventElapse(CTime::GetCurrentTime());
+				Print("Next elapse %d--%02d:%02d:%02d", elapse, elapse / 3600, (elapse % 3600) / 60, elapse % 60);
+				SetTimer(TIMER_ID_AUTO_WATCH, elapse*1000, NULL);
+			}
 			break;
 		//----------------------------------------
 		case TIMER_ID_RECONNECT:
@@ -924,6 +932,27 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				mDelBtn.ShowWindow(SW_SHOW);
 				mReverseBtn.SetFocus();
 				break;
+			default:
+				if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
+					switch (pMsg->wParam)
+					{
+					case 'T':
+						CCommunication::GetInstance()->AskTalk(this->m_BindedCamera);
+						return TRUE;
+
+					case 'O':
+						CCommunication::GetInstance()->YouTalk();
+						return true;
+
+					case 'S':
+						CCommunication::GetInstance()->OverTalk();
+						return true;
+
+					default:
+						break;
+					}
+				}
+				break;
 		}
 	}
 
@@ -980,6 +1009,7 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 					m_BindedCamera->m_Param.PictureFlip = 1;
 					m_BindedCamera->m_Param.PictureMirror = 1;
 				}
+
 
 				MSG msg;
 				msg.message = USER_MSG_CAMERA_PARAM;

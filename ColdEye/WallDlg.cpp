@@ -21,6 +21,12 @@ bool __stdcall _cbDVRMessage(long loginId, char* pBuf, unsigned long bufLen, lon
 
 	ASSERT(pWall != NULL);
 
+	CSurface* pSurface  = pWall->FindSurface(loginId);
+
+	if (pSurface) {
+		pSurface->OnAlarmTrigged();
+	}
+
 	return 0;
 }
 
@@ -253,7 +259,6 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 				}
 			}
 			return true;
-
 		default:
 			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
 				//CString text;
