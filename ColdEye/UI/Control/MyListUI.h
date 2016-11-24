@@ -20,8 +20,7 @@ public:
 	void FindRecordFile();
 
 public:
-	bool mIsLocked;
-	int	prereadMessageNum;
+	int	mhintNumber;
 	CRecordFileInfo* Info;
 };
 

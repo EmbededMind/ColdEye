@@ -86,9 +86,10 @@ public :
 	void CameraInfoInit(CameraInfo cameraInfo);
 	CameraInfo GetCameraSetInfo(int id);
 
-	//void FindRecordFile();
 	void SetWatchTime(DWORD beginTime, DWORD endTime);
 	void GetWatchTime();
+
+	//void SetBallonToolTip(int inx,)
 
 	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 

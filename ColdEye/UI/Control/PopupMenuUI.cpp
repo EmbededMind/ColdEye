@@ -5,8 +5,8 @@
 IMPLEMENT_DUICONTROL(CPopupMenuUI)
 
 CPopupMenuUI::CPopupMenuUI()
+	:mHintNumber(0)
 {
-	mHintNumber = _T("0");
 }
 
 
@@ -111,36 +111,31 @@ void CPopupMenuUI::SetMenuBkColor(DWORD menuColor, DWORD itemColor)
 void CPopupMenuUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
-
-	if (mHintNumber != _T("0")) {
+	CDuiString text;
+	text.Format(_T("%d"), mHintNumber);
+	if (mHintNumber != 0) {
 		RECT rcPos = {259, 10, 294, 45};
 		RECT textPos = GetPos();
 
 		CDuiString dest;
 
-		if (mHintNumber.GetLength() == 2) {
+		if (mHintNumber>9) {
 			textPos.left += 263;
 			textPos.top += 17;
 			textPos.right = textPos.left + 290;
 			textPos.bottom = textPos.top + 38;
 		}
-		else if (mHintNumber.GetLength() == 1) {
+		else {
 			textPos.left += 269;
 			textPos.top += 14;
 			textPos.right = textPos.left + 290;
 			textPos.bottom = textPos.top + 38;
 		}
 
-		dest.Format(_T("file='Button\\??????.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
+		dest.Format(_T("file='image\\ÍÖÔ²ÐÎ.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
 		DrawImage(hDC, dest);
-		CRenderEngine::DrawText(hDC, m_pManager, textPos, mHintNumber, 0xFFFFFF, 1, 0);
+		CRenderEngine::DrawText(hDC, m_pManager, textPos, text, 0xFFFFFF, 1, 0);
 	}
-}
-
-void CPopupMenuUI::SetHintNum(CDuiString num)
-{
-	mHintNumber = num;
-	this->Invalidate();
 }
 
 void CPopupMenuUI::SetPrevItem(CControlUI * PrevItem)
@@ -163,7 +158,11 @@ CControlUI * CPopupMenuUI::GetNextItem()
 	return mNextItem;
 }
 
-CDuiString& CPopupMenuUI::GetHintNum()
+void CPopupMenuUI::SetHintNum(int num)
+{
+}
+
+int CPopupMenuUI::GetHintNum()
 {
 	return mHintNumber;
 }

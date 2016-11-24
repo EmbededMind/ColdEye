@@ -265,5 +265,8 @@ private:
 	LONG m_dwDelayDeltaY;
 	DWORD m_dwDelayNum;
 	DWORD m_dwDelayLeft;
+
+public:
+	int mhintNumber;
 };
 

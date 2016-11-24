@@ -39,7 +39,7 @@ void CTimeButtonUI::DecreaseHour()
 	else {
 		val = 23;
 	}
-	SetValue(val*60);
+	SetValue(val);
 }
 
 void CTimeButtonUI::DecreaseMinute()
@@ -68,7 +68,7 @@ void CTimeButtonUI::IncreaseHour()
 	else {
 		val = 0;
 	}
-	SetValue(val*60);
+	SetValue(val);
 }
 
 void CTimeButtonUI::IncreaseMinute()
@@ -107,10 +107,11 @@ bool CTimeButtonUI::isMorrow()
 
 void CTimeButtonUI::SetValue(int value)
 {
-	CString text;
-	m_Value = value;
-	text.Format(_T("%02d"), m_Value);
+	CString text=_T("5");
+	text.Format(_T("%02d"), value);
 	SetText(text);
+	if (GetName() == _T("time1_hour") || GetName() == _T("time2_hour"))
+		m_Value = value*60;
 }
 
 int CTimeButtonUI::GetValue()

@@ -8,7 +8,8 @@ void CVideoListUI::DoEvent(TEventUI& event)
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
 		{
-			CListLabelElementUI *pItem = (CListLabelElementUI*)GetItemAt(GetMaxSelItemIndex());			CVideoListUI::Node* node = (CVideoListUI::Node*)pItem->GetTag();
+			CListLabelElementUI *pItem = (CListLabelElementUI*)GetItemAt(GetMaxSelItemIndex());		
+			CVideoListUI::Node* node = (CVideoListUI::Node*)pItem->GetTag();
 			switch (event.wParam) {
 				case VK_UP:
 				{
@@ -97,6 +98,12 @@ void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 {
 	AddItem(pInfo);
 	RefreshList();
+	if (pInfo->status == RECORD_NOTSEEN) {
+		mhintNumber++;
+		CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
+		pItem->mhintNumber++;
+	}
+
 }
 
 void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
@@ -157,6 +164,7 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 		}
 	}
+
 }
 
 void CVideoListUI::RefreshList()
@@ -171,6 +179,11 @@ void CVideoListUI::RefreshList()
 		
 
 	pNode = (CVideoListUI::Node*)pItem->GetTag();
+	if (pNode->data()._level == 0) {
+		if (pNode->data()._pListElement->Info->status == RECORD_NOTSEEN)
+			pItem->mhintNumber++;
+	}
+
 	num = pNode->num_children();
 	if (!num) {
 		pItem = (CMyListUI*)GetItemAt(num + 1); //第二个头节点
@@ -202,7 +215,6 @@ void CVideoListUI::RefreshList()
 			pNode->data()._text = tbegin.Format("%Y-%m-%d");
 		}
 	}
-
 }
 
 

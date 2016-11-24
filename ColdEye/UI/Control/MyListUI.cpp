@@ -6,8 +6,7 @@
 
 IMPLEMENT_DUICONTROL(CMyListUI)
 CMyListUI::CMyListUI()
-	:mIsLocked(false),
-	prereadMessageNum(0),
+	:mhintNumber(0),
 	Info(0)
 {
 }
@@ -34,22 +33,38 @@ void CMyListUI::DoPaint(HDC hDC, const RECT & rcPaint)
 
 void CMyListUI::PaintStatusImage(HDC hDC)
 {
-	if (!mIsLocked)
+	if (Info->status== RECORD_LOCKED)
 	{
 		CRect rcPos;
 		CDuiString dest;
 		rcPos = { 825,23,851,55 };
-		dest.Format(_T("file='Button\\Ëø2.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
+		dest.Format(_T("file='image\\Ëø2.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
 		DrawImage(hDC, dest);
 	}
-
-	if(prereadMessageNum!=0)
+	if(mhintNumber !=0)
 	{
-		CRect rcPos;
+		CDuiString text;
+		text.Format(_T("%d"), mhintNumber);
+		RECT rcPos = { 549,11,584,46 };
+		RECT textPos = GetPos();
 		CDuiString dest;
-		rcPos = {549,11,584,46};
-		dest.Format(_T("file='Button\\ÍÖÔ²ÐÎ.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
+
+		if (mhintNumber>9) {
+			textPos.left += (rcPos.left + 4);
+			textPos.top += (rcPos.top + 7);
+			textPos.right = textPos.left + 50;
+			textPos.bottom = textPos.top + 50;
+		}
+		else {
+			textPos.left += (rcPos.left+11);
+			textPos.top += (rcPos.top+7);
+			textPos.right = textPos.left +50;
+			textPos.bottom = textPos.top + 50;
+		}
+
+		dest.Format(_T("file='image\\ÍÖÔ²ÐÎ.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
 		DrawImage(hDC, dest);
+		CRenderEngine::DrawText(hDC, m_pManager, textPos, text, 0xFFFFFF, 1, 0);
 	}
 }
 
@@ -122,6 +137,15 @@ void CMyListUI::DoEvent(TEventUI & event)
 			}
 		}
 
+	}
+
+	if (event.Type == UIEVENT_SETFOCUS) {
+		CVideoListUI::Node *pNode = (CVideoListUI::Node*)GetTag();
+		if (pNode->data()._level == 1) {
+			pNode->parent()->data()._pListElement->Info->status == RECORD_NOTSEEN;
+			pNode->parent()->data()._pListElement->mhintNumber--;
+			pNode->parent()->data()._pListElement->Invalidate();
+		}
 	}
 	CListLabelElementUI::DoEvent(event);
 }

@@ -13,7 +13,6 @@ public:
 	~CPopupMenuUI();
 
 	CPopupMenuUI* mLastFocusedMenu;
-	CDuiString mHintNumber;
 
 	virtual void DoEvent(TEventUI& event);
 	virtual void PaintStatusImage(HDC hDC);
@@ -22,14 +21,15 @@ public:
 	void SetMenuBkColor(DWORD menuColor, DWORD itemColor);
 
 	
-	void SetHintNum(CDuiString num);
+	void SetHintNum(int num);
+	int GetHintNum();
 	void SetPrevItem(CControlUI *PrevItem);
 	void SetNextItem(CControlUI *NextItem);
 	CControlUI* GetPrevItem();
 	CControlUI* GetNextItem();
-	CDuiString& GetHintNum();
 
 protected:
+	int mHintNumber;
 	int ButtonId;
 	CControlUI* mPrevItem;
 	CControlUI* mNextItem;
