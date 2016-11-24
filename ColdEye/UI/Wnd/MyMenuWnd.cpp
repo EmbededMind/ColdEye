@@ -105,7 +105,9 @@ void CMyMenuWnd::InitWindow()
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("ÉãÏñÍ·6ÉèÖÃ"));
 
-	SetWatchTime(160, 60);
+	
+	SetWatchTime(((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining, 
+		((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end);
 
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	if (pSquare != NULL) {
@@ -221,7 +223,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		case USER_MSG_CAMERA_CONFIG_AWTIME:
 			DWORD aw_begining, aw_end;
 			GetWatchTime(&aw_begining, &aw_end);
-
+			Print("Get watch time:%d,%d", aw_begining, aw_end);
 			if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
 				MSG msg;
 				msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
@@ -473,8 +475,11 @@ void CMyMenuWnd::GetWatchTime(DWORD* pBegining, DWORD* pEnd)
 	pMinute1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_minute"));
 	pMinute2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_minute"));
 
-	*pBegining = pHour1->GetValue() * 60 + pMinute1->GetValue();
-	*pEnd = pHour2->GetValue() * 60 + pMinute2->GetValue();
+	Print("hour:%d minute:%d   hour:%d minute:%d", pHour1->GetValue(), pMinute1->GetValue(),
+	                                               pHour2->GetValue(), pMinute2->GetValue());
+
+	*pBegining = pHour1->GetValue() + pMinute1->GetValue();
+	*pEnd = pHour2->GetValue()+ pMinute2->GetValue();
 }
 
 void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
