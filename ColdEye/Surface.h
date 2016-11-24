@@ -32,6 +32,7 @@ public:
 	bool m_bIsRecording;
 	bool m_bIsAlarming;
 	bool m_bIsWatching;
+	bool m_bIsAutoWatchEnabled;
 
 	CCamera* m_BindedCamera;
 
@@ -47,9 +48,7 @@ public:
 	void          BindPort(CPort* pPort);
 
 	void          ExecuteConfig();
-
-	//void          ExecuteLocalConfig();
-	//void          ExecuteLocalConfig(LocalConfig* pConfig);
+	void          ExecuteConfig(DeviceConfig& config, uint32_t masks);
 
 	void          ConnectRealPlay();         //打开实时播放数据流
 	void          DisconnectRealPlay();      //关闭实时播放
@@ -66,6 +65,10 @@ public:
 
 	void          StartAlarmRecord(CFile* pFile);  //开始录制报警视频
 	void          StopAlarmRecord();               //停止录制报警视频
+
+
+	void          StartWatch();
+	void          StopWatch();
 
 	BOOL          StartAutoWatch();                 //开始自动看船
 	void          StopAutoWatch();                  //停止自动看船
@@ -100,7 +103,8 @@ private:
 	long          m_hRealPlay;
 	WORD          m_wAlarmStamp;
 	BOOL          ShouldWatch();
-
+	BOOL          ShouldWatch(CTime& refTime);
+	UINT          GetNextWatchEventElapse(CTime& refTime);
 
 protected:
 	DECLARE_MESSAGE_MAP()

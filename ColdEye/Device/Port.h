@@ -2,6 +2,13 @@
   
 #include "Device\Camera.h"
 
+
+#define DEV_CONFIG_MASK_CAM_SW            0x00000001
+#define DEV_CONFIG_MASK_RD_SW             0x00000002
+#define DEV_CONFIG_MASK_AW_SW             0x00000004
+#define DEV_CONFIG_MASK_VOL               0x00000008
+#define DEV_CONFIG_MASK_NAME              0x00000010            
+
 typedef struct {
 	DWORD       Begining;
 	DWORD       End;
