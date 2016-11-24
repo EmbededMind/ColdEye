@@ -19,6 +19,7 @@ private:
 	CExHardDrive();
 	USBFlashDiskStatus* mPStatus;
 	bool mIsInsert;
+	bool mCancelCopy;
 	CWnd *mCOwner;//复制文件时用到
 	HWND mHOwner;
 	CString mDiskName;
@@ -69,6 +70,7 @@ public:
 	BOOL Updata();
 	BOOL CopyRecord(CRecordFileInfo *FileInfo, UINT FileType);
 	BOOL IsInsert();
+	void CancelCopy();
 	/******************/
 	BOOL ScanDisk(CWnd *pOwner);
 };
