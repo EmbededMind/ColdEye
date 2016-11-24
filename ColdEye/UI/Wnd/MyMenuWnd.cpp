@@ -105,6 +105,8 @@ void CMyMenuWnd::InitWindow()
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("ÉãÏñÍ·6ÉèÖÃ"));
 
+	SetWatchTime(160, 60);
+
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	if (pSquare != NULL) {
 		pSquare->AddAudience(m_hWnd, USER_MSG_LOGIN);
@@ -426,6 +428,39 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 	setInfo.IsVideoRecordEnabled = camera[id].pSaveVideo->GetValue();
 	setInfo.IsAutoWatchEnabled = camera[id].pAutoWatch->GetValue();
 	return setInfo;
+}
+
+void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
+{
+	if (beginTime < 1140 && endTime < 1440) {
+		CTimeButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
+		int tHour1, tHour2, tMinute1, tMinute2;
+		tHour1 = beginTime / 60;
+		tHour2 = endTime / 60;
+		tMinute1 = beginTime%60;
+		tMinute2 = endTime%60;
+
+		pHour1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_hour"));
+		pHour2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_hour"));
+		pMinute1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_minute"));
+		pMinute2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_minute"));
+		pHour1->SetValue(tHour1);
+		pHour2->SetValue(tHour2);
+		pMinute1->SetValue(tMinute1);
+		pMinute2->SetValue(tMinute2);
+	}
+}
+
+void CMyMenuWnd::GetWatchTime()
+{
+	CTimeButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
+	pHour1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_hour"));
+	pHour2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_hour"));
+	pMinute1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_minute"));
+	pMinute2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_minute"));
+	DWORD beginTime, endTime;
+	beginTime = pHour1->GetValue() * 60 + pMinute1->GetValue();
+	endTime = pHour2->GetValue() * 60 + pMinute2->GetValue();
 }
 
 void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
