@@ -87,7 +87,6 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 	if (event.Type == UIEVENT_KEYDOWN) {
 		if (GetKeyState(VK_CONTROL)) {
 			if (event.wParam=='U') {
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), GetText(), NULL, NULL,NULL);
 				FindRecordFile();
 				return;
 			}
@@ -277,7 +276,29 @@ void CMenuItemUI::FindRecordFile()
 
 void CMenuItemUI::HardDriverStatus(list<CRecordFileInfo*> recordInfo, UINT8 RecordType)
 {
+	CExHardDrive* pHardDriver = CExHardDrive::GetInstance();
+	USBFlashDiskStatus flashSize;
+	ULONGLONG totalSize=0;
+	//拷贝视频的总大小
+	list<CRecordFileInfo*>::iterator iter;
+	for (iter = recordInfo.begin(); iter != recordInfo.end(); iter++) {
+		totalSize += (*iter)->dlSize;
+	}
 
-	if (!recordInfo.empty())
-		SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&recordInfo));
+	//U盘已插入
+	if(pHardDriver->IsInsert()){
+		pHardDriver->GetStatus(&flashSize);
+		if (flashSize.mSpaceLeft > totalSize) {
+			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), GetText(), NULL, NULL, NULL);
+			if (!recordInfo.empty())
+				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&recordInfo));
+		}
+		//空间不足
+		else {
+			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), _T("U盘没有足够的空间,请清除空间"), _T("或者更换U盘后，重试！"), NULL, NULL);
+		}
+	}
+	else {
+		CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"), NULL, NULL);
+	}
 }

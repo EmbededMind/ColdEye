@@ -172,8 +172,8 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	case USER_MSG_COPY_INFO:
 		{
 			//ProgressReflash();
-			sendedSize += wParam;
-			int num_progress = 100*((double)sendedSize / (double)totalSize);
+			int Size = sendedSize + wParam;
+			int num_progress = 100*((double)Size / (double)totalSize);
 			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 			progress->SetValue(num_progress);
 		}
@@ -189,6 +189,7 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 					if (iter == pRecordInfo->end()) {
 						CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 						progress->SetValue(totalSize);
+						Print("sendsize:%d",sendedSize);
 						Close(1);//¸´ÖÆ½áÊø
 						return 0;
 					}

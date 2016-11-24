@@ -119,7 +119,6 @@ void CTimeButtonUI::SetTime()
 	tMinute2 = StrToInt(pMinute2->GetText());
 	tMinute_1_New = tHour1 * 60 + tMinute1;
 	tMinute_2_New = tHour2 * 60 + tMinute2;
-
 }
 
 
