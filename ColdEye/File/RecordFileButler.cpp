@@ -22,24 +22,27 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 
 CFile* CRecordFileButler::AllocRecordFile()
 {
-if(m_FileType  == 2)
-	Print("Alloc file");
+
+
 
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
 	fileName  = time.Format(_T("%Y%m%d%H%M%S"));
 
+	fileName  = m_Direction + fileName + _T(".h264");
+
+if (m_FileType == 2)
+	Print("Alloc file %S", fileName);
 	CFileException fException;
-	if (!m_File.Open(m_Direction + fileName + _T(".h264"), CFile::modeCreate | CFile::modeWrite, &fException) ){
+	if (!m_File.Open(fileName, CFile::modeCreate | CFile::modeWrite, &fException) ){
 		return NULL;
 	}
+
 
 	m_pFileInfo = new CRecordFileInfo();
 	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
 
-if (m_FileType == 2)
-	Print("Notify");
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
 	
@@ -49,7 +52,6 @@ if (m_FileType == 2)
 
 void CRecordFileButler::ReleaseRecordFile()
 {
-	Print("Release %d file", m_FileType);
 	CTime time = CTime::GetCurrentTime();
 
 	if (m_pFileInfo != CFile::hFileNull) {

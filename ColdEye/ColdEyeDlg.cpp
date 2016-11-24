@@ -652,7 +652,7 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	//∑¢ÀÕŒ’ ÷
 
 	m_SysTime  = CTime::GetCurrentTime();
-	Print("Second Tick");
+
 	InvalidateRect(m_rSysTimeText);
 	InvalidateRect(m_rAwTipText);
 	InvalidateRect(m_rHwTipText);

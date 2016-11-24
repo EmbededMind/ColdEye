@@ -856,6 +856,7 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 		    // 到达看船结束时间
 			if (m_bIsWatching) {
 				 StopWatch();
+				 m_AlarmFileButler.ReleaseRecordFile();
 				 UINT elapse  = GetNextWatchEventElapse(CTime::GetCurrentTime());
 				 
 				 SetTimer(TIMER_ID_AUTO_WATCH, elapse*1000, NULL);
