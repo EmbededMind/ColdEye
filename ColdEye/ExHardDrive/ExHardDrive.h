@@ -68,6 +68,7 @@ public:
 	BOOL GetStatus(USBFlashDiskStatus *pStaus);
 	BOOL Updata();
 	BOOL CopyRecord(CRecordFileInfo *FileInfo, UINT FileType);
+	BOOL IsInsert();
 	/******************/
 	BOOL ScanDisk(CWnd *pOwner);
 

@@ -249,6 +249,11 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 	return TRUE;
 }
 
+BOOL CExHardDrive::IsInsert()
+{
+	return this->mIsInsert;
+}
+
 BOOL CExHardDrive::ScanDisk(CWnd *pOwner)
 {
 	DWORD mask;
