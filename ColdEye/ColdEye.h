@@ -19,7 +19,7 @@
 typedef struct {
 	std::string boat_name;
 	DWORD       watch_time_begining;
-	DWORD       watch_time_span;
+	DWORD       watch_time_end;
 	bool        auto_watch_status;
 	uint16_t    alarm_sound;
 	uint16_t    brightness;
@@ -46,6 +46,7 @@ public:
 	//bool      SetSystemConfig(CString& boat_name);
 	//bool      SetSystemConfig(uint16_t  brightness, uint16_t volumn);
 	void      MakeSystemConfigDefault();
+	bool      SetAwTime(DWORD tBegining, DWORD tEnd);
 
 
 	HWND      GetMenuWndHandle();

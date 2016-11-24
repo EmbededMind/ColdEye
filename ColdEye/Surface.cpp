@@ -280,7 +280,14 @@ UINT CSurface::GetNextWatchEventElapse(CTime& refTime)
 	UINT begin_sec  = m_BindedPort->m_AwConfig.Begining*60;
 	UINT end_sec    = m_BindedPort->m_AwConfig.End* 60;
 
+	Print("Get next elapse...");
+	Print("second  %02d:%02d:%02d", second/3600, (second%3600)/60, second%60);
+	Print("begin   %02d:%02d:%02d", begin_sec / 3600, (begin_sec % 3600) / 60, begin_sec % 60);
+	Print("end     %02d:%02d:%02d", end_sec / 3600, (end_sec % 3600) / 60, end_sec % 60);
+
+
 	if (m_bIsWatching) {
+	    Print("be watching, so get next end time");
 		if ( end_sec < second) {
 			elapse  = end_sec + 24*3600 - second;
 		}
@@ -289,6 +296,7 @@ UINT CSurface::GetNextWatchEventElapse(CTime& refTime)
 		}
 	}
 	else {
+	    Print("not watching, so get next begin time");
 		if (begin_sec < second) {
 			elapse  = 24*3600-second+begin_sec;
 		}
@@ -296,6 +304,9 @@ UINT CSurface::GetNextWatchEventElapse(CTime& refTime)
 			elapse = begin_sec  -second;
 		}
 	}
+
+	Print("Finally get elapse:%d  %02d:%02d:%02d", elapse, elapse/3600, (elapse%3600)/60, elapse%60);
+	
 
 	return elapse;
 }
@@ -498,22 +509,36 @@ void  CSurface::StartWatch()
 		Print("Start watch failed");
 		return ;
 	}
+	else {
+		Print("Start watch ok");
+
+	}
+
 	m_bIsWatching = true;
 }
 
 
 
-void CSurface::StopWatch()
+BOOL CSurface::StopWatch()
 {
+	
 	if (!m_BindedCamera->UnsubscribeAlarmMessage()) {
 		Print("Stop watch failed");
-		return ;
+		return FALSE;
 	}
+	else {
+		Print("Stop watch ok");
+	}
+
+	KillTimer(TIMER_ID_ALARM);
+
 	m_bIsWatching = false;
 
 	if (m_bIsAlarming) {
 		StopAlarmRecord();
 	}
+
+	return TRUE;
 }
 
 
@@ -527,10 +552,14 @@ BOOL  CSurface::StartAutoWatch()
 	CTime  time = CTime::GetCurrentTime();
 
 	if (ShouldWatch(time)) {
-		StartWatch();
+		if (!m_bIsWatching) {
+			StartWatch();
+		}		
 	}
 	else {
-		StopWatch();
+		if (m_bIsWatching) {
+			StopWatch();
+		}		
 	}
 
 	UINT elapse   = 0;
@@ -584,6 +613,7 @@ void CSurface::OnAlarmTrigged()
 	}
 
 	m_wAlarmStamp = ALARM_TIMEOUT_CNT;
+	Print("Alarm event");
 
 	if (!m_bIsAlarming) {
 		m_bIsAlarming = true;
@@ -743,6 +773,7 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_OO_CHANGE, &CSurface::OnUserMsgCameraConfigOoChange)
 	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_RD_CHANGE, &CSurface::OnUserMsgCameraConfigRdChange)
 	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWTIME, &CSurface::OnUserMsgCameraConfigAwtime)
 END_MESSAGE_MAP()
 
 
@@ -826,14 +857,14 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 			if (m_bIsWatching) {
 				 StopWatch();
 				 UINT elapse  = GetNextWatchEventElapse(CTime::GetCurrentTime());
-				 Print("Next elapse %d--%02d:%02d:%02d", elapse, elapse / 3600, (elapse % 3600) / 60, elapse % 60);
-				 SetTimer(TIMER_ID_AUTO_WATCH, elapse, NULL);
+				 
+				 SetTimer(TIMER_ID_AUTO_WATCH, elapse*1000, NULL);
 			}
 			// 来到看船开始时间
 			else {
 				StartWatch();
 				UINT elapse = GetNextWatchEventElapse(CTime::GetCurrentTime());
-				Print("Next elapse %d--%02d:%02d:%02d", elapse, elapse / 3600, (elapse % 3600) / 60, elapse % 60);
+				
 				SetTimer(TIMER_ID_AUTO_WATCH, elapse*1000, NULL);
 			}
 			break;
@@ -871,6 +902,8 @@ int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	mDelBtn.Create(_T("删除"), WS_CHILD, {0,0,0,0}, this, 2);
 	mDelBtn.ShowWindow(SW_HIDE);
+
+	CMsgSquare::GetInstance()->AddAudience(m_hWnd, USER_MSG_CAMERA_CONFIG_AWTIME);
 
 	return 0;
 }
@@ -1049,5 +1082,71 @@ afx_msg LRESULT CSurface::OnUserMsgCameraConfigRdChange(WPARAM wParam, LPARAM lP
 // 摄像头自动看船切换的消息处理
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lParam)
 {
+	return 0;
+}
+
+/**@brief  自动看船时间段设置
+ * 
+ */
+afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lParam)
+{	
+	//m_BindedPort->m_AwConfig.Begining  = wParam;
+	//m_BindedPort->m_AwConfig.End       = (DWORD)lParam;
+
+	//if (!m_BindedPort->SetAwTime(wParam, (DWORD)lParam)) {
+	//	Print("Set Aw time failed");
+	//	return 0;
+	//}
+	//else {
+	//	Print("Set Aw time: %02d:%02d:%02d -- %02d:%02d:%02d", wParam/3600, (wParam%3600)/60, wParam%60,
+	//	                                                       lParam/3600, (lParam%3600)/60, lParam%60);
+	//}
+	m_BindedPort->m_AwConfig.Begining  = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
+	m_BindedPort->m_AwConfig.End       = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
+
+	CTime time  = CTime::GetCurrentTime();
+	Print("Current time: %02d:%02d:%02d", time.GetHour(), time.GetMinute(), time.GetSecond());
+	//正在自动看船
+	if (m_bIsAutoWatchEnabled) {
+	Print("Auto watch enabled");
+	    // 更改设置后，此刻属于自动看船时段
+		if (ShouldWatch(time)) {
+			Print("Now should watch");
+		    // 原本正在看船，只需更改看船结束时间即可。
+			if (m_bIsWatching) {
+				Print("Has been watching");
+				DWORD elapse  = GetNextWatchEventElapse(time);
+				SetTimer(TIMER_ID_AUTO_WATCH, elapse * 1000, NULL);
+				Print("Watch end elapse:%d", elapse);
+			}
+			//原本没有开始看船，则开始看船
+			else {			    
+				StartWatch();
+				DWORD elapse  = GetNextWatchEventElapse(time);
+				SetTimer(TIMER_ID_AUTO_WATCH, elapse * 1000, NULL);
+				Print("Watch end elapse:%d", elapse);
+			}
+		}
+		//更改设置后，此刻不属于自动看船时段
+		else {
+		    Print("Now shouldn't watch");
+			//原本正在看船，则停止看船
+			if (m_bIsWatching) {
+			    Print("Has been watching");
+				StopWatch();
+				DWORD  elapse  = GetNextWatchEventElapse(time);
+				SetTimer(TIMER_ID_AUTO_WATCH, elapse * 1000, NULL);
+				Print("Watch start elapse:%d", elapse);
+			}
+			// 原本没有开始看船，只需更改看船开始时间即可。
+			else {
+				Print("Havn't been watching");
+				DWORD elapse  = GetNextWatchEventElapse(time);
+				SetTimer(TIMER_ID_AUTO_WATCH, elapse * 1000, NULL);
+				Print("Watch start elapse:%d", elapse);
+			}
+		}
+	}
+
 	return 0;
 }

@@ -3,6 +3,10 @@
 #include "TimeButtonUI.h"
 #include "Wnd/MsgWnd.h"
 
+#include "Pattern\MsgSquare.h"
+
+#include "ColdEye.h"
+
 IMPLEMENT_DUICONTROL(CTimeButtonUI)
 
 CTimeButtonUI::CTimeButtonUI()
@@ -53,7 +57,9 @@ void CTimeButtonUI::DecreaseMinute()
 	else {
 		val = 59;
 	}
+
 	SetValue(val);
+
 }
 
 void CTimeButtonUI::IncreaseHour()
@@ -82,7 +88,9 @@ void CTimeButtonUI::IncreaseMinute()
 	else {
 		val = 0;
 	}
+
 	SetValue(val);
+
 }
 
 
@@ -105,6 +113,9 @@ bool CTimeButtonUI::isMorrow()
 		return true;
 }
 
+
+
+
 void CTimeButtonUI::SetValue(int value)
 {
 	CString text=_T("5");
@@ -118,6 +129,7 @@ int CTimeButtonUI::GetValue()
 {
 	return m_Value;
 }
+
 
 void CTimeButtonUI::DoEvent(TEventUI& event)
 {
@@ -173,12 +185,13 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 				break;
 			//---------------------------------------------------
 			case VK_BACK:
-				//if (tMinute_1_New != tMinute_1 || tMinute_2_New != tMinute_2) {
 
-				//	//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
-				//	tMinute_1 = tMinute_1_New;
-				//	tMinute_2 = tMinute_2_New;
-				//}
+//					if (true) {
+
+//					}
+
+                SendMessage(m_pManager->GetPaintWindow(), USER_MSG_CAMERA_CONFIG_AWTIME, 0, 0);
+	
 				m_pManager->FindControl(_T("watchtime"))->SetFocus();
 				break;
 		}

@@ -68,7 +68,7 @@ public:
 
 
 	void          StartWatch();
-	void          StopWatch();
+	BOOL          StopWatch();
 
 	BOOL          StartAutoWatch();                 //开始自动看船
 	void          StopAutoWatch();                  //停止自动看船
@@ -128,6 +128,7 @@ protected:
 	afx_msg LRESULT OnUserMsgCameraConfigOoChange(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigRdChange(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lParam);
 };
 
 

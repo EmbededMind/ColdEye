@@ -365,11 +365,11 @@ BOOL CCamera::SubscribeAlarmMessage()
 BOOL CCamera::UnsubscribeAlarmMessage()
 {
 	if (this->m_LoginId > 0) {
-		if (!H264_DVR_CloseAlarmChan(this->m_LoginId)) {
+		if (H264_DVR_CloseAlarmChan(this->m_LoginId)) {
 			return TRUE;
 		}
 		else {
-			TRACE("CloseAlarmChann failed:%d\n", H264_DVR_GetLastError());
+			Print("CloseAlarmChann failed:%d", H264_DVR_GetLastError());
 		}
 	}
 

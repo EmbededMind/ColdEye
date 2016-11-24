@@ -46,6 +46,8 @@ public:
 	void  SetVisibility(bool isVisible);
 	void  SetActivate(bool newState = false);
 
+	bool  SetAwTime(DWORD tBegining, DWORD tEnd);
+
 
 	uint16_t   GetId();	
 	uint16_t   GetNameId();

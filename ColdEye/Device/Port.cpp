@@ -153,3 +153,20 @@ void CPort::Config(DeviceConfig& config)
 {
 	//this->m_DevConfig.
 }
+
+
+bool  CPort::SetAwTime(DWORD tBegining, DWORD tEnd)
+{
+	char sqlStmt[128];
+	sprintf_s(sqlStmt, "UPDATE port SET aw_begining = %d, aw_end = %d WHERE id = %d;", tBegining, tEnd,this->m_Id);
+	bool bRet =sqlite.DirectStatement(sqlStmt);
+	if (bRet == false) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		m_AwConfig.Begining  = tBegining;
+		m_AwConfig.End       = tEnd;
+	}
+
+	return bRet;
+}

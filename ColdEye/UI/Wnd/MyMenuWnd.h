@@ -87,7 +87,7 @@ public :
 	CameraInfo GetCameraSetInfo(int id);
 
 	void SetWatchTime(DWORD beginTime, DWORD endTime);
-	void GetWatchTime();
+	void GetWatchTime(DWORD* pBegining, DWORD* pEnd);
 
 	//void SetBallonToolTip(int inx,)
 

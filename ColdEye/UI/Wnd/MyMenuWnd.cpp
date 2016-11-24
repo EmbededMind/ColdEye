@@ -122,6 +122,7 @@ void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
+	
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)
@@ -215,6 +216,18 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 					}
 				}
 			}
+			break;
+
+		case USER_MSG_CAMERA_CONFIG_AWTIME:
+			DWORD aw_begining, aw_end;
+			GetWatchTime(&aw_begining, &aw_end);
+
+			if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
+				MSG msg;
+				msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
+				CMsgSquare::GetInstance()->Broadcast(msg);
+			}
+
 			break;
 	}
 	return LRESULT();
@@ -451,19 +464,17 @@ void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
 	}
 }
 
-void CMyMenuWnd::GetWatchTime()
+void CMyMenuWnd::GetWatchTime(DWORD* pBegining, DWORD* pEnd)
 {	
 	// 返回看船时间段 ，不确定该如何返回给露露，暂时定的两个变量
-	DWORD beginTime, endTime;  
-
 	CTimeButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
 	pHour1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_hour"));
 	pHour2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_hour"));
 	pMinute1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_minute"));
 	pMinute2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_minute"));
 
-	beginTime = pHour1->GetValue() * 60 + pMinute1->GetValue();
-	endTime = pHour2->GetValue() * 60 + pMinute2->GetValue();
+	*pBegining = pHour1->GetValue() * 60 + pMinute1->GetValue();
+	*pEnd = pHour2->GetValue() * 60 + pMinute2->GetValue();
 }
 
 void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)

@@ -98,7 +98,7 @@ void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 {
 	AddItem(pInfo);
 	RefreshList();
-	if (pInfo->status == RECORD_NOTSEEN) {
+	if (pInfo->status == RECORD_NSEEN) {
 		mhintNumber++;
 		CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
 		pItem->mhintNumber++;
@@ -180,7 +180,7 @@ void CVideoListUI::RefreshList()
 
 	pNode = (CVideoListUI::Node*)pItem->GetTag();
 	if (pNode->data()._level == 0) {
-		if (pNode->data()._pListElement->Info->status == RECORD_NOTSEEN)
+		if (pNode->data()._pListElement->Info->status == RECORD_NSEEN)
 			pItem->mhintNumber++;
 	}
 

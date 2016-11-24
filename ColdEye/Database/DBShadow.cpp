@@ -44,6 +44,9 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 	{
 	case FILE_OPT_ADD:
 		AddFileInfo(infoList, pInfo);
+
+		Print("Add file:%d", wParam);
+
 		sprintf_s(sqlStmt, "INSERT INTO %s (owner, begin_sec, end_sec) VALUES(%d,%I64d, 0);", wParam == RECORD_ALARM ? "alarm_record" : "normal_record",
 			pInfo->nOwner, pInfo->tBegin);
 		if (!sqlite.DirectStatement(sqlStmt)) {
@@ -52,7 +55,8 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		break;
 		//-----------------------------------------------
 	case FILE_OPT_END:
-		EndFileInfo(infoList, pInfo);
+		//EndFileInfo(infoList, pInfo);
+		Print("End file:%d", wParam);
 
 		sprintf_s(sqlStmt, "UPDATE %s SET end_sec = %I64d, size = %lld, status = 0 WHERE owner = %d AND begin_sec = %I64d;",
 			wParam == RECORD_ALARM?"alarm_record":"normal_record",pInfo->tEnd, pInfo->dlSize, pInfo->nOwner, pInfo->tBegin);
@@ -71,6 +75,8 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		//------------------------------------------------
 		case FILE_OPT_DEL:
 			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
+
+			Print("Del file:%d", wParam);
 
 			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d begin_sec = %I64d;", 
 				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
@@ -221,17 +227,15 @@ void CDBShadow::CheckTables()
 void CDBShadow::AddFileInfo(list<CRecordFileInfo*>& infoList, CRecordFileInfo* pInfo)
 {
 	infoList.push_back(pInfo);
-	Print("Add file");
 }
 
 void CDBShadow::EndFileInfo(list<CRecordFileInfo*>& infoList, CRecordFileInfo* pInfo)
 {
-	Print("End file");
+
 }
 
 void CDBShadow::DelFileInfo(list<CRecordFileInfo*>& infoList, CRecordFileInfo* pInfo)
 {
-	Print("Del file");
 	list<CRecordFileInfo*>::iterator iter = infoList.begin();
 
 	for (; iter != infoList.end(); iter++) {

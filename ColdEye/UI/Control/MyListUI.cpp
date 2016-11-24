@@ -141,10 +141,13 @@ void CMyListUI::DoEvent(TEventUI & event)
 
 	if (event.Type == UIEVENT_SETFOCUS) {
 		CVideoListUI::Node *pNode = (CVideoListUI::Node*)GetTag();
+		CMyListUI *Head = pNode->parent()->data()._pListElement;
 		if (pNode->data()._level == 1) {
-			pNode->parent()->data()._pListElement->Info->status == RECORD_NOTSEEN;
-			pNode->parent()->data()._pListElement->mhintNumber--;
-			pNode->parent()->data()._pListElement->Invalidate();
+			if (Info->status == RECORD_NSEEN) {
+				Info->status = RECORD_SEEN;
+				Head->mhintNumber--;
+				Head->Invalidate();
+			}
 		}
 	}
 	CListLabelElementUI::DoEvent(event);

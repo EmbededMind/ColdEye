@@ -24,6 +24,7 @@ public:
 	void IncreaseHour();
 	void IncreaseMinute();
 	bool isMorrow();
+
 	void SetValue(int value);
 	int GetValue();
 
