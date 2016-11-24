@@ -452,13 +452,16 @@ void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
 }
 
 void CMyMenuWnd::GetWatchTime()
-{
+{	
+	// 返回看船时间段 ，不确定该如何返回给露露，暂时定的两个变量
+	DWORD beginTime, endTime;  
+
 	CTimeButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
 	pHour1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_hour"));
 	pHour2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_hour"));
 	pMinute1 = (CTimeButtonUI*)m_pm.FindControl(_T("time1_minute"));
 	pMinute2 = (CTimeButtonUI*)m_pm.FindControl(_T("time2_minute"));
-	DWORD beginTime, endTime;
+
 	beginTime = pHour1->GetValue() * 60 + pMinute1->GetValue();
 	endTime = pHour2->GetValue() * 60 + pMinute2->GetValue();
 }
