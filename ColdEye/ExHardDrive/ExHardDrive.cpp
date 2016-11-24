@@ -102,13 +102,13 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 				{
 					printf("copy succeed!\n");
 					//发送结束， 成功 消息号是 COPY_END 数据是 COPY_END_SUCCEED
-					::SendMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_SUCCEED, (LPARAM)ExHardDrive->mFileInfo);
+					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_SUCCEED, (LPARAM)ExHardDrive->mFileInfo);
 				}
 				else
 				{
 					printf("copy fail!\n");
 					//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
-					::SendMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
+					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
 				}
 			}
 			ResetEvent(ExHardDrive->mCopyEvent);

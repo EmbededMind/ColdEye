@@ -256,11 +256,18 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 
 		default:
 			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
-				CSurface* pSurface = (CSurface*)GetFocus();
-				//CCamera* pDev = pSurface->m_BindedCamera;
-				CCamera* pDev  = pSurface->m_BindedPort->m_pCamera;
+				//CString text;
+				//GetFocus()->GetWindowTextW(text);
 
-				switch (pMsg->wParam)
+				//TRACE("***%S\n", text);
+				//CSurface* pSurface = (CSurface*)GetFocus();
+				////CCamera* pDev = pSurface->m_BindedCamera;
+				//if (pSurface != NULL) {
+				//	Print("0x%p", pSurface);
+				//}
+				//CCamera* pDev  = pSurface->m_BindedPort->m_pCamera;
+
+	/*			switch (pMsg->wParam)
 				{
 				case 'T':
 					CCommunication::GetInstance()->AskTalk(pDev);
@@ -275,8 +282,8 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 					return true;
 
 				default:
-					break;
-				}
+					break;*/
+			/*	}*/
 			}
 			break;
 		}

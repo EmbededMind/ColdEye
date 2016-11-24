@@ -192,10 +192,11 @@
 #define	NO_COPY_DRIVE		16	//未检测出U盘
 #define NO_ENOUGH_MEMORY	17	//U盘内容空间不足
 #define CONFIRM_COPY		18	//复制确认
-#define COPYING				19	//复制中
-#define STOP_COPY			20	//停止复制
-#define	COPY_SUCCESS		21	//复制成功
-#define	COPY_FAILURE		22	//复制失败
+#define COPYING_NORMAL		19	//复制正常录像
+#define COPYING_ALARM		20	//复制报警录像
+#define STOP_COPY			21	//停止复制
+#define	COPY_SUCCESS		22	//复制成功
+#define	COPY_FAILURE		23	//复制失败
 
 /**  MenuIten base userdata  **/
 #define ALARM_VIDEO			0

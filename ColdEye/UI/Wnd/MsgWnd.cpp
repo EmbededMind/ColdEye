@@ -8,10 +8,10 @@ DUI_BEGIN_MESSAGE_MAP(CMsgWnd, WindowImplBase)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 DUI_END_MESSAGE_MAP()
 
+
 CMsgWnd::CMsgWnd()
 {
 }
-
 
 CMsgWnd::~CMsgWnd()
 {
@@ -83,6 +83,9 @@ void CMsgWnd::OnClick(TNotifyUI &msg)
 	}
 	else if (sName == _T("record_btn")) {
 		Close(MSGID_RECORD);
+	}
+	else if (sName == _T("cancel_copy")) {
+		MessageBox(m_pm.GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定停止复制视频？"), NULL, NULL);
 	}
 }
 
@@ -168,11 +171,11 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	//--------------------------------------------------------------------------
 	case USER_MSG_COPY_INFO:
 		{
-			ProgressReflash();
-			double sendSize = wParam;
-			int num_progress = 100*(sendSize / (double)totalSize);
+			//ProgressReflash();
+			sendedSize += wParam;
+			int num_progress = 100*((double)sendedSize / (double)totalSize);
 			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
-			progress->SetMaxValue(num_progress);
+			progress->SetValue(num_progress);
 		}
 		break;
 
@@ -181,8 +184,14 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 			list<CRecordFileInfo*>::iterator iter;
 			for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
 				if ((CRecordFileInfo*)lParam == (*iter)) {
-					totalSize -= (*iter)->dlSize;
+					sendedSize += (*iter)->dlSize;
 					iter++;
+					if (iter == pRecordInfo->end()) {
+						CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
+						progress->SetValue(totalSize);
+						Close(1);//复制结束
+						return 0;
+					}
 					CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
 					return 0;
 				}
@@ -197,19 +206,6 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	return 0;
 }
 
-void CMsgWnd::ProgressReflash()
-{
-	int value;
-	CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
-	value = progress->GetValue();
-	if (value != progress->GetMaxValue()) {
-		value++;
-		progress->SetValue(value);
-	}
-	else {
-		KillTimer(m_pm.GetPaintWindow(), 3);
-	}
-}
 
 void CMsgWnd::RecordVoice()
 {
@@ -246,13 +242,14 @@ LRESULT CMsgWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 void CMsgWnd::InitWindow()
 {
+	Print("initwindw");
 	HWND MainDlg;
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));
 	pButton_record = (CButtonUI*)m_pm.FindControl(_T("record_btn"));
+	pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
+	pMainDlg->mMessageBox = this;
 	if (SkinType == _T("mb_recordingvoice.xml")) {
-		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
-		pMainDlg->mMessageBox = this;
 		pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
 	}
 	else if (SkinType == _T("mb_update.xml")) {
@@ -263,11 +260,13 @@ void CMsgWnd::InitWindow()
 	}
 	else if (SkinType == _T("mb_copyvideo.xml")) {
 		totalSize = 0;
+		sendedSize = 0;
 		list<CRecordFileInfo*>::iterator iter;
+		Print("Copy %d", pRecordInfo->size());
 		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++)
 			totalSize += (*iter)->dlSize;
 
-		CExHardDrive::GetInstance()->CopyRecord(pRecordInfo->front(), 0);
+		CExHardDrive::GetInstance()->CopyRecord(pRecordInfo->front(), videoType);
 	}
 }
 
@@ -298,7 +297,7 @@ LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandle
 			break;
 
 		case 3:
-			ProgressReflash();
+			//ProgressReflash();
 			break;
 	}
 	

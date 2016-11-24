@@ -88,7 +88,7 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 	if (event.Type == UIEVENT_KEYDOWN) {
 		if (GetKeyState(VK_CONTROL)) {
 			if (event.wParam=='U') {
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), GetText(), NULL, NULL);
+				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), GetText(), NULL, NULL,NULL);
 				FindRecordFile();
 				return;
 			}
@@ -245,6 +245,7 @@ LPCTSTR CMenuItemUI::GetClass()
 
 void CMenuItemUI::FindRecordFile()
 {
+	UINT8 RecordType;
 	int inx,num_record,level;
 	list<CRecordFileInfo*> recordInfo;
 	CVideoListUI *pList=NULL;
@@ -256,13 +257,13 @@ void CMenuItemUI::FindRecordFile()
 		Listname.Format(_T("video_alarmlisti%d"), inx+1);
 		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
 		num_record = pList->GetCount();
-
+		RecordType = COPYING_ALARM;
 	}
 	else if (inx > 17 && inx < 24) { //ีýณฃสำฦต
 		Listname.Format(_T("video_list%d"), inx - 17);
 		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
 		num_record = pList->GetCount();
-		Print("num = %d\n",num_record);
+		RecordType = COPYING_NORMAL;
 	}
 	for (int i = 0; i < num_record; i++) {
 		pItem = (CMyListUI*)pList->GetItemAt(i);
@@ -272,8 +273,7 @@ void CMenuItemUI::FindRecordFile()
 			recordInfo.push_back(pItem->Info);
 		}
 	}
-
-	if(!recordInfo.empty())
-		SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, COPYING, (LPARAM)(&recordInfo));
+	if (!recordInfo.empty())
+		SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&recordInfo));
 
 }

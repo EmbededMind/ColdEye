@@ -57,9 +57,6 @@ public:
 	CWallDlg* GetWallDlg();
 
 
-
-
-
 private:
 	CMyMenuWnd* m_pMenuWnd;
 

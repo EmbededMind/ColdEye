@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ColdEyeDlg.h"
+#include "ColdEye.h"
 #include "Wnd\MsgWnd.h"
+
 #include "UIlib.h"
 using namespace DuiLib;
 
@@ -11,7 +13,6 @@ using namespace DuiLib;
 #define MSGID_RECORD	2
 
 class CColdEyeDlg;
-class CMyMenuWnd;
 
 class CMsgWnd : public WindowImplBase
 {
@@ -25,10 +26,12 @@ public:
 
 	
 public:
-	static int MessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2,LPARAM lparam)
+	static int MessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2,LPARAM lparam,WPARAM wParam)
 	{
 		CMsgWnd* pWnd = new CMsgWnd();
-		pWnd->pMenuDlg = (CMyMenuWnd*)CWnd::FromHandle(hParent);
+		//((CColdEyeDlg*)((CColdEyeApp*)AfxGetApp())->m_pMainWnd)->mMessageBox = pWnd;
+		pWnd->videoType = (UINT8)wParam;
+
 		pWnd->SkinType = skinType;
 		pWnd->pRecordInfo = (list<CRecordFileInfo*>*)lparam;
 		pWnd->Create(hParent, _T("msgwnd"), WS_POPUP | WS_CLIPCHILDREN, WS_EX_TOOLWINDOW);
@@ -61,7 +64,6 @@ public:
 	virtual LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	void ProgressReflash();
 	void RecordVoice();
 public:
 	CDuiString SkinType;
@@ -69,9 +71,10 @@ public:
 	CButtonUI *pButton_cancel;
 	CButtonUI *pButton_record;
 	CColdEyeDlg *pMainDlg;
-	CMyMenuWnd *pMenuDlg;
 	UINT8 _time;
 	list<CRecordFileInfo*>* pRecordInfo;
 	ULONGLONG totalSize;
+	ULONGLONG sendedSize;
+	UINT8 videoType;
 };
 

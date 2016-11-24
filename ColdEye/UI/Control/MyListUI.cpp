@@ -117,7 +117,7 @@ void CMyListUI::DoEvent(TEventUI & event)
 					tend = CTime(Info->tEnd);
 					text = tbegin.Format("%m月%d日   ") + tbegin.Format("%H:%M:%S") + _T("-") + tend.Format("%H:%M:%S");
 				}
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), text, NULL, NULL);
+				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), text, NULL, NULL,NULL);
 				FindRecordFile();
 			}
 		}
@@ -128,12 +128,18 @@ void CMyListUI::DoEvent(TEventUI & event)
 
 void CMyListUI::FindRecordFile()
 {
-	int num_record;
+	UINT8 RecordType;
+	int num_record,TabLayoutSel;
 	CVideoListUI::Node* Headnode = (CVideoListUI::Node*)GetTag();
 	CVideoListUI::Node* pNode;
 	list<CRecordFileInfo*> RecordInfoList;
 	num_record = Headnode->num_children();
-	Print("num_record= %d\n",num_record);
+	TabLayoutSel = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->GetCurSel();
+	//判断视频文件类型
+	if (TabLayoutSel > 0 && TabLayoutSel < 6)
+		RecordType = COPYING_ALARM;
+	else
+		RecordType = COPYING_NORMAL;
 	if (num_record){//整天
 		for (int i = 0; i < num_record; i++) {
 			pNode = Headnode->child(i);
@@ -143,7 +149,7 @@ void CMyListUI::FindRecordFile()
 	else {
 		RecordInfoList.push_back(Headnode->data()._pListElement->Info);
 	}
-	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, COPYING, (LPARAM)(&RecordInfoList));
+	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&RecordInfoList));
 }
 
 
