@@ -249,14 +249,13 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		{
 		case VK_LEFT:
 		case VK_RIGHT:
-		case VK_UP:
-		case VK_DOWN:
-			Print("Wall case key");
-			for (int i = 0; i < 6; i++) {
-				if (mSurfaces[i] != NULL) {
-					mSurfaces[i]->SetFocus();
-					return true;
-				}
+			if (GetFocus() == this) {
+				for (int i = 0; i < 6; i++) {
+					if (mSurfaces[i] != NULL) {
+						mSurfaces[i]->SetFocus();
+						return true;
+					}
+				}				
 			}
 			return true;
 		default:

@@ -950,10 +950,6 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	if (pMsg->message == WM_KEYDOWN) { 
-		CWnd* pWnd = GetFocus();
-		CString text;
-		pWnd->GetWindowText(text);
-		TRACE("--->%S\n", text);
 
 		switch (pMsg->wParam)
 		{
