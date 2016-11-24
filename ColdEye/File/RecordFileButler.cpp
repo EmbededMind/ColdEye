@@ -22,6 +22,9 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 
 CFile* CRecordFileButler::AllocRecordFile()
 {
+if(m_FileType  == 2)
+	Print("Alloc file");
+
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
 	fileName  = time.Format(_T("%Y%m%d%H%M%S"));
@@ -35,6 +38,9 @@ CFile* CRecordFileButler::AllocRecordFile()
 	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
 
+if (m_FileType == 2)
+	Print("Notify");
+
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
 	
 	return &m_File;
@@ -43,6 +49,7 @@ CFile* CRecordFileButler::AllocRecordFile()
 
 void CRecordFileButler::ReleaseRecordFile()
 {
+	Print("Release %d file", m_FileType);
 	CTime time = CTime::GetCurrentTime();
 
 	if (m_pFileInfo != CFile::hFileNull) {
@@ -63,13 +70,13 @@ mutex_RealData.Lock();
 
 		m_File.Close();
 
-mutex_RealData.Unlock();
-
 		if (m_pFileInfo->dlSize == 0) {
 			CFile::Remove(status.m_szFullName);
 		}
 
 		mutex = 0;
+
+		mutex_RealData.Unlock();
 
 		m_pFileInfo->tEnd = time.GetTime();
 

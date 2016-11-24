@@ -24,7 +24,9 @@ public:
 	void IncreaseHour();
 	void IncreaseMinute();
 	bool isMorrow();
-	void SetTime();
+	void GetTime();
+
+	void SetMinutes(DWORD tBeginMinute, DWORD tEndMinute);
 
 	void DoEvent(TEventUI& event);
 

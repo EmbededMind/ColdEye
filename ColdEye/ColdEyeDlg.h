@@ -27,6 +27,25 @@ protected:
 
 	void UpdateLayout();
 
+
+private:
+	CFont    m_TipFont;
+
+	CRect    m_rTitle;
+
+	CTime    m_SysTime;
+	CRect    m_rSysTimeText;
+
+	CString  m_AwTipText;
+	CRect    m_rAwTipText;
+
+	CString  m_HwTipText;
+	CRect    m_rHwTipText;
+
+	CBitmap  m_bmpUFlash;
+	CRect    m_rFlash;
+
+
 										// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_COLDEYE_DIALOG };

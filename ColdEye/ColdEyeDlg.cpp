@@ -71,10 +71,35 @@ void CColdEyeDlg::UpdateLayout()
 	CRect  rClient;
 	GetClientRect(rClient);
 
-	LONG   titileHeight = rClient.Height() / 10;
+	LONG   titleHeight = rClient.Height() / 10;
+	LONG   tipTextHeight  = titleHeight / 3;
 
 
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titileHeight, rClient.Width(), rClient.Height()-titileHeight-titileHeight/5, 0);
+
+	m_rTitle.left  = rClient.left;
+	m_rTitle.top   = rClient.top;
+	m_rTitle.right = rClient.right;
+	m_rTitle.bottom = m_rTitle.top + titleHeight;
+
+	m_rSysTimeText.left  = m_rTitle.left + m_rTitle.Width() /20;
+	m_rSysTimeText.right = m_rSysTimeText.left + 280;
+
+	m_rSysTimeText.top  = m_rTitle.top + titleHeight / 3 - 1;
+	m_rSysTimeText.bottom  = m_rSysTimeText.top + titleHeight / 3 + 2;
+
+
+	m_rAwTipText.left  = rClient.left +800;
+	m_rAwTipText.right = m_rAwTipText.left+ 300;
+	m_rAwTipText.top  = m_rTitle.top + titleHeight /3 - 1;
+	m_rAwTipText.bottom = m_rAwTipText.top + titleHeight /3 + 2;
+
+	m_rHwTipText.left = m_rTitle.right  - 300;
+	m_rHwTipText.right = m_rHwTipText.left  + 300;
+	m_rHwTipText.top = m_rTitle.top + titleHeight / 3 - 1;
+	m_rHwTipText.bottom = m_rHwTipText.top + titleHeight / 3 + 2;
+
+
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titleHeight, rClient.Width(), rClient.Height()-titleHeight-titleHeight/5, 0);
 }
 
 
@@ -163,6 +188,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CDBShadow::GetInstance()->BroadcaseInitFileMsg();
 
+	m_AwTipText  = _T("自动看船开启");
+	m_HwTipText  = _T("已关闭回家看船");
+
 
 	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -212,7 +240,34 @@ void CColdEyeDlg::OnPaint()
 		CRect rClient;
 		GetClientRect(rClient);
 
-		dc.FillSolidRect(&rClient, RGB(171, 130,255));
+		dc.FillSolidRect(&rClient, RGB(171, 130, 255));
+
+		CPen newPen(PS_SOLID, 1, RGB(255, 0, 0));
+
+		CPen* pOldPen;
+		CFont* pOldFont;
+		pOldPen  = dc.SelectObject(&newPen);
+
+		
+		dc.Rectangle(m_rSysTimeText);
+		dc.Rectangle(m_rAwTipText);
+		dc.Rectangle(m_rHwTipText);
+
+
+		dc.TextOutW(m_rSysTimeText.left + 1, m_rSysTimeText.top+1, m_SysTime.Format(_T("%Y-%m-%d %H:%M:%S")));
+		
+		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_status) {
+			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已开启"));
+		}
+		else{
+			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已关闭"));
+		}
+
+		dc.TextOutW(m_rHwTipText.left + 1, m_rHwTipText.top + 1, _T("未开启回家看船"));
+
+		dc.SelectObject(pOldPen);
+
+
 
 
 
@@ -596,5 +651,10 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//发送握手
 
+	m_SysTime  = CTime::GetCurrentTime();
+	Print("Second Tick");
+	InvalidateRect(m_rSysTimeText);
+	InvalidateRect(m_rAwTipText);
+	InvalidateRect(m_rHwTipText);
 	CDialogEx::OnTimer(nIDEvent);
 }

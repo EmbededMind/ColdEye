@@ -3,6 +3,10 @@
 #include "TimeButtonUI.h"
 #include "Wnd/MsgWnd.h"
 
+#include "Pattern\MsgSquare.h"
+
+#include "ColdEye.h"
+
 IMPLEMENT_DUICONTROL(CTimeButtonUI)
 
 CTimeButtonUI::CTimeButtonUI()
@@ -40,7 +44,7 @@ void CTimeButtonUI::DecreaseHour()
 	}
 	text.Format(_T("%02d"), val);
 	SetText(text);
-	SetTime();
+	GetTime();
 }
 
 void CTimeButtonUI::DecreaseMinute()
@@ -57,7 +61,7 @@ void CTimeButtonUI::DecreaseMinute()
 
 	text.Format(_T("%02d"), val);
 	SetText(text);
-	SetTime();
+	GetTime();
 }
 
 void CTimeButtonUI::IncreaseHour()
@@ -75,7 +79,7 @@ void CTimeButtonUI::IncreaseHour()
 
 	text.Format(_T("%02d"), val);
 	SetText(text);
-	SetTime();
+	GetTime();
 }
 
 void CTimeButtonUI::IncreaseMinute()
@@ -92,7 +96,7 @@ void CTimeButtonUI::IncreaseMinute()
 
 	text.Format(_T("%02d"), val);
 	SetText(text);
-	SetTime();
+	GetTime();
 }
 
 
@@ -105,7 +109,7 @@ bool CTimeButtonUI::isMorrow()
 }
 
 
-void CTimeButtonUI::SetTime()
+void CTimeButtonUI::GetTime()
 {
 	CButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
 	int tHour1, tHour2, tMinute1, tMinute2;
@@ -119,8 +123,16 @@ void CTimeButtonUI::SetTime()
 	tMinute2 = StrToInt(pMinute2->GetText());
 	tMinute_1_New = tHour1 * 60 + tMinute1;
 	tMinute_2_New = tHour2 * 60 + tMinute2;
-
 }
+
+
+
+void CTimeButtonUI::SetMinutes(DWORD tBegining, DWORD tEnd)
+{
+	tMinute_1  = tBegining;
+	tMinute_2  = tEnd;
+}
+
 
 
 void CTimeButtonUI::DoEvent(TEventUI& event)
@@ -179,9 +191,20 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 			case VK_BACK:
 				if (tMinute_1_New != tMinute_1 || tMinute_2_New != tMinute_2) {
 
-					//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
 					tMinute_1 = tMinute_1_New;
 					tMinute_2 = tMinute_2_New;
+					//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"));
+					
+					//if IDOK
+					if (true) {
+						if (((CColdEyeApp*)AfxGetApp())->SetAwTime(tMinute_1, tMinute_2)) {
+							MSG msg;
+							msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
+/*							msg.wParam = tMinute_1;
+							msg.lParam = tMinute_2*/;
+							CMsgSquare::GetInstance()->Broadcast(msg);
+						}
+					}
 				}
 				m_pManager->FindControl(_T("watchtime"))->SetFocus();
 				break;

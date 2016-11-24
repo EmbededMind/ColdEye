@@ -10,8 +10,8 @@ typedef enum {
 
 
 typedef enum {
-	RECORD_HASSEEN = 0,
-	RECORD_NOTSEEN,
+	RECORD_NSEEN = 0,
+	RECORD_SEEN,
 	RECORD_LOCKED
 }RECORD_FILE_STATUS;
 
