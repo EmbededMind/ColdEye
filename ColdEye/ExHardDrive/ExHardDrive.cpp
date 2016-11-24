@@ -49,6 +49,7 @@ BOOL CExHardDrive::Init(CWnd * pOwner, CString diskname)
 	mCOwner = pOwner;
 	mHOwner = static_cast<CColdEyeDlg*>(mCOwner)->GetMyMenu().GetHWND();
 	mIsInsert = TRUE;
+	mCancelCopy = false;
 	return TRUE;
 }
 
@@ -191,6 +192,11 @@ DWORD CExHardDrive::CopyProgressCall(LARGE_INTEGER TotalFileSize,
 		//发送文件复制中的信息，mTotalFileSize是文件的总大小， mTotalBytesTransferred是文件已经复制的大小, 消息号是 COPY_INFO
 		::SendMessage(static_cast<CColdEyeDlg*>(((CExHardDrive*)lpData)->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_INFO, TotalBytesTransferred.QuadPart, (LPARAM)((CExHardDrive*)lpData)->mFileInfo);
 	}
+	if (((CExHardDrive*)lpData)->mCancelCopy)
+	{
+		((CExHardDrive*)lpData)->mCancelCopy = FALSE;
+		return PROGRESS_CANCEL;
+	}
 	return PROGRESS_CONTINUE;
 }
 
@@ -252,6 +258,11 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 BOOL CExHardDrive::IsInsert()
 {
 	return this->mIsInsert;
+}
+
+void CExHardDrive::CancelCopy()
+{
+	mCancelCopy = true;
 }
 
 BOOL CExHardDrive::ScanDisk(CWnd *pOwner)
