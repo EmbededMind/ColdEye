@@ -106,8 +106,13 @@ void CMyMenuWnd::InitWindow()
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("ÉãÏñÍ·6ÉèÖÃ"));
 
 	
-	SetWatchTime(((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining, 
-		((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end);
+	DWORD tBegining  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
+	DWORD  tEnd  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
+
+	SetWatchTime(tBegining, tEnd);
+
+
+
 
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
 	if (pSquare != NULL) {
@@ -223,7 +228,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		case USER_MSG_CAMERA_CONFIG_AWTIME:
 			DWORD aw_begining, aw_end;
 			GetWatchTime(&aw_begining, &aw_end);
-			Print("Get watch time:%d,%d", aw_begining, aw_end);
 			if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
 				MSG msg;
 				msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
@@ -447,7 +451,7 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 
 void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
 {
-	if (beginTime < 1140 && endTime < 1440) {
+	if (beginTime < 1440 && endTime < 1440) {
 		CTimeButtonUI *pHour1, *pHour2, *pMinute1, *pMinute2;
 		int tHour1, tHour2, tMinute1, tMinute2;
 		tHour1 = beginTime / 60;

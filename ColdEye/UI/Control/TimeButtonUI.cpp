@@ -123,6 +123,8 @@ void CTimeButtonUI::SetValue(int value)
 	SetText(text);
 	if (GetName() == _T("time1_hour") || GetName() == _T("time2_hour"))
 		m_Value = value*60;
+	else
+		m_Value = value;
 }
 
 int CTimeButtonUI::GetValue()
