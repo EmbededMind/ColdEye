@@ -47,7 +47,7 @@ public:
 	struct CameraItem {
 		UINT8 id;	//物理接口
 		CLabelUI *pTitle;	//标题
-		CMyEditUI *pShipname;	//船名
+		CMyEditUI *pShipname;	//摄像头名称
 		CCameraSwitchUI *pSwitch;	//开关
 		CMySliderUI *pVolum;	//音量
 		CMyLabelUI *pSaveVideo;	//视频保存设置
@@ -69,13 +69,10 @@ public :
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	void AddCamear(CameraInfo);
-	void AddAlarmCtl(CameraInfo);
-	void AddCameraSetCtl(CameraInfo);
-	void AddVideoObtain(CameraInfo);
 	void DeleteAlarmCtl(CameraInfo);
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
+
 	void AddWatchRecord(SwtichRecord);
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
@@ -89,11 +86,8 @@ public :
 	void SetWatchTime(DWORD beginTime, DWORD endTime);
 	void GetWatchTime(DWORD* pBegining, DWORD* pEnd);
 
-	//void SetBallonToolTip(int inx,)
-
 	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 
-	//test
 	CameraInfo cameraInfo;
 	SwtichRecord recordInfo;
 	CameraItem camera[6];
@@ -109,6 +103,5 @@ private:
 	void  InitRecordFile(list<CRecordFileInfo*>* pList);
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
 
-	//void  FillCameraConfig(CCamera* pCamera);
 	void   FillPortConfig(CPort* pPort);
 };

@@ -176,14 +176,8 @@ void CVideoListUI::RefreshList()
 	CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
 
 	if (!pItem) return;
-		
 
 	pNode = (CVideoListUI::Node*)pItem->GetTag();
-	if (pNode->data()._level == 0) {
-		if (pNode->data()._pListElement->Info->status == RECORD_NSEEN)
-			pItem->mhintNumber++;
-	}
-
 	num = pNode->num_children();
 	if (!num) {
 		pItem = (CMyListUI*)GetItemAt(num + 1); //第二个头节点

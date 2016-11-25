@@ -44,7 +44,10 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 	if(mhintNumber !=0)
 	{
 		CDuiString text;
-		text.Format(_T("%d"), mhintNumber);
+		if(mhintNumber<99)
+			text.Format(_T("%d"), mhintNumber);
+		else 
+			text=_T("99");
 		RECT rcPos = { 549,11,584,46 };
 		RECT textPos = GetPos();
 		CDuiString dest;
@@ -139,17 +142,18 @@ void CMyListUI::DoEvent(TEventUI & event)
 
 	}
 
-	if (event.Type == UIEVENT_SETFOCUS) {
-		CVideoListUI::Node *pNode = (CVideoListUI::Node*)GetTag();
-		CMyListUI *Head = pNode->parent()->data()._pListElement;
-		if (pNode->data()._level == 1) {
-			if (Info->status == RECORD_NSEEN) {
-				Info->status = RECORD_SEEN;
-				Head->mhintNumber--;
-				Head->Invalidate();
-			}
-		}
-	}
+
+	//if (event.Type == UIEVENT_SETFOCUS) {
+	//	CVideoListUI::Node *pNode = (CVideoListUI::Node*)GetTag();
+	//	CMyListUI *Head = pNode->parent()->data()._pListElement;
+	//	if (pNode->data()._level == 1) {
+	//		if (Info->status == RECORD_NSEEN) {
+	//			Info->status = RECORD_SEEN;
+	//			Head->mhintNumber--;
+	//			Head->Invalidate();
+	//		}
+	//	}
+	//}
 	CListLabelElementUI::DoEvent(event);
 }
 

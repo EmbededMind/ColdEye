@@ -112,7 +112,11 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
 	CDuiString text;
-	text.Format(_T("%d"), mHintNumber);
+	if (mHintNumber<99)
+		text.Format(_T("%d"), mHintNumber);
+	else
+		text = _T("99");
+
 	if (mHintNumber != 0) {
 		RECT rcPos = {259, 10, 294, 45};
 		RECT textPos = GetPos();
