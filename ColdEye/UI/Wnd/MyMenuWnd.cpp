@@ -146,12 +146,25 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 	switch (uMsg)
 	{
-		case USER_MSG_LOGIN:
-			Print("Menu case login msg");
+	case USER_MSG_LOGIN: {
+		 Print("Menu case login msg");
 
-			AddPortConfigMenuItem( (CPort*)lParam);
-			FillPortConfig( (CPort*)lParam);
-			break;
+		 CDBShadow* pShadow = CDBShadow::GetInstance();
+
+		 if (pShadow->GetAlarmFileNumber(((CPort*)lParam)->m_Id)) {
+			 AddAlarmMenuItem((CPort*)lParam);
+		 }
+
+		 if (pShadow->GetRecordFileNumber(((CPort*)lParam)->m_Id)) {
+			 AddVideoObtainMenuItem((CPort*)lParam);
+		 }
+
+
+		 AddPortConfigMenuItem((CPort*)lParam);
+		 FillPortConfig((CPort*)lParam);
+		 }
+
+		 break;
 		//-------------------------------------------
 		case USER_MSG_LOGOFF:
 			Print("Menu case logoff msg");
