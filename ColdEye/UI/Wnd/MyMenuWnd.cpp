@@ -111,7 +111,7 @@ void CMyMenuWnd::InitWindow()
 
 	SetWatchTime(tBegining, tEnd);
 
-
+	//m_pm.SetAllDPI(150);
 
 
 	CMsgSquare* pSquare = CMsgSquare::GetInstance();
@@ -246,7 +246,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
 				CMsgSquare::GetInstance()->Broadcast(msg);
 			}
-
 			break;
 	}
 	return LRESULT();

@@ -11,7 +11,8 @@ public:
 	~CMyEditUI();
 	void DoEvent(TEventUI &event);
 	void BackToPreviousItem(CTabLayoutUI*);
-	
+	void SetName(CString);
+
 public:
 	bool isEditing;
 };
