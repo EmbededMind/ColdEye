@@ -64,6 +64,11 @@ public :
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
 	void OnFinalMessage(HWND hWnd);
+
+	// Item Notify
+	void SliderNotify(TNotifyUI & msg);
+	void EditNotify(TNotifyUI &msg);
+	void MenuItemNotify(TNotifyUI &msg);
 	void Notify(TNotifyUI& msg);
 	void OnLClick(CControlUI* pControl);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
@@ -87,6 +92,8 @@ public :
 	void GetWatchTime(DWORD* pBegining, DWORD* pEnd);
 
 	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+	void LastLevel(CContainerUI& ,int inx);
+	void NextLevel(CContainerUI&, int inx);
 
 	CameraInfo cameraInfo;
 	SwtichRecord recordInfo;
@@ -104,4 +111,9 @@ private:
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
 
 	void   FillPortConfig(CPort* pPort);
+
+	CTabLayoutUI *pLayout_third;
+	CTabLayoutUI *pLayout_Menuitem;
+	CTabLayoutUI *pLayout_PopMenu;
+	CButtonUI *FocusedItem[2];
 };

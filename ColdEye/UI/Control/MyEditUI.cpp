@@ -17,6 +17,9 @@ CMyEditUI::~CMyEditUI()
 void CMyEditUI::DoEvent(TEventUI &event)
 {
 	if (event.Type == UIEVENT_KEYDOWN){
+		m_pManager->SendNotify(this, DUI_MSGTYPE_EDIT,event.wParam,event.lParam);
+
+
 		CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
 		if (event.wParam == VK_RETURN){
 			isEditing = true; //¸ü¸ÄÖÐ
@@ -75,8 +78,6 @@ void CMyEditUI::DoEvent(TEventUI &event)
 				BackToPreviousItem(pTabLayout);
 			}
 		}
-		
-
 	}
 
 

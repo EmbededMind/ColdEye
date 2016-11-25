@@ -34,6 +34,10 @@ CDuiString CMyMenuWnd::GetSkinFile()
 void CMyMenuWnd::InitWindow()
 {
 	//-------------------------菜单控件关联-----------------------------------------
+	pLayout_third = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
+	pLayout_Menuitem = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_menuitem")));
+	pLayout_PopMenu = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_popmenu")));
+
 	CPopupMenuUI *pPopupMenu[5];
 	pPopupMenu[0] = static_cast<CPopupMenuUI*>(m_pm.FindControl(_T("alarmvideo")));
 	pPopupMenu[1] = static_cast<CPopupMenuUI*>(m_pm.FindControl(_T("setting")));
@@ -77,31 +81,30 @@ void CMyMenuWnd::InitWindow()
 	pTimeBt[3]->SetItemRelation(pTimeBt[2], NULL);
 
 	//-------------------------摄像机设置界面添加-------------------------------
-	CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
 	CDialogBuilder Camera1builder, Camera2builder, Camera3builder, Camera4builder, Camera5builder, Camera6builder;
 	CVerticalLayoutUI *CamareChildLayout;
 	CamareChildLayout = (CVerticalLayoutUI*)Camera1builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pTabLayout->AddAt(CamareChildLayout, 7);
+	pLayout_third->AddAt(CamareChildLayout, 7);
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头1设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera2builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pTabLayout->AddAt(CamareChildLayout, 8);
+	pLayout_third->AddAt(CamareChildLayout, 8);
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头2设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera3builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pTabLayout->AddAt(CamareChildLayout, 9);
+	pLayout_third->AddAt(CamareChildLayout, 9);
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头3设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera4builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pTabLayout->AddAt(CamareChildLayout, 10);
+	pLayout_third->AddAt(CamareChildLayout, 10);
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头4设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera5builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pTabLayout->AddAt(CamareChildLayout, 11);
+	pLayout_third->AddAt(CamareChildLayout, 11);
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头5设置"));
 	CamareChildLayout = (CVerticalLayoutUI*)Camera6builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pTabLayout->AddAt(CamareChildLayout, 12);
+	pLayout_third->AddAt(CamareChildLayout, 12);
 	GetCameraItem(CamareChildLayout);
 	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
 
@@ -124,13 +127,135 @@ void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 {
 }
 
+
+void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
+{
+	CDuiString sName = msg.pSender->GetName();
+	CMySliderUI *Item = (CMySliderUI*)msg.pSender;
+	switch (msg.wParam) {
+	case VK_UP:
+		if (sName == _T("camera_set_volume")) {
+			CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)msg.pSender->GetParent();
+			pParentLayout->GetItemAt(1)->SetFocus();
+		}
+		else if (sName == _T("sysset_voice")) {
+			m_pm.FindControl(_T("sysset_light"))->SetFocus();
+		}
+		break;
+		//------------------------------------------------------
+	case VK_DOWN:
+		if (sName == _T("sysset_light")) {
+			m_pm.FindControl(_T("sysset_voice"))->SetFocus();
+		}
+		else if (sName == _T("sysset_voice")) {
+			m_pm.FindControl(_T("sysset_version"))->SetFocus();
+		}
+		else if (sName == _T("camera_set_volume")) {
+			CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)Item->GetParent();
+			pParentLayout->GetItemAt(6)->SetFocus();
+		}
+		break;
+		//------------------------------------------------------
+	case VK_BACK:
+		Print("value:%d", msg.lParam);
+		Item->BackPreviousItem(pLayout_third);
+		break;
+	}
+}
+
+void CMyMenuWnd::EditNotify(TNotifyUI & msg)
+{
+	CDuiString sName = msg.pSender->GetName();
+	CMyEditUI *Item = (CMyEditUI*)msg.pSender;
+	switch (msg.wParam) {
+	case VK_DOWN:
+		if (sName == _T("cameraset_shipname")) {
+			CVerticalLayoutUI *pVerLayout = (CVerticalLayoutUI*)pLayout_third->GetItemAt(pLayout_third->GetCurSel());
+			CVerticalLayoutUI *pBottomLayout = (CVerticalLayoutUI*)pVerLayout->GetItemAt(2); //最底下布局
+			pBottomLayout->GetItemAt(1)->SetFocus();
+		}
+		break;
+	//-----------------------------------------------
+	case VK_BACK:
+		if (sName == _T("edit_shipname")) {
+			m_pm.FindControl(_T("mastername"))->SetFocus();
+		}
+		else if (sName == _T("cameraset_shipname")) {
+			LastLevel(*pLayout_third,pLayout_third->GetCurSel());
+		}
+
+		break;
+
+	case VK_RETURN:
+		break;
+	}
+}
+
+void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
+{
+	CButtonUI *pItem = (CButtonUI*)msg.pSender;
+	CContainerUI *pLayout = (CContainerUI*)pItem->GetParent();
+	CDuiString userdata = msg.pSender->GetUserData();
+	CContainerUI *pNextFocusLayout;
+	if (pLayout == pLayout_PopMenu) {
+		switch (msg.wParam) {
+		case VK_UP:
+			static_cast<CPopupMenuUI*>(pItem)->GetPrevItem()->SetFocus();
+			break;
+		//-----------------------------------------------
+		case VK_DOWN:
+			static_cast<CPopupMenuUI*>(pItem)->GetNextItem()->SetFocus();
+			break;
+		//-----------------------------------------------
+		case VK_RIGHT:
+			FocusedItem[0] = pItem; 
+			pNextFocusLayout = (CContainerUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel()); //下一集焦点的布局
+			if (userdata == _T("4")) {
+				
+			}
+			else if (pNextFocusLayout->GetCount() > 0) {
+				pLayout_third->SetVisible(true);
+				pNextFocusLayout->GetItemAt(0)->SetFocus();
+			}
+			break;
+		}
+	}
+	else {
+		switch (msg.wParam) {
+		case VK_UP:
+			static_cast<CMenuItemUI*>(pItem)->GetPrevItem()->SetFocus();
+			break;
+			//-----------------------------------------------
+		case VK_DOWN:
+			static_cast<CMenuItemUI*>(pItem)->GetNextItem()->SetFocus();
+			break;
+			//-----------------------------------------------
+		case VK_LEFT:
+			Print("menuItem click left");
+			break;
+			//-----------------------------------------------
+		case VK_RIGHT:
+			break;
+		}
+	}
+}
+
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
-	
+	if (msg.sType == DUI_MSGTYPE_SLIDER) {
+		SliderNotify(msg);
+	}
+	else if (msg.sType == DUI_MSGTYPE_EDIT) {
+		EditNotify(msg);
+	}
+	else if (msg.sType == DUI_MSGTYPE_MENU) {
+		MenuItemNotify(msg);
+	}
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)
 {
+
 }
 
 LRESULT CMyMenuWnd::OnDestroy(UINT, WPARAM, LPARAM, BOOL & bHandled)
@@ -581,6 +706,24 @@ void CMyMenuWnd::MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			break;
 	}
 }
+
+void CMyMenuWnd::LastLevel(CContainerUI& Layout,int inx)
+{
+	if ((&Layout) == pLayout_third) {
+		if (inx >= 0 && inx < 6) {
+
+		}
+	}
+	else if ((&Layout) == pLayout_Menuitem) {
+
+	}
+}
+
+void CMyMenuWnd::NextLevel(CContainerUI &, int inx)
+{
+
+}
+
 
 CMenuItemUI* CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData)
 {

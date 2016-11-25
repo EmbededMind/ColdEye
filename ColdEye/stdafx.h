@@ -206,6 +206,11 @@
 #define STATUS_COPY_SUCCEED 1
 #define STATUS_COPY_FIAL	0
 
+//DUI 消息类型
+
+#define DUI_MSGTYPE_SLIDER	(_T("slider"))
+#define DUI_MSGTYPE_EDIT	(_T("edit"))
+
 
 
 #include "Database\sqlitewrapper.h"

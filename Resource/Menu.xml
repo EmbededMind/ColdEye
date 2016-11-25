@@ -46,7 +46,7 @@
 	<Style name="watch_record_style" value="height=&quot;65&quot; "/>
 	
 	<HorizontalLayout name="root" bkcolor="FFEFEFF4">
-		<VerticalLayout name="menuLayout" width="328" bkcolor="#FFFFFFFF">
+		<VerticalLayout name="layout_popmenu" width="328" bkcolor="#FFFFFFFF">
 			<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/报警视频.png' source='0,0,328,106'" focusedimage="file='image/报警视频.png' source='328,0,657,106'" />
 			<Control />
 			<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/主机设置.png' source='0,0,328,106'" focusedimage="file='image/主机设置.png' source='328,0,657,106'" />
@@ -60,7 +60,7 @@
 		</VerticalLayout>
 		
 		<!--二级菜单-->
-		<TabLayout name="layout_secondmenu"  width="343" bkcolor="#FFE6E6EF" selectedid="0" enable="false" >
+		<TabLayout name="layout_menuitem"  width="343" bkcolor="#FFE6E6EF" selectedid="0" enable="false" >
 			<VerticalLayout name="layout_submenu_alarm" > 	<!--报警视频-->
 
 			</VerticalLayout>
