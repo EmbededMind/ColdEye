@@ -618,7 +618,7 @@ void CSurface::OnAlarmTrigged()
 	if (!m_bIsAlarming) {
 		m_bIsAlarming = true;
 		Print("Alarm trigged");
-		CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
+	
 		CFile* pf = m_AlarmFileButler.AllocRecordFile();
 
 		if (pf) {
@@ -628,6 +628,9 @@ void CSurface::OnAlarmTrigged()
 		else {
 			Print("Alloc file failed when alarm trigged");
 		}
+
+
+		CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息	
 	}
 }
 

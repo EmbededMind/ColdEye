@@ -41,6 +41,10 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		case VK_BACK:
 			CTabLayoutUI *pLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
 			BackPreviousItem(pLayout);
+
+			this->
+			m_pManager->SendNotify(this, DUI_USER_MSGTYPE_BACK, event.wParam, event.lParam);
+			/*SendMessage(m_pManager->GetPaintWindow(), UESR_MSG_CAMERA_CONFIG_CHANGE, 0, 0);*/
 			break;
 		}
 

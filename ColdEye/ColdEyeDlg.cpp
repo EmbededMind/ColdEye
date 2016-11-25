@@ -12,6 +12,7 @@
 #include "ExHardDrive\ExHardDrive.h"
 
 #include "Database\DBShadow.h"
+#include "Database\DBLogger.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -668,6 +669,8 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	//发送握手
 
 	m_SysTime  = CTime::GetCurrentTime();
+	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
+	
 
 	InvalidateRect(m_rSysTimeText);
 	InvalidateRect(m_rAwTipText);

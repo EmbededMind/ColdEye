@@ -129,7 +129,8 @@ void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
-	
+	Print("%S", msg.sType);
+
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)
@@ -154,11 +155,11 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 		 CDBShadow* pShadow = CDBShadow::GetInstance();
 
-		 if (pShadow->GetAlarmFileNumber(((CPort*)lParam)->m_Id)) {
+		 if (pShadow->GetAlarmFileNumber(((CPort*)lParam)->m_Id)  ==  0) {
 			 AddAlarmMenuItem((CPort*)lParam);
 		 }
 
-		 if (pShadow->GetRecordFileNumber(((CPort*)lParam)->m_Id)) {
+		 if (pShadow->GetRecordFileNumber(((CPort*)lParam)->m_Id)  ==  0) {
 			 AddVideoObtainMenuItem((CPort*)lParam);
 		 }
 
@@ -237,7 +238,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				}
 			}
 			break;
-
+		//---------------------------------------------------------------
 		case USER_MSG_CAMERA_CONFIG_AWTIME:
 			DWORD aw_begining, aw_end;
 			GetWatchTime(&aw_begining, &aw_end);
@@ -247,6 +248,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				CMsgSquare::GetInstance()->Broadcast(msg);
 			}
 			break;
+		//-------------------------------------------------------------
 	}
 	return LRESULT();
 }

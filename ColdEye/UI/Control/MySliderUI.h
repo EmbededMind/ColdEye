@@ -3,6 +3,7 @@
 #include "UIlib.h"
 using namespace DuiLib;
 
+#define DUI_USER_MSGTYPE_BACK      (_T("back"))
 
 class CMySliderUI : public CSliderUI
 {
