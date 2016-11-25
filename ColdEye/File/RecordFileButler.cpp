@@ -27,6 +27,7 @@ CFile* CRecordFileButler::AllocRecordFile()
 
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
+
 	fileName  = time.Format(_T("%Y%m%d%H%M%S"));
 
 	fileName  = m_Direction + fileName + _T(".h264");
@@ -42,7 +43,7 @@ if (m_FileType == 2)
 	m_pFileInfo = new CRecordFileInfo();
 	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
-
+	
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
 	

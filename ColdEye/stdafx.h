@@ -125,8 +125,8 @@
 
 
 /**      Disk Surpluss Space     **/
-#define SURPLUSSPACENORMAL 100     //正常文件所在磁盘剩余空间红线
-#define SURPLUSSPACEALARM  100     //报警文件所在磁盘剩余空间红线
+#define SURPLUSSPACENORMAL 1000000000000     //正常文件所在磁盘剩余空间红线
+#define SURPLUSSPACEALARM  1000000000000     //报警文件所在磁盘剩余空间红线
 
 /**        Com num define        **/
 #define COM_KB    1

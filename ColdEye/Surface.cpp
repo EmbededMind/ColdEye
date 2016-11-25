@@ -12,6 +12,7 @@
 
 #include "Database\DBShadow.h"
 #include "Com\Communication.h"
+#include "File\RecordFileMetabolism.h"
 
 CMutex mutex_RealData;
 
@@ -594,6 +595,8 @@ void CSurface::PackageRecordFile()
 
 	CFile* pf = m_RecordFileButler.AllocRecordFile();
 
+	CRecordFileMetabolism::GetInstance()->SetATrigger();
+
 	if (pf) {
 		StartRecord(pf);
 	}
@@ -954,8 +957,6 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 		switch (pMsg->wParam)
 		{
 			case VK_F8:
-
-				//StopRealPlay();
 				H264_PLAY_Pause(this->m_lPlayPort, 1);
 				mReverseBtn.ShowWindow(SW_SHOW);
 				

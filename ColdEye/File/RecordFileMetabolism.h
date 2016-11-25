@@ -16,8 +16,8 @@ public:
 	bool SetATrigger();
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);
 private:
-	float SurplusSpaceNormal;
-	float SurplusSpaceAlarm;
+	ULONGLONG mSurplusSpaceNormal;
+	ULONGLONG mSurplusSpaceAlarm;
 private:
 	bool DelFile(CString DelPsth);
 	ULONGLONG KillAlarmFile();

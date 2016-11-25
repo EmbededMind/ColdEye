@@ -39,6 +39,7 @@ bool CRecordFileMetabolism::DelFile(CString DelPath)
 	hfind = ::FindFirstFile(DelPath, &findFileData);
 	if (hfind == INVALID_HANDLE_VALUE)
 	{
+		printf("delete succeed!\n");
 		return true;
 	}
 	return false;
@@ -85,7 +86,7 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 			}
 		}
 	}
-	return INT64();
+	return false;
 }
 
 ULONGLONG CRecordFileMetabolism::GetDiskFreeSpaceAsB(CString DiskName)
@@ -118,16 +119,27 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 
 UINT CRecordFileMetabolism::FileMetabolismThread(LPVOID pParam)
 {
+	printf("FileMetabolismThread\n");
 	CRecordFileMetabolism *pRecordFileMetabolism = (CRecordFileMetabolism*)pParam;
-	pRecordFileMetabolism->SurplusSpaceNormal = pRecordFileMetabolism->GetDiskFreeSpaceAsB(NORMALDISK);
-	pRecordFileMetabolism->SurplusSpaceAlarm = pRecordFileMetabolism->GetDiskFreeSpaceAsB(ALARMDISK);
-	while( pRecordFileMetabolism->SurplusSpaceNormal < SURPLUSSPACENORMAL && pRecordFileMetabolism->SurplusSpaceNormal)
+	pRecordFileMetabolism->mSurplusSpaceNormal = pRecordFileMetabolism->GetDiskFreeSpaceAsB(NORMALDISK);
+	pRecordFileMetabolism->mSurplusSpaceAlarm = pRecordFileMetabolism->GetDiskFreeSpaceAsB(ALARMDISK);
+	while( pRecordFileMetabolism->mSurplusSpaceNormal < SURPLUSSPACENORMAL && pRecordFileMetabolism->mSurplusSpaceNormal)
 	{
-		pRecordFileMetabolism->SurplusSpaceNormal -= pRecordFileMetabolism->KillNormalFile();
+		uint64_t tmp = pRecordFileMetabolism->KillNormalFile();
+		if (tmp == 0)
+		{
+			break;
+		}
+		pRecordFileMetabolism->mSurplusSpaceNormal -= tmp;
 	}
-	while (pRecordFileMetabolism->SurplusSpaceAlarm < SURPLUSSPACEALARM && pRecordFileMetabolism->SurplusSpaceAlarm)
+	while (pRecordFileMetabolism->mSurplusSpaceAlarm < SURPLUSSPACEALARM && pRecordFileMetabolism->mSurplusSpaceAlarm)
 	{
-		pRecordFileMetabolism->SurplusSpaceAlarm -= pRecordFileMetabolism->KillAlarmFile();
+		uint64_t tmp = pRecordFileMetabolism->KillAlarmFile();
+		if (tmp == 0)
+		{
+			break;
+		}
+		pRecordFileMetabolism->mSurplusSpaceAlarm -= tmp;
 	}
 	//while (pRecordFileMetabolism->IsTimeOutNormalFile())
 	//{
