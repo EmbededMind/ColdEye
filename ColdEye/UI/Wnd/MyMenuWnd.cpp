@@ -152,6 +152,9 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		case USER_MSG_LOGIN:
 			Print("Menu case login msg");
 
+			AddAlarmMenuItem( (CPort*)lParam);
+			AddVideoObtainMenuItem( (CPort*)lParam);
+
 			AddPortConfigMenuItem( (CPort*)lParam);
 			FillPortConfig( (CPort*)lParam);
 			break;
