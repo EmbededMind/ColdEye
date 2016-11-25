@@ -71,32 +71,45 @@ void CColdEyeDlg::UpdateLayout()
 	CRect  rClient;
 	GetClientRect(rClient);
 
+	m_pTitleBk_left[0] = { 0,0 };
+	m_pTitleBk_left[1] = { 450,0 };
+	m_pTitleBk_left[2] = { 400,100 };
+	m_pTitleBk_left[3] = { 0,100 };
+
+	m_pTitleBk_center[0] = { m_pTitleBk_left[1].x,0 };
+	m_pTitleBk_center[1] = { m_pTitleBk_left[1].x + 800,0 };
+	m_pTitleBk_center[2] = { m_pTitleBk_left[2].x + 800,100 };
+	m_pTitleBk_center[3] = { m_pTitleBk_left[2].x,100 };
+
+	m_pTitleBk_right[0] = { m_pTitleBk_center[1].x,0 };
+	m_pTitleBk_right[1] = { m_pTitleBk_center[1].x + 300,0 };
+	m_pTitleBk_right[2] = { m_pTitleBk_center[2].x + 300,100 };
+	m_pTitleBk_right[3] = { m_pTitleBk_center[2].x,100 };
+
 	LONG   titleHeight = rClient.Height() / 10;
 	LONG   tipTextHeight  = titleHeight / 3;
-
-
 
 	m_rTitle.left  = rClient.left;
 	m_rTitle.top   = rClient.top;
 	m_rTitle.right = rClient.right;
 	m_rTitle.bottom = m_rTitle.top + titleHeight;
 
-	m_rSysTimeText.left  = m_rTitle.left + m_rTitle.Width() /20;
-	m_rSysTimeText.right = m_rSysTimeText.left + 280;
+	m_rSysTimeText.left  = 40;
+	m_rSysTimeText.right = m_rSysTimeText.left + 341;
 
-	m_rSysTimeText.top  = m_rTitle.top + titleHeight / 3 - 1;
-	m_rSysTimeText.bottom  = m_rSysTimeText.top + titleHeight / 3 + 2;
+	m_rSysTimeText.top  = 37;
+	m_rSysTimeText.bottom  = m_rSysTimeText.top + 39;
 
 
-	m_rAwTipText.left  = rClient.left +800;
-	m_rAwTipText.right = m_rAwTipText.left+ 300;
-	m_rAwTipText.top  = m_rTitle.top + titleHeight /3 - 1;
-	m_rAwTipText.bottom = m_rAwTipText.top + titleHeight /3 + 2;
+	m_rAwTipText.left  = 704;
+	m_rAwTipText.right = m_rAwTipText.left+ 250;
+	m_rAwTipText.top  = 37;
+	m_rAwTipText.bottom = m_rAwTipText.top + 39;
 
-	m_rHwTipText.left = m_rTitle.right  - 300;
-	m_rHwTipText.right = m_rHwTipText.left  + 300;
-	m_rHwTipText.top = m_rTitle.top + titleHeight / 3 - 1;
-	m_rHwTipText.bottom = m_rHwTipText.top + titleHeight / 3 + 2;
+	m_rHwTipText.left = 1226;
+	m_rHwTipText.right = m_rHwTipText.left  + 250;
+	m_rHwTipText.top = 37;
+	m_rHwTipText.bottom = m_rHwTipText.top + 39;
 
 
 	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titleHeight, rClient.Width(), rClient.Height()-titleHeight-titleHeight/5, 0);
@@ -240,22 +253,26 @@ void CColdEyeDlg::OnPaint()
 		CRect rClient;
 		GetClientRect(rClient);
 
-		dc.FillSolidRect(&rClient, RGB(171, 130, 255));
+		//dc.FillSolidRect(&rClient, RGB(171, 130, 255));
+		PaintTitle(&dc);
 
-		CPen newPen(PS_SOLID, 1, RGB(255, 0, 0));
+		CFont font;
+		font.CreatePointFont(240, _T("方正兰亭中黑"));
 
 		CPen* pOldPen;
 		CFont* pOldFont;
-		pOldPen  = dc.SelectObject(&newPen);
+		pOldFont = dc.SelectObject(&font);
 
-		
+		dc.SetTextColor(0xFFFFFF);
+		dc.FillSolidRect(m_rSysTimeText, RGB(0, 0, 0));
 		dc.Rectangle(m_rSysTimeText);
 		dc.Rectangle(m_rAwTipText);
 		dc.Rectangle(m_rHwTipText);
-
-
+		 
 		dc.TextOutW(m_rSysTimeText.left + 1, m_rSysTimeText.top+1, m_SysTime.Format(_T("%Y-%m-%d %H:%M:%S")));
-		
+
+
+		dc.FillSolidRect(m_rAwTipText, RGB(58, 58, 58));
 		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_status) {
 			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已开启"));
 		}
@@ -263,12 +280,11 @@ void CColdEyeDlg::OnPaint()
 			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已关闭"));
 		}
 
+		dc.FillSolidRect(m_rHwTipText, RGB(0, 0, 0));
+		dc.SetTextColor(0x7ED321);
 		dc.TextOutW(m_rHwTipText.left + 1, m_rHwTipText.top + 1, _T("未开启回家看船"));
 
-		dc.SelectObject(pOldPen);
-
-
-
+		dc.SelectObject(pOldFont);
 
 
 		//CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
@@ -657,4 +673,22 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	InvalidateRect(m_rAwTipText);
 	InvalidateRect(m_rHwTipText);
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+void CColdEyeDlg::PaintTitle(CPaintDC *dc)
+{
+	CBrush brush_left(RGB(0, 0, 0));
+	CBrush* oldBrush = dc->SelectObject(&brush_left);
+	dc->Polygon(m_pTitleBk_left, 4);
+	brush_left.DeleteObject();
+
+	CBrush brush_center(RGB(58, 58, 58));
+	dc->SelectObject(&brush_center);
+	dc->Polygon(m_pTitleBk_center, 4);
+	brush_center.DeleteObject();
+
+	CBrush brush_right(RGB(0, 0, 0));
+	dc->SelectObject(&brush_right);
+	dc->Polygon(m_pTitleBk_right, 4);
+	brush_right.DeleteObject();
 }

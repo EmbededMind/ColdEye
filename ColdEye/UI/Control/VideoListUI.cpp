@@ -102,7 +102,6 @@ void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 		mhintNumber++;
 		CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
 		pItem->mhintNumber++;
-		Print("num:%d",pItem->mhintNumber);
 	}
 
 }

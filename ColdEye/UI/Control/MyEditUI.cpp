@@ -108,3 +108,9 @@ void CMyEditUI::BackToPreviousItem(CTabLayoutUI *pLayout)
 		}
 	}
 }
+
+void CMyEditUI::SetName(CString name)
+{
+	SetUserData(name);
+	SetText(name);
+}

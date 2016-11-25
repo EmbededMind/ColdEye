@@ -32,6 +32,9 @@ private:
 	CFont    m_TipFont;
 
 	CRect    m_rTitle;
+	POINT	 m_pTitleBk_left[4];
+	POINT	 m_pTitleBk_center[4];
+	POINT	 m_pTitleBk_right[4];
 
 	CTime    m_SysTime;
 	CRect    m_rSysTimeText;
@@ -75,4 +78,5 @@ public:
 	afx_msg LRESULT OnRecordVoice(WPARAM wParm, LPARAM lParm);
 	CMyMenuWnd& GetMyMenu();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	void PaintTitle(CPaintDC*);
 };

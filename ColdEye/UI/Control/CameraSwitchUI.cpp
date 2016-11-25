@@ -39,7 +39,7 @@ void CCameraSwitchUI::DoEvent(TEventUI &event)
 		case VK_LEFT:
 			if (Switch == true){
 				//if(MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_camera_switch.xml"), NULL, NULL))
-				SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_CAMERA, 0);
+				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_CAMERA, 0);
 				//m_pManager->SendNotify(this, USER_MSG_MESSAGEBOX);
 				Switch = false;
 				Invalidate();
