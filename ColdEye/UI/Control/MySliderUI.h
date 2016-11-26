@@ -15,6 +15,5 @@ public:
 	void DoEvent(TEventUI &event);
 	void PaintBkColor(HDC hDC);
 	void PaintBkImage(HDC hDC);
-	void BackPreviousItem(CTabLayoutUI*);
 };
 

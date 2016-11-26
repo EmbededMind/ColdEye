@@ -22,40 +22,7 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 	CContainerUI* pFocused;
 
 	if (event.Type == UIEVENT_KEYDOWN) {
-		switch (event.wParam)
-		{
-		case VK_SPACE:
-			break;
-		//---------------------------------------
-		case VK_UP:
-			if (mPrevItem) {
-				mPrevItem->SetFocus();
-			}
-			break;
-		//--------------------------------------
-		case VK_DOWN:
-			if (mNextItem) {
-				mNextItem->SetFocus();
-			}
-			break;
-		//--------------------------------------
-		case VK_LEFT:
-			break;
-		//--------------------------------------
-		case VK_RIGHT:
-			iInx = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetCurSel();
-			pFocused = (CContainerUI*)static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->GetItemAt(iInx);
-
-			if (GetUserData() == _T("4")){
-				m_pManager->FindControl(_T("button_home"))->SetFocus();
-			}
-			else if (pFocused->GetCount() > 0) {
-					static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SetVisible(true);
-					pFocused->GetItemAt(0)->SetFocus();
-					SetMenuBkColor(0xFFE6E6E6, 0xFFFFFFFF);
-			}
-			break;
-		}
+			m_pManager->SendNotify(this, DUI_MSGTYPE_MENU, event.wParam, event.lParam);
 	}
 
 	if (event.Type == UIEVENT_SETFOCUS) {
@@ -70,7 +37,7 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 			{
 				m_pManager->FindControl(_T("home"))->SetVisible(false);
 			}
-			static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_secondmenu")))->SelectItem(StrToInt(GetUserData()));
+			static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_menuitem")))->SelectItem(StrToInt(GetUserData()));
 		}
 	}
 	else if (event.Type == UIEVENT_KILLFOCUS) {
@@ -78,12 +45,6 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 	}
 
 	CButtonUI::DoEvent(event);
-}
-
-void CPopupMenuUI::SetItemRelation(CPopupMenuUI * pPrevMenu, CPopupMenuUI * pNextMenu)
-{
-	mPrevItem = pPrevMenu;
-	mNextItem = pNextMenu;
 }
 
 void CPopupMenuUI::SetMenuBkColor(DWORD menuColor, DWORD itemColor)
@@ -142,25 +103,6 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 	}
 }
 
-void CPopupMenuUI::SetPrevItem(CControlUI * PrevItem)
-{
-	mPrevItem = PrevItem;
-}
-
-void CPopupMenuUI::SetNextItem(CControlUI * NextItem)
-{
-	mNextItem = NextItem;
-}
-
-CControlUI * CPopupMenuUI::GetPrevItem()
-{
-	return mPrevItem;
-}
-
-CControlUI * CPopupMenuUI::GetNextItem()
-{
-	return mNextItem;
-}
 
 void CPopupMenuUI::SetHintNum(int num)
 {
