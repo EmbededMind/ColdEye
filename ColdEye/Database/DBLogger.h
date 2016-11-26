@@ -26,4 +26,6 @@ public :
 	void LogCameraAWOnOff(CTime& time, CCamera* pCamera);
 
 	void GenerateLastPowerOffLog();
+
+	void DeleteOverTimeLog(__time64_t limit_time_oldest, __time64_t limit_time_now);
 };

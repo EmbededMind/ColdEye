@@ -4,6 +4,7 @@
 using namespace DuiLib;
 
 
+
 class CMySliderUI : public CSliderUI
 {
 DECLARE_DUICONTROL(CMySliderUI)
@@ -14,6 +15,5 @@ public:
 	void DoEvent(TEventUI &event);
 	void PaintBkColor(HDC hDC);
 	void PaintBkImage(HDC hDC);
-	void BackPreviousItem(CTabLayoutUI*);
 };
 

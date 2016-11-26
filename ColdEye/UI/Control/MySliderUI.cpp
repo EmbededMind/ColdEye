@@ -22,9 +22,6 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		case VK_DOWN:
 			m_pManager->SendNotify(this, DUI_MSGTYPE_SLIDER, event.wParam, event.lParam);
 			break;
-		case VK_BACK: //返回当前的值
-			m_pManager->SendNotify(this, DUI_MSGTYPE_SLIDER, event.wParam,GetValue());
-			break;
 
 		case VK_LEFT:
 			SetValue(GetValue()-1);
@@ -72,19 +69,3 @@ void CMySliderUI::PaintBkImage(HDC hDC)
 	Invalidate();
 }
 
-void CMySliderUI::BackPreviousItem(CTabLayoutUI* pParentLayout)
-{
-	int sel, count, focus_userdata;
-	sel = pParentLayout->GetCurSel();
-	CControlUI *pItem;
-	CTabLayoutUI *pPrevLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_submenu_setting")));
-	count = pPrevLayout->GetCount();
-	for (int i = 0; i < count; i += 2) {
-		pItem = pPrevLayout->GetItemAt(i);
-		focus_userdata = StrToInt(pItem->GetUserData());
-		if (sel == focus_userdata) {
-			pItem->SetFocus();
-			break;
-		}
-	}
-}

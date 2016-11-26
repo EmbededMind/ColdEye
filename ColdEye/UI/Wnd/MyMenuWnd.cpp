@@ -93,6 +93,7 @@ void CMyMenuWnd::InitWindow()
 	}
 }
 
+
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 {
 }
@@ -125,11 +126,6 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 			pParentLayout->GetItemAt(6)->SetFocus();
 		}
 		break;
-		//------------------------------------------------------
-	case VK_BACK:
-		Print("value:%d", msg.lParam);
-		//Item->BackPreviousItem(pLayout_third);
-		break;
 	}
 }
 
@@ -149,6 +145,7 @@ void CMyMenuWnd::EditNotify(TNotifyUI & msg)
 	case VK_RETURN:
 		pItem->SetStatus(true);
 		if (sName == _T("edit_shipname")) {
+			pKeyBoard->SetVisible(true);
 			m_pm.FindControl(_T("prompt"))->SetVisible(true); //提示信息
 			m_pm.FindControl(_T("vk_1"))->SetFocus();
 		}
@@ -210,6 +207,9 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			//-----------------------------------------------
 		case VK_LEFT:
 			FocusedItem[0]->SetFocus();
+			FocusedItem[1] = NULL;
+			pLayout_third->SelectItem(0);
+			pLayout_third->SetVisible(false);
 			break;
 			//-----------------------------------------------
 		case VK_RIGHT:
@@ -337,7 +337,7 @@ void CMyMenuWnd::ThirdMenuSetFocus(CDuiString userdata)
 		//视频列表
 		CDuiString name;
 		CListUI *pList;
-		name.Format(_T("video_list%d"), userdata - 17);
+		name.Format(_T("video_list%d"), inx - 17);
 		pList = static_cast<CListUI*>(m_pm.FindControl(name));
 		int Count = pList->GetCount();
 		if (Count > 0) {
@@ -390,11 +390,11 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 		 CDBShadow* pShadow = CDBShadow::GetInstance();
 
-		 if (pShadow->GetAlarmFileNumber(((CPort*)lParam)->m_Id)) {
+		 if (pShadow->GetAlarmFileNumber(((CPort*)lParam)->m_Id)  ==  0) {
 			 AddAlarmMenuItem((CPort*)lParam);
 		 }
 
-		 if (pShadow->GetRecordFileNumber(((CPort*)lParam)->m_Id)) {
+		 if (pShadow->GetRecordFileNumber(((CPort*)lParam)->m_Id)  ==  0) {
 			 AddVideoObtainMenuItem((CPort*)lParam);
 		 }
 
@@ -468,7 +468,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		case WM_KEYDOWN: 
 			
 			break;
-		//--------------------------------------------
+		//---------------------------------------------------------------
 		case USER_MSG_CAMERA_CONFIG_AWTIME:
 			DWORD aw_begining, aw_end;
 			GetWatchTime(&aw_begining, &aw_end);
@@ -478,6 +478,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				CMsgSquare::GetInstance()->Broadcast(msg);
 			}
 			break;
+		//-------------------------------------------------------------
 	}
 	return LRESULT();
 }
@@ -679,7 +680,7 @@ bool CMyMenuWnd::SysSetIsChange()
 bool CMyMenuWnd::AwTimeIsChange()
 {
 	DWORD *begine=NULL, *end=NULL;
-	GetWatchTime(begine, end);
+	//GetWatchTime(begine, end);
 	return false;
 }
 
@@ -837,6 +838,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 		//船名正在编辑
 		if (pKeyBoard->IsVisible()) {
 			pKeyBoard->SetVisible(false);
+			m_pm.FindControl(_T("prompt"))->SetVisible(false); //提示信息
 			pShipName->SetFocus();
 		}
 		else {
@@ -848,7 +850,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 					Print("Message cancel");
 				}
 			}
-			else {
+			else if(FocusedItem[1]) {
 				FocusedItem[1]->SetFocus();
 			}
 		}
@@ -877,7 +879,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 					//恢复设置
 				}
 			}
-			else {
+			else if(FocusedItem[1]){
 				FocusedItem[1]->SetFocus();
 			}
 		}
@@ -893,7 +895,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 				//恢复之前设置
 			}
 		}
-		else {
+		else if(FocusedItem[1]){
 			FocusedItem[1]->SetFocus();
 		}
 		break;
@@ -907,12 +909,19 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 				//恢复之前设置的看船时间
 			}
 		}
-		else {
+		else if(FocusedItem[1]){
 			FocusedItem[1]->SetFocus();
 		}
 		break;
 	default:
-		FocusedItem[1]->SetFocus();
+		CVideoListUI *list=NULL;
+		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
+			list = (CVideoListUI*)m_pm.GetFocus()->GetParent()->GetParent();
+			list->UnSelectAllItems();
+		}
+		if (FocusedItem[1]) {
+			FocusedItem[1]->SetFocus();
+		}
 		break;
 	}
 }
