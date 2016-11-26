@@ -70,9 +70,9 @@
 #define USER_MSG_COPY_STOP				   (WM_USER + 161)	//停止复制
 #define USER_MSG_COPY_INFO				   (WM_USER + 162)	//复制信息
 
+#define USER_MSG_PLAY					   (WM_USER + 170)	//视频播放
 
-
-#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 150)
+#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 180)
 
 
 //  DUI user message
@@ -212,7 +212,7 @@
 #define DUI_MSGTYPE_SLIDER	(_T("slider"))
 #define DUI_MSGTYPE_EDIT	(_T("edit"))
 #define DUI_MSGTYPE_LABEL	(_T("label"))
-
+#define DUI_MSGTYPE_PLAYER	(_T("player"))
 
 
 #include "Database\sqlitewrapper.h"

@@ -6,6 +6,7 @@
 
 #include "WallDlg.h"
 #include "Wnd\MyMenuWnd.h"
+#include "Wnd\Player.h"
 #include "Com\SerialPort.h"
 #include "Wnd\MsgWnd.h"
 
@@ -23,7 +24,6 @@ public:
 protected:
 	CWallDlg  mWall;
 	CMyMenuWnd mMenu;
-	//CPlayer	 mPlayer;
 
 	void UpdateLayout();
 

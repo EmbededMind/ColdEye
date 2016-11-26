@@ -64,7 +64,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			Print("Sql error:%s", sqlStmt);
 		}
 
-		
+		Print("owner:%d", pInfo->nOwner);
 		pFileCnts[pInfo->nOwner - 1]++;
 
 		msg.message = USER_MSG_ADDFILE;

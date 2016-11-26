@@ -91,6 +91,7 @@ void CMyMenuWnd::InitWindow()
 		pSquare->AddAudience(m_hWnd, USER_MSG_INITFILE);
 		pSquare->AddAudience(m_hWnd, USER_MSG_ADDFILE);
 	}
+
 }
 
 
@@ -365,6 +366,15 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	else if (msg.sType == DUI_MSGTYPE_LABEL) {
 		LabelNotify(msg);
 	}
+	else if (msg.sType == DUI_MSGTYPE_PLAYER) {
+		if (!mPlayer) {
+			mPlayer = new CPlayer(_T("Player.xml"));
+			mPlayer->Create(NULL, _T("Player"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
+			mPlayer->ShowWindow(true);
+			mPlayer->CenterWindow();
+			::SendMessage(mPlayer->GetHWND(), USER_MSG_PLAY, msg.wParam, msg.lParam);
+		}
+	}
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)
@@ -450,6 +460,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			}
 			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
+				Print("nOwner:%d", pInfo->nOwner);
 				camera[pInfo->nOwner - 1].pNormalList->AddRecordFile(pInfo);
 			}
 			break;

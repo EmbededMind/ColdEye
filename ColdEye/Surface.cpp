@@ -845,7 +845,7 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 		case TIMER_ID_AUTO_RECORD:
 			PackageRecordFile();
-			CRecordFileMetabolism::GetInstance()->FileMetabolism();
+			/*CRecordFileMetabolism::GetInstance()->FileMetabolism();*/
 			break;
 		//----------------------------------------
 		case TIMER_ID_ALARM:
