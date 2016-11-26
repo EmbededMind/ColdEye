@@ -10,6 +10,7 @@
 #include "Control\MenuItemUI.h"
 #include "Control\VideoListUI.h"
 #include "Control\SwitchRecordListUI.h"
+#include "Control\TimeButtonUI.h"
 
 
 #include "Device\PortManager.h"
@@ -69,6 +70,9 @@ public :
 	void SliderNotify(TNotifyUI & msg);
 	void EditNotify(TNotifyUI &msg);
 	void MenuItemNotify(TNotifyUI &msg);
+	void LabelNotify(TNotifyUI &msg);
+	void ExpandCameraName();
+	void ThirdMenuSetFocus(CDuiString);
 	void Notify(TNotifyUI& msg);
 	void OnLClick(CControlUI* pControl);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
@@ -81,7 +85,6 @@ public :
 	void AddWatchRecord(SwtichRecord);
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
-	void Relationship(CVerticalLayoutUI *pLayout,CMenuItemUI* pMenuItem);
 	void AddCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
 	void DeleteCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
 	void GetCameraItem(CVerticalLayoutUI *pLayout);
@@ -91,9 +94,16 @@ public :
 	void SetWatchTime(DWORD beginTime, DWORD endTime);
 	void GetWatchTime(DWORD* pBegining, DWORD* pEnd);
 
+
+	bool CameraSetIsChange();
+	bool ShipNameIsChange();
+	bool SysSetIsChange();
+	bool AwTimeIsChange();
+
+
 	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
-	void LastLevel(CContainerUI& ,int inx);
-	void NextLevel(CContainerUI&, int inx);
+	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
+	void KeyDown_VK_BACK();
 
 	CameraInfo cameraInfo;
 	SwtichRecord recordInfo;
@@ -115,5 +125,11 @@ private:
 	CTabLayoutUI *pLayout_third;
 	CTabLayoutUI *pLayout_Menuitem;
 	CTabLayoutUI *pLayout_PopMenu;
+	CContainerUI *pKeyBoard;	//键盘控件
+	CMyEditUI * pShipName;		//船名
+	CMySliderUI* pSysVolum;		//系统音量
+	CMySliderUI* pSysLight;		//系统亮度
+	CMyLabelUI* pHostModel;		//主机型号
+	CTimeButtonUI* pAwTime[4];  //自动看船
 	CButtonUI *FocusedItem[2];
 };

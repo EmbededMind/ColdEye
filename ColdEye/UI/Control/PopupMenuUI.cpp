@@ -47,12 +47,6 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 	CButtonUI::DoEvent(event);
 }
 
-void CPopupMenuUI::SetItemRelation(CPopupMenuUI * pPrevMenu, CPopupMenuUI * pNextMenu)
-{
-	mPrevItem = pPrevMenu;
-	mNextItem = pNextMenu;
-}
-
 void CPopupMenuUI::SetMenuBkColor(DWORD menuColor, DWORD itemColor)
 {
 	CContainerUI *layout;
@@ -109,25 +103,6 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 	}
 }
 
-void CPopupMenuUI::SetPrevItem(CControlUI * PrevItem)
-{
-	mPrevItem = PrevItem;
-}
-
-void CPopupMenuUI::SetNextItem(CControlUI * NextItem)
-{
-	mNextItem = NextItem;
-}
-
-CControlUI * CPopupMenuUI::GetPrevItem()
-{
-	return mPrevItem;
-}
-
-CControlUI * CPopupMenuUI::GetNextItem()
-{
-	return mNextItem;
-}
 
 void CPopupMenuUI::SetHintNum(int num)
 {

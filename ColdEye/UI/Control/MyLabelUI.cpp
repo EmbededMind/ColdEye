@@ -172,21 +172,11 @@ void CMyLabelUI::DoEvent(TEventUI & event)
 	case UIEVENT_KEYDOWN:{
 		CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)GetParent();
 		switch (event.wParam) {
+
 			case VK_UP:
-					pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) - 2)->SetFocus();
-				break;
-
 			case VK_DOWN:
-				if (GetName() == _T("camera_set_video_save"))
-					pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 2)->SetFocus();
-				else if (GetName() == _T("sysset_version"))
-					pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 2)->SetFocus();//向下移动2
-				else if (GetName() == _T("sysset_reset"))
-					pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 2)->SetFocus();//向下移动2
-				else if (GetName() == _T("sysset_host_model"))
-					pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 2)->SetFocus();//向下移动2
+				m_pManager->SendNotify(this, DUI_MSGTYPE_LABEL, event.wParam, event.lParam);
 				break;
-
 			case VK_LEFT:
 				StatusUpdate();
 				break;
