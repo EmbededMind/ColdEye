@@ -10,10 +10,10 @@ public:
 	CMyEditUI();
 	~CMyEditUI();
 	void DoEvent(TEventUI &event);
-	void BackToPreviousItem(CTabLayoutUI*);
 	void SetName(CString);
-
-public:
+	void SetStatus(bool newStatus);
+	bool GetStatus();
+private:
 	bool isEditing;
 };
 

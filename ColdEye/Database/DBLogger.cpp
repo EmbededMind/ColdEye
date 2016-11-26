@@ -120,3 +120,15 @@ void CDBLogger::GenerateLastPowerOffLog()
 		}
 	}
 }
+
+
+void CDBLogger::DeleteOverTimeLog(__time64_t oldest, __time64_t now)
+{
+	char sqlStmt[128];
+
+	sprintf_s(sqlStmt, "DELETE FROM log WHERE time < oldest OR time > now;");
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+}

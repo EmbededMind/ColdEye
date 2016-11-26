@@ -65,43 +65,6 @@ void CShipNameItemUI::DoEvent(TEventUI &event)
 				m_pManager->SetFocus(pLineLayout->GetItemAt(row + 1));
 			}
 			break;
-
-		case VK_RETURN:
-			CMyEditUI * pItem;
-			pLayout = (CVerticalLayoutUI*)pTab->GetItemAt(pTab->GetCurSel());
-			pLayout = (CVerticalLayoutUI*)pLayout->GetItemAt(0);
-			pItem = (CMyEditUI*)pLayout->GetItemAt(2);
-			pItem->SetText(GetText());
-			break;
-		case VK_BACK:
-			{
-				CTabLayoutUI *pParTabLayout;
-				CVerticalLayoutUI *pParVerLayout;
-				CTabLayoutUI *pChildLayout1;
-				CTabLayoutUI *pChildLayout2;
-
-				CRect rect;
-				CSize size;
-				pParTabLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-				pParVerLayout = (CVerticalLayoutUI*)pParTabLayout->GetItemAt(pParTabLayout->GetCurSel());
-
-				pChildLayout1 = (CTabLayoutUI*)pParVerLayout->GetItemAt(1);
-				pChildLayout2 = (CTabLayoutUI*)pParVerLayout->GetItemAt(2);
-				if (pChildLayout1->IsVisible() == true)
-				{
-					pChildLayout1->SetVisible(false);
-					rect = pChildLayout2->GetPos();
-					size.cx = 70;
-					size.cy = rect.top - 204;
-					pChildLayout2->SetFixedXY(size);
-					CVerticalLayoutUI *pLayout = (CVerticalLayoutUI*)(GetParent()->GetParent()->GetParent()->GetParent());
-					CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
-					pItem->isEditing = false;
-					pItem->SetFocus();
-				}
-
-			}
-			break;
 		}
 	}
 

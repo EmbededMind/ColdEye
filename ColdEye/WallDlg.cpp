@@ -183,18 +183,45 @@ void CWallDlg::ExecuteSurfaceLayout()
 	CRect rClient;
 	GetClientRect(rClient);
 
-	long nWidth = rClient.Width() / mCols;
-	long nHeight = nWidth * 9 / 16;
-	long nOrgX = (rClient.Width() - nWidth*mCols) / 2;
-	long nOrgY = (rClient.Height() - nHeight* mRows) / 2;
+	const long margin  = 50;
+	const long grap    = 30;
+	long  orgX ;
+	long  orgY ;
+
+	//long surface_area_width  = rClient.Width()- margin * 4;
+	//long surface_area_height = rClient.Height() - margin * 2;
+	float surface_area_width  = rClient.Width() - margin * 4;
+	float surface_area_height = rClient.Height()- margin * 2;
+
+	Print("rClient (%d, %d),  surface area size (%f, %f)", rClient.Width(), rClient.Height(), surface_area_width, surface_area_height);
+
+	orgX    = (rClient.Width() - surface_area_width) / 2;
+
+	if (surface_area_width * 9 / 16 > surface_area_height) {
+		surface_area_width  = surface_area_height * 16 / 9;
+		orgX  = (rClient.Width() - surface_area_width) / 2;
+	}
+
+	surface_area_height  = surface_area_width * 9 / 16;
+
+	orgY  = (rClient.Height() - surface_area_height) / 2;
+
+	long nWidth  = surface_area_width / mCols - grap*2;
+	long nHeight = surface_area_height / mRows - grap*2;
+
+Print("org (%d, %d), surfaec size (%d, %d)", orgX, orgY, nWidth, nHeight);
 
 	int cnt = 0;
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] != NULL) {
-			long xPos = nOrgX = (cnt % mCols) * nWidth;
-			long yPos = nOrgY = (cnt / mCols)*nHeight;
+			//long xPos = nOrgX = (cnt % mCols) * nWidth;
+			//long yPos = nOrgY = (cnt / mCols)*nHeight;
+			long xPos   = orgX + (cnt % mCols) *(nWidth+grap*2);
+			long yPos   = orgY + (cnt / mCols) *(nHeight+grap*2);
 
-			mSurfaces[i]->SetWindowPos(NULL, xPos, yPos, nWidth, nHeight, 0);
+			Print("Pos (%d, %d)", xPos, yPos);
+
+			mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, nWidth, nHeight, 0);
 			cnt++;
 		}
 	}

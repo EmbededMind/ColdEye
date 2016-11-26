@@ -19,15 +19,8 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		switch (event.wParam)
 		{
 		case VK_UP:
-			if (GetName() == _T("camera_set_volume") || GetName() == _T("sysset_voice"))
-				pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) - 3)->SetFocus();//向上移动3
-			break;
-
 		case VK_DOWN:
-			if (GetName() == _T("sysset_light"))
-				pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 3)->SetFocus();//向下移动3
-			else if(GetName() == _T("sysset_voice") || GetName() == _T("camera_set_volume"))
-				pParentLayout->GetItemAt(pParentLayout->GetItemIndex(this) + 2)->SetFocus();//向下移动2
+			m_pManager->SendNotify(this, DUI_MSGTYPE_SLIDER, event.wParam, event.lParam);
 			break;
 
 		case VK_LEFT:
@@ -37,13 +30,7 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		case VK_RIGHT:
 			SetValue(GetValue() + 1);
 			break;
-
-		case VK_BACK:
-			CTabLayoutUI *pLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")));
-			BackPreviousItem(pLayout);
-			break;
 		}
-
 	}
 	CSliderUI::DoEvent(event);
 }
@@ -82,19 +69,3 @@ void CMySliderUI::PaintBkImage(HDC hDC)
 	Invalidate();
 }
 
-void CMySliderUI::BackPreviousItem(CTabLayoutUI* pParentLayout)
-{
-	int sel, count, focus_userdata;
-	sel = pParentLayout->GetCurSel();
-	CControlUI *pItem;
-	CTabLayoutUI *pPrevLayout = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_submenu_setting")));
-	count = pPrevLayout->GetCount();
-	for (int i = 0; i < count; i += 2) {
-		pItem = pPrevLayout->GetItemAt(i);
-		focus_userdata = StrToInt(pItem->GetUserData());
-		if (sel == focus_userdata) {
-			pItem->SetFocus();
-			break;
-		}
-	}
-}

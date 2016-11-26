@@ -92,7 +92,7 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 		case VK_BACK:
 			GetParent()->GetParent()->SetVisible(false);
 			m_pManager->FindControl(_T("prompt"))->SetVisible(false);
-			pEdit->isEditing = false;
+			//pEdit->isEditing = false;
 			pEdit->SetFocus();
 			break;
 

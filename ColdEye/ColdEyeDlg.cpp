@@ -12,6 +12,7 @@
 #include "ExHardDrive\ExHardDrive.h"
 
 #include "Database\DBShadow.h"
+#include "Database\DBLogger.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -527,7 +528,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			}
 		}
 	}
-	if (port == COM_CAM)
+
+	else if (port == COM_CAM)
 	{
 		static int cnt = 0;
 		onedata *p = (onedata*)pData;
@@ -668,6 +670,8 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	//发送握手
 
 	m_SysTime  = CTime::GetCurrentTime();
+	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
+	
 
 	InvalidateRect(m_rSysTimeText);
 	InvalidateRect(m_rAwTipText);

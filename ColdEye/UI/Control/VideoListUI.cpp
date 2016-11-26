@@ -71,6 +71,7 @@ void CVideoListUI::DoEvent(TEventUI& event)
 		}
 		break;
 	}
+
 }
 
 CVideoListUI::Node * CVideoListUI::AddHeadNode(CString sText, int nID, CRecordFileInfo* pInfo)
