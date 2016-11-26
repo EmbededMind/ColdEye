@@ -80,12 +80,13 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 
 			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d begin_sec = %I64d;", 
 				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
+			printf("%s\n", sqlStmt);
 			if (sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
 			}
 
-			if (pFileCnts > 0) {
-				pFileCnts[pInfo->nOwner--];
+			if (pFileCnts[pInfo->nOwner - 1] > 0) {
+				pFileCnts[pInfo->nOwner - 1]--;
 			}
 			else {
 				Print("file cnt error:%d", pInfo->nOwner);

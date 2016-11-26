@@ -36,21 +36,26 @@ bool CCommunication::AskTalk(CCamera * pDev)
 
 bool CCommunication::RecTalkProc(uint8_t *pch)
 {
+	printf("RecTalkProc\n");
 	if (pch[5] == 0x01)
 	{
+		printf("RecTalkProc pch[5] == 0x01\n");
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
 		if (this->mPdev && this->mPdev != Mac_CCamera_Map[mac64])
 		{
+			printf("RecTalkProc this->mPdev && this->mPdev != Mac_CCamera_Map[mac64] \n");
 			H264_DVR_StopVoiceCom(this->mTalkHandle);
 			CleanChannel();
 		}
 		if (this->mPdev == Mac_CCamera_Map[mac64])
 		{
+			printf("RecTalkProc this->mPdev == Mac_CCamera_Map[mac64]\n");
 			return true;
 		}
 		if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map[mac64]->GetLoginId()))
 		{
+			printf("H264_DVR_StartLocalVoiceCom\n");
 			this->mPdev = Mac_CCamera_Map.at(mac64);
 			return true;
 		}

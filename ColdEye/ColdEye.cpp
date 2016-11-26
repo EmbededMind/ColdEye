@@ -35,6 +35,8 @@
 #include "Control\RecordvoiceUI.h"
 #include "Control\MyButtonUI.h"
 
+#include "File\RecordFileMetabolism.h"
+
 #ifdef USE_PRINT
 #include <io.h>
 #include <fcntl.h>
@@ -183,6 +185,8 @@ BOOL CColdEyeApp::InitInstance()
 	//_m_pMainWnd->CenterWindow();
 	//_m_pMainWnd->ShowModal();
 
+	//RecordFileMetabolism attach¹Û²ìÕß
+	CRecordFileMetabolism::GetInstance()->Attach(CDBShadow::GetInstance());
 
 
 	CColdEyeDlg dlg;

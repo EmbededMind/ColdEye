@@ -93,8 +93,8 @@
 #define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
 #define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
 #define SOUND_PATH           "E:\\AlarmRecord\\"
-#define NORMALDISK _T("d")
-#define ALARMDISK  _T("e")
+#define NORMALDISK           "d:\\"
+#define ALARMDISK            "e:\\"
 
 
  /*****************************************
@@ -125,8 +125,8 @@
 
 
 /**      Disk Surpluss Space     **/
-#define SURPLUSSPACENORMAL 1000000000000     //正常文件所在磁盘剩余空间红线
-#define SURPLUSSPACEALARM  1000000000000     //报警文件所在磁盘剩余空间红线
+#define SURPLUSSPACENORMAL      1000000000000000//正常文件所在磁盘剩余空间红线524288000
+#define SURPLUSSPACEALARM       1000000000000000//报警文件所在磁盘剩余空间红线524088000
 
 /**        Com num define        **/
 #define COM_KB    1

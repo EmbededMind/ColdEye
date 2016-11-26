@@ -9,14 +9,6 @@ CRecordFileMetabolism::~CRecordFileMetabolism()
 {
 }
 
-bool CRecordFileMetabolism::SetATrigger()
-{
-	if (!AfxBeginThread(FileMetabolismThread, this))
-	{
-		return true;
-	}
-	return false;
-}
 
 void CRecordFileMetabolism::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 {
@@ -50,17 +42,23 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mAlarmFileInfoList.begin();
 	for (; iter != CDBShadow::GetInstance()->mAlarmFileInfoList.end(); ++iter)
 	{
-		if (!((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
+		if ((*iter) && !((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime time = (*iter)->tBegin;
 			CString FileName;
 			FileName.Format(_T("%d\\%d%02d%02d%02d%02d%02d.h264"), (*iter)->nOwner, time.GetYear(), time.GetMonth(),
 				time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
+			printf("owner %d\n", (*iter)->nOwner);
 			if (DelFile(_T(ALARM_RECORD_PATH) + FileName))
 			{
 				ULONGLONG Size =  (*iter)->dlSize;
 				Notify(FILE_OPT_DEL, RECORD_ALARM, (LPARAM)(*iter));
 				return Size;
+			}
+			else
+			{
+				printf("the file is no exist, delete the info\n");
+				Notify(FILE_OPT_DEL, RECORD_ALARM, (LPARAM)(*iter));
 			}
 		}
 	}
@@ -70,19 +68,27 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 ULONGLONG CRecordFileMetabolism::KillNormalFile()
 {
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mReocrdFileInfoList.begin();
-	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end(); ++iter)
+	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end();)
 	{
-		if (!((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
+		if ((*iter) && !((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime time = (*iter)->tBegin;
 			CString FileName;
 			FileName.Format(_T("%d\\%d%02d%02d%02d%02d%02d.h264"), (*iter)->nOwner, time.GetYear(), time.GetMonth(),
 				time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
+			printf("owner %d\n", (*iter)->nOwner);
 			if (DelFile(_T(NORMAL_RECORD_PATH) + FileName))
 			{
 				ULONGLONG Size = (*iter)->dlSize;
-				Notify(FILE_OPT_DEL, RECORD_NORMAl, (LPARAM)(*iter));
+				CRecordFileInfo* delFileInfo = (*iter);
+				Notify(FILE_OPT_DEL, RECORD_NORMAl, (LPARAM)(delFileInfo));
 				return Size;
+			}
+			else
+			{
+				printf("the file is no exist, delete the info\n");
+				CRecordFileInfo* delFileInfo = (*iter);
+				Notify(FILE_OPT_DEL, RECORD_NORMAl, (LPARAM)(delFileInfo));
 			}
 		}
 	}
@@ -92,7 +98,7 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 ULONGLONG CRecordFileMetabolism::GetDiskFreeSpaceAsB(CString DiskName)
 {
 	ULARGE_INTEGER space;
-	if (GetDiskFreeSpaceEx(DiskName, 0, &space, 0))
+	if (GetDiskFreeSpaceEx(DiskName, 0, 0, &space))
 	{
 		return space.QuadPart;
 	}
@@ -104,7 +110,7 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mReocrdFileInfoList.begin();
 	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end(); ++iter)
 	{
-		if (!((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
+		if ((*iter) && !((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime FileTime = (*iter)->tBegin;
 			CTimeSpan TimeSpan = CTime::GetCurrentTime() - FileTime;
@@ -117,34 +123,28 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 	return false;
 }
 
-UINT CRecordFileMetabolism::FileMetabolismThread(LPVOID pParam)
+BOOL CRecordFileMetabolism::FileMetabolism()
 {
 	printf("FileMetabolismThread\n");
-	CRecordFileMetabolism *pRecordFileMetabolism = (CRecordFileMetabolism*)pParam;
-	pRecordFileMetabolism->mSurplusSpaceNormal = pRecordFileMetabolism->GetDiskFreeSpaceAsB(NORMALDISK);
-	pRecordFileMetabolism->mSurplusSpaceAlarm = pRecordFileMetabolism->GetDiskFreeSpaceAsB(ALARMDISK);
-	while( pRecordFileMetabolism->mSurplusSpaceNormal < SURPLUSSPACENORMAL && pRecordFileMetabolism->mSurplusSpaceNormal)
+	this->mSurplusSpaceNormal = this->GetDiskFreeSpaceAsB(_T(NORMALDISK));
+	while(this->mSurplusSpaceNormal < SURPLUSSPACENORMAL && this->mSurplusSpaceNormal)
 	{
-		uint64_t tmp = pRecordFileMetabolism->KillNormalFile();
+		uint64_t tmp = this->KillNormalFile();
 		if (tmp == 0)
 		{
 			break;
 		}
-		pRecordFileMetabolism->mSurplusSpaceNormal -= tmp;
+		this->mSurplusSpaceNormal += tmp;
 	}
-	while (pRecordFileMetabolism->mSurplusSpaceAlarm < SURPLUSSPACEALARM && pRecordFileMetabolism->mSurplusSpaceAlarm)
+	this->mSurplusSpaceAlarm = this->GetDiskFreeSpaceAsB(_T(ALARMDISK));
+	while (this->mSurplusSpaceAlarm < SURPLUSSPACEALARM && this->mSurplusSpaceAlarm)
 	{
-		uint64_t tmp = pRecordFileMetabolism->KillAlarmFile();
+		uint64_t tmp = this->KillAlarmFile();
 		if (tmp == 0)
 		{
 			break;
 		}
-		pRecordFileMetabolism->mSurplusSpaceAlarm -= tmp;
+		this->mSurplusSpaceAlarm += tmp;
 	}
-	//while (pRecordFileMetabolism->IsTimeOutNormalFile())
-	//{
-	//	pRecordFileMetabolism->KillNormalFile();
-	//}
-	AfxEndThread(100);
 	return 0;
 }

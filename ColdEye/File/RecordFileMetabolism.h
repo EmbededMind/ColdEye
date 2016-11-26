@@ -13,8 +13,8 @@ public:
 		static CRecordFileMetabolism instance;
 		return &instance;
 	};
-	bool SetATrigger();
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);
+	BOOL FileMetabolism();
 private:
 	ULONGLONG mSurplusSpaceNormal;
 	ULONGLONG mSurplusSpaceAlarm;
@@ -24,6 +24,5 @@ private:
 	ULONGLONG KillNormalFile();
 	ULONGLONG GetDiskFreeSpaceAsB(CString DiskName);
 	bool IsTimeOutNormalFile();
-	static UINT FileMetabolismThread(LPVOID pParam);
 };
 

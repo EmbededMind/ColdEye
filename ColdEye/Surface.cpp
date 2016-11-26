@@ -595,7 +595,7 @@ void CSurface::PackageRecordFile()
 
 	CFile* pf = m_RecordFileButler.AllocRecordFile();
 
-	CRecordFileMetabolism::GetInstance()->SetATrigger();
+	CRecordFileMetabolism::GetInstance()->FileMetabolism();
 
 	if (pf) {
 		StartRecord(pf);
