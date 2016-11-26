@@ -23,7 +23,7 @@ public:
 protected:
 	CWallDlg  mWall;
 	CMyMenuWnd mMenu;
-
+	//CPlayer	 mPlayer;
 
 	void UpdateLayout();
 
