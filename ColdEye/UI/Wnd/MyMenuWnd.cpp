@@ -126,6 +126,10 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 			pParentLayout->GetItemAt(6)->SetFocus();
 		}
 		break;
+		//-------------------------------------------------------
+	case VK_BACK:
+
+		break;
 	}
 }
 
@@ -189,6 +193,7 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				pNextFocusLayout->GetItemAt(0)->SetFocus();
 			}
 			break;
+		//-----------------------------------------------
 		}
 	}
 	else {
