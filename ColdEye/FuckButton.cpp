@@ -44,3 +44,6 @@ BOOL CFuckButton::PreTranslateMessage(MSG* pMsg)
 
 	return CButton::PreTranslateMessage(pMsg);
 }
+
+
+
