@@ -70,9 +70,9 @@
 #define USER_MSG_COPY_STOP				   (WM_USER + 161)	//停止复制
 #define USER_MSG_COPY_INFO				   (WM_USER + 162)	//复制信息
 
+#define USER_MSG_PLAY					   (WM_USER + 170)	//视频播放
 
-
-#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 150)
+#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 180)
 
 
 //  DUI user message
@@ -95,8 +95,8 @@
 #define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
 #define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
 #define SOUND_PATH           "E:\\AlarmRecord\\"
-#define NORMALDISK _T("d")
-#define ALARMDISK  _T("e")
+#define NORMALDISK           "d:\\"
+#define ALARMDISK            "e:\\"
 
 
  /*****************************************
@@ -127,8 +127,8 @@
 
 
 /**      Disk Surpluss Space     **/
-#define SURPLUSSPACENORMAL 100     //正常文件所在磁盘剩余空间红线
-#define SURPLUSSPACEALARM  100     //报警文件所在磁盘剩余空间红线
+#define SURPLUSSPACENORMAL      1000000000000000//正常文件所在磁盘剩余空间红线524288000
+#define SURPLUSSPACEALARM       1000000000000000//报警文件所在磁盘剩余空间红线524088000
 
 /**        Com num define        **/
 #define COM_KB    1
@@ -212,7 +212,7 @@
 #define DUI_MSGTYPE_SLIDER	(_T("slider"))
 #define DUI_MSGTYPE_EDIT	(_T("edit"))
 #define DUI_MSGTYPE_LABEL	(_T("label"))
-
+#define DUI_MSGTYPE_PLAYER	(_T("player"))
 
 
 #include "Database\sqlitewrapper.h"

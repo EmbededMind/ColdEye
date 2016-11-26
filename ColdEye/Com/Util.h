@@ -4,6 +4,7 @@
 #include <map>
 using namespace std;
 extern map<uint64_t, CCamera*> Mac_CCamera_Map;
+static char DevMac[6][32];
 class CUtil
 {
 public:

@@ -2,7 +2,6 @@
 #include "Util.h"
 
 map<uint64_t, CCamera*> Mac_CCamera_Map;
-
 CUtil::CUtil()
 {
 }

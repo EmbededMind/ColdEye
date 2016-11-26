@@ -12,6 +12,7 @@
 
 #include "Database\DBShadow.h"
 #include "Com\Communication.h"
+#include "File\RecordFileMetabolism.h"
 
 CMutex mutex_RealData;
 
@@ -844,6 +845,7 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 		case TIMER_ID_AUTO_RECORD:
 			PackageRecordFile();
+			/*CRecordFileMetabolism::GetInstance()->FileMetabolism();*/
 			break;
 		//----------------------------------------
 		case TIMER_ID_ALARM:
@@ -948,8 +950,6 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 		switch (pMsg->wParam)
 		{
 			case VK_F8:
-
-				//StopRealPlay();
 				H264_PLAY_Pause(this->m_lPlayPort, 1);
 				mReverseBtn.ShowWindow(SW_SHOW);
 				

@@ -20,6 +20,7 @@ public:
 		int id;
 		int _level;
 		bool _expand;
+		bool _type;
 		CDuiString _text;
 		CMyListUI * _pListElement;
 	};
