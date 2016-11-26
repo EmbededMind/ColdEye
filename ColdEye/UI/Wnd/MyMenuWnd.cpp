@@ -120,14 +120,30 @@ void CMyMenuWnd::InitWindow()
 	}
 }
 
+
 void CMyMenuWnd::OnFinalMessage(HWND hWnd)
 {
 }
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
-	Print("%S", msg.sType);
+	if (msg.sType == DUI_USER_MSGTYPE_BACK) {
+		if (msg.pSender->GetName() == _T("camera_set_volume")) {
+			Print("Camera vol config");
+			int vol  = ((CMySliderUI*)msg.pSender)->GetValue();
+			Print("Set vol:%d", vol);
 
+			// 确认窗口
+			if (true) {
+				//串口发送音量
+			}
+			
+		}
+		
+		else {
+
+		}
+	}
 }
 
 void CMyMenuWnd::OnLClick(CControlUI * pControl)

@@ -75,6 +75,8 @@
 #define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 150)
 
 
+//  DUI user message
+#define DUI_USER_MSGTYPE_BACK      (_T("back"))
 
  /*****************************************
  *             Timer ID define            *

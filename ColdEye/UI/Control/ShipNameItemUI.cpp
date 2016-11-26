@@ -100,6 +100,7 @@ void CShipNameItemUI::DoEvent(TEventUI &event)
 					pItem->SetFocus();
 				}
 
+				m_pManager->SendNotify(this, DUI_USER_MSGTYPE_BACK);
 			}
 			break;
 		}
