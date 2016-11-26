@@ -73,12 +73,10 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		CMsgSquare::GetInstance()->Broadcast(msg);
 		break;
 		//------------------------------------------------
-		case FILE_OPT_DEL:
-			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
-
+		case FILE_OPT_DEL:	
 			Print("Del file:%d", wParam);
 
-			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d begin_sec = %I64d;", 
+			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d AND begin_sec = %I64d;", 
 				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
 			printf("%s\n", sqlStmt);
 			if (sqlite.DirectStatement(sqlStmt)) {
@@ -96,6 +94,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			msg.wParam = wParam;
 			msg.lParam = lParam;
 			CMsgSquare::GetInstance()->Broadcast(msg);
+			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
 			break;
 	}
 	LeaveCriticalSection(&g_cs);

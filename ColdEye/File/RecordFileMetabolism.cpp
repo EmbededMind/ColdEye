@@ -40,8 +40,11 @@ bool CRecordFileMetabolism::DelFile(CString DelPath)
 ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 {
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mAlarmFileInfoList.begin();
-	for (; iter != CDBShadow::GetInstance()->mAlarmFileInfoList.end(); ++iter)
+	for (; iter != CDBShadow::GetInstance()->mAlarmFileInfoList.end(); iter++)
 	{
+		if ((*iter));
+		if ((*iter)->status == RECORD_LOCKED);
+		if ((*iter)->bIsOccupied);
 		if ((*iter) && !((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime time = (*iter)->tBegin;
@@ -58,7 +61,9 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 			else
 			{
 				printf("the file is no exist, delete the info\n");
-				Notify(FILE_OPT_DEL, RECORD_ALARM, (LPARAM)(*iter));
+				CRecordFileInfo* delFileInfo = (*iter);
+				iter++;
+				Notify(FILE_OPT_DEL, RECORD_ALARM, (LPARAM)(delFileInfo));
 			}
 		}
 	}
@@ -68,7 +73,7 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 ULONGLONG CRecordFileMetabolism::KillNormalFile()
 {
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mReocrdFileInfoList.begin();
-	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end();)
+	for (; iter != CDBShadow::GetInstance()->mReocrdFileInfoList.end(); iter++)
 	{
 		if ((*iter) && !((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
@@ -76,7 +81,6 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 			CString FileName;
 			FileName.Format(_T("%d\\%d%02d%02d%02d%02d%02d.h264"), (*iter)->nOwner, time.GetYear(), time.GetMonth(),
 				time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
-			printf("owner %d\n", (*iter)->nOwner);
 			if (DelFile(_T(NORMAL_RECORD_PATH) + FileName))
 			{
 				ULONGLONG Size = (*iter)->dlSize;
@@ -88,6 +92,7 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 			{
 				printf("the file is no exist, delete the info\n");
 				CRecordFileInfo* delFileInfo = (*iter);
+				iter++;
 				Notify(FILE_OPT_DEL, RECORD_NORMAl, (LPARAM)(delFileInfo));
 			}
 		}
@@ -136,6 +141,7 @@ BOOL CRecordFileMetabolism::FileMetabolism()
 		}
 		this->mSurplusSpaceNormal += tmp;
 	}
+	printf("alarm\n");
 	this->mSurplusSpaceAlarm = this->GetDiskFreeSpaceAsB(_T(ALARMDISK));
 	while (this->mSurplusSpaceAlarm < SURPLUSSPACEALARM && this->mSurplusSpaceAlarm)
 	{
