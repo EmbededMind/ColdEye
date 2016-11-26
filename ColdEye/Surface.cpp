@@ -12,6 +12,7 @@
 
 #include "Database\DBShadow.h"
 #include "Com\Communication.h"
+#include "File\RecordFileMetabolism.h"
 
 CMutex mutex_RealData;
 
@@ -777,6 +778,7 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_RD_CHANGE, &CSurface::OnUserMsgCameraConfigRdChange)
 	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWTIME, &CSurface::OnUserMsgCameraConfigAwtime)
+	ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
 
@@ -843,6 +845,7 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 		case TIMER_ID_AUTO_RECORD:
 			PackageRecordFile();
+			CRecordFileMetabolism::GetInstance()->FileMetabolism();
 			break;
 		//----------------------------------------
 		case TIMER_ID_ALARM:
@@ -901,10 +904,12 @@ int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO:  在此添加您专用的创建代码
 
-	mReverseBtn.Create(_T("倒着放"), WS_CHILD, {0,0,0,0}, this, 1 );
+	mReverseBtn.Create(_T("倒着放"), WS_CHILD , {0,0,0,0}, this, 1 );
 	mReverseBtn.ShowWindow(SW_HIDE);
+	mReverseBtn.ModifyStyle(0, BS_OWNERDRAW);
 
-	mDelBtn.Create(_T("删除"), WS_CHILD, {0,0,0,0}, this, 2);
+	mDelBtn.Create(_T("删除"), WS_CHILD , {0,0,0,0}, this, 2);
+	mDelBtn.ModifyStyle(0, BS_OWNERDRAW);
 	mDelBtn.ShowWindow(SW_HIDE);
 
 	CMsgSquare::GetInstance()->AddAudience(m_hWnd, USER_MSG_CAMERA_CONFIG_AWTIME);
@@ -917,24 +922,12 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 {
 	CWnd::OnSize(nType, cx, cy);
 
-	// TODO: 在此处添加消息处理程序代码
-	//if (IsWindow(mControlWnd)) {
-	//	CRect rClient;
-	//	GetClientRect(rClient);
-
-	//	long surface_height = rClient.Height() * 4 / 5;
-	//	long control_height = rClient.Height() / 5;
-
-	//	mSurface.SetWindowPos(NULL, rClient.left, rClient.top, rClient.Width(), surface_height, 0);
-	//	mControlWnd.SetWindowPos(NULL, rClient.left, rClient.bottom-control_height, rClient.Width(), control_height, 0);
-	//}
-
 	if (IsWindow(mDelBtn)) {
 		CRect rClient;
 		GetClientRect(rClient);
 
 		long btn_width = rClient.Width() / 5;
-		long btn_height = rClient.Height() / 5;
+		long btn_height = btn_width / 3;
 
 		long margin_left = rClient.Width() / 5;
 		long margin_top = rClient.Height() * 2 / 5;
@@ -957,8 +950,6 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 		switch (pMsg->wParam)
 		{
 			case VK_F8:
-
-				//StopRealPlay();
 				H264_PLAY_Pause(this->m_lPlayPort, 1);
 				mReverseBtn.ShowWindow(SW_SHOW);
 				
@@ -1090,17 +1081,7 @@ afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lP
  */
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lParam)
 {	
-	//m_BindedPort->m_AwConfig.Begining  = wParam;
-	//m_BindedPort->m_AwConfig.End       = (DWORD)lParam;
 
-	//if (!m_BindedPort->SetAwTime(wParam, (DWORD)lParam)) {
-	//	Print("Set Aw time failed");
-	//	return 0;
-	//}
-	//else {
-	//	Print("Set Aw time: %02d:%02d:%02d -- %02d:%02d:%02d", wParam/3600, (wParam%3600)/60, wParam%60,
-	//	                                                       lParam/3600, (lParam%3600)/60, lParam%60);
-	//}
 	m_BindedPort->m_AwConfig.Begining  = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
 	m_BindedPort->m_AwConfig.End       = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
 
@@ -1149,4 +1130,54 @@ afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lPar
 	}
 
 	return 0;
+}
+
+
+void CSurface::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CRect rect;
+	GetClientRect(rect);
+	CDC dc;
+	dc.Attach(lpDrawItemStruct->hDC);
+
+	UINT state = lpDrawItemStruct->itemState;
+
+	COLORREF focusColor = RGB(30, 144, 255);
+	COLORREF color = RGB(205, 201, 201);
+
+	CBrush brushFocus;
+	CBrush brush;
+
+
+	COLORREF textColor  = RGB(255, 255, 255);
+	if (state & ODS_FOCUS) {
+		brushFocus.CreateSolidBrush(focusColor);
+		dc.SelectObject(&brushFocus);
+		dc.FillSolidRect(rect, focusColor);
+	}
+	else {
+		brushFocus.CreateSolidBrush(color);
+		dc.SelectObject(&brushFocus);
+		dc.FillSolidRect(rect, color);
+	}
+
+	dc.SetTextColor(textColor);
+
+	CFont font;
+	font.CreatePointFont(rect.Height()*3/5, _T("黑体"));
+
+	CFont* pOldFont = dc.SelectObject(&font);;
+
+
+	CString text;
+
+	
+	
+	GetDlgItemText(nIDCtl, text);
+	dc.DrawText( text, &lpDrawItemStruct->rcItem, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	
+	dc.SelectObject(pOldFont);
+
+	//CWnd::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }

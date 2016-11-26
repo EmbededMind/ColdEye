@@ -528,7 +528,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			}
 		}
 	}
-	if (port == COM_CAM)
+
+	else if (port == COM_CAM)
 	{
 		static int cnt = 0;
 		onedata *p = (onedata*)pData;

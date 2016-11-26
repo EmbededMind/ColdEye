@@ -36,21 +36,26 @@ bool CCommunication::AskTalk(CCamera * pDev)
 
 bool CCommunication::RecTalkProc(uint8_t *pch)
 {
+	printf("RecTalkProc\n");
 	if (pch[5] == 0x01)
 	{
+		printf("RecTalkProc pch[5] == 0x01\n");
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
 		if (this->mPdev && this->mPdev != Mac_CCamera_Map[mac64])
 		{
+			printf("RecTalkProc this->mPdev && this->mPdev != Mac_CCamera_Map[mac64] \n");
 			H264_DVR_StopVoiceCom(this->mTalkHandle);
 			CleanChannel();
 		}
 		if (this->mPdev == Mac_CCamera_Map[mac64])
 		{
+			printf("RecTalkProc this->mPdev == Mac_CCamera_Map[mac64]\n");
 			return true;
 		}
 		if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map[mac64]->GetLoginId()))
 		{
+			printf("H264_DVR_StartLocalVoiceCom\n");
 			this->mPdev = Mac_CCamera_Map.at(mac64);
 			return true;
 		}
@@ -243,14 +248,21 @@ uint8_t CCommunication::RecHandleProc(uint8_t * pch)
 	if (pch[4] == 0x01)
 	{
 		//得到摄像头注册表信息
-		return true;
+		uint8_t port = 0;//0~5别是端口1~6
+		for (int i = 0; i < 6; i++)
+		{
+			if (pch[6 + i] & (0x01 << 7))
+			{
+				port |= (0x01<<i);
+			}
+		}
+		return port;
 	}
 	else if(pch[4] == 0x02)
 	{
-		//得到某个摄像头的MAC地址
-		return true;
+		sprintf_s(DevMac[pch[5]], "%02x:%02x:%02x:%02x:%02x:%02x", pch[6], pch[7], pch[8], pch[9], pch[10], pch[11]);
+		return pch[5];
 	}
-	return false;
 }
 
 bool CCommunication::ControlLED(CCamera * pDev, uint8_t Switch)

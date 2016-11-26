@@ -7,23 +7,23 @@ class CRecordFileMetabolism:
 {
 	~CRecordFileMetabolism();
 private:
-	CRecordFileMetabolism(){};
+	CRecordFileMetabolism(){ InitializeCriticalSection(&g_cs); };
 public:
 	static CRecordFileMetabolism* GetInstance() {
 		static CRecordFileMetabolism instance;
 		return &instance;
 	};
-	bool SetATrigger();
 	virtual void Notify(UINT opt, WPARAM wParam, LPARAM lParam);
+	BOOL FileMetabolism();
 private:
-	float SurplusSpaceNormal;
-	float SurplusSpaceAlarm;
+	ULONGLONG mSurplusSpaceNormal;
+	ULONGLONG mSurplusSpaceAlarm;
+	CRITICAL_SECTION g_cs;
 private:
 	bool DelFile(CString DelPsth);
 	ULONGLONG KillAlarmFile();
 	ULONGLONG KillNormalFile();
 	ULONGLONG GetDiskFreeSpaceAsB(CString DiskName);
 	bool IsTimeOutNormalFile();
-	static UINT FileMetabolismThread(LPVOID pParam);
 };
 

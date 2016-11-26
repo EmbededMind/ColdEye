@@ -274,48 +274,7 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 	if (pMsg->message == WM_KEYDOWN) {
 		switch (pMsg->wParam)
 		{
-		case VK_LEFT:
-		case VK_RIGHT:
-			if (GetFocus() == this) {
-				for (int i = 0; i < 6; i++) {
-					if (mSurfaces[i] != NULL) {
-						mSurfaces[i]->SetFocus();
-						return true;
-					}
-				}				
-			}
-			return true;
 		default:
-			if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
-				//CString text;
-				//GetFocus()->GetWindowTextW(text);
-
-				//TRACE("***%S\n", text);
-				//CSurface* pSurface = (CSurface*)GetFocus();
-				////CCamera* pDev = pSurface->m_BindedCamera;
-				//if (pSurface != NULL) {
-				//	Print("0x%p", pSurface);
-				//}
-				//CCamera* pDev  = pSurface->m_BindedPort->m_pCamera;
-
-	/*			switch (pMsg->wParam)
-				{
-				case 'T':
-					CCommunication::GetInstance()->AskTalk(pDev);
-					return TRUE;
-
-				case 'O':
-					CCommunication::GetInstance()->YouTalk();
-					return true;
-
-				case 'S':
-					CCommunication::GetInstance()->OverTalk();
-					return true;
-
-				default:
-					break;*/
-			/*	}*/
-			}
 			break;
 		}
 	}
