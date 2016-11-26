@@ -840,8 +840,8 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent) {
 		case TIMER_ID_AUTO_RECORD:
-			CRecordFileMetabolism::GetInstance()->FileMetabolism();
 			PackageRecordFile();
+			CRecordFileMetabolism::GetInstance()->FileMetabolism();
 			break;
 		//----------------------------------------
 		case TIMER_ID_ALARM:

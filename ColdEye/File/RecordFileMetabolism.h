@@ -7,7 +7,7 @@ class CRecordFileMetabolism:
 {
 	~CRecordFileMetabolism();
 private:
-	CRecordFileMetabolism(){};
+	CRecordFileMetabolism(){ InitializeCriticalSection(&g_cs); };
 public:
 	static CRecordFileMetabolism* GetInstance() {
 		static CRecordFileMetabolism instance;
@@ -18,6 +18,7 @@ public:
 private:
 	ULONGLONG mSurplusSpaceNormal;
 	ULONGLONG mSurplusSpaceAlarm;
+	CRITICAL_SECTION g_cs;
 private:
 	bool DelFile(CString DelPsth);
 	ULONGLONG KillAlarmFile();

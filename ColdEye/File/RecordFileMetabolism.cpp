@@ -7,6 +7,7 @@
 
 CRecordFileMetabolism::~CRecordFileMetabolism()
 {
+	DeleteCriticalSection(&g_cs);
 }
 
 
@@ -130,6 +131,7 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 
 BOOL CRecordFileMetabolism::FileMetabolism()
 {
+	EnterCriticalSection(&g_cs);
 	printf("FileMetabolismThread\n");
 	this->mSurplusSpaceNormal = this->GetDiskFreeSpaceAsB(_T(NORMALDISK));
 	while(this->mSurplusSpaceNormal < SURPLUSSPACENORMAL && this->mSurplusSpaceNormal)
@@ -152,5 +154,6 @@ BOOL CRecordFileMetabolism::FileMetabolism()
 		}
 		this->mSurplusSpaceAlarm += tmp;
 	}
+	LeaveCriticalSection(&g_cs);
 	return 0;
 }
