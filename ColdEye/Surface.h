@@ -48,7 +48,7 @@ public:
 	void          BindPort(CPort* pPort);
 
 	void          ExecuteConfig();
-	void          ExecuteConfig(DeviceConfig& config, uint32_t masks);
+	void          ModifyConfig(DeviceConfig* pConfig);
 
 	void          ConnectRealPlay();         //打开实时播放数据流
 	void          DisconnectRealPlay();      //关闭实时播放

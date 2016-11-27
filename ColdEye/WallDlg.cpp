@@ -142,6 +142,19 @@ CSurface* CWallDlg::FindSurface(long loginId)
 }
 
 
+CSurface* CWallDlg::FindSurface(CPort* pPort)
+{
+	for (int i = 0; i < 6; i++) {
+		if (mSurfaces[i] != NULL)
+			ASSERT(mSurfaces[i]->m_BindedPort != NULL);
+		if (mSurfaces[i]->m_BindedPort == pPort) {
+			return mSurfaces[i];
+		}
+	}
+	return NULL;
+}
+
+
 /**@brief 计算视频墙应该显示几行几列
  *
  */
@@ -250,6 +263,7 @@ void CWallDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_LOGIN, &CWallDlg::OnUserMsgLogin)
 	ON_MESSAGE(USER_MSG_LOGOFF, &CWallDlg::OnUserMsgLogoff)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CWallDlg::OnUserMsgCameraConfigChange)
 END_MESSAGE_MAP()
 
 
@@ -342,6 +356,31 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogoff(WPARAM wParam, LPARAM lParam)
 			mSurfaces[i] = NULL;
 			break;
 		}
+	}
+	return 0;
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort  = (CPort*)wParam;
+	DeviceConfig* pConfig  = (DeviceConfig*)lParam;
+
+	ASSERT(pPort != NULL);
+	ASSERT(pPort->m_pCamera != NULL);
+
+	if (pConfig->Volumn != pPort->m_DevConfig.Volumn) {
+		::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, wParam, lParam);
+	}
+	
+	CSurface* pSurface  = FindSurface(pPort);
+	if (pSurface != NULL) {
+		pPort->m_DevConfig.IsCameraOn  = pConfig->IsCameraOn;
+		pPort->m_DevConfig.NameId  = pConfig->NameId;
+		pPort->m_DevConfig.Volumn  = pConfig->Volumn;
+		pPort->m_DevConfig.IsRecordEnabled  = pConfig->IsRecordEnabled;
+		pPort->m_DevConfig.IsAutoWatchEnabled  = pConfig->IsAutoWatchEnabled;
+		pSurface->ExecuteConfig();
 	}
 	return 0;
 }

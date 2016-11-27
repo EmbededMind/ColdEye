@@ -235,6 +235,18 @@ void CSurface::ExecuteConfig()
 
 
 
+void CSurface::ModifyConfig(DeviceConfig* pConfig)
+{
+	ASSERT(m_BindedPort != NULL);
+
+	//// 摄像头开关需要设置。
+	//if (m_BindedPort->m_DevConfig.IsCameraOn != pConfig->IsCameraOn) {
+	//	
+	//}
+}
+
+
+
 BOOL CSurface::ShouldWatch(CTime& refTime)
 {
 	UINT minute = refTime.GetHour() * 60 + refTime.GetMinute();

@@ -129,7 +129,14 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 		break;
 		//-------------------------------------------------------
 	case VK_BACK:
+		
+		if (sName == _T("camera_set_volume")) {
+			CameraInfo info;
+			info.Volumn  = 1;
 
+			CMenuItemUI* pMenuItem  = (CMenuItemUI*)pLayout_third->GetItemAt(7);
+			::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd,  USER_MSG_CAMERA_CONFIG_CHANGE, DEV_CONFIG_MASK_VOL, (LPARAM)NULL);			
+		}
 		break;
 	}
 }
@@ -677,7 +684,7 @@ void CMyMenuWnd::GetWatchTime(DWORD* pBegining, DWORD* pEnd)
 
 bool CMyMenuWnd::CameraSetIsChange()
 {
-	return false;
+	return true;
 }
 
 bool CMyMenuWnd::ShipNameIsChange()
@@ -890,6 +897,19 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 			if (CameraSetIsChange()) {
 				if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 					//保存设置
+					CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
+					if (pPort) {
+
+						DeviceConfig config;
+						config.IsCameraOn  = camera[nPort-1].pSwitch->GetSwitch();
+						config.Volumn      = camera[nPort-1].pVolum->GetValue();
+						config.IsRecordEnabled = camera[nPort-1].pSaveVideo->GetValue();
+						config.IsAutoWatchEnabled = camera[nPort-1].pAutoWatch->GetValue();
+
+						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
+					}
+					//Print("Camera %d ,Vol:%d", nPort, camera[nPort-1].pVolum->GetValue());
+					//::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, );
 				}
 				else {
 					//恢复设置
