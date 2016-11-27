@@ -22,9 +22,6 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 
 CFile* CRecordFileButler::AllocRecordFile()
 {
-
-
-
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
 
@@ -55,7 +52,7 @@ void CRecordFileButler::ReleaseRecordFile()
 {
 	CTime time = CTime::GetCurrentTime();
 
-	if (m_pFileInfo != CFile::hFileNull) {
+	if (m_File != CFile::hFileNull) {
 		CFileStatus  status;
 
 mutex_RealData.Lock();
@@ -73,9 +70,9 @@ mutex_RealData.Lock();
 
 		m_File.Close();
 
-		if (m_pFileInfo->dlSize == 0) {
-			CFile::Remove(status.m_szFullName);
-		}
+		//if (m_pFileInfo->dlSize == 0) {
+		//	CFile::Remove(status.m_szFullName);
+		//}
 
 		mutex = 0;
 
