@@ -78,8 +78,8 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 
 			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d AND begin_sec = %I64d;", 
 				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
-			printf("%s\n", sqlStmt);
-			if (sqlite.DirectStatement(sqlStmt)) {
+
+			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
 			}
 
@@ -94,6 +94,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			msg.wParam = wParam;
 			msg.lParam = lParam;
 			CMsgSquare::GetInstance()->Broadcast(msg);
+
 			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
 			break;
 	}
