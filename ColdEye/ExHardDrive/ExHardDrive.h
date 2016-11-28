@@ -70,6 +70,7 @@ public:
 	BOOL Updata();
 	BOOL CopyRecord(CRecordFileInfo *FileInfo, UINT FileType);
 	BOOL IsInsert();
+	BOOL FindUpdataPath();
 	void CancelCopy();
 	/******************/
 	BOOL ScanDisk(CWnd *pOwner);
