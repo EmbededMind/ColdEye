@@ -80,6 +80,7 @@
 
 #define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 180)
 
+#define USER_MSG_HANDLE                     (WM_USER + 190) //Œ’ ÷œ˚œ¢
 
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))

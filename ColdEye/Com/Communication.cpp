@@ -3,6 +3,7 @@
 #include "Com\SerialPort.h"
 #include "Com\RecordAlarmSound.h"
 #include "Com\RecordAlarmSound.h"
+#include "ColdEyeDlg.h"
 CCommunication::CCommunication()
 {
 }
@@ -249,30 +250,10 @@ bool CCommunication::Handle(uint8_t param, uint8_t port) //param == 2£º·µ»ØÃþ¸öÉ
 	return true;
 }
 
-uint8_t CCommunication::RecHandleProc(uint8_t * pch)
+bool CCommunication::RecHandleProc(uint8_t * pch)
 {
-	if (pch[4] == 0x01)
-	{
-		//µÃµ½ÉãÏñÍ·×¢²á±íÐÅÏ¢
-		printf("get registry!\n");
-		uint8_t port = 0;//0~5±ðÊÇ¶Ë¿Ú1~6
-		for (int i = 0; i < 6; i++)
-		{
-			if (pch[6 + i] & 0x80 && pch[6 + i] & 0x40)
-			{
-				printf("port = %d\n", i);
-				port |= (0x01<<i);
-			}
-		}
-		printf("registry = %02x\n", port);
-		return port;
-	}
-	else if(pch[4] == 0x02)
-	{
-		sprintf_s(DevMac[pch[5]], "%02x:%02x:%02x:%02x:%02x:%02x", pch[6], pch[7], pch[8], pch[9], pch[10], pch[11]);
-		printf("DevMac %s\n", DevMac[pch[5]]);
-		return pch[5];
-	}
+	PostMessage(((CColdEyeDlg*)AfxGetApp()->m_pMainWnd)->m_hWnd, USER_MSG_HANDLE, pch[4], (LPARAM)(pch));
+	return 0;
 }
 
 bool CCommunication::ControlLED(CCamera * pDev, uint8_t Switch)
