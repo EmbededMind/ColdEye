@@ -73,18 +73,18 @@ void CColdEyeDlg::UpdateLayout()
 	GetClientRect(rClient);
 
 	m_pTitleBk_left[0] = { 0,0 };
-	m_pTitleBk_left[1] = { 450,0 };
-	m_pTitleBk_left[2] = { 400,100 };
+	m_pTitleBk_left[1] = { 455,0 };
+	m_pTitleBk_left[2] = { 406,100 };
 	m_pTitleBk_left[3] = { 0,100 };
 
 	m_pTitleBk_center[0] = { m_pTitleBk_left[1].x,0 };
-	m_pTitleBk_center[1] = { m_pTitleBk_left[1].x + 800,0 };
-	m_pTitleBk_center[2] = { m_pTitleBk_left[2].x + 800,100 };
+	m_pTitleBk_center[1] = { m_pTitleBk_left[1].x + 725,0 };
+	m_pTitleBk_center[2] = { m_pTitleBk_left[2].x + 725,100 };
 	m_pTitleBk_center[3] = { m_pTitleBk_left[2].x,100 };
 
 	m_pTitleBk_right[0] = { m_pTitleBk_center[1].x,0 };
-	m_pTitleBk_right[1] = { m_pTitleBk_center[1].x + 300,0 };
-	m_pTitleBk_right[2] = { m_pTitleBk_center[2].x + 300,100 };
+	m_pTitleBk_right[1] = { m_pTitleBk_center[1].x + 420,0 };
+	m_pTitleBk_right[2] = { m_pTitleBk_center[2].x + 469,100 };
 	m_pTitleBk_right[3] = { m_pTitleBk_center[2].x,100 };
 
 	LONG   titleHeight = rClient.Height() / 10;

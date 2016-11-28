@@ -2,7 +2,10 @@
 
 #include "UIlib.h"
 #include "H264Play.h"
+#include "Wnd\PlayerWallWnd.h"
 #include "File\RecordFileInfo.h"
+
+class CPlayerWallWnd;
 
 using namespace std;
 using namespace DuiLib;
@@ -20,8 +23,10 @@ public:
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	void Notify(TNotifyUI& msg);
 	void InitWindow();
+	void SetPlayerWnd(CPlayerWallWnd*);
 
 private:
+	CPlayerWallWnd *pPlayerWall;
 	CDuiString mSkinFileName;
 
 	CButtonUI* pBt_fast;

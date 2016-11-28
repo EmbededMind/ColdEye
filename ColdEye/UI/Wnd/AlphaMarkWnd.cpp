@@ -29,6 +29,7 @@ CDuiString CAlphaMarkWnd::GetSkinFile()
 
 LRESULT CAlphaMarkWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
+	Print("AlpWnd msg:%d", uMsg);
 	CDuiString PlayText;
 	switch (uMsg) {
 	case USER_MSG_PLAY_PLAY:
@@ -48,8 +49,13 @@ LRESULT CAlphaMarkWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 		pBt_fast->SetVisible(true);
 		pBt_fast->SetText(PlayText);
 		break;
-	}
-	return LRESULT();
+
+	case WM_SETFOCUS:
+		SetFocus(pPlayerWall->GetHWND());
+		break;
+	}	 
+	bHandled = FALSE;
+	return 0;
 }
 
 void CAlphaMarkWnd::Notify(TNotifyUI & msg)
@@ -60,4 +66,9 @@ void CAlphaMarkWnd::InitWindow()
 {
 	pBt_fast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));
 	pBt_slow = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_slow")));
+}
+
+void CAlphaMarkWnd::SetPlayerWnd(CPlayerWallWnd *pWnd)
+{
+	pPlayerWall = pWnd;
 }
