@@ -26,6 +26,7 @@ public:
 	void Delete(CSurface* pSurface);
 
 	CSurface* FindSurface(long loginId);
+	CSurface* FindSurface(CPort* pPort);
 
 	void OnDisconnect(LONG loginId, char* szIp, LONG port);
 
@@ -50,4 +51,5 @@ public:
 protected:
 	afx_msg LRESULT OnUserMsgLogin(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgLogoff(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
 };

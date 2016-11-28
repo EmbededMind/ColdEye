@@ -132,6 +132,8 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_RECORDVOICE, &CColdEyeDlg::OnRecordVoice)
 	ON_WM_DEVICECHANGE()
 	ON_WM_TIMER()
+	         //UEER_MSG_CAMERA_CONFIG_CHANGE
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CColdEyeDlg::OnUserMsgCameraConfigChange)
 END_MESSAGE_MAP()
 
 
@@ -286,21 +288,6 @@ void CColdEyeDlg::OnPaint()
 		dc.TextOutW(m_rHwTipText.left + 1, m_rHwTipText.top + 1, _T("未开启回家看船"));
 
 		dc.SelectObject(pOldFont);
-
-
-		//CBitmap& bitmap = ((CColdEyeApp*)AfxGetApp())->m_Bitmap;
-		//BITMAP bmp;
-		//bitmap.GetBitmap(&bmp);
-
-		//CDC mSrcDC;
-
-		//mSrcDC.CreateCompatibleDC(&dc);
-
-		//mSrcDC.SelectObject(bitmap);
-
-		//dc.BitBlt(10, 50, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, SRCCOPY);
-
-
 
 		CDialogEx::OnPaint();
 	}
@@ -695,4 +682,19 @@ void CColdEyeDlg::PaintTitle(CPaintDC *dc)
 	dc->SelectObject(&brush_right);
 	dc->Polygon(m_pTitleBk_right, 4);
 	brush_right.DeleteObject();
+}
+
+
+afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort  = (CPort*)wParam;
+	if (pPort) {
+		DeviceConfig* pConfig  = (DeviceConfig*)lParam;
+		if (pPort->m_Id) {
+			// 向 m_Id 号端口发送 设置 音量命令。
+			Print("Set %d camera vol:%d", pPort->m_Id, pConfig->Volumn);
+		}
+	}
+
+	return 0;
 }

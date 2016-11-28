@@ -22,14 +22,19 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		case VK_DOWN:
 			m_pManager->SendNotify(this, DUI_MSGTYPE_SLIDER, event.wParam, event.lParam);
 			break;
-
+		//----------------------------------------------------------------------
 		case VK_LEFT:
 			SetValue(GetValue()-1);
 			break;
-
+		//----------------------------------------------------------------------
 		case VK_RIGHT:
 			SetValue(GetValue() + 1);
 			break;
+		//----------------------------------------------------------------------
+		case VK_BACK:
+			m_pManager->SendNotify(this, DUI_MSGTYPE_SLIDER, event.wParam, event.lParam);
+			break;
+		//----------------------------------------------------------------------
 		}
 	}
 	CSliderUI::DoEvent(event);
