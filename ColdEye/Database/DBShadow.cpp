@@ -39,7 +39,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 	CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 
 	MSG msg;  
-	EnterCriticalSection(&g_cs);
+	//EnterCriticalSection(&g_cs);
 	switch (opt)
 	{
 	case FILE_OPT_ADD:
@@ -52,6 +52,9 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		if (!sqlite.DirectStatement(sqlStmt)) {
 			Print("Sql error:%s", sqlStmt);
 		}
+
+		Print("%d,After shadow add owner:%d", __LINE__, pInfo->nOwner);
+
 		break;
 		//-----------------------------------------------
 	case FILE_OPT_END:
@@ -98,7 +101,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
 			break;
 	}
-	LeaveCriticalSection(&g_cs);
+	//LeaveCriticalSection(&g_cs);
 }
 
 

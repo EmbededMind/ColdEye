@@ -41,9 +41,12 @@ if (m_FileType == 2)
 	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
 	
+	Print("%d,before notify add owner:%d", __LINE__, m_pFileInfo->nOwner);
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
 	
+
+	Print("%d,after notify owner:%d", __LINE__, m_pFileInfo->nOwner);
 	return &m_File;
 }
 
@@ -80,6 +83,7 @@ mutex_RealData.Lock();
 
 		m_pFileInfo->tEnd = time.GetTime();
 
+		
 		this->Notify(FILE_OPT_END, m_FileType, (LPARAM)m_pFileInfo);
 	}
 	else {
