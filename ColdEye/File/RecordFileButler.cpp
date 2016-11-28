@@ -46,9 +46,6 @@ if (m_FileType == 2)
 	
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
-	
-
-	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
 
 	return &m_File;
 }
