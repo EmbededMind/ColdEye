@@ -177,7 +177,7 @@ void CWallDlg::DesignSurfaceLayout()
 
 	int qVal = 0;
 	for (i = 1; ; i++) {
-		qVal = i * 1;
+		qVal = i * i;
 		if (qVal >= iSurfaceNumber) {
 			mCols = i;
 			break;
@@ -222,17 +222,11 @@ void CWallDlg::ExecuteSurfaceLayout()
 	long nWidth  = surface_area_width / mCols - grap*2;
 	long nHeight = surface_area_height / mRows - grap*2;
 
-Print("org (%d, %d), surfaec size (%d, %d)", orgX, orgY, nWidth, nHeight);
-
 	int cnt = 0;
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] != NULL) {
-			//long xPos = nOrgX = (cnt % mCols) * nWidth;
-			//long yPos = nOrgY = (cnt / mCols)*nHeight;
 			long xPos   = orgX + (cnt % mCols) *(nWidth+grap*2);
 			long yPos   = orgY + (cnt / mCols) *(nHeight+grap*2);
-
-			Print("Pos (%d, %d)", xPos, yPos);
 
 			mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, nWidth, nHeight, 0);
 			cnt++;

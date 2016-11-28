@@ -216,6 +216,7 @@
 #define STATUS_COPY_FIAL	0
 
 //DUI 消息类型
+#define DUI_MSGTYPE_KEYDOWN	(_T("keydown"))
 #define DUI_MSGTYPE_SLIDER	(_T("slider"))
 #define DUI_MSGTYPE_EDIT	(_T("edit"))
 #define DUI_MSGTYPE_LABEL	(_T("label"))

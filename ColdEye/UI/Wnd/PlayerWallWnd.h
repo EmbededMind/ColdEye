@@ -6,6 +6,7 @@
 #include "H264Play.h"
 #include "File/RecordFileInfo.h"
 
+class CAlphaMarkWnd;
 using namespace std;
 
 using namespace DuiLib;
@@ -32,6 +33,7 @@ public:
 	void InitWindow();
 	void PreparePlay(WPARAM wParam, LPARAM lParam);
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	bool OnSlow(void* param);
 	bool OnFast(void* param);
 	bool OnPlay(void* param);
