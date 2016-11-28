@@ -627,7 +627,6 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 		flag.Format(_T("%s"), diskname);
 		CExHardDrive::GetInstance()->Init(this, flag);
 		CExHardDrive::GetInstance()->StartMonitoring();
-		printf("U盘插入 %S\n", flag);
 		break;
 	case DBT_DEVICEREMOVECOMPLETE:
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
@@ -643,7 +642,6 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 			}
 		}
 		flag.Format(_T("%s"), diskname);
-		printf("U盘拔出 %S\n", flag);
 		CExHardDrive::GetInstance()->EndThread();
 		break;
 	}
@@ -668,7 +666,7 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//发送握手
-
+	static int i = 0;
 	m_SysTime  = CTime::GetCurrentTime();
 	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
 	

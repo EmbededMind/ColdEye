@@ -43,16 +43,12 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 	list<CRecordFileInfo*>::iterator iter = CDBShadow::GetInstance()->mAlarmFileInfoList.begin();
 	for (; iter != CDBShadow::GetInstance()->mAlarmFileInfoList.end(); iter++)
 	{
-		if ((*iter));
-		if ((*iter)->status == RECORD_LOCKED);
-		if ((*iter)->bIsOccupied);
 		if ((*iter) && !((*iter)->status == RECORD_LOCKED || (*iter)->bIsOccupied))
 		{
 			CTime time = (*iter)->tBegin;
 			CString FileName;
 			FileName.Format(_T("%d\\%d%02d%02d%02d%02d%02d.h264"), (*iter)->nOwner, time.GetYear(), time.GetMonth(),
 				time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
-			printf("owner %d\n", (*iter)->nOwner);
 			if (DelFile(_T(ALARM_RECORD_PATH) + FileName))
 			{
 				ULONGLONG Size =  (*iter)->dlSize;
@@ -131,8 +127,7 @@ bool CRecordFileMetabolism::IsTimeOutNormalFile()
 
 BOOL CRecordFileMetabolism::FileMetabolism()
 {
-	EnterCriticalSection(&g_cs);
-	printf("FileMetabolismThread\n");
+	//EnterCriticalSection(&g_cs);
 	this->mSurplusSpaceNormal = this->GetDiskFreeSpaceAsB(_T(NORMALDISK));
 	while(this->mSurplusSpaceNormal < SURPLUSSPACENORMAL && this->mSurplusSpaceNormal)
 	{
@@ -143,7 +138,6 @@ BOOL CRecordFileMetabolism::FileMetabolism()
 		}
 		this->mSurplusSpaceNormal += tmp;
 	}
-	printf("alarm\n");
 	this->mSurplusSpaceAlarm = this->GetDiskFreeSpaceAsB(_T(ALARMDISK));
 	while (this->mSurplusSpaceAlarm < SURPLUSSPACEALARM && this->mSurplusSpaceAlarm)
 	{
@@ -154,6 +148,6 @@ BOOL CRecordFileMetabolism::FileMetabolism()
 		}
 		this->mSurplusSpaceAlarm += tmp;
 	}
-	LeaveCriticalSection(&g_cs);
+	//LeaveCriticalSection(&g_cs);
 	return 0;
 }

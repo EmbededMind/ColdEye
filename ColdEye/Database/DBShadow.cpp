@@ -56,14 +56,12 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		//-----------------------------------------------
 	case FILE_OPT_END:
 		//EndFileInfo(infoList, pInfo);
-		Print("End file:%d", wParam);
 
 		sprintf_s(sqlStmt, "UPDATE %s SET end_sec = %I64d, size = %lld, status = 0 WHERE owner = %d AND begin_sec = %I64d;",
 			wParam == RECORD_ALARM?"alarm_record":"normal_record",pInfo->tEnd, pInfo->dlSize, pInfo->nOwner, pInfo->tBegin);
 		if (!sqlite.DirectStatement(sqlStmt)) {
 			Print("Sql error:%s", sqlStmt);
 		}
-
 		
 		pFileCnts[pInfo->nOwner - 1]++;
 
@@ -73,29 +71,28 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		CMsgSquare::GetInstance()->Broadcast(msg);
 		break;
 		//------------------------------------------------
-		case FILE_OPT_DEL:	
-			Print("Del file:%d", wParam);
+	case FILE_OPT_DEL:	
+		Print("Del file:%d", wParam);
+		msg.message = USER_MSG_DELFILE;
+		msg.wParam = wParam;
+		msg.lParam = lParam;
+		CMsgSquare::GetInstance()->Broadcast(msg);
 
-			sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d AND begin_sec = %I64d;", 
-				wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
-			printf("%s\n", sqlStmt);
-			if (sqlite.DirectStatement(sqlStmt)) {
-				Print("Sql error:%s", sqlStmt);
-			}
+		sprintf_s(sqlStmt, "DELETE FROM %s WHERE owner = %d AND begin_sec = %I64d;", 
+			wParam == RECORD_ALARM ? "alarm_record" : "normal_record", pInfo->nOwner, pInfo->tBegin);
+		if (!sqlite.DirectStatement(sqlStmt)) {
+			Print("Sql error:%s", sqlStmt);
+		}
 
-			if (pFileCnts[pInfo->nOwner - 1] > 0) {
-				pFileCnts[pInfo->nOwner - 1]--;
-			}
-			else {
-				Print("file cnt error:%d", pInfo->nOwner);
-			}
+		if (pFileCnts[pInfo->nOwner - 1] > 0) {
+			pFileCnts[pInfo->nOwner - 1]--;
+		}
+		else {
+			Print("file cnt error:%d", pInfo->nOwner);
+		}
 
-			msg.message = USER_MSG_DELFILE;
-			msg.wParam = wParam;
-			msg.lParam = lParam;
-			CMsgSquare::GetInstance()->Broadcast(msg);
-			DelFileInfo(infoList, (CRecordFileInfo*)lParam);
-			break;
+		DelFileInfo(infoList, (CRecordFileInfo*)lParam);
+		break;
 	}
 	LeaveCriticalSection(&g_cs);
 }
