@@ -99,6 +99,7 @@ void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 {
 	AddItem(pInfo);
 	RefreshList();
+
 	if (pInfo->status == RECORD_NSEEN) {
 		mhintNumber++;
 		CMyListUI *pItem = (CMyListUI*)GetItemAt(0);

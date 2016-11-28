@@ -24,7 +24,6 @@ protected:
 	CWallDlg  mWall;
 	CMyMenuWnd mMenu;
 
-
 	void UpdateLayout();
 
 
@@ -79,4 +78,6 @@ public:
 	CMyMenuWnd& GetMyMenu();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void PaintTitle(CPaintDC*);
+protected:
+	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
 };

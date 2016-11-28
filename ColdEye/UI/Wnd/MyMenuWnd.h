@@ -12,6 +12,8 @@
 #include "Control\SwitchRecordListUI.h"
 #include "Control\TimeButtonUI.h"
 
+#include "Wnd\PlayerWallWnd.h"
+
 
 #include "Device\PortManager.h"
 
@@ -132,4 +134,6 @@ private:
 	CMyLabelUI* pHostModel;		//主机型号
 	CTimeButtonUI* pAwTime[4];  //自动看船
 	CButtonUI *FocusedItem[2];
+
+	CPlayerWallWnd	*mPlayerWall;
 };

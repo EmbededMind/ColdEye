@@ -62,7 +62,7 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		if (!sqlite.DirectStatement(sqlStmt)) {
 			Print("Sql error:%s", sqlStmt);
 		}
-		
+
 		pFileCnts[pInfo->nOwner - 1]++;
 
 		msg.message = USER_MSG_ADDFILE;
@@ -90,6 +90,11 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 		else {
 			Print("file cnt error:%d", pInfo->nOwner);
 		}
+
+		msg.message = USER_MSG_DELFILE;
+		msg.wParam = wParam;
+		msg.lParam = lParam;
+		CMsgSquare::GetInstance()->Broadcast(msg);
 
 		DelFileInfo(infoList, (CRecordFileInfo*)lParam);
 		break;

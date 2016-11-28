@@ -23,10 +23,13 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 
 CFile* CRecordFileButler::AllocRecordFile()
 {
+<<<<<<< HEAD
 	
 	CRecordFileMetabolism::GetInstance()->FileMetabolism();
 
 
+=======
+>>>>>>> 78761d9f4dad1b347279c36795f30b977b49d224
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
 
@@ -74,9 +77,9 @@ mutex_RealData.Lock();
 
 		m_File.Close();
 
-		if (m_pFileInfo->dlSize == 0) {
-			CFile::Remove(status.m_szFullName);
-		}
+		//if (m_pFileInfo->dlSize == 0) {
+		//	CFile::Remove(status.m_szFullName);
+		//}
 
 		mutex = 0;
 

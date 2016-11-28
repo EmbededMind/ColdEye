@@ -56,7 +56,10 @@
 
 
 #define USER_MSG_SYSTEM_STATUS_CHANGE      (WM_USER + 121)
-#define UESR_MSG_CAMERA_CONFIG_CHANGE      (WM_USER + 122)
+
+
+#define USER_MSG_CAMERA_CONFIG_CHANGE      (WM_USER + 122)
+
 #define USER_MSG_CAMERA_CONFIG_AWTIME      (WM_USER + 123)
 
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
@@ -70,9 +73,12 @@
 #define USER_MSG_COPY_STOP				   (WM_USER + 161)	//停止复制
 #define USER_MSG_COPY_INFO				   (WM_USER + 162)	//复制信息
 
+#define USER_MSG_PLAY_START					(WM_USER + 170)	//视频播放
+#define USER_MSG_PLAY_PLAY					(WM_USER + 171) //正常速度
+#define USER_MSG_PLAY_SLOW					(WM_USER + 172)	//慢放
+#define USER_MSG_PLAY_FAST					(WM_USER + 173)	//快进
 
-
-#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 150)
+#define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 180)
 
 
 //  DUI user message
@@ -212,7 +218,7 @@
 #define DUI_MSGTYPE_SLIDER	(_T("slider"))
 #define DUI_MSGTYPE_EDIT	(_T("edit"))
 #define DUI_MSGTYPE_LABEL	(_T("label"))
-
+#define DUI_MSGTYPE_PLAYER	(_T("player"))
 
 
 #include "Database\sqlitewrapper.h"

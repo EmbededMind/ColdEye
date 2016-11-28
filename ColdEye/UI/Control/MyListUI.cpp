@@ -114,7 +114,15 @@ void CMyListUI::DoEvent(TEventUI & event)
 			}
 			else
 			{
-
+				CDuiString name = GetParent()->GetParent()->GetName();
+				name.Assign(name,name.GetLength() - 1);
+				if (_tcscmp(name, _T("video_alarmlist")) == 0) {
+					event.wParam = RECORD_ALARM;
+				}
+				else {
+					event.wParam = RECORD_NORMAl;
+				}
+				m_pManager->SendNotify(this, DUI_MSGTYPE_PLAYER, event.wParam, (LPARAM)Info);
 			}
 			if (node->data()._level == 0 && node->data()._expand) {
 				pList->SelectItem(pList->GetItemIndex(this) + 1);
