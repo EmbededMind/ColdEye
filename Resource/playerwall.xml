@@ -8,7 +8,7 @@
 			<Button name="bt_play" float="true" pos="175,30,0,0" width="101" height="101" bkimage="file='image/play.png'" focusedimage="file='image/play_focused.png'"/>
 			<Button name="bt_fast" float="true" pos="305,42,0,0" width="76" height="76" bkimage="file='image/fast.png'" focusedimage="file='image/fast_focused.png'" />
 			<Label name="time_begin" float="true" pos="450,66,0,0" width="168" height="28" font="0" textcolor="#FFFFFFFF" text="03:43:55"/>
-			<Slider name="progress" float="true" pos="649,73,0,0" width="719" height="16" bkcolor="#FFFF0000" thumbsize="43,43" thumbimage="file='image/mb_thumb.png'" min="0" max="100"/>
+			<Slider name="progress" float="true" pos="649,73,0,0" width="719" height="41" thumbsize="41,41" thumbimage="file='image/player_thumb.png'" foreimage="file='image/player_pro_fore.png' mask='#FFE97FFF'"  bkimage="file='image/player_pro_bk.png' mask='#FFE97FFF'" min="0" max="100"/>
 			<Label name="time_end" float="true" pos="1398,66,0,0" width="168" height="28" font="0" textcolor="#FFFFFFFF" text="07:59:59"/>
 		</VerticalLayout>
 	</VerticalLayout>
