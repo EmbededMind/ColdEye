@@ -33,6 +33,9 @@ CString PortName[24] = {  //¶ÔÓ¦Ãû×Öid
 };
 
 
+
+
+
 CPort::CPort()
 {
 
@@ -148,10 +151,6 @@ bool  CPort::IsActive()
 }
 
 
-bool CPort::IsOnline()
-{
-	return m_bIsOnline;
-}
 
 
 void CPort::Config(DeviceConfig& config)
@@ -175,3 +174,48 @@ bool  CPort::SetAwTime(DWORD tBegining, DWORD tEnd)
 
 	return bRet;
 }
+
+
+
+
+
+PortOption CPort::ParseState(bool isOnline, bool isReplaced)
+{
+	if (m_State == OFFLINE) {
+		if (isOnline) {
+			m_State = PENDING_MAC;
+
+			if (isReplaced) {
+				return DROWN;
+			}				
+			else {
+				return PEND_MAC;
+			}
+		}
+	}
+}
+
+
+
+PortOption CPort::ParseState(bool isOnline, UCHAR* pMac)
+{
+	if (m_State == PENDING_MAC) {
+		sprintf_s(this->m_mac, "%02d:%02d:%02d:%02d:%02d:%02d", pMac);
+		m_State  = PENDING_CAMERA;
+		return SEARCH_CAMERA;
+	}
+}
+
+
+
+PortOption CPort::ParseState(CCamera* pCamera)
+{
+	if (m_State == PENDING_CAMERA) {
+		m_State  = PENDING_LOGIN;
+		m_pCamera  = pCamera;
+
+		return  PEND_LOGIN;
+	}
+}
+
+

@@ -35,6 +35,24 @@ typedef struct {
 	uint16_t            NameId;
 }DeviceConfig;
 
+
+typedef enum {
+	OFFLINE = 0,
+	PENDING_MAC,
+	PENDING_CAMERA,
+	PENDING_LOGIN,
+	ONLINE
+}PortState;
+
+
+typedef enum {
+	PEND_MAC = 0,
+	SEARCH_CAMERA,
+	PEND_LOGIN,
+	DROWN,
+}PortOption;
+
+
 class CPort
 {
 public:
@@ -65,13 +83,17 @@ public:
 	bool       GetVisibility();
 
 	bool       IsActive();
-	bool       IsOnline();
 
 	void       Config(DeviceConfig& config);
+
+	PortOption  ParseState(bool isOnline, bool isReplaced);
+	PortOption  ParseState(bool isOnline, UCHAR* pMac);
+	PortOption  ParseState(CCamera* pCamera);
+
 
 private:
 	char m_mac[20];             //存储从主机103读取的mac
 	bool m_bIsVisible;
 	bool m_bIsActive;
-	bool m_bIsOnline;
+	PortState m_State;
 };

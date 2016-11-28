@@ -579,7 +579,16 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				}
 				break;
 			case 0x05:
-				CCommunication::GetInstance()->RecHandleProc(p->ch);
+				/*CCommunication::GetInstance()->RecHandleProc(p->ch);*/
+				if (p->ch[4] == 1)  //端口状态信息。
+				{
+					CPortManager*  pPortMgr  = CPortManager::GetInstance();
+				}
+				else if (p->ch[4] == 2) //端口mac
+				{
+					// p->ch[6]  mac
+					// p->ch[5]  id
+				}
 				break;
 			default:
 				break;
@@ -691,6 +700,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 		if (pPort->m_Id) {
 			// 向 m_Id 号端口发送 设置 音量命令。
 			Print("Set %d camera vol:%d", pPort->m_Id, pConfig->Volumn);
+			CCommunication::GetInstance()->AskSetVolume(pPort->m_pCamera, pConfig->Volumn);
 		}
 	}
 
