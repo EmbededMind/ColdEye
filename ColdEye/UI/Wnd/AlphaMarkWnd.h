@@ -2,26 +2,28 @@
 
 #include "UIlib.h"
 #include "H264Play.h"
-#include "File/RecordFileInfo.h"
+#include "File\RecordFileInfo.h"
 
 using namespace std;
-
 using namespace DuiLib;
 
-class CPlayer :
-	public WindowImplBase{
+class CAlphaMarkWnd
+	:public WindowImplBase {
 
 public:
-	CPlayer();
-	CPlayer(CDuiString);
-	~CPlayer();
+	CAlphaMarkWnd();
+	CAlphaMarkWnd(CDuiString);
+	~CAlphaMarkWnd();
 
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual CDuiString GetSkinFile();
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	void Notify(TNotifyUI& msg);
 	void InitWindow();
+
 private:
-	CDuiString sXml;
-	CButtonUI *pButton;
-	CButtonUI mPlayer;
+	CDuiString mSkinFileName;
+
+	CButtonUI* pBt_fast;
+	CButtonUI* pBt_slow;
 };

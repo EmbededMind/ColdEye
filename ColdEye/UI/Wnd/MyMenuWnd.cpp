@@ -367,12 +367,12 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 		LabelNotify(msg);
 	}
 	else if (msg.sType == DUI_MSGTYPE_PLAYER) {
-		if (!mPlayer) {
-			mPlayer = new CPlayer(_T("Player.xml"));
-			mPlayer->Create(NULL, _T("Player"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
-			mPlayer->ShowWindow(true);
-			mPlayer->CenterWindow();
-			::SendMessage(mPlayer->GetHWND(), USER_MSG_PLAY, msg.wParam, msg.lParam);
+		if (!mPlayerWall) {
+			mPlayerWall = new CPlayerWallWnd(_T("playerwall.xml"));
+			mPlayerWall->Create(NULL, _T("PlayerWallWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
+			mPlayerWall->ShowWindow(true);
+			mPlayerWall->CenterWindow();
+			::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, msg.wParam, msg.lParam);
 		}
 	}
 }
