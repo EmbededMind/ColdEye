@@ -252,7 +252,7 @@ bool CCommunication::Handle(uint8_t param, uint8_t port) //param == 2£º·µ»ØÃþ¸öÉ
 
 bool CCommunication::RecHandleProc(uint8_t * pch)
 {
-	PostMessage(((CColdEyeDlg*)AfxGetApp()->m_pMainWnd)->m_hWnd, USER_MSG_HANDLE, pch[4], (LPARAM)(pch));
+	PostMessage(((CColdEyeDlg*)AfxGetApp()->m_pMainWnd)->GetSafeHwnd(), USER_MSG_HANDLE, pch[4], (LPARAM)(pch));
 	return 0;
 }
 
