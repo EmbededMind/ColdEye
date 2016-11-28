@@ -12,7 +12,7 @@
 #include "Control\SwitchRecordListUI.h"
 #include "Control\TimeButtonUI.h"
 
-#include "Wnd\Player.h"
+#include "Wnd\PlayerWallWnd.h"
 
 
 #include "Device\PortManager.h"
@@ -135,5 +135,5 @@ private:
 	CTimeButtonUI* pAwTime[4];  //×Ô¶¯¿´´¬
 	CButtonUI *FocusedItem[2];
 
-	CPlayer	 *mPlayer;
+	CPlayerWallWnd	*mPlayerWall;
 };

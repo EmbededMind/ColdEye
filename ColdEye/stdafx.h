@@ -73,7 +73,10 @@
 #define USER_MSG_COPY_STOP				   (WM_USER + 161)	//停止复制
 #define USER_MSG_COPY_INFO				   (WM_USER + 162)	//复制信息
 
-#define USER_MSG_PLAY					   (WM_USER + 170)	//视频播放
+#define USER_MSG_PLAY_START					(WM_USER + 170)	//视频播放
+#define USER_MSG_PLAY_PLAY					(WM_USER + 171) //正常速度
+#define USER_MSG_PLAY_SLOW					(WM_USER + 172)	//慢放
+#define USER_MSG_PLAY_FAST					(WM_USER + 173)	//快进
 
 #define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 180)
 
