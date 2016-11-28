@@ -24,7 +24,6 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 CFile* CRecordFileButler::AllocRecordFile()
 {
 	CRecordFileMetabolism::GetInstance()->FileMetabolism();
-
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
 
