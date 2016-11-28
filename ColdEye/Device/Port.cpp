@@ -148,6 +148,11 @@ bool  CPort::IsActive()
 }
 
 
+bool CPort::IsOnline()
+{
+	return m_bIsOnline;
+}
+
 
 void CPort::Config(DeviceConfig& config)
 {

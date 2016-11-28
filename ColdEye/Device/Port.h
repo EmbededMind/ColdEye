@@ -7,7 +7,15 @@
 #define DEV_CONFIG_MASK_RD_SW             0x00000002
 #define DEV_CONFIG_MASK_AW_SW             0x00000004
 #define DEV_CONFIG_MASK_VOL               0x00000008
-#define DEV_CONFIG_MASK_NAME              0x00000010            
+#define DEV_CONFIG_MASK_NAME              0x00000010        
+
+
+#define PORT_EVENT_PLUG                   0x01
+#define PORT_EVENT_PULL                   0x02
+#define PORT_EVENT_CHANGE                 0x03
+
+#define PORT_STATUS_ONLINE                0x01
+#define PORT_STATUS_OFFLINE               0x00 
 
 typedef struct {
 	DWORD       Begining;
@@ -57,6 +65,7 @@ public:
 	bool       GetVisibility();
 
 	bool       IsActive();
+	bool       IsOnline();
 
 	void       Config(DeviceConfig& config);
 
@@ -64,4 +73,5 @@ private:
 	char m_mac[20];             //存储从主机103读取的mac
 	bool m_bIsVisible;
 	bool m_bIsActive;
+	bool m_bIsOnline;
 };
