@@ -59,6 +59,12 @@ bool CCommunication::RecTalkProc(uint8_t *pch)
 			this->mPdev = Mac_CCamera_Map.at(mac64);
 			return true;
 		}
+		else
+		{
+			printf("mac : %s\n",Mac_CCamera_Map[mac64]->mCommonNetConfig.sMac);
+			long err = H264_DVR_GetLastError();
+			printf("err = %d\n", err);
+		}
 	}
 	else
 	{
@@ -248,19 +254,23 @@ uint8_t CCommunication::RecHandleProc(uint8_t * pch)
 	if (pch[4] == 0x01)
 	{
 		//得到摄像头注册表信息
+		printf("get registry!\n");
 		uint8_t port = 0;//0~5别是端口1~6
 		for (int i = 0; i < 6; i++)
 		{
-			if (pch[6 + i] & (0x01 << 7))
+			if (pch[6 + i] & 0x80 && pch[6 + i] & 0x40)
 			{
+				printf("port = %d\n", i);
 				port |= (0x01<<i);
 			}
 		}
+		printf("registry = %02x\n", port);
 		return port;
 	}
 	else if(pch[4] == 0x02)
 	{
 		sprintf_s(DevMac[pch[5]], "%02x:%02x:%02x:%02x:%02x:%02x", pch[6], pch[7], pch[8], pch[9], pch[10], pch[11]);
+		printf("DevMac %s\n", DevMac[pch[5]]);
 		return pch[5];
 	}
 }
