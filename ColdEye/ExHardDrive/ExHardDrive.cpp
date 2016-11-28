@@ -71,23 +71,9 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 			AfxEndThread(100);
 			break;
 		case 1:
-			ULARGE_INTEGER   uiFreeBytesAvailableToCaller;
-			ULARGE_INTEGER   uiTotalNumberOfBytes;
-			ULARGE_INTEGER   uiTotalNumberOfFreeBytes;
-			TRACE("m_scanEvent\n");
-			if (GetDiskFreeSpaceExW(ExHardDrive->mDiskName,
-				&uiFreeBytesAvailableToCaller,
-				&uiTotalNumberOfBytes,
-				&uiTotalNumberOfFreeBytes))
+			if (!ExHardDrive->FindUpdataFile(ExHardDrive->mUpDateFilePath))
 			{
-				ExHardDrive->mPStatus->mSpaceLeft = (FLOAT)((LONGLONG)uiTotalNumberOfFreeBytes.QuadPart);
-				ExHardDrive->mPStatus->mSpacetotal = (FLOAT)((LONGLONG)uiTotalNumberOfBytes.QuadPart);
-				TRACE(_T("--%f-- %f"), ExHardDrive->mPStatus->mSpaceLeft, ExHardDrive->mPStatus->mSpacetotal);
-			}
-
-			if (!ExHardDrive->FindUpdataFile(ExHardDrive->mDiskName))
-			{
-				ExHardDrive->mUpDateFilePath = _T("null");
+				ExHardDrive->mUpDateFilePath = _T("NULL");
 			}
 			ResetEvent(ExHardDrive->mScanEvent);
 			break;
@@ -219,21 +205,32 @@ BOOL CExHardDrive::EndThread()
 BOOL CExHardDrive::GetStatus(USBFlashDiskStatus *pStaus)
 {
 	if (!mIsInsert) return 0;
-	mPStatus = pStaus;
-	SetEvent(mScanEvent);
+	ULARGE_INTEGER   uiFreeBytesAvailableToCaller;
+	ULARGE_INTEGER   uiTotalNumberOfBytes;
+	ULARGE_INTEGER   uiTotalNumberOfFreeBytes;
+	TRACE("m_scanEvent\n");
+	if (GetDiskFreeSpaceExW(mDiskName,
+		&uiFreeBytesAvailableToCaller,
+		&uiTotalNumberOfBytes,
+		&uiTotalNumberOfFreeBytes))
+	{
+		pStaus->mSpaceLeft = (FLOAT)((LONGLONG)uiTotalNumberOfFreeBytes.QuadPart);
+		pStaus->mSpacetotal = (FLOAT)((LONGLONG)uiTotalNumberOfBytes.QuadPart);
+		TRACE(_T("--%f-- %f"), pStaus->mSpaceLeft, pStaus->mSpacetotal);
+	}
 	return TRUE;
 }
 
 BOOL CExHardDrive::Updata()
 {
-	if (!mIsInsert) return 0;
+	if (!mIsInsert || !mIsThreadAlive) return 0;
 	SetEvent(mUpdataEvent);
 	return TRUE;
 }
 
 BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 {
-	if (!mIsInsert) return 0;
+	if (!mIsInsert || !mIsThreadAlive) return 0;
 	if(FileInfo->status == RECORD_LOCKED)
 		return 0;
 	if (FileInfo->bIsOccupied)
@@ -260,6 +257,13 @@ BOOL CExHardDrive::IsInsert()
 	return this->mIsInsert;
 }
 
+BOOL CExHardDrive::FindUpdataPath()
+{
+	if (!mIsInsert || !mIsThreadAlive) return 0;
+	SetEvent(mUpdataEvent);
+	return 0;
+}
+
 void CExHardDrive::CancelCopy()
 {
 	mCancelCopy = true;
@@ -275,7 +279,6 @@ BOOL CExHardDrive::ScanDisk(CWnd *pOwner)
 	mask = GetLogicalDrives();
 
 	_itoa_s(mask, tch, 2);
-	printf("´ÅÅÌ¼ì²â½á¹û £º %s\n", tch);
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -288,7 +291,6 @@ BOOL CExHardDrive::ScanDisk(CWnd *pOwner)
 			type = GetDriveType(DiskName);
 			if (type == DRIVE_REMOVABLE)
 			{
-				printf("UÅÌµÄÅÌ·ûÊÇ £º %s\n", DiskName);
 				this->Init(pOwner, DiskName);
 				this->StartMonitoring();
 				return true;
