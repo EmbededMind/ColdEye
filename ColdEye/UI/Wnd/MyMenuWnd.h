@@ -4,14 +4,13 @@
 #include "File\RecordFileInfo.h"
 
 #include "Control\MyEditUI.h"
-#include "Control\CameraSwitchUI.h"
 #include "Control\MySliderUI.h"
 #include "Control\MyLabelUI.h"
 #include "Control\MenuItemUI.h"
 #include "Control\VideoListUI.h"
+#include "Control\SwitchUI.h"
 #include "Control\AlarmVoiceListUI.h"
-#include "Control\AlarmVoiceSwitchUI.h"
-#include "Control\SwitchRecordListUI.h"
+#include "Control\AWOnOffListLabelUI.h"
 #include "Control\TimeButtonUI.h"
 
 #include "Wnd\PlayerWallWnd.h"
@@ -54,7 +53,7 @@ public:
 		UINT8 id;	//物理接口
 		CLabelUI *pTitle;	//标题
 		CMyEditUI *pShipname;	//摄像头名称
-		CCameraSwitchUI *pSwitch;	//开关
+		CSwitchUI *pSwitch;	//开关
 		CMySliderUI *pVolum;	//音量
 		CMyLabelUI *pSaveVideo;	//视频保存设置
 		CMyLabelUI *pAutoWatch;	//自动看船设置
@@ -69,18 +68,20 @@ public :
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
-	void OnFinalMessage(HWND hWnd);
 
 	// Item Notify
-	void SliderNotify(TNotifyUI & msg);
-	void EditNotify(TNotifyUI &msg);
-	void MenuItemNotify(TNotifyUI &msg);
-	void LabelNotify(TNotifyUI &msg);
-	void CopyFileNotify(TNotifyUI &msg);
-	void RecordVoiceNotify(TNotifyUI &msg);
+	void SliderNotify(TNotifyUI& msg);
+	void EditNotify(TNotifyUI& msg);
+	void MenuItemNotify(TNotifyUI& msg);
+	void LabelNotify(TNotifyUI& msg);
+	void CopyFileNotify(TNotifyUI& msg);
+	void RecordVoiceNotify(TNotifyUI& msg);
 	void AlarmVoiceListNotify(TNotifyUI& msg);
+	void SwitchNotify(TNotifyUI& msg);
+	void ListLabelNotify(TNotifyUI& msg);
 
 	void ExpandCameraName();
+	void ShowAlarmVoiceList(bool);
 	void ThirdMenuSetFocus(CDuiString);
 	int DetectHardDriver(list<CRecordFileInfo*>*);
 	void PrepareCopy(list<CRecordFileInfo*>*,UINT8);
@@ -88,15 +89,19 @@ public :
 	void AddAlarmVoice();
 	void Notify(TNotifyUI& msg);
 
-	void OnLClick(CControlUI* pControl);
-	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	void DeleteAlarmCtl(CameraInfo);
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
 
-	void AddWatchRecord(SwtichRecord);
+	//自动看船开关记录
+	void InitAwOnOffRecord();
+	CDuiString GetStringOption(int option,int tag);
+	void AddAwOnOffRecord(CTime, CDuiString);
+	void AwPage(int page);
+	void AwOnOffRecordNextPage();
+	void AwOnOffRecordLastPage();
 
 	int InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData);
 	void AddCtl(CameraInfo cameraInfo, CDuiString layoutName, int BaseData);
@@ -144,11 +149,15 @@ private:
 	CMySliderUI* pSysLight;		//系统亮度
 	CMyLabelUI* pHostModel;		//主机型号
 	CTimeButtonUI* pAwTime[4];  //自动看船
-	CAlarmVoiceSwitchUI* pAlmVicSwitch; //报警音开关
-	CAlarmVoiceListUI* pDefault;	//默认报警音
+	CSwitchUI* pAlmVicSwitch; //报警音开关
+	CAlarmVoiceListUI* pDefaultVoice;	//默认报警音
 	CAlarmVoiceListUI* pVoice1;		//录警音
+	CSwitchUI*	pAlarmLight;		//报警灯光
+	CListUI*	pAwOnOffRecordList;		//自动看船开关记录列表
+	CLabelUI* pPage;		//页码
 
 	CButtonUI *FocusedItem[2];
-
+	int mTotalPage;
+	int mPage;
 	CPlayerWallWnd	*mPlayerWall;
 };

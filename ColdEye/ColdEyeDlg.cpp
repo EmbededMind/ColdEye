@@ -292,7 +292,7 @@ void CColdEyeDlg::OnPaint()
 
 		//ªÊ÷∆ U≈ÃÕº±Í
 		//CBitmap bitmap;
-		//bitmap.LoadBitmap(IDB_BITMAP1);
+		//bitmap.LoadBitmap(IDB_BITMAP2);
 
 		//BITMAP bmp;
 		//bitmap.GetBitmap(&bmp);

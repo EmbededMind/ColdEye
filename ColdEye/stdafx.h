@@ -131,6 +131,18 @@
 
 
  /*****************************************
+ *            LOG_TAG				      *
+ ******************************************/
+#define LOG_POWER_ONOFF   1       
+#define LOG_SYS_TIME      2
+#define LOG_AUTO_WATCH    3
+#define LOG_CAM_ON		  4
+#define LOG_CAM_OFF		  5
+#define LOG_CAM_AWON	  6
+#define LOG_CAM_AWOFF     7
+
+
+ /*****************************************
  *         Time config macro define       *
  ******************************************/
 #define RECONNECT_TIMER_ELAPSE   30 //短线后每隔30s重连一次。
@@ -233,7 +245,9 @@
 #define DUI_MSGTYPE_EDIT			(_T("edit"))
 #define DUI_MSGTYPE_LABEL			(_T("label"))
 #define DUI_MSGTYPE_ALA_VOICE_LIST	(_T("alarm_voice"))
+#define DUI_MSGTYPE_SWITCH			(_T("switch"))
 #define DUI_MSGTYPE_PLAYER			(_T("player"))
+#define DUI_MSGTYPE_LISTLABEL		(_T("listlabel"))
 #define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
 //报警音播放类型

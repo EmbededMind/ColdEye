@@ -90,37 +90,37 @@
 		<TabLayout name="layout_thirdmenu" visible="false" bkcolor="0xFFEFEFF4">  
 <!--报警视频-->
 			<VerticalLayout name="camera1list">	
-				<VideoList name="video_alarmlist1">
+				<VideoList name="video_alarmlist1" vscrollbarstyle="width='45'">
 				
-				</VideoList>			
+				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera2list">
-				<VideoList name="video_alarmlist2">
+				<VideoList name="video_alarmlist2" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera3list">
-				<VideoList name="video_alarmlist3">
+				<VideoList name="video_alarmlist3" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera4list">
-				<VideoList name="video_alarmlist4">
+				<VideoList name="video_alarmlist4" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera5list">
-				<VideoList name="video_alarmlist5">
+				<VideoList name="video_alarmlist5" vscrollbarstyle="width='45'">
 				
 				</VideoList>
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera6list">
-				<VideoList name="video_alarmlist6">
+				<VideoList name="video_alarmlist6" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
@@ -222,7 +222,7 @@
 				<VerticalLayout height="180">
 					<Label text="报警音" font="3" height="80" textpadding="353,21,353,20" bkcolor="#FFE5E3E3" textcolor="FF333333" />
 					<Control height="10" bkcolor="#FFF3F3F3"/>
-					<AlarmVoiceSwitch  name="alarmvoice_switch" text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666" textpadding="45,0,605,0" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
+					<Switch  name="alarmvoice_switch" text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666" textpadding="45,0,605,0" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 					<Control height="10" bkcolor="#FFF3F3F3"/>
 				</VerticalLayout>
 				<VerticalLayout visible="false" bkcolor="#FFF3F3F3" height="348">
@@ -235,7 +235,7 @@
 			<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0" height="180">	<!--报警灯光-->
 				<Label text="开启警告灯光" font="3" height="80" bkcolor="#FFE5E3E3" textcolor="FF333333" align="center" />
 				<Control height="10" bkcolor="#FFF3F3F3"/>
-				<AlarmLight name="alarmlight_switch" text="开启警告灯光" height="80" font="3" textcolor="#FF666666" textpadding="45,0,500,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
+				<Switch name="alarmlight_switch" text="开启警告灯光" height="80" font="3" textcolor="#FF666666" textpadding="45,0,500,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 				<Control height="10" bkcolor="#FFF3F3F3"/>
 			</VerticalLayout>
 			
@@ -245,37 +245,37 @@
 						<ListHeaderItem text="看船开关记录" align="center" textcolor="#FF333333" font="2"/>
 					</ListHeader>
                 <!--<Include source="listitem.xml"/>-->
-              </List>
+				</List>
 			  <Label name="page" float="true" pos="385,979,0,0" width="200" height="30" font="3" textcolor="#FF666666" text="第1/2页"/>
 			</VerticalLayout>	
 <!--视频调取-->
 			<VerticalLayout>
-				<VideoList name="video_list1">
+				<VideoList name="video_list1" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list2">
+				<VideoList name="video_list2" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list3">
+				<VideoList name="video_list3" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list4">
+				<VideoList name="video_list4" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list5">
+				<VideoList name="video_list5" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list6">
+				<VideoList name="video_list6" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>

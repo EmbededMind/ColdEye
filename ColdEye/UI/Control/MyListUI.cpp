@@ -130,6 +130,19 @@ void CMyListUI::DoEvent(TEventUI & event)
 			}
 		}
 
+		if (event.wParam == VK_BACK) {
+			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
+			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+			if (node->data()._level == 1) {
+				pList->ExpandNode(node->parent(), 0);
+				node->parent()->data()._pListElement->SetFocus();
+				node->parent()->data()._pListElement->Select(true);
+			}
+			else {
+				m_pManager->SendNotify(this, DUI_MSGTYPE_LISTLABEL, event.wParam, event.lParam);
+			}
+		}
+
 		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
 			if (event.wParam == 'U') { //UÅÌ¼ü
 				list<CRecordFileInfo*> RecordInfo;
