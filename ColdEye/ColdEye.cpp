@@ -33,7 +33,7 @@
 #include "Control\TimeButtonUI.h"
 #include "Control\VideoListUI.h"
 #include "Control\RecordvoiceUI.h"
-#include "Control\MyButtonUI.h"
+#include "Control\RevordVoiceBtUI.h"
 
 #include "File\RecordFileMetabolism.h"
 
@@ -179,7 +179,7 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CAlarmLightUI);
 	REGIST_DUICONTROL(CMyListUI);
 	REGIST_DUICONTROL(CRecordvoiceUI);
-	REGIST_DUICONTROL(CMyButtonUI);
+	REGIST_DUICONTROL(CRevordVoiceBtUI);
 
 	//_m_pMainWnd = new CMainWnd();
 	//_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
@@ -329,6 +329,10 @@ void CColdEyeApp::CheckFileDirectory()
 	if (!PathIsDirectory(_T(NORMAL_RECORD_PATH)))
 	{
 		CreateDirectory(_T(NORMAL_RECORD_PATH), NULL);
+	}
+	if (!PathIsDirectory(_T(RECORD_VOICE_PATH)))
+	{
+		CreateDirectory(_T(RECORD_VOICE_PATH), NULL);
 	}
 	if (!PathIsDirectory(_T(ALARM_RECORD_PATH)))
 	{

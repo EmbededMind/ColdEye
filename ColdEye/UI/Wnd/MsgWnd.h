@@ -12,6 +12,9 @@ using namespace DuiLib;
 #define MSGID_OK		1
 #define MSGID_RECORD	2
 
+#define TIME_RECORD_VOICE	1
+#define TIME_PLAY_VOICE		3
+
 class CColdEyeDlg;
 
 class CMsgWnd : public WindowImplBase
@@ -65,6 +68,7 @@ public:
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	void RecordVoice();
+	void AlarmVoicePlay();
 public:
 	CDuiString SkinType;
 	CButtonUI *pButton_ok;

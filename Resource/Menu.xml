@@ -229,7 +229,7 @@
 					<Control padding="45,0,45,0" height="2"/>
 					<Text height="98" textpadding="45,31,0,0" text="报警音选择" font="3" textcolor="#FF666666"/>
 					<AlarmVoiceList name="alarmvoice_default" text="默认声音" />
-					<MyButton name="record_btn" float="true" pos="270,212,0,0" height="94" width="250" font="0" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" text="录制报警音" focusedimage="file='image/按钮-选中.png'" borderround="6,6"/>
+					<RevordVoiceBt name="record_btn" float="true" pos="270,212,0,0" height="94" width="250" font="0" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" text="录制报警音" focusedimage="file='image/按钮-选中.png'" borderround="6,6"/>
 				</VerticalLayout>
 			</VerticalLayout>
 			<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0" height="180">	<!--报警灯光-->

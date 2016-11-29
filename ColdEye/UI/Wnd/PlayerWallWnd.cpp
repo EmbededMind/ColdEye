@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "PlayerWallWnd.h"
 
+void __stdcall EOFCallBack(LONG mPort, LONG nUser) 
+{
+	((CPlayerWallWnd *)nUser)->StopPlay();
+}
 
 CPlayerWallWnd::CPlayerWallWnd()
 	:mStatus(stop),
@@ -35,6 +39,7 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 	case USER_MSG_PLAY_START:
 		PreparePlay(wParam, lParam);
 		H264_PLAY_Play(mPort, pVPlayer->GetHWND());
+		H264_PLAY_SetFileEndCallBack(mPort, EOFCallBack, (LONG)this);
 		mStatus = playing;
 		SetTimer(m_hWnd, 1, 1000, NULL);
 		break;
@@ -100,7 +105,7 @@ LRESULT CPlayerWallWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 {
 	switch (wParam) {
 	case 1:
-		int mProgress = H264_PLAY_GetPlayedTime(mPort);
+		int mProgress = 100*H264_PLAY_GetPlayPos(mPort);  //H264_PLAY_GetPlayedTime(mPort);
 		LONG errInfo;
 		errInfo = H264_PLAY_GetLastError(mPort);
 		Print("progress:%d,%d",mProgress,errInfo);
@@ -120,23 +125,26 @@ LRESULT CPlayerWallWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL 
 	return LRESULT();
 }
 
+//void EOFCallBack(LONG mPort, LONG nUser)
+//{
+//	
+//}
+
+BOOL CPlayerWallWnd::StopPlay()
+{
+	KillTimer(m_hWnd,1);
+	H264_PLAY_Stop(mPort);
+	H264_PLAY_CloseFile(mPort);
+	H264_PLAY_FreePort(mPort);
+	pSlider->SetValue(100);
+	return 0;
+}
+
 bool CPlayerWallWnd::OnSlow(void * param)
 {
 	TNotifyUI* pMsg = (TNotifyUI*)param;
 	Print("%S", pMsg->sType);
-	// 鼠标点击事件
-	//if (pMsg->sType == DUI_MSGTYPE_CLICK) {
-	//	if (mStatus != pause){
-	//		int play_slow;
-	//		play_slow = H264_PLAY_Slow(mPort);
-	//		if (mSlowMultiple < 4)
-	//			mSlowMultiple++;
-	//		Print("play_slow:%d", play_slow);
-	//		mStatus = slow_fast;
-	//		::ShowWindow(pAlphaMarkWnd->GetHWND(), true);
-	//		::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_SLOW, mSlowMultiple, NULL);
-	//	}
-	//}
+
 	//键盘按键事件
 	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
 		switch (pMsg->wParam) {
@@ -174,7 +182,7 @@ bool CPlayerWallWnd::OnFast(void * param)
 			if (mStatus != pause) {
 				int play_fast;
 				play_fast = H264_PLAY_Fast(mPort);
-				if (mFastMultiple < 4);
+				if (mFastMultiple < 4)
 					mFastMultiple++;
 				Print("play_fast:%d",play_fast);
 				mStatus = slow_fast;

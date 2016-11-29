@@ -82,7 +82,7 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 			{
 				ExHardDrive->mPStatus->mSpaceLeft = (FLOAT)((LONGLONG)uiTotalNumberOfFreeBytes.QuadPart);
 				ExHardDrive->mPStatus->mSpacetotal = (FLOAT)((LONGLONG)uiTotalNumberOfBytes.QuadPart);
-				TRACE(_T("--%f-- %f"), ExHardDrive->mPStatus->mSpaceLeft, ExHardDrive->mPStatus->mSpacetotal);
+				printf("--%llu-- %llu\n", ExHardDrive->mPStatus->mSpaceLeft, ExHardDrive->mPStatus->mSpacetotal);
 			}
 
 			if (!ExHardDrive->FindUpdataFile(ExHardDrive->mDiskName))
@@ -108,6 +108,7 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 				else
 				{
 					printf("copy fail!\n");
+					Print("File Name:%S", ExHardDrive->mCopyFromPath);
 					//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
 					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
 				}
@@ -220,7 +221,20 @@ BOOL CExHardDrive::GetStatus(USBFlashDiskStatus *pStaus)
 {
 	if (!mIsInsert) return 0;
 	mPStatus = pStaus;
-	SetEvent(mScanEvent);
+	ULARGE_INTEGER   uiFreeBytesAvailableToCaller;
+	ULARGE_INTEGER   uiTotalNumberOfBytes;
+	ULARGE_INTEGER   uiTotalNumberOfFreeBytes;
+	TRACE("m_scanEvent\n");
+	if (GetDiskFreeSpaceExW(mDiskName,
+		&uiFreeBytesAvailableToCaller,
+		&uiTotalNumberOfBytes,
+		&uiTotalNumberOfFreeBytes))
+	{
+		mPStatus->mSpaceLeft = (FLOAT)((LONGLONG)uiTotalNumberOfFreeBytes.QuadPart);
+		mPStatus->mSpacetotal = (FLOAT)((LONGLONG)uiTotalNumberOfBytes.QuadPart);
+		printf("--%llu-- %llu\n", mPStatus->mSpaceLeft, mPStatus->mSpacetotal);
+	}
+	//SetEvent(mScanEvent);
 	return TRUE;
 }
 
@@ -254,7 +268,7 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 	this->RecordFilePath(filepath, filename);
 	return TRUE;
 }
-
+ 
 BOOL CExHardDrive::IsInsert()
 {
 	return this->mIsInsert;

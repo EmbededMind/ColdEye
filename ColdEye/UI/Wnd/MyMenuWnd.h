@@ -9,6 +9,8 @@
 #include "Control\MyLabelUI.h"
 #include "Control\MenuItemUI.h"
 #include "Control\VideoListUI.h"
+#include "Control\AlarmVoiceListUI.h"
+#include "Control\AlarmVoiceSwitchUI.h"
 #include "Control\SwitchRecordListUI.h"
 #include "Control\TimeButtonUI.h"
 
@@ -16,6 +18,7 @@
 
 
 #include "Device\PortManager.h"
+#include "ExHardDrive\ExHardDrive.h"
 
 
 #include <list>
@@ -73,9 +76,18 @@ public :
 	void EditNotify(TNotifyUI &msg);
 	void MenuItemNotify(TNotifyUI &msg);
 	void LabelNotify(TNotifyUI &msg);
+	void CopyFileNotify(TNotifyUI &msg);
+	void RecordVoiceNotify(TNotifyUI &msg);
+	void AlarmVoiceListNotify(TNotifyUI& msg);
+
 	void ExpandCameraName();
 	void ThirdMenuSetFocus(CDuiString);
+	int DetectHardDriver(list<CRecordFileInfo*>*);
+	void PrepareCopy(list<CRecordFileInfo*>*,UINT8);
+	void RecordVoice();
+	void AddAlarmVoice();
 	void Notify(TNotifyUI& msg);
+
 	void OnLClick(CControlUI* pControl);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled);
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -102,8 +114,6 @@ public :
 	bool SysSetIsChange();
 	bool AwTimeIsChange();
 
-
-	void MyMessageBox(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	void KeyDown_VK_BACK();
 
@@ -123,6 +133,7 @@ private:
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
 
 	void   FillPortConfig(CPort* pPort);
+	void   InitAlarmVoice();
 
 	CTabLayoutUI *pLayout_third;
 	CTabLayoutUI *pLayout_Menuitem;
@@ -133,6 +144,10 @@ private:
 	CMySliderUI* pSysLight;		//系统亮度
 	CMyLabelUI* pHostModel;		//主机型号
 	CTimeButtonUI* pAwTime[4];  //自动看船
+	CAlarmVoiceSwitchUI* pAlmVicSwitch; //报警音开关
+	CAlarmVoiceListUI* pDefault;	//默认报警音
+	CAlarmVoiceListUI* pVoice1;		//录警音
+
 	CButtonUI *FocusedItem[2];
 
 	CPlayerWallWnd	*mPlayerWall;
