@@ -53,6 +53,7 @@ CPort::~CPort()
 void CPort::SetId(uint16_t id)
 {
 	m_Id  = id;
+	m_DevConfig.NameId = id-1;
 }
 
 
@@ -163,6 +164,10 @@ void CPort::Config(DeviceConfig& config)
 }
 
 
+
+
+
+
 bool  CPort::SetAwTime(DWORD tBegining, DWORD tEnd)
 {
 	char sqlStmt[128];
@@ -181,6 +186,10 @@ bool  CPort::SetAwTime(DWORD tBegining, DWORD tEnd)
 
 
 
+void CPort::StoreParam()
+{
+	
+}
 
 
 

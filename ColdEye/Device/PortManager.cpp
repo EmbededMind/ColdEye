@@ -7,7 +7,7 @@
 
 CPortManager::CPortManager()
 {
-
+	
 }
 
 
@@ -51,7 +51,14 @@ void CPortManager::LoadPortsParam()
 
 		i++;
 	}
+
+
+	for (int i = 0; i < 6; i++) {
+		mPorts[i].m_Pos = i + 1;
+	}
 }
+
+
 
 
 
@@ -79,6 +86,8 @@ void CPortManager::BindPortId(CPort* pPort, int id)
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
 			}
+
+			return;
 		}
 	}
 }

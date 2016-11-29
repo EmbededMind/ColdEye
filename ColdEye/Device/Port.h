@@ -61,7 +61,7 @@ class CPort
 public:
 	CPort();
 	~CPort();
-
+	uint16_t               m_Pos;
 	uint16_t               m_Id;
 	DeviceConfig           m_DevConfig;
 	AutoWatchConfig        m_AwConfig;
@@ -79,6 +79,7 @@ public:
 
 	bool  SetAwTime(DWORD tBegining, DWORD tEnd);
 
+	void  StoreParam();
 
 	uint16_t   GetId();	
 	uint16_t   GetNameId();

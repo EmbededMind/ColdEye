@@ -50,13 +50,15 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+
 protected:
 	afx_msg LRESULT OnUserMsgLogin(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgLogoff(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
-public:
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
-protected:
-	afx_msg LRESULT OnUserMsgDisconnect(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgRelogin(WPARAM wParam, LPARAM lParam);
+
+	afx_msg LRESULT OnUserMsgDisconnect(WPARAM wParam, LPARAM lParam);
+
+	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
 };
