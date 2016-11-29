@@ -3,6 +3,7 @@
 #include "UIlib.h"
 using namespace DuiLib;
 
+
 class CShipNameItemUI : public CButtonUI
 {
 DECLARE_DUICONTROL(CShipNameItemUI)

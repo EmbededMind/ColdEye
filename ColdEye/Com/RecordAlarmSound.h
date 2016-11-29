@@ -19,12 +19,12 @@ public:
 	int len;
 	int num;
 	void Record(CCamera *pCamera);
-	bool Play(CCamera *pCamera);
 	bool Save();
 	bool NotSave();
+	bool Play(CCamera *pCamera);
+	BOOL StopTalk();
 	BOOL SendTalkData(LPBYTE pDataBuffer, DWORD dwDataLength);
 	BOOL InputTalkData(BYTE *pBuf, DWORD nBufLen);
-	BOOL StopTalk();
 protected:
 	CCamera *m_pRecordCamera;
 	CCamera *m_pPlayCamera;

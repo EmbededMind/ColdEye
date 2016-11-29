@@ -1,15 +1,5 @@
 #pragma once
 
-
-#define LOG_POWER_ONOFF   1       
-#define LOG_SYS_TIME      2
-#define LOG_AUTO_WATCH    3
-#define LOG_CAM_ON        4
-#define LOG_CAM_OFF       5
-#define LOG_CAM_AWON      6
-#define LOG_CAM_AWOFF     7
-
-
 #include "Device\Camera.h"
 
 class CDBLogger

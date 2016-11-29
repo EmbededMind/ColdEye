@@ -101,6 +101,9 @@
  *            Direction define            *
  ******************************************/
 #define UI_RESOURCE_PATH     "..\\Resource"
+#define RECORD_VOICE_PATH    "D:\\VOICE\\"
+#define RECORD_VOICE_NAME	 "D:\\VOICE\\wavalarm.wav"
+#define RECORD_VOICE_NAME_TMP "D:\\VOICE\\wavalarmtmp.wav"
 #define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
 #define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
 #define SOUND_PATH           "E:\\AlarmRecord\\"
@@ -124,6 +127,18 @@
 #define DB_COL_END_SEC          2
 #define DB_COL_SIZE             3
 #define DB_COL_STATUS           4
+
+
+ /*****************************************
+ *            LOG_TAG				      *
+ ******************************************/
+#define LOG_POWER_ONOFF   1       
+#define LOG_SYS_TIME      2
+#define LOG_AUTO_WATCH    3
+#define LOG_CAM_ON		  4
+#define LOG_CAM_OFF		  5
+#define LOG_CAM_AWON	  6
+#define LOG_CAM_AWOFF     7
 
 
  /*****************************************
@@ -217,12 +232,22 @@
 #define STATUS_COPY_SUCCEED 1
 #define STATUS_COPY_FIAL	0
 
+/**  HardDriver Status  **/
+#define NO_HARDDRIVER		0
+#define OK_HARDDRIVER		1
+#define FULL_HARDDRIVER		2
+
 //DUI 消息类型
-#define DUI_MSGTYPE_KEYDOWN	(_T("keydown"))
-#define DUI_MSGTYPE_SLIDER	(_T("slider"))
-#define DUI_MSGTYPE_EDIT	(_T("edit"))
-#define DUI_MSGTYPE_LABEL	(_T("label"))
-#define DUI_MSGTYPE_PLAYER	(_T("player"))
+#define DUI_MSGTYPE_KEYDOWN			(_T("keydown"))
+#define DUI_MSGTYPE_COPYFILE		(_T("copyfile"))
+#define DUI_MSGTYPE_SLIDER			(_T("slider"))
+#define DUI_MSGTYPE_EDIT			(_T("edit"))
+#define DUI_MSGTYPE_LABEL			(_T("label"))
+#define DUI_MSGTYPE_ALA_VOICE_LIST	(_T("alarm_voice"))
+#define DUI_MSGTYPE_SWITCH			(_T("switch"))
+#define DUI_MSGTYPE_PLAYER			(_T("player"))
+#define DUI_MSGTYPE_LISTLABEL		(_T("listlabel"))
+#define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
 
 #include "Database\sqlitewrapper.h"
@@ -250,6 +275,7 @@ extern 	SQLiteWrapper sqlite;
 #pragma comment(lib, "DuiLib.lib")
 #endif
 
+#pragma comment(lib, "WinMM.Lib")
 
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

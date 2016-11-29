@@ -13,8 +13,11 @@ public:
 	void PaintBkColor(HDC hDC);
 	void PaintStatusImage(HDC hDC);
 	void DoEvent(TEventUI &event);
-public:
-	bool state;
+	bool GetVoiceSel();
+	void SetVoiceSel(bool);
+
+private:
+	bool isSel;
 	CRect m_rc;
 };
 

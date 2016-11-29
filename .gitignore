@@ -34,3 +34,4 @@ lib
 lib
 sqlite3.c
 /open_cold_eye.bat
+/ColdEye/voice_g711a_alarm

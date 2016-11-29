@@ -18,10 +18,8 @@
 #include "UIlib.h"
 
 
-#include "Control\AlarmLightUI.h"
 #include "Control\AlarmVoiceListUI.h"
-#include "Control\AlarmVoiceSwitchUI.h"
-#include "Control\CameraSwitchUI.h"
+#include "Control\SwitchUI.h"
 #include "Control\KeyBoardUI.h"
 #include "Control\MenuItemUI.h"
 #include "Control\MyEditUI.h"
@@ -33,7 +31,7 @@
 #include "Control\TimeButtonUI.h"
 #include "Control\VideoListUI.h"
 #include "Control\RecordvoiceUI.h"
-#include "Control\MyButtonUI.h"
+#include "Control\RevordVoiceBtUI.h"
 
 #include "File\RecordFileMetabolism.h"
 
@@ -171,15 +169,13 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CMyEditUI);
 	REGIST_DUICONTROL(CKeyBoardUI);
 	REGIST_DUICONTROL(CShipNameItemUI);
-	REGIST_DUICONTROL(CCameraSwitchUI);
 	REGIST_DUICONTROL(CMyLabelUI);
 	REGIST_DUICONTROL(CMySliderUI);
-	REGIST_DUICONTROL(CAlarmVoiceSwitchUI);
 	REGIST_DUICONTROL(CAlarmVoiceListUI);
-	REGIST_DUICONTROL(CAlarmLightUI);
+	REGIST_DUICONTROL(CSwitchUI);
 	REGIST_DUICONTROL(CMyListUI);
 	REGIST_DUICONTROL(CRecordvoiceUI);
-	REGIST_DUICONTROL(CMyButtonUI);
+	REGIST_DUICONTROL(CRevordVoiceBtUI);
 
 	//_m_pMainWnd = new CMainWnd();
 	//_m_pMainWnd->Create(NULL, _T("DUIWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
@@ -331,6 +327,10 @@ void CColdEyeApp::CheckFileDirectory()
 	if (!PathIsDirectory(_T(NORMAL_RECORD_PATH)))
 	{
 		CreateDirectory(_T(NORMAL_RECORD_PATH), NULL);
+	}
+	if (!PathIsDirectory(_T(RECORD_VOICE_PATH)))
+	{
+		CreateDirectory(_T(RECORD_VOICE_PATH), NULL);
 	}
 	if (!PathIsDirectory(_T(ALARM_RECORD_PATH)))
 	{

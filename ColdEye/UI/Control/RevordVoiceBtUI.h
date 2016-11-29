@@ -4,13 +4,13 @@
 #include "UIlib.h"
 using namespace DuiLib;
 
-class CMyButtonUI 
+class CRevordVoiceBtUI 
 	:public CButtonUI
 {
-DECLARE_DUICONTROL(CMyButtonUI)
+DECLARE_DUICONTROL(CRevordVoiceBtUI)
 public:
-	CMyButtonUI();
-	~CMyButtonUI();
+	CRevordVoiceBtUI();
+	~CRevordVoiceBtUI();
 	void DoEvent(TEventUI &event);
 };
 

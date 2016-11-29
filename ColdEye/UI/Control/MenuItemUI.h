@@ -23,7 +23,7 @@ public:
 	virtual void DoEvent(TEventUI& event);
 	virtual LPCTSTR GetClass();
 
-	void FindRecordFile();
+	list<CRecordFileInfo*> FindRecordFile(UINT8*);
 	void HardDriverStatus(list<CRecordFileInfo*> , UINT8);
 	//void SetItemRelation(CMenuItemUI* pPrevItem, CMenuItemUI* pNextItem);
 	

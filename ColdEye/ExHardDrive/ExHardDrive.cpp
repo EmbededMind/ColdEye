@@ -94,6 +94,7 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 				else
 				{
 					printf("copy fail!\n");
+					Print("File Name:%S", ExHardDrive->mCopyFromPath);
 					//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
 					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
 				}
@@ -251,7 +252,7 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 	this->RecordFilePath(filepath, filename);
 	return TRUE;
 }
-
+ 
 BOOL CExHardDrive::IsInsert()
 {
 	return this->mIsInsert;

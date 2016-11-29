@@ -4,12 +4,12 @@
 
 IMPLEMENT_DUICONTROL(CAlarmVoiceListUI)
 CAlarmVoiceListUI::CAlarmVoiceListUI()
-	:state(false)
+	:isSel(false)
 {
 }
 
 CAlarmVoiceListUI::CAlarmVoiceListUI(CDuiString text, CDuiString name)
-	: state(false)
+	: isSel(false)
 {
 	SetText(text);
 	SetName(name);
@@ -42,7 +42,7 @@ void CAlarmVoiceListUI::PaintStatusImage(HDC hDC)
 	m_rc.top += 2;
 	m_rc.bottom -= 2;
 	CRenderEngine::DrawColor(hDC, m_rc, GetAdjustColor(0xFFBFDDFF));
-	if (state)
+	if (isSel)
 	{
 		DrawImage(hDC, (LPCTSTR)m_sPushedImage);
 	}
@@ -56,18 +56,7 @@ void CAlarmVoiceListUI::DoEvent(TEventUI & event)
 {
 	switch (event.Type){
 		case UIEVENT_KEYDOWN:{
-			switch (event.wParam){
-			case VK_UP:
-				m_pManager->FindControl(_T("alarmvoice_switch"))->SetFocus();
-				break;
-
-			case VK_DOWN:
-				m_pManager->FindControl(_T("record_btn"))->SetFocus();
-				break;
-
-			case VK_RETURN:
-				break;
-			}
+			m_pManager->SendNotify(this, DUI_MSGTYPE_ALA_VOICE_LIST, event.wParam, event.lParam);
 		}
 		break;
 		default:
@@ -75,4 +64,14 @@ void CAlarmVoiceListUI::DoEvent(TEventUI & event)
 			break;
 	}
 
+}
+
+bool CAlarmVoiceListUI::GetVoiceSel()
+{
+	return isSel;
+}
+
+void CAlarmVoiceListUI::SetVoiceSel(bool sel)
+{
+	isSel = sel;
 }

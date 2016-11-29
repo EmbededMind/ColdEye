@@ -289,6 +289,25 @@ void CColdEyeDlg::OnPaint()
 
 		dc.SelectObject(pOldFont);
 
+
+		//ªÊ÷∆ U≈ÃÕº±Í
+		//CBitmap bitmap;
+		//bitmap.LoadBitmap(IDB_BITMAP2);
+
+		//BITMAP bmp;
+		//bitmap.GetBitmap(&bmp);
+
+		//CDC dcCompatible;
+		//dcCompatible.CreateCompatibleDC(&dc);
+		//dcCompatible.SelectObject(&bitmap);
+
+		//CRect rect;
+		//GetClientRect(&rect);
+
+		//dc.BitBlt(1490, 31, 60, 38, &dcCompatible, 0, 0, SRCCOPY);
+		//Print("width:%d,height:%d", rect.Width(), rect.Height());
+
+
 		CDialogEx::OnPaint();
 	}
 }
