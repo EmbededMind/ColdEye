@@ -30,6 +30,7 @@ public:
 	
 	bool m_bIsRealPlaying;
 	bool m_bIsRecording;
+	bool m_bIsAutoRecordEnabled;
 	bool m_bIsAlarming;
 	bool m_bIsWatching;
 	bool m_bIsAutoWatchEnabled;
@@ -82,6 +83,8 @@ public:
 	void          OnReconnect();                    //设备重连响应
 
 	void          OnCameraLogOff();                 //删除摄像机
+	
+	void          Delete();
 
 protected:
 	//CWnd          mControlWnd;

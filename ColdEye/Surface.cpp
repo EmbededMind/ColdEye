@@ -187,7 +187,7 @@ void CSurface::ExecuteConfig()
 	//摄像机需要开启
 	if (m_BindedPort->m_DevConfig.IsCameraOn) {
 	    // 摄像机原本是关闭状态则开启
-		if (this->m_hRealPlay == 0) {
+		if ( !m_bIsRealPlaying) {
 			Print("Config--Active: off-->on");
 			ConnectRealPlay();
 			StartRealPlay();
@@ -369,6 +369,8 @@ void CSurface::DisconnectRealPlay()
 
 		Invalidate();
 	}
+
+	m_bIsRealPlaying  = false;
 }
 
 
@@ -468,6 +470,8 @@ void CSurface::StartRecord(CFile* pf)
 	if (m_lPlayPort > 0) {
 		m_pRdFile = pf;
 	}
+
+	m_bIsRecording  = true;
 }
 
 
@@ -478,6 +482,8 @@ void CSurface::StopRecord()
 {
 	TRACE("Stop record\n");
 	m_pRdFile = NULL;
+
+	m_bIsRecording  = false;
 }
 
 
@@ -486,7 +492,7 @@ void CSurface::StopRecord()
  */
 BOOL CSurface::StartAutoRecord()
 {
-	m_bIsRecording = true;
+	m_bIsAutoRecordEnabled  = true;
 
 	CFile* pf = m_RecordFileButler.AllocRecordFile();
 	if (pf) {
@@ -507,12 +513,14 @@ BOOL CSurface::StartAutoRecord()
  */
 void CSurface::StopAutoRecord()
 {
+	Print("Stop auto record");
 	KillTimer(TIMER_ID_AUTO_RECORD);
 
 	StopRecord();
 
 	m_RecordFileButler.ReleaseRecordFile();
-	m_bIsRecording = false;
+
+	m_bIsAutoRecordEnabled  = false;
 }
 
 
@@ -702,7 +710,7 @@ void CSurface::OnDisconnect()
 
 	m_BindedCamera->OnDisConnnect();
 
-	SetTimer(TIMER_ID_RECONNECT, RECONNECT_TIMER_ELAPSE * 1000, NULL);
+	//SetTimer(TIMER_ID_RECONNECT, RECONNECT_TIMER_ELAPSE * 1000, NULL);
 }
 
 
@@ -714,7 +722,7 @@ void CSurface::OnDisconnect()
 void CSurface::OnReconnect()
 {
 	ConnectRealPlay();
-	//ExecuteLocalConfig();
+
 	ExecuteConfig();
 }
 
@@ -744,7 +752,36 @@ void CSurface::OnCameraLogOff()
 	m_BindedCamera->OnDisConnnect();
 	Invalidate();
 
-	::SendMessage(GetParent()->m_hWnd, USER_MSG_LOGOFF, 0, (LPARAM)this);
+	::SendMessage(GetParent()->m_hWnd, USER_MSG_LOGOFF, 0, (LPARAM)this->m_BindedPort);
+}
+
+
+
+void CSurface::Delete()
+{
+	ASSERT(m_BindedCamera != NULL);
+
+	if (m_bIsAutoRecordEnabled) {
+Print("Stop auto record when exit");
+		StopAutoRecord();
+	}
+
+	if (m_bIsAlarming) {
+Print("Stop alarm record when exit");
+		StopAlarmRecord();
+	}
+
+	if (m_bIsWatching) {
+Print("Stop auto watch when exit");
+		StopAutoWatch();
+	}
+
+	DisconnectRealPlay();
+
+	m_BindedCamera->Logout();
+
+	delete m_BindedCamera;
+	m_BindedCamera  = NULL;
 }
 
 
@@ -867,6 +904,7 @@ void CSurface::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent) {
 		case TIMER_ID_AUTO_RECORD:
+			Print("Package");
 			PackageRecordFile();
 			break;
 		//----------------------------------------

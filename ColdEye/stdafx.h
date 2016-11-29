@@ -1,4 +1,4 @@
-
+ 
 // stdafx.h : 标准系统包含文件的包含文件，
 // 或是经常使用但不常更改的
 // 特定于项目的包含文件
@@ -47,6 +47,8 @@
 #define USER_MSG_LOGIN         (WM_USER + 102)
 #define USER_MSG_RELOGIN       (WM_USER + 103)
 #define USER_MSG_LOGOFF        (WM_USER + 104)
+#define USER_MSG_DISCONNECT    (WM_USER + 105)
+
 
 #define USER_MSG_INITFILE	   (WM_USER + 113)
 #define USER_MSG_ADDFILE	   (WM_USER + 114)

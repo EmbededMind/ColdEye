@@ -67,6 +67,23 @@ CPort*  CPortManager::GetPortById(int id)
 }
 
 
+void CPortManager::BindPortId(CPort* pPort, int id)
+{
+	for (int i = 0; i < 6; i++) {
+		if (&mPorts[i] == pPort) {
+			pPort->SetId(id);
+
+			char sqlStmt[128];
+			sprintf_s(sqlStmt, "UPDATE port SET id = %d WHERE pos = %d;", id, i+1);
+
+			if (!sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
+		}
+	}
+}
+
+
 
 CPort* CPortManager::AllocPort()
 {

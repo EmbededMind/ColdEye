@@ -92,15 +92,15 @@ void CUtil::LoadMap(CCamera * pCamera)
 
 void CUtil::RemoveDev(CCamera * pCamera)
 {
-	uint64_t uint64mac;
-	uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
-	map<uint64_t, CCamera*>::iterator iter;
-	iter = Mac_CCamera_Map.find(uint64mac);
-	if (iter != Mac_CCamera_Map.end())
-	{
-		printf("RemoveDev %llu\n", uint64mac);
-		Mac_CCamera_Map.erase(iter);
-	}
+	//uint64_t uint64mac;
+	//uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
+	//map<uint64_t, CCamera*>::iterator iter;
+	//iter = Mac_CCamera_Map.find(uint64mac);
+	//if (iter != Mac_CCamera_Map.end())
+	//{
+	//	printf("RemoveDev %llu\n", uint64mac);
+	//	Mac_CCamera_Map.erase(iter);
+	//}
 }
 
 uint64_t CUtil::ArrayToUint64(uint8_t * pch)
@@ -120,4 +120,36 @@ uint64_t CUtil::ArrayToUint64(uint8_t * pch)
 	macuint64 += pch[5];
 
 	return uint64_t(macuint64);
+}
+
+
+
+void CUtil::MacNumberToStr(uint8_t* pNumber, char* pMac)
+{
+	int tmp  = 0;
+	int i  = 0;
+	for (; i < 6; i++) {
+		tmp  = pNumber[i]/16;
+		if (tmp < 10) {
+			pMac[i*3]  = tmp + '0';
+		}
+		else {
+			pMac[i*3]  = tmp - 10 + 'a';
+		}
+
+		tmp  = pNumber[i] % 16;
+		if (tmp < 10) {
+			pMac[i*3+1] = tmp + '0';
+		}
+		else {
+			pMac[i*3+1] = tmp - 10 + 'a';
+		}
+	}
+
+	pMac[2] = ':';
+	pMac[5] = ':';
+	pMac[8] = ':';
+	pMac[11] = ':';
+	pMac[14] = ':';
+	pMac[17] = 0;
 }

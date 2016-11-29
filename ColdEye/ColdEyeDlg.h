@@ -47,6 +47,9 @@ private:
 	CBitmap  m_bmpUFlash;
 	CRect    m_rFlash;
 
+	std::list<uint8_t> mPendMacPort;
+	std::list<CPort*>  mSearchPort;
+
 
 										// 对话框数据
 #ifdef AFX_DESIGN_TIME

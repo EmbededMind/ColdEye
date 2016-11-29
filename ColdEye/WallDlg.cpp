@@ -40,7 +40,8 @@ void __stdcall _cbDisconnect(LONG loginId, char* szDVRIP, LONG DVRPort, DWORD us
 	CWallDlg* pThis = (CWallDlg*)userData;
 	ASSERT(pThis != nullptr);
 
-	pThis->OnDisconnect(loginId, szDVRIP, DVRPort);
+	PostMessage(pThis->m_hWnd, USER_MSG_DISCONNECT, 0,  loginId);
+	//pThis->OnDisconnect(loginId, szDVRIP, DVRPort);
 }
 
 
@@ -71,6 +72,7 @@ bool CWallDlg::Invest(CPort* pPort)
 	 mSurfaces[pos]->ShowWindow(SW_SHOW);
 	 mSurfaces[pos]->BindPort(pPort);
 	 mSurfaces[pos]->ExecuteConfig();
+
 	 DesignSurfaceLayout();
 	 ExecuteSurfaceLayout();
 
@@ -145,10 +147,11 @@ CSurface* CWallDlg::FindSurface(long loginId)
 CSurface* CWallDlg::FindSurface(CPort* pPort)
 {
 	for (int i = 0; i < 6; i++) {
-		if (mSurfaces[i] != NULL)
+		if (mSurfaces[i] != NULL) {
 			ASSERT(mSurfaces[i]->m_BindedPort != NULL);
-		if (mSurfaces[i]->m_BindedPort == pPort) {
-			return mSurfaces[i];
+			if (mSurfaces[i]->m_BindedPort == pPort) {
+				return mSurfaces[i];
+			}
 		}
 	}
 	return NULL;
@@ -176,15 +179,18 @@ void CWallDlg::DesignSurfaceLayout()
 	}
 
 	int qVal = 0;
-	for (i = 1; ; i++) {
-		qVal = i * i;
+	i  = 0;
+	while (i <= iSurfaceNumber) {
+		qVal  = i*i;
 		if (qVal >= iSurfaceNumber) {
-			mCols = i;
+			mCols  = i;
 			break;
 		}
+		i++;
 	}
 
-	mRows = iSurfaceNumber / mCols + (iSurfaceNumber%mCols) > 0 ? 1 : 0;
+	mRows = iSurfaceNumber / mCols + ((iSurfaceNumber%mCols) > 0 ? 1 : 0);
+	Print("Rows:%d, Cols:%d", mRows, mCols);
 }
 
 
@@ -205,8 +211,7 @@ void CWallDlg::ExecuteSurfaceLayout()
 	//long surface_area_height = rClient.Height() - margin * 2;
 	float surface_area_width  = rClient.Width() - margin * 4;
 	float surface_area_height = rClient.Height()- margin * 2;
-
-	Print("rClient (%d, %d),  surface area size (%f, %f)", rClient.Width(), rClient.Height(), surface_area_width, surface_area_height);
+	
 
 	orgX    = (rClient.Width() - surface_area_width) / 2;
 
@@ -235,17 +240,23 @@ void CWallDlg::ExecuteSurfaceLayout()
 }
 
 
-/**@brief 视频墙的掉线响应
- *
- */
-void CWallDlg::OnDisconnect(LONG loginId, char* szIp, LONG port)
+void CWallDlg::DeleteSurface(CSurface* pSurface)
 {
-	CSurface* pSurface = FindSurface(loginId);
+	pSurface->Delete();
 
-	if (pSurface != NULL) {
-		pSurface->OnDisconnect();
+	for (int i = 0; i < 6; i++) {
+		if (mSurfaces[i] == pSurface) {
+			mSurfaces[i]  = NULL;
+			delete pSurface;
+
+			DesignSurfaceLayout();
+			ExecuteSurfaceLayout();
+
+			return;
+		}
 	}
 }
+
 
 
 void CWallDlg::DoDataExchange(CDataExchange* pDX)
@@ -258,6 +269,9 @@ BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_LOGIN, &CWallDlg::OnUserMsgLogin)
 	ON_MESSAGE(USER_MSG_LOGOFF, &CWallDlg::OnUserMsgLogoff)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CWallDlg::OnUserMsgCameraConfigChange)
+	ON_WM_TIMER()
+	ON_MESSAGE(USER_MSG_DISCONNECT, &CWallDlg::OnUserMsgDisconnect)
+	ON_MESSAGE(USER_MSG_RELOGIN, &CWallDlg::OnUserMsgRelogin)
 END_MESSAGE_MAP()
 
 
@@ -272,7 +286,7 @@ BOOL CWallDlg::OnInitDialog()
 	H264_DVR_Init(_cbDisconnect, (DWORD)this);
 	H264_DVR_SetDVRMessCallBack(_cbDVRMessage, (long)this);
 
-	PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, 0);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -294,31 +308,7 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 }
 
 
-/**@brief 设备登录响应
- *
- */
-afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
-{
-	if (wParam) {
-		Print("Login...");
 
-		CPort* pPort  = CPortManager::GetInstance()->AllocPort();
-
-		pPort->SetCamera( (CCamera*)lParam );
-
-		Invest( pPort);        //视频墙增加surface
-
-		MSG msg;
-		msg.message = USER_MSG_LOGIN;
-		msg.lParam = (LPARAM)pPort;
-		CMsgSquare::GetInstance()->Broadcast(msg);
-	}
-	else {
-		AfxMessageBox(_T("登录失败"));
-		delete ((CCamera*)lParam);
-	}
-	return 0;
-}
 
 
 
@@ -328,29 +318,46 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
  */
 afx_msg LRESULT CWallDlg::OnUserMsgLogoff(WPARAM wParam, LPARAM lParam)
 {
-	CSurface* pSurface = (CSurface*)lParam;
+	CPort* pPort  = (CPort*)lParam;
+	if (wParam == 2) {
+		CSurface* pSurface  = FindSurface(pPort);
 
-
-
-	for (int i = 0; i < 6; i++) {
-		if (mSurfaces[i] == pSurface) {
-			//Delete(pSurface);
-
-			MSG msg;
-			msg.message = USER_MSG_LOGOFF;
-			//msg.lParam = (LPARAM)pSurface->m_BindedCamera;
-			msg.lParam = (LPARAM)pSurface->m_BindedPort->m_pCamera;
-			CMsgSquare::GetInstance()->Broadcast(msg);
-
-
-		/*	delete pSurface->m_BindedCamera;*/
-		    delete pSurface->m_BindedPort->m_pCamera;
-			delete mSurfaces[i];
-
-			mSurfaces[i] = NULL;
-			break;
+		if (pSurface != NULL) {
+			DeleteSurface(pSurface);
 		}
+
+		MSG msg;
+		msg.message  = USER_MSG_LOGOFF;
+		msg.lParam   = (LPARAM)pPort;
+		CMsgSquare::GetInstance()->Broadcast(msg);
+
+		return 0;
 	}
+
+
+	//CSurface* pSurface = (CSurface*)lParam;
+
+
+
+	//for (int i = 0; i < 6; i++) {
+	//	if (mSurfaces[i] == pSurface) {
+	//		//Delete(pSurface);
+
+	//		MSG msg;
+	//		msg.message = USER_MSG_LOGOFF;
+	//		//msg.lParam = (LPARAM)pSurface->m_BindedCamera;
+	//		msg.lParam = (LPARAM)pSurface->m_BindedPort->m_pCamera;
+	//		CMsgSquare::GetInstance()->Broadcast(msg);
+
+
+	//	/*	delete pSurface->m_BindedCamera;*/
+	//	    delete pSurface->m_BindedPort->m_pCamera;
+	//		delete mSurfaces[i];
+
+	//		mSurfaces[i] = NULL;
+	//		break;
+	//	}
+	//}
 	return 0;
 }
 
@@ -376,5 +383,152 @@ afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lPar
 		pPort->m_DevConfig.IsAutoWatchEnabled  = pConfig->IsAutoWatchEnabled;
 		pSurface->ExecuteConfig();
 	}
+	return 0;
+}
+
+
+void CWallDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	Print("----Reconnect----");
+
+	if (mReconnectPort.size() > 0) {
+		CPort * pPort   = mReconnectPort.front();
+		PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_RELOGIN, (WPARAM)this->m_hWnd, (LPARAM)pPort);
+		mReconnectPort.pop_front();
+	}
+
+	if (mReconnectPort.size() == 0) {
+		KillTimer(TIMER_ID_RECONNECT);
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+
+
+/**@brief 视频墙的掉线响应
+*
+*/
+void CWallDlg::OnDisconnect(LONG loginId, char* szIp, LONG port)
+{
+	CSurface* pSurface = FindSurface(loginId);
+
+	if (pSurface != NULL) {
+		CPort* pPort = pSurface->m_BindedPort;
+		if (pPort) {
+			// 拔出又掉线，可以删除矣。
+			if (pPort->m_State == OFFLINE) {
+				Print("Disconnect and offline");
+
+				DeleteSurface(pSurface);
+
+				pPort->m_pCamera = NULL;
+
+				MSG msg;
+				msg.message = USER_MSG_LOGOFF;
+				msg.lParam = (LPARAM)pPort;
+				CMsgSquare::GetInstance()->Broadcast(msg);
+			}
+			// 掉线未拔出，坐等重连
+			else {
+				Print("Disconnect but online");
+
+				pSurface->OnDisconnect();
+
+
+				if (mReconnectPort.size() == 0) {
+					SetTimer(TIMER_ID_RECONNECT, 10 * 1000, NULL);
+				}
+				mReconnectPort.push_back(pPort);
+			}
+		}
+		else {
+			DeleteSurface(pSurface);
+			Print("Disconnect surface has no port,what fuck!");
+		}
+	}
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgDisconnect(WPARAM wParam, LPARAM lParam)
+{
+	this->OnDisconnect(lParam,  NULL, 0);
+	return 0;
+}
+
+
+
+/**@brief 设备登录响应
+*
+*/
+afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort = (CPort*)lParam;
+
+	if (wParam) {
+		Print("Login succeed");
+
+		pPort->m_State = ONLINE;
+
+		Invest(pPort);        //视频墙增加surface
+
+		MSG msg;
+		msg.message = USER_MSG_LOGIN;
+		msg.lParam = lParam;
+		CMsgSquare::GetInstance()->Broadcast(msg);
+	}
+	else {
+		Print("----Login failed----");
+		/*delete ((CCamera*)lParam);*/
+
+		if (mReconnectPort.size() == 0) {
+			SetTimer(TIMER_ID_RECONNECT, 10 * 1000, NULL);
+		}
+		mReconnectPort.push_back(pPort);
+		
+	}
+	return 0;
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort  = (CPort*) lParam;
+	
+	if (! wParam) {
+		Print("Reconnect failed");
+		// 掉线的情况下 是拔出则删除
+		if (pPort->m_State == OFFLINE) {
+			CSurface* pSurface = FindSurface(pPort);
+			if (pSurface) {
+				DeleteSurface(pSurface);
+				pPort->m_pCamera = NULL;
+
+				MSG msg;
+				msg.message = USER_MSG_LOGOFF;
+				msg.lParam = (LPARAM)pPort;
+				CMsgSquare::GetInstance()->Broadcast(msg);
+			}
+		}
+		else {
+			// 10s 重连。
+			if (mReconnectPort.size() == 0) {
+				SetTimer(TIMER_ID_RECONNECT, 10 * 1000, NULL);
+			}
+
+			mReconnectPort.push_back(pPort);
+		}
+	}
+	else {
+		Print("Reconnect succeed");
+		CSurface* pSurface  = FindSurface(pPort);
+		if (pSurface) {
+			pSurface->OnReconnect();
+		}
+	}
+
 	return 0;
 }
