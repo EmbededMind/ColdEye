@@ -202,8 +202,7 @@ BOOL CCamera::Login()
 	if (lRet > 0)
 	{
 		m_LoginId = lRet;
-		printf("Login\n");
-		CUtil::LoadMap(this);
+		//CUtil::LoadMap(this);
 		return TRUE;
 	}
 	else

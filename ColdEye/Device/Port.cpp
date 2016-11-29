@@ -4,6 +4,8 @@
 #include "Database\DBUtil.h"
 #include "Pattern\MsgSquare.h"
 
+#include "Com\Util.h"
+
 
 CString PortName[24] = {  //对应名字id
 	_T("摄像机1"),              
@@ -38,7 +40,8 @@ CString PortName[24] = {  //对应名字id
 
 CPort::CPort()
 {
-
+	m_State  = OFFLINE;
+	m_Id     = 0;
 }
 
 
@@ -179,12 +182,14 @@ bool  CPort::SetAwTime(DWORD tBegining, DWORD tEnd)
 
 
 
+
+
 PortOption CPort::ParseState(bool isOnline, bool isReplaced)
 {
 	if (m_State == OFFLINE) {
 		if (isOnline) {
 			m_State = PENDING_MAC;
-
+			
 			if (isReplaced) {
 				return DROWN;
 			}				
@@ -193,14 +198,22 @@ PortOption CPort::ParseState(bool isOnline, bool isReplaced)
 			}
 		}
 	}
+	//else {
+	//	if (!isOnline) {
+	//		m_State  = OFFLINE;
+
+	//		return RESET;
+	//	}
+	//}
 }
 
 
 
-PortOption CPort::ParseState(bool isOnline, UCHAR* pMac)
+PortOption CPort::ParseState( UCHAR* pMac)
 {
 	if (m_State == PENDING_MAC) {
-		sprintf_s(this->m_mac, "%02d:%02d:%02d:%02d:%02d:%02d", pMac);
+
+		CUtil::MacNumberToStr(pMac, this->m_mac);
 		m_State  = PENDING_CAMERA;
 		return SEARCH_CAMERA;
 	}

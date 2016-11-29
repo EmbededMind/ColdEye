@@ -21,6 +21,7 @@ typedef struct {
 	DWORD       watch_time_begining;
 	DWORD       watch_time_end;
 	bool        auto_watch_status;
+	bool        alarm_sound_onoff;
 	uint16_t    alarm_sound;
 	uint16_t    brightness;
 }HostConfig;
@@ -38,6 +39,8 @@ public:
 // ÖØÐ´
 public:
 	CBitmap m_Bitmap;
+
+
 
 	virtual BOOL InitInstance();
 

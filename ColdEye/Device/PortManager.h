@@ -18,5 +18,7 @@ public:
 
 	CPort*  GetPortById(int id);
 
+    void    BindPortId(CPort* pPort, int id);
+
 	CPort*  AllocPort();
 };

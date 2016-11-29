@@ -549,7 +549,7 @@ void CSerialPort::WriteChar(CSerialPort* port)
 
 		// Clear buffer
 		PurgeComm(port->m_hComm, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
-		printf("write to COM_CAMERA length %d\n", SendLen);
+		//printf("write to COM_CAMERA length %d\n", SendLen);
 		bResult = WriteFile(port->m_hComm,                            // Handle to COMM Port
 			port->m_szWriteBuffer,                    // Pointer to message buffer in calling finction
 			SendLen,    // add by mrlong

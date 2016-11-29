@@ -11,6 +11,8 @@ public:
 	CWallDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CWallDlg();
 
+
+	std::list<CPort*> mReconnectPort;
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_WALL };
@@ -33,7 +35,7 @@ public:
 	void DesignSurfaceLayout();
 	void ExecuteSurfaceLayout();
 
-
+	void DeleteSurface(CSurface* pSurface);
 protected:
 	CSurface*        mSurfaces[6];
 
@@ -52,4 +54,9 @@ protected:
 	afx_msg LRESULT OnUserMsgLogin(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgLogoff(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+protected:
+	afx_msg LRESULT OnUserMsgDisconnect(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgRelogin(WPARAM wParam, LPARAM lParam);
 };

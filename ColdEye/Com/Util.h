@@ -16,5 +16,6 @@ public:
 	static void LoadMap(CCamera *pCamera);
 	static void RemoveDev(CCamera *pCamera);
 	static uint64_t ArrayToUint64(uint8_t *pch);
+	static void     MacNumberToStr(uint8_t * pNum, char* pMac);
 };
 

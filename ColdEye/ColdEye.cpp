@@ -236,8 +236,9 @@ bool CColdEyeApp::LoadSystemConfig()
 		m_SysConfig.auto_watch_status = stmt->ValueInt(1);
 		m_SysConfig.watch_time_begining = stmt->ValueInt(2);
 		m_SysConfig.watch_time_end = stmt->ValueInt(3);
-		m_SysConfig.alarm_sound = stmt->ValueInt(4);
-		m_SysConfig.brightness = stmt->ValueInt(5);
+		m_SysConfig.alarm_sound_onoff  = stmt->ValueInt(4);
+		m_SysConfig.alarm_sound = stmt->ValueInt(5);
+		m_SysConfig.brightness = stmt->ValueInt(6);
 		return true;
 	}
 	else {
@@ -257,12 +258,13 @@ void CColdEyeApp::MakeSystemConfigDefault()
 	m_SysConfig.watch_time_begining = 18 * 60;
 	m_SysConfig.watch_time_end = 12 * 60;
 	m_SysConfig.auto_watch_status = 1;
+	m_SysConfig.alarm_sound_onoff  = 1;
 	m_SysConfig.alarm_sound = 0;
 	m_SysConfig.brightness = 0;
 
-	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d, %d, %d);",
+	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d, %d,%d, %d);",
 		m_SysConfig.boat_name.c_str(), m_SysConfig.watch_time_begining, m_SysConfig.auto_watch_status,
-		 m_SysConfig.watch_time_end, m_SysConfig.alarm_sound, m_SysConfig.brightness);
+		 m_SysConfig.watch_time_end, m_SysConfig.alarm_sound_onoff,m_SysConfig.alarm_sound, m_SysConfig.brightness);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
@@ -369,7 +371,8 @@ void CColdEyeApp::CheckDatabase()
 UINT __stdcall LoginThread(PVOID pM)
 {
 	MSG msg;
-	static SDK_CONFIG_NET_COMMON_V2 DeviceNetCommon[10];
+	SDK_CONFIG_NET_COMMON_V2 DeviceNetCommon[10];
+	static int ScanLength  = 0;
 	int iRetLength;
 
 	while (GetMessage(&msg, 0, 0, 0))
@@ -378,30 +381,63 @@ UINT __stdcall LoginThread(PVOID pM)
 		{
 		     case USER_MSG_SCAN_DEV:
 				 {
-					 BOOL bRet = H264_DVR_SearchDevice((char*)DeviceNetCommon, sizeof(SDK_CONFIG_NET_COMMON_V2) * 10, &iRetLength, 7000);
-					 if (bRet)
-					 {
-						 int iDevNumber = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
+					bool hasFound  = false;
+					 CPort* pPort  = (CPort*)msg.lParam;
 
-						 if (iDevNumber > 1) {
-							 Print("What a fuck! Find more that 1 camera");
-						 }
+					 Print("searching mac %s", pPort->GetMac());
 
-						 if (iDevNumber > 0)
-						 {
-							 Print("Device number:%d", iDevNumber);
-							 PostMessage( AfxGetApp()->m_pMainWnd->m_hWnd, USER_MSG_SCAN_DEV, iDevNumber, (LPARAM)DeviceNetCommon);
+					 int i  = 0;
+					 
+					 for (; i < ScanLength; i++) {
+						Print("Scan mac:%s", DeviceNetCommon[i].sMac);
+						 if (strcmp(DeviceNetCommon[i].sMac, pPort->GetMac()) == 0) {
+							Print("Find mac:%s", DeviceNetCommon[i].sMac);
+							hasFound  = true;
+							break;
 						 }
 					 }
+
+					 if (!hasFound) {
+						 BOOL bRet = H264_DVR_SearchDevice((char*)DeviceNetCommon, sizeof(SDK_CONFIG_NET_COMMON_V2) * 10, &iRetLength, 7000);
+						 if (bRet)
+						 {
+							 int ScanLength = iRetLength / sizeof(SDK_CONFIG_NET_COMMON_V2);
+
+							 for (i = 0; i < ScanLength; i++) {
+								 Print("Scan mac:%s", DeviceNetCommon[i].sMac);
+								 if (strcmp(DeviceNetCommon[i].sMac, pPort->GetMac()) == 0) {
+									 Print("Find mac:%s", DeviceNetCommon[i].sMac);
+									 hasFound = true;									 
+									 break;
+								 }
+							 }
+						 }							
+					 }
+
+					 if (hasFound) {
+					    
+						 //if (strcmp(DeviceNetCommon[i].sMac, pPort->GetMac()) != 0) {
+
+						 //}
+
+						 CCamera* pCamera = new CCamera();
+
+
+						 pCamera->SetCommonNetConfig(&DeviceNetCommon[i]);
+
+						 pPort->m_pCamera = pCamera;
+						 PostMessage(AfxGetApp()->m_pMainWnd->m_hWnd, USER_MSG_SCAN_DEV, true, msg.lParam);
+					 }
 					 else {
-						 TRACE("Search nothing\n");
+						 PostMessage(AfxGetApp()->m_pMainWnd->m_hWnd, USER_MSG_SCAN_DEV, false, msg.lParam);
 					 }
 				 }
 				 break;
 			//-----------------------------------------------------------------------------------
 			 case USER_MSG_LOGIN:
 		    	 {
-					CCamera* pCamera = (CCamera*)msg.lParam;
+					CPort* pPort  = (CPort*)msg.lParam;
+					CCamera* pCamera = pPort->m_pCamera;
 					CWallDlg* pWallDlg = ((CColdEyeApp*)AfxGetApp())->GetWallDlg();
 					ASSERT(pWallDlg != nullptr);
 
@@ -418,10 +454,14 @@ UINT __stdcall LoginThread(PVOID pM)
 			//----------------------------------------------------------------------------
 			 case USER_MSG_RELOGIN:
 				 {
-					 CCamera* pCamera = (CCamera*)msg.lParam;
+					 CCamera* pCamera = ((CPort*)msg.lParam)->m_pCamera;
 
+					 Print("Relogining...");
 					 if (pCamera->Login()) {
-						 PostMessage((HWND)msg.wParam, USER_MSG_RELOGIN, true, msg.lParam);
+						 PostMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_RELOGIN, true, msg.lParam);
+					 }
+					 else {
+						 PostMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_RELOGIN, false, msg.lParam);
 					 }
 				 }
 				 break;
