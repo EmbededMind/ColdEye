@@ -24,7 +24,6 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 CFile* CRecordFileButler::AllocRecordFile()
 {
 	CRecordFileMetabolism::GetInstance()->FileMetabolism();
-
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
 
@@ -44,9 +43,6 @@ if (m_FileType == 2)
 
 	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
-	
-
-	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
 	
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);

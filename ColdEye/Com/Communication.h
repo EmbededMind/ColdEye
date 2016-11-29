@@ -41,7 +41,7 @@ public:
 
 	bool Handle(uint8_t param);
 	bool Handle(uint8_t param, uint8_t port);
-	uint8_t RecHandleProc(uint8_t *pch);
+	bool RecHandleProc(uint8_t *pch);
 
 	bool ControlLED(CCamera *pDev, uint8_t Switch);
 };

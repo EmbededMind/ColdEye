@@ -80,6 +80,7 @@
 
 #define USER_MSG_PORT_VISIBILITY_CHANGE    (WM_USER + 180)
 
+#define USER_MSG_HANDLE                     (WM_USER + 190) //握手消息
 
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))
@@ -137,7 +138,11 @@
 
 /**      Disk Surpluss Space     **/
 #define SURPLUSSPACENORMAL      1024*1024*1024//正常文件所在磁盘剩余空间红线524288000
+<<<<<<< HEAD
 #define SURPLUSSPACEALARM       1000000000000000//报警文件所在磁盘剩余空间红线524088000
+=======
+#define SURPLUSSPACEALARM       1024*1024*1024//报警文件所在磁盘剩余空间红线524088000
+>>>>>>> cc3a6d0a4ef8f3366e72bffbbedb964b905d6b4b
 
 /**        Com num define        **/
 #define COM_KB    1
