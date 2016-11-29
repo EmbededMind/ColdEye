@@ -1,28 +1,28 @@
 #include "stdafx.h"
-#include "SwitchRecordListUI.h"
+#include "AWOnOffListLabelUI.h"
 
-CSwitchRecordListUI::CSwitchRecordListUI()
+CAWOnOffListLabelUI::CAWOnOffListLabelUI()
 {
 }
 
-CSwitchRecordListUI::CSwitchRecordListUI(CTime time, CDuiString type)
+CAWOnOffListLabelUI::CAWOnOffListLabelUI(CTime time, CDuiString type)
 	:m_selectedItemBk(0xFF4198FE)
 {
 	SetText(time.Format("%Y-%m-%d %H:%M"));
 	m_recordType = type;
 }
 
-CSwitchRecordListUI::~CSwitchRecordListUI()
+CAWOnOffListLabelUI::~CAWOnOffListLabelUI()
 {
 }
 
-void CSwitchRecordListUI::DoPaint(HDC hDC, const RECT & rcPaint)
+void CAWOnOffListLabelUI::DoPaint(HDC hDC, const RECT & rcPaint)
 {
 	DrawItemBk(hDC, rcPaint);
 	DrawItemText(hDC, m_rcItem);
 }
 
-void CSwitchRecordListUI::DrawItemText(HDC hDC, const RECT & rcItem)
+void CAWOnOffListLabelUI::DrawItemText(HDC hDC, const RECT & rcItem)
 {	
 	CListLabelElementUI::DrawItemText(hDC, rcItem);
 	CDuiString sText = GetText();
@@ -53,7 +53,7 @@ void CSwitchRecordListUI::DrawItemText(HDC hDC, const RECT & rcItem)
 			pInfo->nFont, TextStyle);
 }
 
-void CSwitchRecordListUI::DrawItemBk(HDC hDC, const RECT & rcItem)
+void CAWOnOffListLabelUI::DrawItemBk(HDC hDC, const RECT & rcItem)
 {
 	ASSERT(m_pOwner);
 	if (m_pOwner == NULL) return;
@@ -68,8 +68,20 @@ void CSwitchRecordListUI::DrawItemBk(HDC hDC, const RECT & rcItem)
 	}
 }
 
-void CSwitchRecordListUI::SetBkColor(DWORD color)
+void CAWOnOffListLabelUI::SetBkColor(DWORD color)
 {
 	m_itemBk = color;
+}
+
+void CAWOnOffListLabelUI::DoEvent(TEventUI & event)
+{
+	switch (event.Type) {
+	case UIEVENT_KEYDOWN:
+		m_pManager->SendNotify(this,DUI_MSGTYPE_AWOnOFF_LIST,event.wParam,event.lParam);
+		break;
+	default:
+		CListLabelElementUI::DoEvent(event);
+		break;
+	}
 }
 

@@ -20,8 +20,7 @@
 
 #include "Control\AlarmLightUI.h"
 #include "Control\AlarmVoiceListUI.h"
-#include "Control\AlarmVoiceSwitchUI.h"
-#include "Control\CameraSwitchUI.h"
+#include "Control\SwitchUI.h"
 #include "Control\KeyBoardUI.h"
 #include "Control\MenuItemUI.h"
 #include "Control\MyEditUI.h"
@@ -171,12 +170,10 @@ BOOL CColdEyeApp::InitInstance()
 	REGIST_DUICONTROL(CMyEditUI);
 	REGIST_DUICONTROL(CKeyBoardUI);
 	REGIST_DUICONTROL(CShipNameItemUI);
-	REGIST_DUICONTROL(CCameraSwitchUI);
 	REGIST_DUICONTROL(CMyLabelUI);
 	REGIST_DUICONTROL(CMySliderUI);
-	REGIST_DUICONTROL(CAlarmVoiceSwitchUI);
 	REGIST_DUICONTROL(CAlarmVoiceListUI);
-	REGIST_DUICONTROL(CAlarmLightUI);
+	REGIST_DUICONTROL(CSwitchUI);
 	REGIST_DUICONTROL(CMyListUI);
 	REGIST_DUICONTROL(CRecordvoiceUI);
 	REGIST_DUICONTROL(CRevordVoiceBtUI);

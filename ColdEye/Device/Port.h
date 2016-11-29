@@ -17,6 +17,7 @@
 #define PORT_STATUS_ONLINE                0x01
 #define PORT_STATUS_OFFLINE               0x00 
 
+
 typedef struct {
 	DWORD       Begining;
 	DWORD       End;

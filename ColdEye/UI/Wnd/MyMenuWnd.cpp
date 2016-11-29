@@ -1,5 +1,4 @@
 #include "stdafx.h"
-//
 #include "Wnd\MyMenuWnd.h"
 #include "Wnd\MsgWnd.h"
 
@@ -10,6 +9,33 @@
 #include "Database\DBShadow.h"
 #include "Com\RecordAlarmSound.h"
 #include "Com\MCI.h"
+
+CDuiString  _PortName[24] = {  //对应名字id
+	_T("摄像机1"),
+	_T("摄像机2"),
+	_T("摄像机3"),
+	_T("摄像机4"),
+	_T("摄像机5"),
+	_T("摄像机6"),
+	_T("船头摄像机"),
+	_T("船甲板摄像机"),
+	_T("船左舷摄像机"),
+	_T("船右舷摄像机"),
+	_T("船后方"),
+	_T("船缆绳"),
+	_T("集控台"),
+	_T("监控台"),
+	_T("船长室"),
+	_T("船员室"),
+	_T("主机舱"),
+	_T("发电机舱"),
+	_T("罗经甲板"),
+	_T("一层甲板"),
+	_T("二层甲板"),
+	_T("三层甲板"),
+	_T("四层甲板"),
+	_T("五层甲板")
+};
 
 CMyMenuWnd::CMyMenuWnd()
 {
@@ -40,9 +66,12 @@ void CMyMenuWnd::InitWindow()
 	pKeyBoard = static_cast<CContainerUI*>(m_pm.FindControl(_T("keyboard")));
 	pSysLight = static_cast<CMySliderUI*>(m_pm.FindControl(_T("sysset_light")));
 	pSysVolum = static_cast<CMySliderUI*>(m_pm.FindControl(_T("sysset_voice")));
-	pAlmVicSwitch = static_cast<CAlarmVoiceSwitchUI*>(m_pm.FindControl(_T("alarmvoice_switch")));
-	pDefault = static_cast<CAlarmVoiceListUI*>(m_pm.FindControl(_T("alarmvoice_default")));
+	pAlmVicSwitch = static_cast<CSwitchUI*>(m_pm.FindControl(_T("alarmvoice_switch")));
+	pDefaultVoice = static_cast<CAlarmVoiceListUI*>(m_pm.FindControl(_T("alarmvoice_default")));
 	pVoice1 = static_cast<CAlarmVoiceListUI*>(m_pm.FindControl(_T("voice1")));
+	pAlarmLight = static_cast<CSwitchUI*>(m_pm.FindControl(_T("alarmlight_switch")));
+	pAwOnOffRecordList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
+	pPage = static_cast<CLabelUI*>(m_pm.FindControl(_T("page")));
 	//-------------------------看船时间控件关联---------------------------------
 	pAwTime[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
 	pAwTime[1] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_minute")));
@@ -95,13 +124,9 @@ void CMyMenuWnd::InitWindow()
 		pSquare->AddAudience(m_hWnd, USER_MSG_ADDFILE);
 	}
 	InitAlarmVoice();
-
+	InitAwOnOffRecord();
 }
 
-
-void CMyMenuWnd::OnFinalMessage(HWND hWnd)
-{
-}
 
 
 void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
@@ -283,9 +308,12 @@ void CMyMenuWnd::RecordVoiceNotify(TNotifyUI & msg)
 		break;
 
 	case VK_UP:
-		break;
-
-	case VK_DOWN:
+		if (pVoice1) {
+			pVoice1->SetFocus();
+		}
+		else {
+			pDefaultVoice->SetFocus();
+		}
 		break;
 	}
 }
@@ -298,7 +326,7 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 	switch (msg.wParam) {
 	case VK_UP:
 		if (pSend == pVoice1) {
-			pDefault->SetFocus();
+			pDefaultVoice->SetFocus();
 		}
 		else {
 			pAlmVicSwitch->SetFocus();
@@ -306,9 +334,8 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 		break;
 
 	case VK_DOWN:
-		if (pSend == pDefault) {
+		if (pSend == pDefaultVoice) {
 			if (pVoice1) {
-
 				pVoice1->SetFocus();
 			}
 			else {
@@ -321,16 +348,99 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 		break;
 
 	case VK_RETURN:
-		if (pSend == pDefault) {
-			pDefault->SetVoiceSel(true);
+		if (pSend == pDefaultVoice) {
+			pDefaultVoice->SetVoiceSel(true);
 			if(pVoice1)
 				pVoice1->SetVoiceSel(false);
 		}
 		else {
-			pDefault->SetVoiceSel(false);
+			pDefaultVoice->SetVoiceSel(false);
 			pVoice1->SetVoiceSel(true);
 		}
 		m_pm.Invalidate();
+		break;
+	}
+}
+
+void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
+{
+	CSwitchUI* pItem = (CSwitchUI*)msg.pSender;
+	CDuiString sName = pItem->GetName();
+	switch (msg.wParam){
+	case VK_LEFT:
+		if (pItem->GetValue()) {
+			pItem->SetValue(false);
+			if (pItem == pAlmVicSwitch) {
+				ShowAlarmVoiceList(pItem->GetValue());
+			}
+			pItem->Invalidate();
+		}
+		break;
+	case VK_RIGHT:
+		if (!pItem->GetValue()) {
+			pItem->SetValue(true);
+			if (pItem == pAlmVicSwitch) {
+				ShowAlarmVoiceList(pItem->GetValue());
+			}
+			pItem->Invalidate();
+		}
+		break;
+	case VK_UP:
+		if (_tcscmp(sName, _T("camera_switch")) == 0) {
+			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
+			camera[inx].pShipname->SetFocus();
+		}
+		break;
+
+	case VK_DOWN:
+		if (_tcscmp(sName, _T("camera_switch")) == 0) {
+			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
+			camera[inx].pVolum->SetFocus();
+		}
+		else if (pItem == pAlmVicSwitch) {
+			if (pItem->GetValue()) {
+				pDefaultVoice->SetFocus();
+			}
+		}
+		break;
+	}
+}
+
+void CMyMenuWnd::AWOnOffListNotify(TNotifyUI & msg)
+{
+	switch (msg.wParam) {
+	case VK_RIGHT:
+		AwOnOffRecordNextPage();
+		break;
+		
+	case VK_LEFT:
+		AwOnOffRecordLastPage();
+		break;
+		
+	case VK_UP: {
+			int sel=0;
+			sel = pAwOnOffRecordList->GetCurSel();
+			if (sel == 0) {
+				AwOnOffRecordLastPage();
+			}
+			else {
+				pAwOnOffRecordList->SelectItem(sel - 1);
+			}
+		}
+		break;
+
+	case VK_DOWN: {
+			int sel = 0;
+			sel = pAwOnOffRecordList->GetCurSel();
+			if (sel == 12) {
+				AwOnOffRecordNextPage();
+			}
+			else if(sel != pAwOnOffRecordList->GetCount()-1){
+				pAwOnOffRecordList->SelectItem(sel + 1);
+			}
+		}
+		break;
+	default:
 		break;
 	}
 }
@@ -368,6 +478,15 @@ void CMyMenuWnd::ExpandCameraName()
 		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
 		pItem->SetStatus(false);
 	}
+}
+
+void CMyMenuWnd::ShowAlarmVoiceList(bool Switch)
+{
+	int inx;
+	inx = pLayout_third->GetCurSel();
+	CContainerUI* pContain = (CContainerUI*)pLayout_third->GetItemAt(inx);
+	pContain = (CContainerUI*)pContain->GetItemAt(1);
+	pContain->SetVisible(Switch);
 }
 
 void CMyMenuWnd::ThirdMenuSetFocus(CDuiString userdata)
@@ -426,6 +545,10 @@ void CMyMenuWnd::ThirdMenuSetFocus(CDuiString userdata)
 	}
 	else if (inx == 17){
 		//看船开关记录
+		if (pAwOnOffRecordList->GetCount() > 0) {
+			pAwOnOffRecordList->GetItemAt(0)->SetFocus();
+			pAwOnOffRecordList->SelectItem(0);
+		}
 	}
 	else if (inx >= 18 && inx < 24) {
 		//视频列表
@@ -442,7 +565,6 @@ void CMyMenuWnd::ThirdMenuSetFocus(CDuiString userdata)
 			return;
 		}
 	}
-	//SetItemBkColor(NULL,0xFFEFEFF4, 0xFFFFFFFF);
 }
 
 int CMyMenuWnd::DetectHardDriver(list<CRecordFileInfo*>* recordInfo)
@@ -581,17 +703,14 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	else if (msg.sType == DUI_MSGTYPE_ALA_VOICE_LIST) {
 		AlarmVoiceListNotify(msg);
 	}
+	else if (msg.sType == DUI_MSGTYPE_SWITCH) {
+		SwitchNotify(msg);
+	}
+	else if (msg.sType == DUI_MSGTYPE_AWOnOFF_LIST) {
+		AWOnOffListNotify(msg);
+	}
 }
 
-void CMyMenuWnd::OnLClick(CControlUI * pControl)
-{
-
-}
-
-LRESULT CMyMenuWnd::OnDestroy(UINT, WPARAM, LPARAM, BOOL & bHandled)
-{
-	return LRESULT();
-}
 
 LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 { 
@@ -698,17 +817,15 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 {
-	CTabLayoutUI *pTabLayout;
 	CContainerUI  *pChildLayout;
 	CDuiString name;
 	int iInx;
-	pTabLayout = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
-	iInx =pTabLayout->GetItemIndex(pLayout)-7;
+	iInx =pLayout_third->GetItemIndex(pLayout)-7;
 	pChildLayout = static_cast<CContainerUI*>(pLayout->GetItemAt(0));
 	camera[iInx].pTitle = (CLabelUI*)pChildLayout->GetItemAt(0);		//标题
 	camera[iInx].pShipname = (CMyEditUI*)pChildLayout->GetItemAt(2);	//船名
 	pChildLayout = static_cast<CContainerUI*>(pLayout->GetItemAt(2));
-	camera[iInx].pSwitch = (CCameraSwitchUI*)pChildLayout->GetItemAt(1);//摄像头开关
+	camera[iInx].pSwitch = (CSwitchUI*)pChildLayout->GetItemAt(1);//摄像头开关
 	camera[iInx].pVolum = (CMySliderUI*)pChildLayout->GetItemAt(4);//音量
 	camera[iInx].pSaveVideo = (CMyLabelUI*)pChildLayout->GetItemAt(6);//视频存储设置
 	camera[iInx].pAutoWatch = (CMyLabelUI*)pChildLayout->GetItemAt(8);//自动看船设置
@@ -717,8 +834,6 @@ void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 	name.Format(_T("video_alarmlist%d"), iInx + 1);
 	camera[iInx].pAlarmList = (CVideoListUI*)m_pm.FindControl(name);	//报警视频列表
 }
-
-
 
 void CMyMenuWnd::InitRecordFile(list<CRecordFileInfo*>* pList)
 {
@@ -755,20 +870,137 @@ void CMyMenuWnd::DeleteVideoObtain(CameraInfo cameraInfo)
 	camera[cameraInfo.id].pNormalList = NULL;
 }
 
-void CMyMenuWnd::AddWatchRecord(SwtichRecord info)
+
+void CMyMenuWnd::InitAwOnOffRecord()
 {
-	CListUI *pList;
+	pAwOnOffRecordList->RemoveAll();
+	char sqlStmt[128];
+	sprintf_s(sqlStmt, "SELECT * FROM log LIMIT 13 OFFSET 1;");
+	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+	CDuiString sOption,sPage;
+	while (stmt->NextRow()) {
+		CTime time = stmt->ValueInt(0);
+		sOption = GetStringOption(stmt->ValueInt(1), stmt->ValueInt(2));
+		AddAwOnOffRecord(time, sOption);
+	}
+	sprintf_s(sqlStmt, "SELECT COUNT(*) FROM log;");
+	stmt = sqlite.Statement(sqlStmt);
+	while (stmt->NextRow()) {
+		mTotalPage = stmt->ValueInt(0);
+	}
+	if (mTotalPage % 13) {
+		mTotalPage = mTotalPage / 13 + 1;
+	}
+	else {
+		mTotalPage = mTotalPage / 13;
+	}
+	printf("mTotalPage : %d\n", mTotalPage);
+	if(mTotalPage>0)
+		mPage = 1;
+	else mPage = 0;
+	sPage.Format(_T("第%d/%d"), mPage, mTotalPage);
+	pPage->SetText(sPage);
+}
+
+CDuiString CMyMenuWnd::GetStringOption(int option,int tag)
+{
+	switch (option) {
+	case LOG_POWER_ONOFF: //系统上电
+		if (tag) {
+			return _T("系统上电");
+		}
+		else {
+			return _T("系统断电");
+		}
+		break;
+
+	case LOG_SYS_TIME:
+		return _T("gg");
+		break;
+
+		//自动看船开关（全局）
+	case LOG_AUTO_WATCH:
+		if (tag) {
+			return _T("自动看船开启");
+		}
+		else {
+			return _T("自动看船关闭");
+		}
+		break;
+
+		//摄像头开
+	case LOG_CAM_ON:
+		return _PortName[tag] + _T("开启");
+		break;
+
+		//摄像头关
+	case LOG_CAM_OFF:
+		return _PortName[tag] + _T("关闭");
+		break;
+
+		//摄像头自动看船开启
+	case LOG_CAM_AWON:
+		return _PortName[tag] + _T("自动看船开启");
+		break;
+
+		//摄像头自动看船关闭
+	case LOG_CAM_AWOFF:
+		return _PortName[tag] + _T("自动看船关闭");
+		break;
+	default:
+		break;
+	}
+}
+
+void CMyMenuWnd::AddAwOnOffRecord(CTime sTime, CDuiString sType)
+{
 	int Count;
-	pList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
-	CSwitchRecordListUI *pListEle;
-	pListEle = new CSwitchRecordListUI(info.time, info.record_type);
-	pList->Add(pListEle);
+	CAWOnOffListLabelUI *pListEle;
+	pListEle = new CAWOnOffListLabelUI(sTime, sType);
+	pAwOnOffRecordList->Add(pListEle);
 	pListEle->SetAttribute(_T("style"), _T("watch_record_style"));
-	Count = pList->GetCount();
+	Count = pAwOnOffRecordList->GetCount();
 	if (Count % 2)
 		pListEle->SetBkColor(0xFFF3F3F3);
 	else
 		pListEle->SetBkColor(0xFFE5E5E5);
+}
+
+void CMyMenuWnd::AwPage(int page)
+{
+	if (page <= mTotalPage && page>0) {
+		mPage = page;
+		pAwOnOffRecordList->RemoveAll();
+		char sqlStmt[128];
+		sprintf_s(sqlStmt, "SELECT * FROM log LIMIT 13 OFFSET %d;", (page - 1) * 13 + 1);
+		SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+		CDuiString sOption, sPage;
+		while (stmt->NextRow()) {
+			CTime time = stmt->ValueInt(0);
+			sOption = GetStringOption(stmt->ValueInt(1), stmt->ValueInt(2));
+			AddAwOnOffRecord(time, sOption);
+		}
+		pAwOnOffRecordList->GetItemAt(0)->SetFocus();
+		pAwOnOffRecordList->SelectItem(0);
+		sPage.Format(_T("第%d/%d"), page, mTotalPage);
+		pPage->SetText(sPage);
+	}
+}
+
+void CMyMenuWnd::AwOnOffRecordNextPage()
+{
+	if (mPage < mTotalPage) {
+		mPage++;
+		AwPage(mPage);
+	}
+}
+
+void CMyMenuWnd::AwOnOffRecordLastPage()
+{
+	if (mPage > 1) {
+		mPage--;
+		AwPage(mPage);
+	}
 }
 
 int CMyMenuWnd::InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData)
@@ -832,7 +1064,7 @@ void CMyMenuWnd::CameraInfoInit(CameraInfo cameraInfo)
 	camera[i].id = cameraInfo.id;
 	camera[i].pTitle->SetText(cameraInfo.Name);
 	camera[i].pShipname->SetText(cameraInfo.Name);
-	camera[i].pSwitch->SetSwitch(cameraInfo.IsActivate);
+	camera[i].pSwitch->SetValue(cameraInfo.IsActivate);
 	camera[i].pVolum->SetValue(cameraInfo.Volumn);
 	camera[i].pSaveVideo->SetValue(cameraInfo.IsVideoRecordEnabled);
 	camera[i].pAutoWatch->SetValue(cameraInfo.IsAutoWatchEnabled);
@@ -842,7 +1074,7 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 {
 	CameraInfo setInfo;
 	setInfo.Name = camera[id].pShipname->GetText();
-	setInfo.IsActivate = camera[id].pSwitch->GetSwitch();
+	setInfo.IsActivate = camera[id].pSwitch->GetValue();
 	setInfo.Volumn = camera[id].pVolum->GetValue();
 	setInfo.IsVideoRecordEnabled = camera[id].pSaveVideo->GetValue();
 	setInfo.IsAutoWatchEnabled = camera[id].pAutoWatch->GetValue();
@@ -899,8 +1131,6 @@ bool CMyMenuWnd::AwTimeIsChange()
 
 
 
-
-
 LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (wParam)
@@ -921,8 +1151,6 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 	int nPort;
 	CMyEditUI *pCameraName;
 	inx = pLayout_third->GetCurSel();
-	Print("inx:%d", inx);
-
 	switch (inx) {
 	//---------------船舶名称----------------------
 	case 6:
@@ -969,7 +1197,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 					if (pPort) {
 
 						DeviceConfig config;
-						config.IsCameraOn  = camera[nPort-1].pSwitch->GetSwitch();
+						config.IsCameraOn  = camera[nPort-1].pSwitch->GetValue();
 						config.Volumn      = camera[nPort-1].pVolum->GetValue();
 						config.IsRecordEnabled = camera[nPort-1].pSaveVideo->GetValue();
 						config.IsAutoWatchEnabled = camera[nPort-1].pAutoWatch->GetValue();
@@ -1014,6 +1242,14 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 			}
 		}
 		else if(FocusedItem[1]){
+			FocusedItem[1]->SetFocus();
+		}
+		break;
+	//----------------自动看船开关记录---------------
+	case 17:
+		AwPage(1);
+		pAwOnOffRecordList->UnSelectAllItems();
+		if (FocusedItem[1]) {
 			FocusedItem[1]->SetFocus();
 		}
 		break;
@@ -1069,7 +1305,7 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 
 	camera[inx].pTitle->SetText(pPort->GetName());
 	camera[inx].pShipname->SetText(pPort->GetName());
-	camera[inx].pSwitch->SetSwitch(pPort->m_DevConfig.IsCameraOn);
+	camera[inx].pSwitch->SetValue(pPort->m_DevConfig.IsCameraOn);
 	camera[inx].pVolum->SetValue(pPort->m_DevConfig.Volumn);
 	camera[inx].pSaveVideo->SetValue(pPort->m_DevConfig.IsRecordEnabled);
 	camera[inx].pAutoWatch->SetValue(pPort->m_DevConfig.IsAutoWatchEnabled);
@@ -1084,7 +1320,7 @@ void CMyMenuWnd::InitAlarmVoice()
 	}
 	//选中默认
 	if (Sel == 1){
-		pDefault->SetVoiceSel(true);
+		pDefaultVoice->SetVoiceSel(true);
 	}
 	else {
 		if(pVoice1)

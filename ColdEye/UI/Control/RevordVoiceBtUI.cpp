@@ -17,7 +17,7 @@ void CRevordVoiceBtUI::DoEvent(TEventUI & event)
 {
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
-		m_pManager->SendNotify(this, DUI_MSGTYPE_RECORDVOICE, NULL, NULL);
+		m_pManager->SendNotify(this, DUI_MSGTYPE_RECORDVOICE,event.wParam, event.lParam);
 		break;
 	}
 	CButtonUI::DoEvent(event);

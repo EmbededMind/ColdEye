@@ -128,6 +128,18 @@
 
 
  /*****************************************
+ *            LOG_TAG				      *
+ ******************************************/
+#define LOG_POWER_ONOFF   1       
+#define LOG_SYS_TIME      2
+#define LOG_AUTO_WATCH    3
+#define LOG_CAM_ON		  4
+#define LOG_CAM_OFF		  5
+#define LOG_CAM_AWON	  6
+#define LOG_CAM_AWOFF     7
+
+
+ /*****************************************
  *         Time config macro define       *
  ******************************************/
 #define RECONNECT_TIMER_ELAPSE   30 //短线后每隔30s重连一次。
@@ -138,11 +150,7 @@
 
 /**      Disk Surpluss Space     **/
 #define SURPLUSSPACENORMAL      1024*1024*1024//正常文件所在磁盘剩余空间红线524288000
-<<<<<<< HEAD
-#define SURPLUSSPACEALARM       1000000000000000//报警文件所在磁盘剩余空间红线524088000
-=======
 #define SURPLUSSPACEALARM       1024*1024*1024//报警文件所在磁盘剩余空间红线524088000
->>>>>>> cc3a6d0a4ef8f3366e72bffbbedb964b905d6b4b
 
 /**        Com num define        **/
 #define COM_KB    1
@@ -234,7 +242,9 @@
 #define DUI_MSGTYPE_EDIT			(_T("edit"))
 #define DUI_MSGTYPE_LABEL			(_T("label"))
 #define DUI_MSGTYPE_ALA_VOICE_LIST	(_T("alarm_voice"))
+#define DUI_MSGTYPE_SWITCH			(_T("switch"))
 #define DUI_MSGTYPE_PLAYER			(_T("player"))
+#define DUI_MSGTYPE_AWOnOFF_LIST	(_T("aw_onoff"))
 #define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
 

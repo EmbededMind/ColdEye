@@ -13,6 +13,7 @@
 #include "Database\DBShadow.h"
 #include "Com\Communication.h"
 
+#include "Com\RecordAlarmSound.h"
 CMutex mutex_RealData;
 
 /**@brief 实时数据回调
@@ -640,9 +641,8 @@ void CSurface::OnAlarmTrigged()
 		else {
 			Print("Alloc file failed when alarm trigged");
 		}
-
-
-		CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息	
+		CRecordAlarmSound::GetInstance()->Play(m_BindedCamera);
+		CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 	}
 }
 
@@ -655,7 +655,7 @@ void CSurface::OnAlarmStop()
 	m_bIsAlarming = false;
 
 	Print("Alarm stop");
-
+	CRecordAlarmSound::GetInstance()->GetInstance()->StopTalk();
 	CCommunication::GetInstance()->OverAlarm(this->m_BindedCamera);//向摄像头的语音附件发送 报警关闭请求
 
 	m_wAlarmStamp = 0;

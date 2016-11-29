@@ -104,6 +104,7 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 
 void CMyListUI::DoEvent(TEventUI & event)
 {
+	Print("event:%d",event.Type);
 	if (event.Type == UIEVENT_KEYDOWN){
 		if (event.wParam == VK_RETURN){
 			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
