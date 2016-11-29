@@ -34,6 +34,7 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 }
 BOOL CRecordAlarmSound::StopTalk()
 {
+	m_isAlarm = false;
 	H264_PLAY_StopAudioCapture();//关闭音频采集功能
 
 	BOOL bPlayOk = FALSE;
@@ -105,6 +106,10 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 }
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
+	if (!m_isAlarm)
+		m_isAlarm = true;
+	else
+		return 0;
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思

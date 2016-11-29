@@ -1325,6 +1325,7 @@ void CMyMenuWnd::InitAlarmVoice()
 	int VoiveNum= 2;
 	int AlarmOnOff = 0;
 	int VoiceSel = 0;
+	int isExistVoice;
 	char sqlStmt[128];
 	sprintf_s(sqlStmt, "SELECT * FROM host_config;");
 	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
@@ -1332,7 +1333,7 @@ void CMyMenuWnd::InitAlarmVoice()
 		AlarmOnOff = stmt->ValueInt(4);
 		VoiceSel = stmt->ValueInt(5);
 	}
-
+	isExistVoice = CRecordAlarmSound::GetInstance()->ScanVoice();
 	for (int i = 0; i < VoiveNum-1; i++) {
 		AddAlarmVoice();
 	}
