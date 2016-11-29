@@ -18,7 +18,6 @@
 #include "UIlib.h"
 
 
-#include "Control\AlarmLightUI.h"
 #include "Control\AlarmVoiceListUI.h"
 #include "Control\SwitchUI.h"
 #include "Control\KeyBoardUI.h"
