@@ -438,6 +438,7 @@ UINT __stdcall LoginThread(PVOID pM)
 		    	 {
 					CPort* pPort  = (CPort*)msg.lParam;
 					CCamera* pCamera = pPort->m_pCamera;
+					
 					CWallDlg* pWallDlg = ((CColdEyeApp*)AfxGetApp())->GetWallDlg();
 					ASSERT(pWallDlg != nullptr);
 

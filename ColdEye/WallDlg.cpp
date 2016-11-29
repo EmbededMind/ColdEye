@@ -423,6 +423,8 @@ void CWallDlg::OnDisconnect(LONG loginId, char* szIp, LONG port)
 			if (pPort->m_State == OFFLINE) {
 				Print("Disconnect and offline");
 
+				CUtil::RemoveDev(pPort->m_pCamera);
+
 				DeleteSurface(pSurface);
 
 				pPort->m_pCamera = NULL;
@@ -468,6 +470,9 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 {
 	CPort* pPort = (CPort*)lParam;
 
+	
+	CUtil::LoadMap(pPort->m_pCamera);
+
 	if (wParam) {
 		Print("Login succeed");
 
@@ -504,6 +509,9 @@ afx_msg LRESULT CWallDlg::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
 		if (pPort->m_State == OFFLINE) {
 			CSurface* pSurface = FindSurface(pPort);
 			if (pSurface) {
+				
+				CUtil::RemoveDev(pPort->m_pCamera);
+
 				DeleteSurface(pSurface);
 				pPort->m_pCamera = NULL;
 
