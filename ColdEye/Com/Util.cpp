@@ -84,20 +84,26 @@ uint64_t CUtil::CharToUint64(char * pch)
 
 void CUtil::LoadMap(CCamera * pCamera)
 {
-	uint64_t uint64mac;
-	uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
-	Mac_CCamera_Map.insert(pair<uint64_t, CCamera*>(uint64mac, pCamera));
+	if (pCamera)
+	{
+		uint64_t uint64mac;
+		uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
+		Mac_CCamera_Map.insert(pair<uint64_t, CCamera*>(uint64mac, pCamera));
+	}
 }
 
 void CUtil::RemoveDev(CCamera * pCamera)
 {
-	uint64_t uint64mac;
-	uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
-	map<uint64_t, CCamera*>::iterator iter;
-	iter = Mac_CCamera_Map.find(uint64mac);
-	if (iter != Mac_CCamera_Map.end())
+	if (pCamera)
 	{
-		Mac_CCamera_Map.erase(iter);
+		uint64_t uint64mac;
+		uint64mac = CharToUint64(pCamera->mCommonNetConfig.sMac);
+		map<uint64_t, CCamera*>::iterator iter;
+		iter = Mac_CCamera_Map.find(uint64mac);
+		if (iter != Mac_CCamera_Map.end())
+		{
+			Mac_CCamera_Map.erase(iter);
+		}
 	}
 }
 
