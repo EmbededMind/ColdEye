@@ -32,9 +32,9 @@ int CMCI::StartRecord()
 
 int CMCI::StopRecord()
 {
-	DeleteFile(m_FilePathTmp);
+	DeleteFile(m_rFilePathTmp);
 	MCI_SAVE_PARMS mci_save;
-	mci_save.lpfilename = m_FilePathTmp;
+	mci_save.lpfilename = m_rFilePathTmp;
 	DWORD dwReturn = mciSendCommand(m_RecordDeviceID, MCI_SAVE, MCI_SAVE_FILE, (DWORD)(LPVOID)&mci_save);
 	if (dwReturn)
 	{
@@ -51,7 +51,7 @@ int CMCI::Play()
 	MCI_OPEN_PARMS mci_open;
 	MCI_PLAY_PARMS mci_play;
 
-	mci_open.lpstrElementName = m_FilePathTmp;
+	mci_open.lpstrElementName = m_rFilePathTmp;
 	DWORD dwReturn = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_ELEMENT, (DWORD)(LPVOID)&mci_open);
 	if (dwReturn)
 	{
@@ -103,14 +103,14 @@ int CMCI::GetTotaltime()
 BOOL CMCI::Save()
 {
 	mciSendCommand(m_PlayDeviceID, MCI_CLOSE, NULL, NULL);
-	DeleteFile(m_FilePath);
-	CFile::Rename(m_FilePathTmp, m_FilePath);
+	DeleteFile(m_rFilePath);
+	CFile::Rename(m_rFilePathTmp, m_rFilePath);
 	return 0;
 }
 
 BOOL CMCI::NotSave()
 {
 	mciSendCommand(m_PlayDeviceID, MCI_CLOSE, NULL, NULL);
-	DeleteFile(m_FilePathTmp);
+	DeleteFile(m_rFilePathTmp);
 	return 0;
 }

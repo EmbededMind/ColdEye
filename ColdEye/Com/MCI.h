@@ -10,8 +10,8 @@ public:
 	static CMCI * GetInstance()
 	{
 		static CMCI instance;
-		instance.m_FilePathTmp = _T(RECORD_VOICE_NAME_TMP);
-		instance.m_FilePath = _T(RECORD_VOICE_NAME);
+		instance.m_rFilePathTmp = _T(RECORD_VOICE_NAME_WAV_TMP);
+		instance.m_rFilePath = _T(RECORD_VOICE_NAME_WAV);
 		return &instance;
 	};
 private:
@@ -19,7 +19,8 @@ private:
 private:
 	DWORD m_RecordDeviceID;
 	DWORD m_PlayDeviceID;
-	CString m_FilePathTmp;
+	CString m_rFilePathTmp;
+	CString m_rFilePath;
 	CString m_FilePath;
 	DWORD m_RecordTime;
 	DWORD m_PlayTime;

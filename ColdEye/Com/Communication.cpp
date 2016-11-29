@@ -204,7 +204,7 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 		CleanChannel();
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64));
+		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), 1);
 		return true;
 	}
 	else

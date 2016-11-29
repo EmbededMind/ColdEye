@@ -98,15 +98,18 @@
  /*****************************************
  *            Direction define            *
  ******************************************/
-#define UI_RESOURCE_PATH     "..\\Resource"
-#define RECORD_VOICE_PATH    "D:\\VOICE\\"
-#define RECORD_VOICE_NAME	 "D:\\VOICE\\wavalarm.wav"
-#define RECORD_VOICE_NAME_TMP "D:\\VOICE\\wavalarmtmp.wav"
-#define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
-#define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
-#define SOUND_PATH           "E:\\AlarmRecord\\"
-#define NORMALDISK           "d:\\"
-#define ALARMDISK            "e:\\"
+#define UI_RESOURCE_PATH           "..\\Resource"
+#define RECORD_VOICE_PATH          "D:\\VOICE\\"
+#define RECORD_VOICE_NAME_WAV	   "D:\\VOICE\\rwavalarm.wav"
+#define RECORD_VOICE_NAME_WAV_TMP  "D:\\VOICE\\rwavalarmtmp.wav"
+#define RECORD_VOICE_NAME	       "D:\\VOICE\\rG711"
+#define RECORD_VOICE_NAME_TMP      "D:\\VOICE\\rG711tmp"
+#define ALARM_VOICE_NAME	       "D:\\VOICE\\G711"
+#define NORMAL_RECORD_PATH         "D:\\NormalRecord\\"
+#define ALARM_RECORD_PATH          "E:\\AlarmRecord\\"
+#define SOUND_PATH                 "E:\\AlarmRecord\\"
+#define NORMALDISK                 "d:\\"
+#define ALARMDISK                  "e:\\"
 
 
  /*****************************************
@@ -233,6 +236,9 @@
 #define DUI_MSGTYPE_PLAYER			(_T("player"))
 #define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
+//报警音播放类型
+#define ALARM_VOICE_DEFAULT         0
+#define ALARM_VOICE_RECORD          1
 
 #include "Database\sqlitewrapper.h"
 extern int mutex;
@@ -260,6 +266,7 @@ extern 	SQLiteWrapper sqlite;
 #endif
 
 #pragma comment(lib, "WinMM.Lib")
+#pragma comment(lib,"Shlwapi.lib")
 
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
