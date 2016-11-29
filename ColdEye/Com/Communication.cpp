@@ -204,7 +204,14 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 		CleanChannel();
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64));
+		char sqlStmt[128];
+		int type;
+		sprintf_s(sqlStmt, "SELECT * FROM normal_record;");
+		SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+		while (stmt->NextRow()) {
+			type = stmt->ValueInt(1);
+		}
+		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), type);
 		return true;
 	}
 	else
