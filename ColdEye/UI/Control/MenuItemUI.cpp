@@ -82,12 +82,15 @@ void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Colo
 void CMenuItemUI::DoEvent(TEventUI& event)
 {
 	if (event.Type == UIEVENT_KEYDOWN) {
-		//if (GetKeyState(VK_CONTROL)) {
-		//	if (event.wParam=='U') {
-		//		FindRecordFile();
-		//		return;
-		//	}
-		//}
+		if (GetKeyState(VK_CONTROL)) {
+			if (event.wParam=='U') {
+				list<CRecordFileInfo*> RecordInfo;
+				UINT8 type;
+				RecordInfo = FindRecordFile(&type);
+				m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);
+				return;
+			}
+		}
 
 		m_pManager->SendNotify(this, DUI_MSGTYPE_MENU, event.wParam, event.lParam);
 
@@ -240,7 +243,7 @@ LPCTSTR CMenuItemUI::GetClass()
 	return _T("MenuItem");
 }
 
-void CMenuItemUI::FindRecordFile()
+list<CRecordFileInfo*> CMenuItemUI::FindRecordFile(UINT8* type)
 {
 	UINT8 RecordType;
 	int inx,num_record,level;
@@ -254,13 +257,13 @@ void CMenuItemUI::FindRecordFile()
 		Listname.Format(_T("video_alarmlisti%d"), inx+1);
 		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
 		num_record = pList->GetCount();
-		RecordType = COPYING_ALARM;
+		*type = 1;
 	}
 	else if (inx > 17 && inx < 24) { //ีýณฃสำฦต
 		Listname.Format(_T("video_list%d"), inx - 17);
 		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
 		num_record = pList->GetCount();
-		RecordType = COPYING_NORMAL;
+		*type = 0;
 	}
 	for (int i = 0; i < num_record; i++) {
 		pItem = (CMyListUI*)pList->GetItemAt(i);
@@ -270,7 +273,10 @@ void CMenuItemUI::FindRecordFile()
 			recordInfo.push_back(pItem->Info);
 		}
 	}
-	HardDriverStatus(recordInfo, RecordType);
+
+	return recordInfo;
+
+	//HardDriverStatus(recordInfo, RecordType);
 }
 
 void CMenuItemUI::HardDriverStatus(list<CRecordFileInfo*> recordInfo, UINT8 RecordType)

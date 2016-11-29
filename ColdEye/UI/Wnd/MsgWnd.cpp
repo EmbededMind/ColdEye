@@ -2,7 +2,9 @@
 #include "MsgWnd.h"
 #include "Control/RecordvoiceUI.h"
 #include "ExHardDrive\ExHardDrive.h"
-
+#include "Com\RecordAlarmSound.h"
+#include "Com\MCI.h"
+#include "Device\PortManager.h"
 
 DUI_BEGIN_MESSAGE_MAP(CMsgWnd, WindowImplBase)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
@@ -53,6 +55,13 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 		CControlUI* pTitle = static_cast<CControlUI*>(m_pm.FindControl(_T("title")));
 		pTitle->SetText(text1);
 	}
+	else if (SkinType == _T("mb_playvoice.xml")) {
+		CControlUI* pText1 = static_cast<CControlUI*>(m_pm.FindControl(_T("contain")));
+		if(_tcscmp(text1,_T("录制报警音")) == 0)	
+			pText1->SetText(_T("确认创建录制语音"));
+		else
+			pText1->SetText(_T("确认替换原录制语音"));
+	}
 	
 }
 
@@ -85,7 +94,9 @@ void CMsgWnd::OnClick(TNotifyUI &msg)
 		Close(MSGID_RECORD);
 	}
 	else if (sName == _T("cancel_copy")) {
-		MessageBox(m_pm.GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定停止复制视频？"), NULL, NULL);
+		if (MSGID_OK == MessageBox(m_pm.GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定停止复制视频？"), NULL, NULL)) {
+			Print("Cancel Copy ");
+		}
 	}
 }
 
@@ -93,7 +104,10 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 {
 	LRESULT lRes = 0;
 	CDuiString sName;
+	CTextUI *pItem;
 	switch (uMsg) {
+
+	//--------------------------------------------------------------------------
 	case WM_TIMER:
 		lRes = OnTimer(uMsg,wParam,lParam,bHandled);
 		break;
@@ -135,37 +149,59 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 			}
 			break;
 		//--------------------------------------------------------------------------
-		case VK_RETURN: //test
-			CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
-			if (pItem) {
-				if (pItem->RecordTime != 60) {
-					pItem->RecordTime = 60;
-					KillTimer(m_pm.GetPaintWindow(), 1);
-					Close(0);
+		case VK_RETURN:
+			{
+				CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
+				if (pItem) {
+					if (pItem->RecordTime != 60) {
+						pItem->RecordTime = 60;
+						KillTimer(m_hWnd, TIME_RECORD_VOICE);
+						Close(0);
+					}
+				}
+			}
+			break;
+		default:
+			if (GetKeyState(VK_CONTROL) && !(lParam & 0x20000000)) {
+				switch (wParam) {
+				//开始录制报警音
+				case 'T': 
+					{
+						CTextUI *pItem = static_cast<CTextUI*>(m_pm.FindControl(_T("Text2")));
+						_time = 0;
+						SetTimer(m_hWnd, TIME_RECORD_VOICE, 500, NULL);
+						pItem->SetText(_T("松开          按键，结束录制。"));
+						CCamera* pCamera = NULL;
+						for (int i = 0; i < 6; i++)
+						{
+							if (CPortManager::GetInstance()->mPorts[i].GetCamera())
+							{
+								pCamera = CPortManager::GetInstance()->mPorts[i].GetCamera();
+								break;
+							}
+						}
+						if (pCamera)
+						{
+							CRecordAlarmSound::GetInstance()->Record(pCamera);
+							CMCI::GetInstance()->StartRecord();
+						}
+					}
+					break;
+
+				case 'O':
+					{
+						CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
+						pItem->RecordTime = 60;
+						KillTimer(m_hWnd, TIME_RECORD_VOICE);
+						CRecordAlarmSound::GetInstance()->StopTalk();
+						CMCI::GetInstance()->StopRecord();
+						Close(MSGID_OK);
+					}
+					break;
 				}
 			}
 			break;
 
-		}
-		break;
-
-	//--------------------------------------------------------------------------
-	case USER_MSG_RECORDVOICE: //开始录音
-		{
-			_time = 0;
-			SetTimer(m_pm.GetPaintWindow(),1,500,NULL);
-			CTextUI *pItem = static_cast<CTextUI*>(m_pm.FindControl(_T("Text2")));
-			pItem->SetText(_T("松开          按键，结束录制。"));
-		}
-
-		break;
-	//--------------------------------------------------------------------------
-	case USER_MSG_STOP_RECORD://停止录音
-		{
-			CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
-			pItem->RecordTime = 60;
-			KillTimer(m_pm.GetPaintWindow(), 1);
-			Close(MSGID_OK);
 		}
 		break;
 	//--------------------------------------------------------------------------
@@ -180,25 +216,23 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 		break;
 
 	case USER_MSG_COPY_STOP:
-		if (wParam) {
-			list<CRecordFileInfo*>::iterator iter;
-			for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
-				if ((CRecordFileInfo*)lParam == (*iter)) {
-					sendedSize += (*iter)->dlSize;
-					iter++;
-					if (iter == pRecordInfo->end()) {
-						CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
-						progress->SetValue(totalSize);
-						Print("sendsize:%d",sendedSize);
-						Close(1);//复制结束
-						return 0;
-					}
-					CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
+		list<CRecordFileInfo*>::iterator iter;
+		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
+			if ((CRecordFileInfo*)lParam == (*iter)) {
+				sendedSize += (*iter)->dlSize;
+				iter++;
+				if (iter == pRecordInfo->end()) {
+					CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
+					progress->SetValue(totalSize);
+					Print("sendsize:%d",sendedSize);
+					Close(1);//复制结束
 					return 0;
 				}
+				CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
+				return 0;
 			}
-			Close(1);//复制结束
 		}
+		Close(1);//复制结束
 		break;
 	}
 
@@ -223,11 +257,30 @@ void CMsgWnd::RecordVoice()
 		}
 		pItem->Invalidate();
 	}
+	// 时间到
 	else {
 		pItem->RecordTime = 60;
-		KillTimer(m_pm.GetPaintWindow(), 1);
+		CRecordAlarmSound::GetInstance()->StopTalk();
+		CMCI::GetInstance()->StopRecord();
+		KillTimer(m_hWnd, TIME_RECORD_VOICE);
 		Close(MSGID_OK);
 	}
+}
+
+
+
+void CMsgWnd::AlarmVoicePlay()
+{
+	static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")));
+	int TotalTime;
+	int PlayTime;
+	CMCI *pCmic = CMCI::GetInstance();
+	TotalTime = pCmic->GetTotaltime();
+	PlayTime = pCmic->GetPlayTime();
+Print("alarm voice PlayTime:%d",PlayTime);
+	static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetValue(PlayTime);
+	if (PlayTime == TotalTime)
+		KillTimer(m_hWnd, TIME_PLAY_VOICE);
 }
 
 void CMsgWnd::Notify(TNotifyUI &msg)
@@ -248,18 +301,19 @@ void CMsgWnd::InitWindow()
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));
 	pButton_record = (CButtonUI*)m_pm.FindControl(_T("record_btn"));
-	pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
-	pMainDlg->mMessageBox = this;
 	if (SkinType == _T("mb_recordingvoice.xml")) {
-		pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
+		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
+		pMainDlg->mMessageBox = this;
+		//pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
 	}
 	else if (SkinType == _T("mb_update.xml")) {
 		UINT_PTR i;
 		//i = SetTimer(m_pm.GetPaintWindow(),1, 200, NULL);
 		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
-		printf("%d\n",i);
 	}
 	else if (SkinType == _T("mb_copyvideo.xml")) {
+		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
+		pMainDlg->mMessageBox = this;
 		totalSize = 0;
 		sendedSize = 0;
 		list<CRecordFileInfo*>::iterator iter;
@@ -269,12 +323,21 @@ void CMsgWnd::InitWindow()
 
 		CExHardDrive::GetInstance()->CopyRecord(pRecordInfo->front(), videoType);
 	}
+	else if (SkinType == _T("mb_playvoice.xml")) {
+		int TotalTime;
+		CMCI *pCmic = CMCI::GetInstance();
+		pCmic->Play();
+		TotalTime = pCmic->GetTotaltime();
+Print("alarm voice TotalTime:%d", TotalTime);
+		static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetMaxValue(TotalTime);
+		SetTimer(m_hWnd, TIME_PLAY_VOICE , 1000, NULL);
+	}
 }
 
 LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (wParam) {
-		case 1: 
+		case TIME_RECORD_VOICE: 
 			RecordVoice();
 			break;
 
@@ -291,14 +354,14 @@ LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandle
 					pItem->SetValue(0);
 					text.Format(_T("%d%"), Value);
 					pItem->SetText(text);
-					KillTimer(m_pm.GetPaintWindow(), 2);
+					KillTimer(m_hWnd, 2);
 					Close(0);
 				}
 			}
 			break;
 
-		case 3:
-			//ProgressReflash();
+		case TIME_PLAY_VOICE:
+			AlarmVoicePlay();
 			break;
 	}
 	

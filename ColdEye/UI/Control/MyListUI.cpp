@@ -132,19 +132,10 @@ void CMyListUI::DoEvent(TEventUI & event)
 
 		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
 			if (event.wParam == 'U') { //U盘键
-				CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
-				CTime tbegin, tend;
-				CDuiString text;
-				if (node->data()._level == 0) {
-					text = GetText();
-				}
-				else {
-					tbegin = CTime(Info->tBegin);
-					tend = CTime(Info->tEnd);
-					text = tbegin.Format("%m月%d日   ") + tbegin.Format("%H:%M:%S") + _T("-") + tend.Format("%H:%M:%S");
-				}
-				CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_copyvideo_request.xml"), text, NULL, NULL,NULL);
-				FindRecordFile();
+				list<CRecordFileInfo*> RecordInfo;
+				UINT8 type;
+				RecordInfo = FindRecordFile(&type);
+				m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);
 			}
 		}
 
@@ -152,7 +143,7 @@ void CMyListUI::DoEvent(TEventUI & event)
 	CListLabelElementUI::DoEvent(event);
 }
 
-void CMyListUI::FindRecordFile()
+list<CRecordFileInfo*> CMyListUI::FindRecordFile(UINT8* type)
 {
 	UINT8 RecordType;
 	int num_record,TabLayoutSel;
@@ -163,9 +154,10 @@ void CMyListUI::FindRecordFile()
 	TabLayoutSel = static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->GetCurSel();
 	//判断视频文件类型
 	if (TabLayoutSel > 0 && TabLayoutSel < 6)
-		RecordType = COPYING_ALARM;
+		*type = 1;
+
 	else
-		RecordType = COPYING_NORMAL;
+		*type = 0;
 	if (num_record){//整天
 		for (int i = 0; i < num_record; i++) {
 			pNode = Headnode->child(i);
@@ -175,8 +167,8 @@ void CMyListUI::FindRecordFile()
 	else {
 		RecordInfoList.push_back(Headnode->data()._pListElement->Info);
 	}
-	
-	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&RecordInfoList));
+	return RecordInfoList;
+	//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, RecordType, (LPARAM)(&RecordInfoList));
 }
 
 

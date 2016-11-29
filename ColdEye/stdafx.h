@@ -99,6 +99,9 @@
  *            Direction define            *
  ******************************************/
 #define UI_RESOURCE_PATH     "..\\Resource"
+#define RECORD_VOICE_PATH    "D:\\VOICE\\"
+#define RECORD_VOICE_NAME	 "D:\\VOICE\\wavalarm.wav"
+#define RECORD_VOICE_NAME_TMP "D:\\VOICE\\wavalarmtmp.wav"
 #define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
 #define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
 #define SOUND_PATH           "E:\\AlarmRecord\\"
@@ -135,7 +138,11 @@
 
 /**      Disk Surpluss Space     **/
 #define SURPLUSSPACENORMAL      1024*1024*1024//正常文件所在磁盘剩余空间红线524288000
+<<<<<<< HEAD
+#define SURPLUSSPACEALARM       1000000000000000//报警文件所在磁盘剩余空间红线524088000
+=======
 #define SURPLUSSPACEALARM       1024*1024*1024//报警文件所在磁盘剩余空间红线524088000
+>>>>>>> cc3a6d0a4ef8f3366e72bffbbedb964b905d6b4b
 
 /**        Com num define        **/
 #define COM_KB    1
@@ -215,12 +222,20 @@
 #define STATUS_COPY_SUCCEED 1
 #define STATUS_COPY_FIAL	0
 
+/**  HardDriver Status  **/
+#define NO_HARDDRIVER		0
+#define OK_HARDDRIVER		1
+#define FULL_HARDDRIVER		2
+
 //DUI 消息类型
-#define DUI_MSGTYPE_KEYDOWN	(_T("keydown"))
-#define DUI_MSGTYPE_SLIDER	(_T("slider"))
-#define DUI_MSGTYPE_EDIT	(_T("edit"))
-#define DUI_MSGTYPE_LABEL	(_T("label"))
-#define DUI_MSGTYPE_PLAYER	(_T("player"))
+#define DUI_MSGTYPE_KEYDOWN			(_T("keydown"))
+#define DUI_MSGTYPE_COPYFILE		(_T("copyfile"))
+#define DUI_MSGTYPE_SLIDER			(_T("slider"))
+#define DUI_MSGTYPE_EDIT			(_T("edit"))
+#define DUI_MSGTYPE_LABEL			(_T("label"))
+#define DUI_MSGTYPE_ALA_VOICE_LIST	(_T("alarm_voice"))
+#define DUI_MSGTYPE_PLAYER			(_T("player"))
+#define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
 
 #include "Database\sqlitewrapper.h"
@@ -248,6 +263,7 @@ extern 	SQLiteWrapper sqlite;
 #pragma comment(lib, "DuiLib.lib")
 #endif
 
+#pragma comment(lib, "WinMM.Lib")
 
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

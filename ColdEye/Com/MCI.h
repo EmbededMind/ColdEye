@@ -7,9 +7,11 @@ class CMCI
 {
 public:
 	~CMCI();
-	CMCI * GetInstance()
+	static CMCI * GetInstance()
 	{
 		static CMCI instance;
+		instance.m_FilePathTmp = _T(RECORD_VOICE_NAME_TMP);
+		instance.m_FilePath = _T(RECORD_VOICE_NAME);
 		return &instance;
 	};
 private:
@@ -17,18 +19,20 @@ private:
 private:
 	DWORD m_RecordDeviceID;
 	DWORD m_PlayDeviceID;
-	CString m_Filepath;
+	CString m_FilePathTmp;
+	CString m_FilePath;
 	DWORD m_RecordTime;
 	DWORD m_PlayTime;
 	DWORD m_Totaltime;
 
 public:
-	int Record();
-	int Save();
+	int StartRecord();
+	int StopRecord();
 	int Play();
 	int StopPlay();
 	int GetRecordTime();
 	int GetPlayTime();
 	int GetTotaltime();
-	void SetReocrdPath(LPCTSTR name);
+	BOOL Save();
+	BOOL NotSave();
 };

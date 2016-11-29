@@ -34,6 +34,7 @@ public:
 	void PreparePlay(WPARAM wParam, LPARAM lParam);
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
+	BOOL StopPlay();
 	bool OnSlow(void* param);
 	bool OnFast(void* param);
 	bool OnPlay(void* param);
