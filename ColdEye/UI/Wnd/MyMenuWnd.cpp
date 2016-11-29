@@ -1258,7 +1258,11 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 			FocusedItem[1]->SetFocus();
 		}
 		break;
-	//----------------自动看船开关记录---------------
+	//----------------报警音-------------------
+	case 15:
+	    
+		break;
+	//----------------自动看船开关记录--------------
 	case 17:
 		AwPage(1);
 		pAwOnOffRecordList->UnSelectAllItems();

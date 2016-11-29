@@ -75,20 +75,24 @@ bool CCommunication::RecTalkProc(uint8_t *pch)
 
 bool CCommunication::ReplyTalk(uint8_t *pch)
 {
+Print("ReplyTalk");
 	if (IsChannelCleaning())
 	{
+Print("IsChannelCleaning");
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
 		if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map.at(mac64)->GetLoginId()))
 		{
+Print("H264_DVR_StartLocalVoiceCom");
 			this->mPdev = Mac_CCamera_Map.at(mac64);
 			CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x01, this->mPdev);
 			CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 			return true;
-		}
+	}	
 	}
 	else
 	{
+Print("H264_DVR_StartLocalVoiceCom no");
 		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x02, this->mPdev);
 		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 		return false;
@@ -117,15 +121,8 @@ bool CCommunication::RecOverTalkProc(uint8_t *pch)
 			mac64 = CUtil::ArrayToUint64(&pch[6]);
 			if (Mac_CCamera_Map.at(mac64) == this->mPdev)
 			{
-				if (H264_DVR_StopVoiceCom(this->mTalkHandle))
-				{
-					CleanChannel();
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				H264_DVR_StopVoiceCom(this->mTalkHandle);
+				CleanChannel();
 			}
 			else
 			{
@@ -191,8 +188,11 @@ uint8_t CCommunication::RecSetVolumeProc(uint8_t *pch)
 
 bool CCommunication::Alarm(CCamera * pDev)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	if(IsChannelCleaning())
+	{ 
+		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
+		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	}
 	return true;
 }
 
@@ -211,7 +211,7 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 		while (stmt->NextRow()) {
 			type = stmt->ValueInt(1);
 		}
-		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), type);
+		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), 1);//现在固定为1 等DB好了 改回来
 		return true;
 	}
 	else

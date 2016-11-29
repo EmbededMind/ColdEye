@@ -89,6 +89,8 @@ public:
 
 	bool       IsActive();
 
+	void       StoreConfig();
+
 	void       Config(DeviceConfig& config);
 
 	PortOption  ParseState(bool isOnline, bool isReplaced);

@@ -151,6 +151,10 @@ bool  CPort::IsActive()
 }
 
 
+void CPort::StoreConfig()
+{
+
+}
 
 
 void CPort::Config(DeviceConfig& config)
