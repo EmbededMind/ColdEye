@@ -78,7 +78,7 @@ public :
 	void RecordVoiceNotify(TNotifyUI& msg);
 	void AlarmVoiceListNotify(TNotifyUI& msg);
 	void SwitchNotify(TNotifyUI& msg);
-	void AWOnOffListNotify(TNotifyUI& msg);
+	void ListLabelNotify(TNotifyUI& msg);
 
 	void ExpandCameraName();
 	void ShowAlarmVoiceList(bool);

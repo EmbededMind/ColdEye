@@ -406,9 +406,17 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	}
 }
 
-void CMyMenuWnd::AWOnOffListNotify(TNotifyUI & msg)
+void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 {
 	switch (msg.wParam) {
+	case VK_BACK:
+		if (FocusedItem[1]) {
+			CVideoListUI* list = (CVideoListUI*)m_pm.GetFocus()->GetParent()->GetParent();
+			list->UnSelectAllItems();
+			FocusedItem[1]->SetFocus();
+		}
+		break;
+
 	case VK_RIGHT:
 		AwOnOffRecordNextPage();
 		break;
@@ -706,8 +714,8 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	else if (msg.sType == DUI_MSGTYPE_SWITCH) {
 		SwitchNotify(msg);
 	}
-	else if (msg.sType == DUI_MSGTYPE_AWOnOFF_LIST) {
-		AWOnOffListNotify(msg);
+	else if (msg.sType == DUI_MSGTYPE_LISTLABEL) {
+		ListLabelNotify(msg);
 	}
 }
 
@@ -1136,7 +1144,12 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	switch (wParam)
 	{
 	case VK_BACK:
-		KeyDown_VK_BACK();
+		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
+			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+		}
+		else {
+			KeyDown_VK_BACK();
+		}
 		break;
 	default:
 		WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
@@ -1254,11 +1267,6 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 		}
 		break;
 	default:
-		CVideoListUI *list=NULL;
-		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
-			list = (CVideoListUI*)m_pm.GetFocus()->GetParent()->GetParent();
-			list->UnSelectAllItems();
-		}
 		if (FocusedItem[1]) {
 			FocusedItem[1]->SetFocus();
 		}

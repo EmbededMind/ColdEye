@@ -8,7 +8,8 @@ void CVideoListUI::DoEvent(TEventUI& event)
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
 		{
-			CListLabelElementUI *pItem = (CListLabelElementUI*)GetItemAt(GetMaxSelItemIndex());		
+			CListLabelElementUI *pItem = (CListLabelElementUI*)GetItemAt(GetMaxSelItemIndex());	
+			if (!pItem)return;
 			CVideoListUI::Node* node = (CVideoListUI::Node*)pItem->GetTag();
 			switch (event.wParam) {
 				case VK_UP:
@@ -66,7 +67,6 @@ void CVideoListUI::DoEvent(TEventUI& event)
 					}
 				}
 				break;
-
 			}
 		}
 		break;

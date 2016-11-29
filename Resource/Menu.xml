@@ -90,37 +90,37 @@
 		<TabLayout name="layout_thirdmenu" visible="false" bkcolor="0xFFEFEFF4">  
 <!--报警视频-->
 			<VerticalLayout name="camera1list">	
-				<VideoList name="video_alarmlist1">
+				<VideoList name="video_alarmlist1" vscrollbarstyle="width='45'">
 				
-				</VideoList>			
+				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera2list">
-				<VideoList name="video_alarmlist2">
+				<VideoList name="video_alarmlist2" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera3list">
-				<VideoList name="video_alarmlist3">
+				<VideoList name="video_alarmlist3" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera4list">
-				<VideoList name="video_alarmlist4">
+				<VideoList name="video_alarmlist4" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera5list">
-				<VideoList name="video_alarmlist5">
+				<VideoList name="video_alarmlist5" vscrollbarstyle="width='45'">
 				
 				</VideoList>
 			</VerticalLayout>
 			
 			<VerticalLayout name="camera6list">
-				<VideoList name="video_alarmlist6">
+				<VideoList name="video_alarmlist6" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>
@@ -250,32 +250,32 @@
 			</VerticalLayout>	
 <!--视频调取-->
 			<VerticalLayout>
-				<VideoList name="video_list1" vscrollbarstyle="width='50' ">
+				<VideoList name="video_list1" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list2">
+				<VideoList name="video_list2" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list3">
+				<VideoList name="video_list3" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list4">
+				<VideoList name="video_list4" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list5">
+				<VideoList name="video_list5" vscrollbarstyle="width='45' ">
 				
 				</VideoList>	
 			</VerticalLayout>
 			<VerticalLayout>
-				<VideoList name="video_list6">
+				<VideoList name="video_list6" vscrollbarstyle="width='45'">
 				
 				</VideoList>	
 			</VerticalLayout>

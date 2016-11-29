@@ -104,7 +104,6 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 
 void CMyListUI::DoEvent(TEventUI & event)
 {
-	Print("event:%d",event.Type);
 	if (event.Type == UIEVENT_KEYDOWN){
 		if (event.wParam == VK_RETURN){
 			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
@@ -128,6 +127,19 @@ void CMyListUI::DoEvent(TEventUI & event)
 			if (node->data()._level == 0 && node->data()._expand) {
 				pList->SelectItem(pList->GetItemIndex(this) + 1);
 				pList->GetItemAt(pList->GetItemIndex(this) + 1)->SetFocus();
+			}
+		}
+
+		if (event.wParam == VK_BACK) {
+			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
+			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+			if (node->data()._level == 1) {
+				pList->ExpandNode(node->parent(), 0);
+				node->parent()->data()._pListElement->SetFocus();
+				node->parent()->data()._pListElement->Select(true);
+			}
+			else {
+				m_pManager->SendNotify(this, DUI_MSGTYPE_LISTLABEL, event.wParam, event.lParam);
 			}
 		}
 

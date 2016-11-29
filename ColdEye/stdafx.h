@@ -244,7 +244,7 @@
 #define DUI_MSGTYPE_ALA_VOICE_LIST	(_T("alarm_voice"))
 #define DUI_MSGTYPE_SWITCH			(_T("switch"))
 #define DUI_MSGTYPE_PLAYER			(_T("player"))
-#define DUI_MSGTYPE_AWOnOFF_LIST	(_T("aw_onoff"))
+#define DUI_MSGTYPE_LISTLABEL		(_T("listlabel"))
 #define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
 

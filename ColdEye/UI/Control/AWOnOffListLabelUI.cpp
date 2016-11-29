@@ -77,7 +77,7 @@ void CAWOnOffListLabelUI::DoEvent(TEventUI & event)
 {
 	switch (event.Type) {
 	case UIEVENT_KEYDOWN:
-		m_pManager->SendNotify(this,DUI_MSGTYPE_AWOnOFF_LIST,event.wParam,event.lParam);
+		m_pManager->SendNotify(this, DUI_MSGTYPE_LISTLABEL,event.wParam,event.lParam);
 		break;
 	default:
 		CListLabelElementUI::DoEvent(event);
