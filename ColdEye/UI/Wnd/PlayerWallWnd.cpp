@@ -36,13 +36,20 @@ CDuiString CPlayerWallWnd::GetSkinFile()
 LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (uMsg){
-	case USER_MSG_PLAY_START:
+	case USER_MSG_PLAY_START: {
 		InitPlayTime(lParam);
 		PreparePlay(wParam, lParam);
 		H264_PLAY_Play(mPort, pVPlayer->GetHWND());
 		H264_PLAY_SetFileEndCallBack(mPort, EOFCallBack, (LONG)this);
+		DWORD PlayTime = H264_PLAY_GetFileTime(mPort);
+		CDuiString sTime;
+		sTime.Format(_T("%02d:%02d:%02d"), PlayTime / 3600, PlayTime / 60, PlayTime % 60);
+		pEndTime->SetText(sTime);
 		mStatus = playing;
+		pPlay->SetBkImage(sStopNoFocusImg);
+		pPlay->SetFocusedImage(sStopFocusedImg);
 		SetTimer(m_hWnd, 1, 1000, NULL);
+		}
 		break;
 
 	case WM_TIMER:
@@ -66,11 +73,12 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void CPlayerWallWnd::InitWindow()
 {
+	InitPlayBtImage();
 	pSlow = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_slow")));
 	if (pSlow) pSlow->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnSlow);
 	pPlay = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_play")));
 	if (pPlay) pPlay->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnPlay);
-	pFast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));
+	pFast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));	
 	if (pFast) pFast->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnFast);
 	pSlider = static_cast<CSliderUI*>(m_pm.FindControl(_T("progress")));
 	pBeginTime = static_cast<CLabelUI*>(m_pm.FindControl(_T("time_begin")));
@@ -119,7 +127,12 @@ LRESULT CPlayerWallWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 {
 	switch (wParam) {
 	case 1:
-		int mProgress = 100*H264_PLAY_GetPlayPos(mPort);  //H264_PLAY_GetPlayedTime(mPort);
+		DWORD PlayTime;
+		int mProgress = 100*H264_PLAY_GetPlayPos(mPort);  
+		PlayTime = H264_PLAY_GetPlayedTime(mPort);
+		CDuiString sTime;
+		sTime.Format(_T("%02d:%02d:%02d"),PlayTime/3600, PlayTime / 60, PlayTime % 60);
+		pBeginTime->SetText(sTime);
 		LONG errInfo;
 		errInfo = H264_PLAY_GetLastError(mPort);
 		Print("progress:%d,%d",mProgress,errInfo);
@@ -155,10 +168,10 @@ void CPlayerWallWnd::InitPlayTime(LPARAM lParam)
 
 void CPlayerWallWnd::InitPlayBtImage()
 {
-	sPlayFocusedImg = (LPCTSTR)_T("file='image/play_focused.png'");
-	sPlayNoFocusImg = (LPCTSTR)_T("file='image/play.png'");
-	sStopFocusedImg = (LPCTSTR)_T("flie='image/pause_focused.png'");
-	sStopNoFocusImg = (LPCTSTR)_T("file='image/pause.png'");
+	sPlayFocusedImg = _T("file='image/play_focused.png'");
+	sPlayNoFocusImg = _T("file='image/play.png'");
+	sStopFocusedImg = _T("file='image/pause_focused.png'");
+	sStopNoFocusImg = _T("file='image/pause.png'");
 }
 
 
@@ -255,8 +268,6 @@ bool CPlayerWallWnd::OnPlay(void * param)
 					printf("play err = %d\n", err);
 				}
 				else {
-					pPlay->SetBkImage(sStopNoFocusImg);
-					pPlay->SetFocusedImage(sStopFocusedImg);
 					mStatus = playing;
 				}
 			}
@@ -286,8 +297,12 @@ bool CPlayerWallWnd::OnPlay(void * param)
 			if (mStatus == playing) {
 				SetTimer(m_hWnd, 1, 1000, NULL);
 				::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
+				pPlay->SetBkImage(sStopNoFocusImg);
+				pPlay->SetFocusedImage(sStopFocusedImg);
 			}
 			else {
+				pPlay->SetBkImage(sPlayNoFocusImg);
+				pPlay->SetFocusedImage(sPlayFocusedImg);
 				KillTimer(m_hWnd, 1);
 			}
 			break;

@@ -61,8 +61,8 @@ private:
 	UINT8 mFastMultiple;
 	UINT8 mSlowMultiple;
 
-	CDuiString sPlayFocusedImg;
-	CDuiString sPlayNoFocusImg;
-	CDuiString sStopFocusedImg;
-	CDuiString sStopNoFocusImg;
+	LPCTSTR sPlayFocusedImg;
+	LPCTSTR sPlayNoFocusImg;
+	LPCTSTR sStopFocusedImg;
+	LPCTSTR sStopNoFocusImg;
 };
