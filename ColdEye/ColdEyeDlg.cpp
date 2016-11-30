@@ -851,6 +851,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 
 LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
 {
+Print("MSG Stop Alarm");
 	CCamera *pDev = (CCamera*)lParam;
 	CCommunication::GetInstance()->OverAlarm(pDev);
 	return 0;

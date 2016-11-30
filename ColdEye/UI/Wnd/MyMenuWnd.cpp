@@ -144,6 +144,7 @@ void CMyMenuWnd::InitWindow()
 
 void CMyMenuWnd::UpdataItemColor()
 {
+	Print("focusLevel:%d ",focusLevel);
 	if (focusLevel == 0) {
 		//布局
 		pLayout_PopMenu->SetBkColor(LAYOUT_POP_FOCUSED);
@@ -164,7 +165,6 @@ void CMyMenuWnd::UpdataItemColor()
 			pItem = (CButtonUI*)pLayout->GetItemAt(i);
 			pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
 		}
-
 	}
 	else if (focusLevel==1) {
 		//布局
@@ -190,17 +190,17 @@ void CMyMenuWnd::UpdataItemColor()
 		static_cast<CButtonUI*>(m_pm.GetFocus())->SetFocusedTextColor(0xFFFFFFFF);
 	}
 	else if(focusLevel==2){
-		////布局
-		//pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
-		//pLayout_third->SetBkColor(LAYOUT_THIRD_FOCUSED);
-		//CButtonUI* pItem;
-		//CVerticalLayoutUI* pLayout = (CVerticalLayoutUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel());
-		//for (int i = 0; i < pLayout->GetCount(); i += 2) {
-		//	pItem = (CButtonUI*)pLayout->GetItemAt(i);
-		//	pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
-		//}
-		//FocusedItem[1]->SetBkColor(MENUITEM_SEL_NOFOCUS);
-		//FocusedItem[1]->SetTextColor(0xFFFFFFFF);
+		//布局
+		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		pLayout_third->SetBkColor(LAYOUT_THIRD_FOCUSED);
+		CButtonUI* pItem;
+		CVerticalLayoutUI* pLayout = (CVerticalLayoutUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel());
+		for (int i = 0; i < pLayout->GetCount(); i += 2) {
+			pItem = (CButtonUI*)pLayout->GetItemAt(i);
+			pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		}
+		FocusedItem[1]->SetBkColor(MENUITEM_SEL_NOFOCUS);
+		FocusedItem[1]->SetTextColor(0xFFFFFFFF);
 	}
 }
 
@@ -521,6 +521,9 @@ void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 			CVideoListUI* list = (CVideoListUI*)m_pm.GetFocus()->GetParent()->GetParent();
 			list->UnSelectAllItems();
 			FocusedItem[1]->SetFocus();
+			FocusedItem[1] = NULL;
+			focusLevel--;
+			UpdataItemColor();
 		}
 		break;
 
@@ -1368,8 +1371,12 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
 		}
 		else {
-			KeyDown_VK_BACK();
-			focusLevel--;
+			if(FocusedItem[1]){
+				KeyDown_VK_BACK();
+				focusLevel--;
+				FocusedItem[1] = NULL;
+				UpdataItemColor();
+			}
 		}
 		break;
 	default:
@@ -1385,6 +1392,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 	int nPort;
 	CMyEditUI *pCameraName;
 	inx = pLayout_third->GetCurSel();
+Print("Third Menu Sel :%d", inx);
 	switch (inx) {
 	//---------------船舶名称----------------------
 	case 6:

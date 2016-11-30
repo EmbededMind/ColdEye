@@ -92,17 +92,9 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 	CPort *pPort = (CPort*)GetTag();
 
 	if (pPort) {
-		Print("id:%d",pPort->GetId());
 		mHintNumber = pPort->m_virginNumber;
-		Print("num:%d", mHintNumber);
 	}
-	//else {
-	//	Print("Port err");
-	//}
-	//mHintNumber = pPort->m_virginNumber;
-//Print("mHintNumber:%d", pPort->m_virginNumber);
 
-	//mHintNumber = pPort->m_virginNumber;
 	if (mHintNumber<99)
 		text.Format(_T("%d"), mHintNumber);
 	else

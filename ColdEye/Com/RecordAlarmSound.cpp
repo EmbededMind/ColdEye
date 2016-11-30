@@ -67,6 +67,7 @@ void __stdcall TalkDataCallBack(LONG lTalkHandle, char *pDataBuf, long dwBufSize
 	if (pDevice)
 	{
 		pDevice->InputTalkData((BYTE *)pDataBuf, dwBufSize);
+		/*PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(pDevice->m_pPlayCamera));*/
 	}
 }
 void __stdcall AudioDataCallBack(LPBYTE pDataBuffer, DWORD dwDataLength, long nUser)

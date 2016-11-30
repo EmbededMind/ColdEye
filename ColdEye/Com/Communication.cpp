@@ -244,8 +244,10 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 
 bool CCommunication::OverAlarm(CCamera * pDev)
 {
+Print("OverAlarm");
 	if (mIsAlarm)
 	{
+Print("mIsAlarm true");
 		mIsAlarm = false;
 		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
 		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
