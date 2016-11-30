@@ -1531,11 +1531,13 @@ Print("Third Menu Sel :%d", inx);
 						CTime time  = CTime::GetCurrentTime();
 						CDBLogger* pLogger  = CDBLogger::GetInstance();
 						if (pPort->m_DevConfig.IsCameraOn != config.IsCameraOn) {
+							pPort->m_DevConfig.IsCameraOn  = config.IsCameraOn;
 							pLogger->LogCameraOnOff(time, pPort);
 						}
 						if (pPort->m_DevConfig.IsAutoWatchEnabled != config.IsAutoWatchEnabled) {
+							pPort->m_DevConfig.IsAutoWatchEnabled  = config.IsAutoWatchEnabled;
 							pLogger->LogCameraAWOnOff(time, pPort);
-						}
+						}						
 
 						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
 						UpdataCameraName(pPort);
