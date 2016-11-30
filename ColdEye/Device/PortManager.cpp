@@ -43,8 +43,9 @@ void CPortManager::LoadPortsParam()
 		mPorts[i].m_DevConfig.IsRecordEnabled     = stmt->ValueInt(6);
 	    mPorts[i].m_DevConfig.IsAutoWatchEnabled  = stmt->ValueInt(7);
 
-		mPorts[i].m_AwConfig.Begining             = stmt->ValueInt(8);
-		mPorts[i].m_AwConfig.End                  = stmt->ValueInt(9);
+		//mPorts[i].m_AwConfig.Begining             = stmt->ValueInt(8);
+		//mPorts[i].m_AwConfig.End                  = stmt->ValueInt(9);
+
 		//mPorts[i].m_AwConfig.IsAlarmSoundOn       = stmt->ValueInt(10);
 		//mPorts[i].m_AwConfig.AlarmSoundId         = stmt->ValueInt(11);
 		//mPorts[i].m_AwConfig.IsAlarmLightOn       = stmt->ValueInt(12);

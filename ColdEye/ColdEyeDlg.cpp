@@ -461,6 +461,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 
 					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on>0?0:1;
 
+					CDBLogger::GetInstance()->LogAutoWatch(m_SysTime, pApp->m_SysConfig.auto_watch_on);
+
 					CMsgSquare::GetInstance()->Broadcast(msg);
 				}
 				break;

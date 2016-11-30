@@ -281,7 +281,7 @@
 			</VerticalLayout>
 		</TabLayout>
 		<TabLayout visible="false" name="home" float="true" pos="328,0,1600,1038" >
-			<HorizontalLayout bkcolor="#FFEFEFF4">
+			<HorizontalLayout name="layout_home_watch" bkcolor="#FFEFEFF4">
 				<Text float="true" pos="217,202,0,0" width="839" height="89" font="4" textcolor="#FF4198FE" text="渔船防盗利器   回家帮你看船"/>
 				<Text float="true" pos="217,312,0,0" width="839" height="200" font="5" textcolor="#FF666666" text="       回家看船开启后，有人上船偷盗，设备会发出报警声音并且发出警告灯光，吓退盗贼，同时向你的手机报警，拍摄盗贼照片到您手机上，存留证据，减少看船支出，全方面保障船舶的财产生命安全。"/>
 				<Button name="button_home" float="true" pos="511,562,0,0" width="250" height="94" borderround="6,6" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" font="0" text="开启" focusedimage="file='image/按钮-选中.png'"/>
