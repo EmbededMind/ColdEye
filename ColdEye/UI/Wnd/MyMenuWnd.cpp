@@ -879,6 +879,18 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		//-------------------------------------------
 	case USER_MSG_LOGOFF: {
 			Print("Menu case logoff msg");
+			CDBShadow* pShadow  = CDBShadow::GetInstance();
+			CPort*     pPort    = (CPort*)lParam;
+
+			if (pShadow->GetAlarmFileNumber(pPort->GetId()) == 0) {
+				DeleteAlarmMenuItem(pPort);
+			}
+
+			if (pShadow->GetRecordFileNumber(pPort->GetId()) == 0) {
+				DeleteVideoObtainMenuItem(pPort);
+			}
+
+			DeletePortConfigMenuItem(pPort);
 		}
 			break;
 		//-------------------------------------------
@@ -1419,6 +1431,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 					if (pPort) {
 
 						DeviceConfig config;
+						config.NameId  = camera[nPort-1].pShipname->GetTag();    //Tag :1~18
 						config.IsCameraOn  = camera[nPort-1].pSwitch->GetValue();
 						config.Volumn      = camera[nPort-1].pVolum->GetValue();
 						config.IsRecordEnabled = camera[nPort-1].pSaveVideo->GetValue();
@@ -1456,7 +1469,8 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 		break;
 	//----------------看船时间---------------------
 	case 14:
-		if (AwTimeIsChange()) {
+		Print("Aw time change");
+		if (/*AwTimeIsChange()*/ true) {
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				//保存看船时间
 				DWORD aw_begining, aw_end;
@@ -1506,6 +1520,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 		FocusedItem[1]->SetFocus();
 		break; 
 	//----------------自动看船开关记录---------------
+
 	case 17:
 		AwPage(1);
 		pAwOnOffRecordList->UnSelectAllItems();
@@ -1529,8 +1544,22 @@ CMenuItemUI* CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int ba
 	CVerticalLayoutUI * pLayout;
 	CMenuItemUI* pMenuItem;
 	CDuiString   userData;
+	CPort*       tagPort = NULL;
+
+	int itemCnt  = 0;
 
 	pLayout = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutName));
+	itemCnt  = pLayout->GetCount();
+
+	// 判断是否有item已经对应该port
+	for (int i = 0; i < itemCnt; i += 2) {
+		pMenuItem  =  (CMenuItemUI*)pLayout->GetItemAt(i);
+		tagPort  = (CPort*)pMenuItem->GetTag();
+		if (tagPort == pPort) {
+			return pMenuItem;
+		}
+	}
+	
 	userData.Format(_T("%d"), pPort->GetId()-1 + baseData);
 	pMenuItem = new CMenuItemUI(pLayout, pPort->GetName(), userData, InsertAt(pPort->GetId()-1, pLayout, baseData));
 	return pMenuItem;
@@ -1555,6 +1584,56 @@ void CMyMenuWnd::AddPortConfigMenuItem(CPort* pPort)
 {
 	CMenuItemUI* pItem  = AddMenuItem(pPort, _T("layout_submenu_setting"), CAMERA_SET);
 	pItem->SetTag( (UINT_PTR)pPort);
+}
+
+
+
+void CMyMenuWnd::DeleteMenuItem(CPort* pPort, CDuiString layoutname, int BaseData)
+{
+	CVerticalLayoutUI* pLayout;
+
+	CMenuItemUI* pMenuItem ;
+	CMenuItemUI* pPrevItem;
+	CMenuItemUI* pNextItem;
+
+	CPort* tagPort;
+	int itemCnt   = 0;
+
+	pLayout  = static_cast<CVerticalLayoutUI*>(m_pm.FindControl(layoutname));
+	itemCnt  = pLayout->GetCount();
+
+	for (int i = 0; i < itemCnt; i += 2) {
+		pMenuItem  = (CMenuItemUI*)pLayout->GetItemAt(i);
+
+		tagPort  = (CPort*)pMenuItem->GetTag();
+
+		if (tagPort == pPort) {
+			Print("Delete item %d port", pPort->m_Id);
+			int order  = pLayout->GetItemIndex(pMenuItem);
+			pLayout->RemoveAt(order);
+			pLayout->RemoveAt(order);
+			return ;
+		}
+
+		
+	}
+
+	Print("Delete item nothing");
+}
+
+void CMyMenuWnd::DeleteAlarmMenuItem(CPort* pPort)
+{
+	DeleteMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+}
+
+
+void CMyMenuWnd::DeleteVideoObtainMenuItem(CPort* pPort) {
+	DeleteMenuItem(pPort, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
+}
+
+void CMyMenuWnd::DeletePortConfigMenuItem(CPort* pPort)
+{
+	DeleteMenuItem(pPort, _T("layout_submenu_setting"), CAMERA_SET);
 }
 
 void CMyMenuWnd::FillPortConfig(CPort* pPort)

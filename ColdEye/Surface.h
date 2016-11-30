@@ -134,6 +134,10 @@ protected:
 	afx_msg LRESULT OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
+protected:
+	afx_msg LRESULT OnUserMsgSystemConfig(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnClose();
 };
 
 

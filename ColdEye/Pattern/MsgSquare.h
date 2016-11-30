@@ -20,5 +20,6 @@ public:
 
 	void        AddAudience(HWND, UINT);
 	void        Broadcast(MSG& msg);
+	void        RemoveAudience(HWND);
 };
 

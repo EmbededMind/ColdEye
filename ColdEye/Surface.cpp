@@ -203,10 +203,12 @@ void CSurface::ExecuteConfig()
 		}
 
 		//自动看船需要开启且现在属于自动看船时段
-		if (m_BindedPort->m_DevConfig.IsAutoWatchEnabled) {
-			//自动看船是关闭状态则开启
-			if (!m_bIsAutoWatchEnabled) {
-				StartAutoWatch();
+		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
+			if (m_BindedPort->m_DevConfig.IsAutoWatchEnabled) {
+				//自动看船是关闭状态则开启
+				if (!m_bIsAutoWatchEnabled) {
+					StartAutoWatch();
+				}
 			}
 		}
 	}
@@ -649,20 +651,19 @@ void CSurface::OnAlarmTrigged()
 		else {
 			Print("Alloc file failed when alarm trigged");
 		}
-		int type = 0;
-		int OnOff = 0;
-		char sqlStmt[128];
-		sprintf_s(sqlStmt, "SELECT * FROM host_config;");
-		SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-		while (stmt->NextRow()) {
-			OnOff = stmt->ValueInt(4);
-			type = stmt->ValueInt(5);
-		}
-		if (OnOff)
-		{
-			CRecordAlarmSound::GetInstance()->Play(m_BindedCamera, type);
+		//int type = 0;
+		//int OnOff = 0;
+		//char sqlStmt[128];
+		//sprintf_s(sqlStmt, "SELECT * FROM host_config;");
+		//SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+		//while (stmt->NextRow()) {
+		//	OnOff = stmt->ValueInt(4);
+		//	type = stmt->ValueInt(5);
+		//}
+		//if (OnOff)
+		//{
 			CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
-		}
+		//}
 	}
 }
 
@@ -839,6 +840,7 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWTIME, &CSurface::OnUserMsgCameraConfigAwtime)
 	ON_WM_DRAWITEM()
+	ON_MESSAGE(USER_MSG_SYSTEM_CONFIG, &CSurface::OnUserMsgSystemConfig)
 END_MESSAGE_MAP()
 
 
@@ -972,7 +974,10 @@ int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mDelBtn.ModifyStyle(0, BS_OWNERDRAW);
 	mDelBtn.ShowWindow(SW_HIDE);
 
-	CMsgSquare::GetInstance()->AddAudience(m_hWnd, USER_MSG_CAMERA_CONFIG_AWTIME);
+	CMsgSquare* pSquare  = CMsgSquare::GetInstance();
+
+	pSquare->AddAudience(m_hWnd, USER_MSG_CAMERA_CONFIG_AWTIME);
+	pSquare->AddAudience(m_hWnd, USER_MSG_SYSTEM_CONFIG);
 
 	return 0;
 }
@@ -1240,4 +1245,31 @@ void CSurface::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SelectObject(pOldFont);
 
 	//CWnd::OnDrawItem(nIDCtl, lpDrawItemStruct);
+}
+
+
+afx_msg LRESULT CSurface::OnUserMsgSystemConfig(WPARAM wParam, LPARAM lParam)
+{
+	//自动看船全局设置切换
+	if (wParam == 666) {
+		// 全局设置自动看船开。
+		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
+			ExecuteConfig();
+		}
+		
+		// 全局设置自动看船关
+		else if (m_bIsAutoWatchEnabled) {
+			StopAutoWatch();
+		}
+	}
+	return 0;
+}
+
+
+void CSurface::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CMsgSquare::GetInstance()->RemoveAudience(m_hWnd);
+	
+	CWnd::OnClose();
 }

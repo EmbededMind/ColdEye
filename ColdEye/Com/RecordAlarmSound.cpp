@@ -95,13 +95,23 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 	if (pDevice)
 	{
 		static unsigned int i = 0;
+		static unsigned int j = 0;
 		if (i<pDevice->num - 1)//一段音频640bit，num统计有多少段
 		{
+			if (j >= 4)
+			{
+				j = 0;
+				i = 0;
+				PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(pDevice->m_pPlayCamera));
+			}
 			pDevice->SendTalkData((LPBYTE)(pDevice->pBuf) + i * 640, 640);//发送
 			i++;
 		}
 		else
+		{
 			i = 0;
+			j++;
+		}
 	}
 }
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
@@ -115,12 +125,14 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
 
 	FILE *pFile;
-	if (type = ALARM_VOICE_DEFAULT)
+	if (type == ALARM_VOICE_DEFAULT)
 	{
 		fopen_s(&pFile, m_Name, "rb");
+		Print("ALARM_VOICE_DEFAULT");
 	}
 	else
 	{
+		Print("ALARM_VOICE_RECORD");
 		fopen_s(&pFile, m_rName, "rb");
 	}
 	

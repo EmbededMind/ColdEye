@@ -84,6 +84,8 @@
 
 #define USER_MSG_HANDLE                     (WM_USER + 190) //握手消息
 
+#define USER_MSG_STOP_ALARM					(WM_USER + 200) //报警取消
+
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))
 

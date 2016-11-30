@@ -157,6 +157,11 @@ private:
 	//void  AddCameraConfigMenuItem(CCamera* pCamera);
 	void  AddPortConfigMenuItem(CPort * pPort);
 
+	void  DeleteMenuItem(CPort* pPort, CDuiString layoutname, int basedata);
+	void  DeleteAlarmMenuItem(CPort* pPort);
+	void  DeleteVideoObtainMenuItem(CPort* pPort);
+	void  DeletePortConfigMenuItem(CPort* pPort);
+
 	void  InitRecordFile(list<CRecordFileInfo*>* pList);
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
 

@@ -25,6 +25,7 @@ public:
 	char m_rtmpName[50];
 	char m_rName[50];
 	char m_Name[50];
+	CCamera *m_pPlayCamera;
 	void Record(CCamera *pCamera);
 	bool Save();
 	bool NotSave();
@@ -35,7 +36,6 @@ public:
 	BOOL ScanVoice();
 protected:
 	CCamera *m_pRecordCamera;
-	CCamera *m_pPlayCamera;
 	LONG m_TalkHandle;
 	LONG m_port;
 	BOOL StopTalkPlay(long nPort);

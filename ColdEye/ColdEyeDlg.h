@@ -50,6 +50,7 @@ private:
 	std::list<uint8_t> mPendMacPort;
 	std::list<CPort*>  mSearchPort;
 
+	bool isFlashDisk;
 
 										// 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -83,4 +84,5 @@ public:
 	void PaintTitle(CPaintDC*);
 protected:
 	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam);
 };
