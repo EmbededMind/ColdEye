@@ -198,8 +198,8 @@ bool CCommunication::Alarm(CCamera * pDev)
 
 bool CCommunication::RecAlarmProc(uint8_t *pch)
 {
-	//if (pch[5] == 1)
-	//{
+	if (pch[5] == 1)
+	{
 		H264_DVR_StopVoiceCom(this->mTalkHandle);
 		CleanChannel();
 		uint64_t mac64;
@@ -213,11 +213,11 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 		}
 		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), 1);//现在固定为1 等DB好了 改回来
 		return true;
-	//}
-	//else
-	//{
-	//	return false;
-	//}
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool CCommunication::OverAlarm(CCamera * pDev)
