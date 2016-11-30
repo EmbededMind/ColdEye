@@ -494,8 +494,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			case KB_BRIUP:
 				break;
 			case KB_FUNC:
-				this->SetFocus();
-				this->SetActiveWindow();
+				keybd_event(VK_F8, 0, 0, 0);
+				keybd_event(VK_F8, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLDOWN:
 				this->SetVolumeLevel(REDUCE_VOLUME);

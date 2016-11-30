@@ -153,6 +153,7 @@ BOOL CExHardDrive::RecordFilePath(CString path, CString FileName)
 {
 	mCopyFromPath = path;
 	mCopyToPath = mDiskName + FileName;
+	Print("CopyFile path : %S", mCopyToPath);
 	SetEvent(mCopyEvent);
 	return 0;
 }
