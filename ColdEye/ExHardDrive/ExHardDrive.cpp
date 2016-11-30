@@ -153,6 +153,7 @@ BOOL CExHardDrive::RecordFilePath(CString path, CString FileName)
 {
 	mCopyFromPath = path;
 	mCopyToPath = mDiskName + FileName;
+	Print("CopyFile path : %S", mCopyToPath);
 	SetEvent(mCopyEvent);
 	return 0;
 }
@@ -232,10 +233,6 @@ BOOL CExHardDrive::Updata()
 BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 {
 	if (!mIsInsert || !mIsThreadAlive) return 0;
-	if(FileInfo->status == RECORD_LOCKED)
-		return 0;
-	if (FileInfo->bIsOccupied)
-		return 0;
 	mFileInfo = FileInfo;
 	CTime time = FileInfo->tBegin;
 	CString filename, filepath, owner;
