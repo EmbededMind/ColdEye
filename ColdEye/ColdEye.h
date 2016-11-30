@@ -18,13 +18,22 @@
 
 typedef struct {
 	std::string boat_name;
+
+	bool        auto_watch_on;
 	DWORD       watch_time_begining;
 	DWORD       watch_time_end;
-	bool        auto_watch_status;
+
+	bool        alarm_light_onoff;
+
 	bool        alarm_sound_onoff;
-	uint16_t    alarm_sound;
+	uint16_t    alarm_sound_id;
+
 	uint16_t    brightness;
+	uint16_t    volumn;
 }HostConfig;
+
+
+
 
 
 // CColdEyeApp: 
@@ -51,6 +60,9 @@ public:
 	void      MakeSystemConfigDefault();
 	bool      SetAwTime(DWORD tBegining, DWORD tEnd);
 
+	void      StoreAlarmLightConfig();
+	void      StoreAlarmSoundConfig();
+	void      StoreSystemConfig();
 
 	HWND      GetMenuWndHandle();
 	UINT      GetLoginThreadPID();

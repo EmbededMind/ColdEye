@@ -203,7 +203,7 @@ void CSurface::ExecuteConfig()
 		}
 
 		//自动看船需要开启且现在属于自动看船时段
-		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_status) {
+		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
 			if (m_BindedPort->m_DevConfig.IsAutoWatchEnabled) {
 				//自动看船是关闭状态则开启
 				if (!m_bIsAutoWatchEnabled) {
@@ -1256,7 +1256,7 @@ afx_msg LRESULT CSurface::OnUserMsgSystemConfig(WPARAM wParam, LPARAM lParam)
 	//自动看船全局设置切换
 	if (wParam == 666) {
 		// 全局设置自动看船开。
-		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_status) {
+		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
 			ExecuteConfig();
 		}
 		

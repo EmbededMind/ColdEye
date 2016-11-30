@@ -45,9 +45,9 @@ void CPortManager::LoadPortsParam()
 
 		mPorts[i].m_AwConfig.Begining             = stmt->ValueInt(8);
 		mPorts[i].m_AwConfig.End                  = stmt->ValueInt(9);
-		mPorts[i].m_AwConfig.IsAlarmSoundOn       = stmt->ValueInt(10);
-		mPorts[i].m_AwConfig.AlarmSoundId         = stmt->ValueInt(11);
-		mPorts[i].m_AwConfig.IsAlarmLightOn       = stmt->ValueInt(12);
+		//mPorts[i].m_AwConfig.IsAlarmSoundOn       = stmt->ValueInt(10);
+		//mPorts[i].m_AwConfig.AlarmSoundId         = stmt->ValueInt(11);
+		//mPorts[i].m_AwConfig.IsAlarmLightOn       = stmt->ValueInt(12);
 
 		i++;
 	}

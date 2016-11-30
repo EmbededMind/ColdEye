@@ -100,11 +100,16 @@ void CVideoListUI::AddRecordFile(CRecordFileInfo* pInfo)
 	AddItem(pInfo);
 	RefreshList();
 
-	if (pInfo->status == RECORD_NSEEN) {
-		mhintNumber++;
-		CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
-		pItem->mhintNumber++;
+	//报警视频列表 中计算未看视频记录
+	CDuiString name = GetName();
+	name.Assign(name, name.GetLength() - 1);
+	if (_tcscmp(name, _T("video_alarmlist")) == 0) {
+		if (pInfo->status == RECORD_NSEEN) {
+			CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
+			pItem->mhintNumber++;
+		}
 	}
+
 }
 
 void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
