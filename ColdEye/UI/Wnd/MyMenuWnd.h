@@ -132,6 +132,7 @@ public :
 	void GetCameraItem(CVerticalLayoutUI *pLayout);
 	void CameraInfoInit(CameraInfo cameraInfo);
 	CameraInfo GetCameraSetInfo(int id);
+	void UpdataCameraName();	//¸üÐÂ´¬Ãû
 
 	void SetWatchTime(DWORD beginTime, DWORD endTime);
 	void GetWatchTime(DWORD* pBegining, DWORD* pEnd);
