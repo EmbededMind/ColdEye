@@ -53,7 +53,7 @@ CPort::~CPort()
 void CPort::SetId(uint16_t id)
 {
 	m_Id  = id;
-	m_DevConfig.NameId = id-1;
+	m_DevConfig.NameId = id;
 }
 
 

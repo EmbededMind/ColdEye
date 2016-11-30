@@ -463,7 +463,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event(VK_BACK, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_AUTOWATCH:
-
+				
 				break;
 			case KB_LEFT:
 				keybd_event(VK_LEFT, 0, 0, 0);

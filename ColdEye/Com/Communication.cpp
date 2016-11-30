@@ -191,6 +191,7 @@ bool CCommunication::Alarm(CCamera * pDev)
 {
 	if (!mIsAlarm)
 	{
+Print("Alarm  LY");
 		mIsAlarm = true;
 		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
 		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
@@ -226,8 +227,9 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 bool CCommunication::OverAlarm(CCamera * pDev)
 {
 	mIsAlarm = false;
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, pDev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	CRecordAlarmSound::GetInstance()->StopTalk();
 	return true;
 }
 
@@ -235,16 +237,14 @@ bool CCommunication::RecOverAlarmProc(uint8_t *pch)
 {
 	if (pch[5] == 1)
 	{
-		uint64_t mac64;
-		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		CRecordAlarmSound::GetInstance()->StopTalk();
+		Print("OverAlarm Succeed");
 		return true;
 	}
 	else
 	{
+		Print("OverAlarm Fail");
 		return false;
 	}
-	return true;
 }
 
 bool CCommunication::Handle(uint8_t param)//ÎÕÊÖ param == 1: ·µ»Ø×¢²á±í 
