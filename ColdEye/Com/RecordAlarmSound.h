@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "H264Play.h"
 #include "Device\Camera.h"
 class CRecordAlarmSound
@@ -9,6 +9,7 @@ private:CRecordAlarmSound() {
 	H264_PLAY_GetPort(&m_port);
 	m_pTalkDecodeBuf = nullptr;
 	m_isAlarm = false;
+	m_TimeId = 0;
 };
 public:
 	static CRecordAlarmSound* GetInstance() {
@@ -19,13 +20,14 @@ public:
 		return &instance;
 	}
 public:
-	LPBYTE *pBuf; //´ÓÎÄ¼þÖÐ ¶Á³öÒôÆµ µÄ»º³åÇø
+	LPBYTE *pBuf; //ä»Žæ–‡ä»¶ä¸­ è¯»å‡ºéŸ³é¢‘ çš„ç¼“å†²åŒº
 	int len;
 	int num;
 	char m_rtmpName[50];
 	char m_rName[50];
 	char m_Name[50];
-	CCamera *m_pPlayCamera;
+	static CCamera *m_pPlayCamera;
+	static UINT m_TimeId;
 	void Record(CCamera *pCamera);
 	bool Save();
 	bool NotSave();
@@ -41,5 +43,7 @@ protected:
 	BOOL StopTalkPlay(long nPort);
 	BYTE *m_pTalkDecodeBuf;
 	bool m_isAlarm;
+	void SetMyTimer();
+	static void CALLBACK MyTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 };
 
