@@ -96,6 +96,8 @@ void CMyMenuWnd::InitWindow()
 	pAwTime[2]->SetItemRelation(pAwTime[1], pAwTime[3]);
 	pAwTime[3]->SetItemRelation(pAwTime[2], NULL);
 
+	
+
 	//-------------------------摄像机设置界面添加-------------------------------
 	CDialogBuilder Camera1builder, Camera2builder, Camera3builder, Camera4builder, Camera5builder, Camera6builder;
 	CVerticalLayoutUI *CamareChildLayout;
@@ -1340,7 +1342,7 @@ bool CMyMenuWnd::SysSetIsChange()
 
 bool CMyMenuWnd::AwTimeIsChange()
 {
-	DWORD begine=NULL, end=NULL;
+	DWORD begine=0, end=0;
 	GetWatchTime(&begine, &end);
 	if (begine != ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining)
 		return true;
@@ -1499,7 +1501,7 @@ Print("Third Menu Sel :%d", inx);
 	//----------------看船时间---------------------
 	case 14:
 		Print("Aw time change");
-		if (/*AwTimeIsChange()*/ true) {
+		if (AwTimeIsChange()) {
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				//保存看船时间
 				DWORD aw_begining, aw_end;

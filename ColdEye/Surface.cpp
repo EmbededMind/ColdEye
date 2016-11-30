@@ -667,7 +667,6 @@ void CSurface::OnAlarmStop()
 	m_bIsAlarming = false;
 
 	Print("Alarm stop");
-	CRecordAlarmSound::GetInstance()->GetInstance()->StopTalk();
 	CCommunication::GetInstance()->OverAlarm(this->m_BindedCamera);//向摄像头的语音附件发送 报警关闭请求
 
 	m_wAlarmStamp = 0;
