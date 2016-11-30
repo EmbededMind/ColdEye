@@ -86,6 +86,8 @@ void CMyMenuWnd::InitWindow()
 
 	pAwOnOffRecordList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
 	pPage = static_cast<CLabelUI*>(m_pm.FindControl(_T("page")));
+	pHomeWatch = static_cast<CButtonUI*>(m_pm.FindControl(_T("button_home")));
+	if (pHomeWatch) pHomeWatch->OnNotify += MakeDelegate(this, &CMyMenuWnd::OnHomeWatch);
 	//-------------------------看船时间控件关联---------------------------------
 	pAwTime[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
 	pAwTime[1] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_minute")));
@@ -141,6 +143,21 @@ void CMyMenuWnd::InitWindow()
 	InitAwOnOffRecord();
 }
 
+
+bool CMyMenuWnd::OnHomeWatch(void * param)
+{
+	TNotifyUI* pMsg = (TNotifyUI*)param;
+
+	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
+		if (pMsg->lParam == VK_BACK) {
+			m_pm.FindControl(_T("button_home"))->SetFocus();
+		}
+		else if (pMsg->lParam == VK_RETURN) {
+			m_pm.FindControl(_T("notice"))->SetVisible(true);
+		}
+	}
+	return false;
+}
 
 void CMyMenuWnd::UpdataItemColor()
 {
@@ -300,7 +317,7 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			FocusedItem[0] = pItem; 
 			pNextFocusLayout = (CContainerUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel()); //下一集焦点的布局
 			if (userdata == _T("4")) {
-				
+				pHomeWatch->SetFocus();
 			}
 			else if (pNextFocusLayout->GetCount() > 0) {
 				focusLevel++;
@@ -1281,14 +1298,15 @@ void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
 		tMinute2 = endTime%60;
 
 		pAwTime[0]->SetValue(tHour1);
-		pAwTime[1]->SetValue(tHour2);
-		pAwTime[2]->SetValue(tMinute1);
+		pAwTime[1]->SetValue(tMinute1);
+		pAwTime[2]->SetValue(tHour2);
 		pAwTime[3]->SetValue(tMinute2);
 	}
 }
 
 void CMyMenuWnd::GetWatchTime(DWORD* pBegining, DWORD* pEnd)
 {	
+
 	*pBegining = pAwTime[0]->GetValue() + pAwTime[1]->GetValue();
 	*pEnd = pAwTime[2]->GetValue()+ pAwTime[3]->GetValue();
 }
@@ -1496,7 +1514,7 @@ Print("Third Menu Sel :%d", inx);
 				//保存看船时间
 				DWORD aw_begining, aw_end;
 				GetWatchTime(&aw_begining, &aw_end);
-
+				Print("begin:%d, end:%d", aw_begining, aw_end);
 				if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
 					MSG msg;
 					msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
