@@ -936,6 +936,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 						}
 					}
 				}
+
 			}
 			else {
 				InitRecordFile((list<CRecordFileInfo*>*)lParam);
@@ -1291,6 +1292,10 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 	setInfo.IsVideoRecordEnabled = camera[id].pSaveVideo->GetValue();
 	setInfo.IsAutoWatchEnabled = camera[id].pAutoWatch->GetValue();
 	return setInfo;
+}
+
+void CMyMenuWnd::UpdataCameraName()
+{
 }
 
 void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)

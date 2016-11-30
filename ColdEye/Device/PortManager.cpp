@@ -59,7 +59,6 @@ void CPortManager::LoadPortsParam()
 			mPorts[i].m_virginNumber = pShadow->GetVirginFileCnt(mPorts[i].GetId());
 			Print("Port %d has %d virgin files", i + 1, mPorts[i].m_virginNumber);
 		}
-
 	}
 
 	for (int i = 0; i < 6; i++) {
