@@ -34,6 +34,9 @@ void CDBLogger::LogPowerOn(CTime& t, int on_off)
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
 	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
 }
 
 
@@ -64,6 +67,9 @@ void CDBLogger::LogAutoWatch(CTime& t, bool on_off)
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
 	}
 }
 

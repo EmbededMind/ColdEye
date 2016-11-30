@@ -820,6 +820,7 @@ void CMyMenuWnd::AddAlarmVoice()
 
 void CMyMenuWnd::refreshSuperscript(CMyListUI* pSender)
 {
+	CRecordFileInfo* pInfo  = pSender->Info;
 	CVideoListUI::Node* pNode;
 	CMyListUI* pHead;
 	pNode = (CVideoListUI::Node*)pSender->GetTag();
@@ -837,6 +838,11 @@ void CMyMenuWnd::refreshSuperscript(CMyListUI* pSender)
 		SetAllVirginNum();
 	}
 
+	char sqlStmt[128];
+	sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pInfo->status, pInfo->nOwner, pInfo->tBegin);
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
 }
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)

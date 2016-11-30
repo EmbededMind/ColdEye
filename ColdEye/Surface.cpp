@@ -1104,7 +1104,7 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 			else if (lParam == (LPARAM)&mDelBtn) {
 
 				// if (IDOK)
-
+				Print("Clicked delete camera");
 				OnCameraLogOff();
 			}
 			break;
