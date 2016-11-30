@@ -1049,7 +1049,7 @@ void CMyMenuWnd::SetAllVirginNum()
 	for (int i = 0; i < 6; i++) {
 		if (pAlarmItem[i]) {
 			CPort* port = (CPort*)pAlarmItem[i]->GetTag();
-			Print("hinnum:%d", port->m_virginNumber);
+			Print("Get %d port %d virgin file", port->GetId(), port->m_virginNumber);
 			totalVirginNum += port->m_virginNumber;
 		}
 	}
