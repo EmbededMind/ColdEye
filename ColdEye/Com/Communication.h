@@ -13,6 +13,7 @@ public:
 private:
 	CCommunication();
 	uint8_t mOrder[17];
+	bool mIsAlarm;
 public:
 	CCamera * mPdev;
 	long mTalkHandle;
