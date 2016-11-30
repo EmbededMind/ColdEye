@@ -202,7 +202,6 @@ BOOL CCamera::Login()
 	if (lRet > 0)
 	{
 		m_LoginId = lRet;
-		printf("Login\n");
 		CUtil::LoadMap(this);
 		return TRUE;
 	}
@@ -236,58 +235,6 @@ void CCamera::Logout()
 		Print("Invalid logid:%d when logout", m_LoginId);
 	}
 }
-
-
-/**@brief 摄像机开启实时视频数据传输
- *
- */
-//BOOL CCamera::StartRealPlay()
-//{
-//	if(m_LoginId  > 0){
-//		m_hRealPlay = H264_DVR_RealPlay(m_LoginId, &this->m_ClientInfo);
-//		if (m_hRealPlay > 0) {
-//			return TRUE;
-//		}
-//		else {
-//			TRACE("Real play failed.Error code:%d\n", H264_DVR_GetLastError());
-//			return FALSE;
-//		}
-//	}
-//	else {
-//		return FALSE;
-//	}
-//}
-
-
-/**@brief 将摄像机实时视频显示在指定窗口
- *
- * @param [in] hWnd,指定用于显示视频的窗口
- * @note  ColdEye 不应调用该函数，只能打开实时视频传输，不要指定实时播放。
- */
-//BOOL CCamera::StartRealPlay(HWND hWnd)
-//{
-//	this->m_ClientInfo.hWnd = hWnd;
-//	StartRealPlay();
-//	return 0;
-//}
-
-
-//void CCamera::StopRealPlay()
-//{
-//	if (m_hRealPlay > 0) {
-//		if (!H264_DVR_StopRealPlay(m_hRealPlay, &this->m_ClientInfo.hWnd)) {
-//			Print("%s stop real play failed:%d", this->m_szIp, H264_DVR_GetLastError());
-//			ASSERT(false);
-//		}
-//		m_hRealPlay = 0;
-//		Print("Stop real play");
-//	}
-//	else {
-//		Print("Invalid hRealPlay");
-//	}
-//
-//}
-
 
 
 BOOL CCamera::LoadLocalConfig()

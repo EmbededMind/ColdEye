@@ -323,21 +323,17 @@ HCURSOR CColdEyeDlg::OnQueryDragIcon()
 
 afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 {
-	Print("Find %d camera", wParam);
-	if (wParam > 1) {
-		ASSERT(FALSE);
+	CPort* pPort  = (CPort*)lParam;
+
+	if (wParam) {
+		Print("Search device succeed");
+		PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_LOGIN, 0, (LPARAM)pPort);
 	}
-	for (int i = 0; i < wParam; i++) {
-		static bool hasPostLogin = false;
-		CCamera* pCamera = new CCamera();
-		pCamera->SetCommonNetConfig(&((SDK_CONFIG_NET_COMMON_V2*)lParam)[i]);
-		PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_LOGIN, 0, (LPARAM)pCamera);
-		if (hasPostLogin) {
-			Print("What a fuck! Has post login");
-			ASSERT(FALSE);
-		}
-		hasPostLogin = true;
+	else {
+		Print("Search device failed");
+		mSearchPort.push_back((CPort*)lParam);
 	}
+
 	return 0;
 }
 
@@ -540,8 +536,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		static int cnt = 0;
 		onedata *p = (onedata*)pData;
 
-		printf("COM_CAMERA message NO.%d : ", CAmessage_NO);
-		CAmessage_NO++;
+		//printf("COM_CAMERA message NO.%d : ", CAmessage_NO);
+		//CAmessage_NO++;
 		for (int i = 0; i < p->num; i++) {
 			printf("%02X ", p->ch[i]);
 		}
@@ -561,7 +557,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		//这里判断CRC
 		//.....
 
-		if (p->ch[1] == 0x02 && p->ch[2] == 0x01)
+		//if (p->ch[1] == 0x02 && p->ch[2] == 0x01)
+		if (true)
 		{
 			switch (p->ch[3])
 			{
@@ -602,15 +599,113 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				if (p->ch[4] == 1)  //端口状态信息。
 				{
 					CPortManager*  pPortMgr  = CPortManager::GetInstance();
+					CPort*         pPort ;
+					for (int i = 0; i < 6; i++) {
+						pPort  = &pPortMgr->mPorts[i];
+
+						bool isOnline    = (p->ch[6+i] & 0x80) > 0;
+						bool isReplaced  = (p->ch[6+i] & 0x10) > 0;
+
+						if (pPort->m_State == OFFLINE) {  
+						    // 检测到插入
+							if (isOnline) {
+								Print("---->Plug event");
+								pPort->m_State  = PENDING_MAC;
+								mPendMacPort.push_back(i+1); // 加入请求mac的队列
+							}
+						}
+						else if (pPort->m_State == ONLINE) {
+							//检测到拔出
+							
+							if (!isOnline) {
+								Print("Pull event<----");
+								pPort->m_State  = OFFLINE;
+							}
+							//检测到更换
+							else if (isReplaced) {
+								Print("Replace event---");
+								pPort->m_State  = PENDING_MAC;
+								mPendMacPort.push_back(i+1);// 加入请求mac的队列
+							}
+						}
+
+
+						//PortOption resOpt  = pPortMgr->mPorts[i].ParseState((p->ch[6+i] & 0x80) > 0, (p->ch[6+i] & 0x10) > 0);
+						//
+						//if (resOpt == PEND_MAC) {
+						//	//发送请求mac的串口命令
+						//	Print("%d pend mac and state is:%d", i+1, pPortMgr->mPorts[i].m_State);
+						//	mPendMacPort.push_back(i+1);
+						//}
+					}
 				}
 				else if (p->ch[4] == 2) //端口mac
 				{
+					//for (int i = 0; i < p->num; i++) {
+					//	printf("%02X ", p->ch[i]);
+					//}
+					//printf("\n");
 					// p->ch[6]  mac
 					// p->ch[5]  id
+					if (p->ch[5] > 0 && p->ch[5] <= 6) {					
+						CPortManager* pPortMgr  = CPortManager::GetInstance();
+						CPort* pPort  = &(pPortMgr->mPorts[p->ch[5]-1]);
+						
+						// 此端口没有id，说明是第一次被插（... 处女？），则分配一个1～6的id给她。
+						if (pPort->GetId() == 0) {
+							int cnt  = 0;
+							for (int i = 0; i < 6; i++) {
+								if (pPortMgr->mPorts[i].GetId() > 0) {
+									cnt++;
+								}
+							}
+
+							if (cnt < 6) {
+								pPortMgr->BindPortId(pPort, cnt+1);
+							}
+							else {
+								Print("What happened!");
+							}
+						}
+
+
+						if (pPort->m_State == PENDING_MAC) {
+							CUtil::MacNumberToStr( &(p->ch[6]), pPort->GetMac());
+
+							// 此端口未绑定摄像头
+							if (pPort->m_pCamera == NULL) {
+							Print("Unbinded port");
+								pPort->m_State  = PENDING_CAMERA;								
+								PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+							}
+							// 此端口已绑定摄像头
+							else {
+								// 请求的mac和已绑定的mac相同，说明插入的设备和此前拔出的是同一个。
+								if (strcmp(pPort->m_pCamera->mCommonNetConfig.sMac, pPort->GetMac()) == 0) {
+									//，重新登录
+									pPort->m_State  = ONLINE;
+									Print("Pend mac equal binded mac, so wait for reconnect");
+								}
+								// 不相同，需要将原来绑定的摄像头注销并删除对应Surface，然后请求新的摄像头。
+								else {
+									// 注销，删除
+									Print("Need logoff and delete");
+									::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_LOGOFF, 2, (LPARAM)pPort);
+
+									pPort->m_State  = PENDING_CAMERA;
+									PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+								}	
+							}
+					
+						}
+						else {
+							Print("Rec mac but not pending mac");
+						}
+					}
+					break;
 				}
-				break;
-			default:
-				break;
+				default:
+					break;
 			}
 		}
 	}
@@ -682,6 +777,18 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//发送握手
 	static int i = 0;
+	static int CntDiv_10S  = 0;
+	CntDiv_10S++;
+	if (CntDiv_10S >= 10) {
+		CntDiv_10S  = 0;
+
+		if (mSearchPort.size() > 0) {
+			CPort* pPort  = mSearchPort.front();
+			mSearchPort.pop_front();
+			PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+		}
+	}
+
 	m_SysTime  = CTime::GetCurrentTime();
 	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
 	
@@ -689,6 +796,21 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	InvalidateRect(m_rSysTimeText);
 	InvalidateRect(m_rAwTipText);
 	InvalidateRect(m_rHwTipText);
+
+
+	if (mPendMacPort.size() > 0) {
+	    uint8_t id  = mPendMacPort.front();
+		mPendMacPort.pop_front();
+
+		Print("%d Pend mac", id);
+
+		CCommunication::GetInstance()->Handle(2, id);
+
+	}
+	else {
+		CCommunication::GetInstance()->Handle(1);
+	}
+
 	CDialogEx::OnTimer(nIDEvent);
 }
 

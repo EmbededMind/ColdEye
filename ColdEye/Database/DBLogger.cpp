@@ -42,11 +42,11 @@ void CDBLogger::LogSystemTime(CTime& t)
 	char sqlStmt[128];
 
 
-	sprintf_s(sqlStmt, "update log set time = %I64d where opt = 2", t.GetTime());
+	sprintf_s(sqlStmt, "update log set time = %I64d where opt = 2;", t.GetTime());
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
-		sprintf_s(sqlStmt, "insert into log (time, opt) values (%I64d, 2)", t.GetTime());
+		sprintf_s(sqlStmt, "insert into log (time, opt) values (%I64d, 2);", t.GetTime());
 
 		if (!sqlite.DirectStatement(sqlStmt)) {
 			Print("Sql error:%s", sqlStmt);

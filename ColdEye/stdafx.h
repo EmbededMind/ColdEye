@@ -1,4 +1,4 @@
-
+ 
 // stdafx.h : 标准系统包含文件的包含文件，
 // 或是经常使用但不常更改的
 // 特定于项目的包含文件
@@ -47,6 +47,8 @@
 #define USER_MSG_LOGIN         (WM_USER + 102)
 #define USER_MSG_RELOGIN       (WM_USER + 103)
 #define USER_MSG_LOGOFF        (WM_USER + 104)
+#define USER_MSG_DISCONNECT    (WM_USER + 105)
+
 
 #define USER_MSG_INITFILE	   (WM_USER + 113)
 #define USER_MSG_ADDFILE	   (WM_USER + 114)
@@ -55,7 +57,7 @@
 #define USER_MSG_NOFITY_KEYDOWN   (WM_USER + 120)
 
 
-#define USER_MSG_SYSTEM_STATUS_CHANGE      (WM_USER + 121)
+#define USER_MSG_SYSTEM_CONFIG     (WM_USER + 121)
 
 
 #define USER_MSG_CAMERA_CONFIG_CHANGE      (WM_USER + 122)
@@ -98,15 +100,18 @@
  /*****************************************
  *            Direction define            *
  ******************************************/
-#define UI_RESOURCE_PATH     "..\\Resource"
-#define RECORD_VOICE_PATH    "D:\\VOICE\\"
-#define RECORD_VOICE_NAME	 "D:\\VOICE\\wavalarm.wav"
-#define RECORD_VOICE_NAME_TMP "D:\\VOICE\\wavalarmtmp.wav"
-#define NORMAL_RECORD_PATH   "D:\\NormalRecord\\"
-#define ALARM_RECORD_PATH    "E:\\AlarmRecord\\"
-#define SOUND_PATH           "E:\\AlarmRecord\\"
-#define NORMALDISK           "d:\\"
-#define ALARMDISK            "e:\\"
+#define UI_RESOURCE_PATH           "..\\Resource"
+#define RECORD_VOICE_PATH          "D:\\VOICE\\"
+#define RECORD_VOICE_NAME_WAV	   "D:\\VOICE\\rwavalarm.wav"
+#define RECORD_VOICE_NAME_WAV_TMP  "D:\\VOICE\\rwavalarmtmp.wav"
+#define RECORD_VOICE_NAME	       "D:\\VOICE\\rG711"
+#define RECORD_VOICE_NAME_TMP      "D:\\VOICE\\rG711tmp"
+#define ALARM_VOICE_NAME	       "D:\\VOICE\\G711"
+#define NORMAL_RECORD_PATH         "D:\\NormalRecord\\"
+#define ALARM_RECORD_PATH          "E:\\AlarmRecord\\"
+#define SOUND_PATH                 "E:\\AlarmRecord\\"
+#define NORMALDISK                 "d:\\"
+#define ALARMDISK                  "e:\\"
 
 
  /*****************************************
@@ -247,6 +252,9 @@
 #define DUI_MSGTYPE_LISTLABEL		(_T("listlabel"))
 #define DUI_MSGTYPE_RECORDVOICE		(_T("recordvoice"))
 
+//报警音播放类型
+#define ALARM_VOICE_DEFAULT         0
+#define ALARM_VOICE_RECORD          1
 
 #include "Database\sqlitewrapper.h"
 extern int mutex;
@@ -274,6 +282,7 @@ extern 	SQLiteWrapper sqlite;
 #endif
 
 #pragma comment(lib, "WinMM.Lib")
+#pragma comment(lib,"Shlwapi.lib")
 
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

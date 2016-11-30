@@ -1297,6 +1297,14 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 		if (AwTimeIsChange()) {
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				//保存看船时间
+				DWORD aw_begining, aw_end;
+				GetWatchTime(&aw_begining, &aw_end);
+
+				if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
+					MSG msg;
+					msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
+					CMsgSquare::GetInstance()->Broadcast(msg);
+				}
 			}
 			else {
 				//恢复之前设置的看船时间
@@ -1374,6 +1382,7 @@ void CMyMenuWnd::InitAlarmVoice()
 	int VoiveNum= 2;
 	bool AlarmOnOff = true;
 	int VoiceSel = 0;
+	int isExistVoice;
 	char sqlStmt[128];
 	sprintf_s(sqlStmt, "SELECT * FROM host_config;");
 	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
@@ -1381,7 +1390,7 @@ void CMyMenuWnd::InitAlarmVoice()
 		AlarmOnOff = stmt->ValueInt(4);
 		VoiceSel = stmt->ValueInt(5);
 	}
-
+	isExistVoice = CRecordAlarmSound::GetInstance()->ScanVoice();
 	for (int i = 0; i < VoiveNum-1; i++) {
 		AddAlarmVoice();
 	}

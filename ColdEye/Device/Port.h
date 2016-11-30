@@ -47,10 +47,12 @@ typedef enum {
 
 
 typedef enum {
-	PEND_MAC = 0,
+    OPT_NONE  = 0,
+	PEND_MAC,
 	SEARCH_CAMERA,
 	PEND_LOGIN,
 	DROWN,
+	RESET
 }PortOption;
 
 
@@ -59,12 +61,14 @@ class CPort
 public:
 	CPort();
 	~CPort();
-
+	uint16_t               m_Pos;
 	uint16_t               m_Id;
 	DeviceConfig           m_DevConfig;
 	AutoWatchConfig        m_AwConfig;
 	CCamera*               m_pCamera;
 	int                    m_virginNumber;
+
+	PortState m_State;
 
 	void  SetId(uint16_t id);
 	void  SetNameId(uint16_t id);
@@ -76,6 +80,7 @@ public:
 
 	bool  SetAwTime(DWORD tBegining, DWORD tEnd);
 
+	void  StoreParam();
 
 	uint16_t   GetId();	
 	uint16_t   GetNameId();
@@ -89,13 +94,13 @@ public:
 	void       Config(DeviceConfig& config);
 
 	PortOption  ParseState(bool isOnline, bool isReplaced);
-	PortOption  ParseState(bool isOnline, UCHAR* pMac);
+	PortOption  ParseState( UCHAR* pMac);
 	PortOption  ParseState(CCamera* pCamera);
 
 
 private:
-	char m_mac[20];             //存储从主机103读取的mac
+	char m_mac[40];             //存储从主机103读取的mac
 	bool m_bIsVisible;
 	bool m_bIsActive;
-	PortState m_State;
+
 };

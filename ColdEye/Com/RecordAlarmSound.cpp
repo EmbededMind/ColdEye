@@ -2,6 +2,8 @@
 #include "RecordAlarmSound.h"
 #include "Com\Alaw_encoder.h"
 #include "Com\Communication.h"
+#include "shlwapi.h"
+
 CRecordAlarmSound::~CRecordAlarmSound()
 {
 	H264_PLAY_FreePort(m_port);
@@ -15,6 +17,14 @@ BOOL CRecordAlarmSound::InputTalkData(BYTE * pBuf, DWORD nBufLen)
 	return H264_PLAY_InputData(m_port, pBuf, nBufLen);
 	return 0;
 }
+BOOL CRecordAlarmSound::ScanVoice()
+{
+	if (PathFileExists(_T(RECORD_VOICE_NAME)) && PathFileExists(_T(RECORD_VOICE_NAME_WAV)))
+	{
+		return true;
+	}
+	return 0;
+}
 BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 {
 	BOOL bPlayOk = FALSE;
@@ -24,6 +34,7 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 }
 BOOL CRecordAlarmSound::StopTalk()
 {
+	m_isAlarm = false;
 	H264_PLAY_StopAudioCapture();//关闭音频采集功能
 
 	BOOL bPlayOk = FALSE;
@@ -49,7 +60,7 @@ void __stdcall AudioDataCallBack(LPBYTE pDataBuffer, DWORD dwDataLength, long nU
 	{
 		pDevice->SendTalkData(pDataBuffer, dwDataLength);//发送音频数据到摄像头
 		FILE *stream;
-		fopen_s(&stream, "voice_g711a", "ab+");
+		fopen_s(&stream, pDevice->m_rtmpName, "ab+");
 		fwrite(pDataBuffer, dwDataLength, 1, stream);
 		fclose(stream);
 	}
@@ -57,7 +68,7 @@ void __stdcall AudioDataCallBack(LPBYTE pDataBuffer, DWORD dwDataLength, long nU
 void CRecordAlarmSound::Record(CCamera *pCamera)
 {
 	m_pRecordCamera = pCamera;
-	DeleteFile(_T("voice_g711a"));//删掉文件
+	DeleteFile(_T(RECORD_VOICE_NAME_TMP));//删掉文件
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
@@ -93,15 +104,26 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 			i = 0;
 	}
 }
-bool CRecordAlarmSound::Play(CCamera *pCamera)
+bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
+	if (!m_isAlarm)
+		m_isAlarm = true;
+	else
+		return 0;
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
 
 	FILE *pFile;
-	fopen_s(&pFile, "voice_g711a_alarm", "rb");
-
+	if (type = ALARM_VOICE_DEFAULT)
+	{
+		fopen_s(&pFile, m_Name, "rb");
+	}
+	else
+	{
+		fopen_s(&pFile, m_rName, "rb");
+	}
+	
 	fseek(pFile, 0, SEEK_END);//首先到文件末尾查看文件长度
 	len = ftell(pFile);//接上面的那句话
 	pBuf = new LPBYTE[len];
@@ -132,14 +154,14 @@ bool CRecordAlarmSound::Play(CCamera *pCamera)
 
 bool CRecordAlarmSound::Save()
 {
-	DeleteFile(_T("voice_g711a_alarm"));
-	CFile::Rename(_T("voice_g711a"), _T("voice_g711a_alarm"));
+	DeleteFile(_T(RECORD_VOICE_NAME));
+	CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
 	return false;
 }
 
 bool CRecordAlarmSound::NotSave()
 {
-	DeleteFile(_T("voice_g711a"));
+	DeleteFile(_T(RECORD_VOICE_NAME_TMP));
 	return false;
 }
 

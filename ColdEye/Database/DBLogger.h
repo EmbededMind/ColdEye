@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Device\Camera.h"
 
 class CDBLogger

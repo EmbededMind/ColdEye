@@ -23,6 +23,7 @@ void CRecordFileButler::Notify(UINT opt, WPARAM wParam, LPARAM lParam)
 
 CFile* CRecordFileButler::AllocRecordFile()
 {
+Print("Alloc file");
 	CRecordFileMetabolism::GetInstance()->FileMetabolism();
 	CTime time = CTime::GetCurrentTime();
 	CString fileName;
@@ -53,6 +54,7 @@ if (m_FileType == 2)
 
 void CRecordFileButler::ReleaseRecordFile()
 {
+	Print("Release file");
 	CTime time = CTime::GetCurrentTime();
 
 	if (m_File != CFile::hFileNull) {
@@ -83,12 +85,15 @@ mutex_RealData.Lock();
 
 		m_pFileInfo->tEnd = time.GetTime();
 
-		
 		this->Notify(FILE_OPT_END, m_FileType, (LPARAM)m_pFileInfo);
+		
 	}
 	else {
 PrintE("Release null handle file");
+
 	}
+
+	
 }
 
 

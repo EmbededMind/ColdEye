@@ -7,7 +7,7 @@
 
 CPortManager::CPortManager()
 {
-
+	
 }
 
 
@@ -54,10 +54,16 @@ void CPortManager::LoadPortsParam()
 
 	CDBShadow* pShadow = CDBShadow::GetInstance();
 	for (int i = 0; i < 6; i++) {
-		mPorts[i].m_virginNumber = pShadow->GetVirginFileCnt(i+1);
-		Print("Port %d has %d virgin files", i+1, mPorts[i].m_virginNumber);
+		mPorts[i].m_virginNumber = pShadow->GetVirginFileCnt(i + 1);
+		Print("Port %d has %d virgin files", i + 1, mPorts[i].m_virginNumber);
+	}
+
+	for (int i = 0; i < 6; i++) {
+		mPorts[i].m_Pos = i + 1;
 	}
 }
+
+
 
 
 
@@ -70,6 +76,25 @@ CPort*  CPortManager::GetPortById(int id)
 	}
 
 	return NULL;
+}
+
+
+void CPortManager::BindPortId(CPort* pPort, int id)
+{
+	for (int i = 0; i < 6; i++) {
+		if (&mPorts[i] == pPort) {
+			pPort->SetId(id);
+
+			char sqlStmt[128];
+			sprintf_s(sqlStmt, "UPDATE port SET id = %d WHERE pos = %d;", id, i+1);
+
+			if (!sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
+
+			return;
+		}
+	}
 }
 
 

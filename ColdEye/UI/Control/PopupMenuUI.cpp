@@ -91,14 +91,14 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 	CDuiString text;
 	CPort *pPort = (CPort*)GetTag();
 
-	if (pPort) {
-		Print("id:%d",pPort->GetId());
-		mHintNumber = pPort->m_virginNumber;
-		Print("num:%d", mHintNumber);
-	}
-	else {
-		Print("Port err");
-	}
+	//if (pPort) {
+	//	Print("id:%d",pPort->GetId());
+	//	mHintNumber = pPort->m_virginNumber;
+	//	Print("num:%d", mHintNumber);
+	//}
+	//else {
+	//	Print("Port err");
+	//}
 	//mHintNumber = pPort->m_virginNumber;
 //Print("mHintNumber:%d", pPort->m_virginNumber);
 
