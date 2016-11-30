@@ -76,8 +76,7 @@ bool CCommunication::RecTalkProc(uint8_t *pch)
 
 bool CCommunication::ReplyTalk(uint8_t *pch)
 {
-Print("ReplyTalk");
-	if (IsChannelCleaning())
+	if (IsChannelCleaning())//SDK没打开
 	{
 Print("IsChannelCleaning");
 		uint64_t mac64;
@@ -91,11 +90,30 @@ Print("H264_DVR_StartLocalVoiceCom");
 			return true;
 	}	
 	}
-	else
+	else//SDK打开了
 	{
-Print("H264_DVR_StartLocalVoiceCom no");
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x02, this->mPdev);
-		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+		if (mIsAlarm)//报警打开了SDK
+		{
+			uint64_t mac64;
+			mac64 = CUtil::ArrayToUint64(&pch[6]);
+			if (Mac_CCamera_Map.at(mac64) == mPdev)//报警摄像头按的请求通话
+			{
+				OverAlarm(mPdev);
+			}
+			else
+			{
+				CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x02, this->mPdev);//请求不成功
+				CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+				OverAlarm(mPdev);//关报警
+				CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x02, 0x00, this->mPdev);//你说话
+				CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+			}
+		}
+		else
+		{
+			CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x02, this->mPdev);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+		}
 		return false;
 	}
 	return false;
@@ -189,7 +207,7 @@ uint8_t CCommunication::RecSetVolumeProc(uint8_t *pch)
 
 bool CCommunication::Alarm(CCamera * pDev)
 {
-	if (!mIsAlarm)
+	if (IsChannelCleaning())
 	{
 Print("Alarm  LY");
 		mIsAlarm = true;
@@ -226,10 +244,12 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 
 bool CCommunication::OverAlarm(CCamera * pDev)
 {
-	mIsAlarm = false;
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	CRecordAlarmSound::GetInstance()->StopTalk();
+	if (mIsAlarm)
+	{
+		mIsAlarm = false;
+		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
+		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	}
 	return true;
 }
 

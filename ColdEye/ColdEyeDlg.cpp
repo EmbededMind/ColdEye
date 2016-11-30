@@ -138,6 +138,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_WM_TIMER()
 	         //UEER_MSG_CAMERA_CONFIG_CHANGE
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CColdEyeDlg::OnUserMsgCameraConfigChange)
+	ON_MESSAGE(USER_MSG_STOP_ALARM, &CColdEyeDlg::OnUserMsgStopAlarm)
 END_MESSAGE_MAP()
 
 
@@ -171,6 +172,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
+	// 加载U盘图标
+	m_bmpUFlash.LoadBitmapW(IDB_BITMAP3);
 
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
@@ -202,6 +205,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	}
 	if (CExHardDrive::GetInstance()->ScanDisk(this))
 	{
+		isFlashDisk = true;
 		CExHardDrive::GetInstance()->Updata();
 	}
 
@@ -298,17 +302,42 @@ void CColdEyeDlg::OnPaint()
 		//CBitmap bitmap;
 		//bitmap.LoadBitmap(IDB_BITMAP2);
 
-		//BITMAP bmp;
-		//bitmap.GetBitmap(&bmp);
+		if (isFlashDisk) {
+			Print("Paint U flash");
+			//BITMAP bmp;
+			//m_bmpUFlash.GetBitmap(&bmp);
 
-		//CDC dcCompatible;
-		//dcCompatible.CreateCompatibleDC(&dc);
-		//dcCompatible.SelectObject(&bitmap);
+			//CDC dcCompatible;
+			//dcCompatible.CreateCompatibleDC(&dc);
+			//dcCompatible.SelectObject(&m_bmpUFlash);
 
-		//CRect rect;
-		//GetClientRect(&rect);
+			//CRect rect = {1490,31,60,38};
 
-		//dc.BitBlt(1490, 31, 60, 38, &dcCompatible, 0, 0, SRCCOPY);
+			//dc.BitBlt(rect.left,rect.top,rect.right,rect.bottom, &dcCompatible, 0, 0, SRCCOPY);
+			//dcCompatible.DeleteDC();
+
+
+			CDC dcCompatible;
+			dcCompatible.CreateCompatibleDC(&dc);
+			dcCompatible.SelectObject(&m_bmpUFlash);
+			CRect rc(1490, 31, 1550, 69);//定义一个区域
+
+
+			BITMAP BitInfo;//定义位图结构
+
+			m_bmpUFlash.GetBitmap(&BitInfo);//获取位图信息
+
+			int x = BitInfo.bmWidth;//获取位图宽度
+
+			int y = BitInfo.bmHeight; //获取位图高度
+
+			dc.StretchBlt(rc.left, rc.top, rc.Width(), rc.Height(), &dcCompatible, 0, 0, x, y, SRCCOPY);//绘制位图
+
+			dcCompatible.DeleteDC();//释放设备上下文
+
+			m_bmpUFlash.DeleteObject();//释放位图对象
+		}
+
 		//Print("width:%d,height:%d", rect.Width(), rect.Height());
 
 
@@ -736,6 +765,7 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 	switch (nEventType)
 	{
 	case DBT_DEVICEARRIVAL:
+		isFlashDisk = true;
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
 		mask = pDisk->dbcv_unitmask;
 		for (i = 0; i < 32; i++)
@@ -753,6 +783,7 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 		CExHardDrive::GetInstance()->StartMonitoring();
 		break;
 	case DBT_DEVICEREMOVECOMPLETE:
+		isFlashDisk = false;
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
 		mask = pDisk->dbcv_unitmask;
 		for (i = 0; i < 32; i++)
@@ -859,5 +890,12 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 		}
 	}
 
+	return 0;
+}
+
+LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
+{
+	CCamera *pDev = (CCamera*)lParam;
+	CCommunication::GetInstance()->OverAlarm(pDev);
 	return 0;
 }
