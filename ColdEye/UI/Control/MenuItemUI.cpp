@@ -273,7 +273,6 @@ list<CRecordFileInfo*> CMenuItemUI::FindRecordFile(UINT8* type)
 			recordInfo.push_back(pItem->Info);
 		}
 	}
-
 	return recordInfo;
 
 	//HardDriverStatus(recordInfo, RecordType);

@@ -66,6 +66,7 @@ public:
 	DeviceConfig           m_DevConfig;
 	AutoWatchConfig        m_AwConfig;
 	CCamera*               m_pCamera;
+	int                    m_virginNumber;
 
 	PortState m_State;
 

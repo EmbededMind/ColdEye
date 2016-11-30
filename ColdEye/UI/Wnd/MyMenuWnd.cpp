@@ -5,7 +5,7 @@
 #include "Control\PopupMenuUI.h"
 
 #include "Pattern\MsgSquare.h"
-
+ 
 #include "Database\DBShadow.h"
 #include "Com\RecordAlarmSound.h"
 #include "Com\MCI.h"
@@ -349,11 +349,13 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 
 	case VK_RETURN:
 		if (pSend == pDefaultVoice) {
+			mAlarmVoiceSel = 0;
 			pDefaultVoice->SetVoiceSel(true);
 			if(pVoice1)
 				pVoice1->SetVoiceSel(false);
 		}
 		else {
+			mAlarmVoiceSel = 1;
 			pDefaultVoice->SetVoiceSel(false);
 			pVoice1->SetVoiceSel(true);
 		}
@@ -408,6 +410,25 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 
 void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 {
+	if (GetKeyState(VK_CONTROL) && !(msg.wParam & 0x20000000)) {
+		if (msg.wParam == 'L') { //加锁
+			if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0){
+				CMyListUI *pSender = (CMyListUI*)msg.pSender;
+				if (pSender->Info->status == RECORD_LOCKED) {
+					pSender->Info->status = RECORD_SEEN;
+				}
+				else {
+					if (pSender->Info->status == RECORD_NSEEN) {
+						refreshSuperscript(pSender);
+					}
+					pSender->Info->status = RECORD_LOCKED;
+				}
+				pSender->Invalidate();
+			}
+
+		}
+	}
+
 	switch (msg.wParam) {
 	case VK_BACK:
 		if (FocusedItem[1]) {
@@ -490,10 +511,7 @@ void CMyMenuWnd::ExpandCameraName()
 
 void CMyMenuWnd::ShowAlarmVoiceList(bool Switch)
 {
-	int inx;
-	inx = pLayout_third->GetCurSel();
-	CContainerUI* pContain = (CContainerUI*)pLayout_third->GetItemAt(inx);
-	pContain = (CContainerUI*)pContain->GetItemAt(1);
+	CContainerUI* pContain = (CContainerUI*)m_pm.FindControl(_T("alarm_voice"));
 	pContain->SetVisible(Switch);
 }
 
@@ -641,6 +659,15 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 
 }
 
+void CMyMenuWnd::PlayVideo(WPARAM wParam,LPARAM lParam)
+{
+	mPlayerWall = new CPlayerWallWnd(_T("playerwall.xml"));
+	mPlayerWall->Create(NULL, _T("PlayerWallWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
+	mPlayerWall->ShowWindow(true);
+	mPlayerWall->CenterWindow();
+	::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, wParam, lParam);
+}
+
 void CMyMenuWnd::RecordVoice()
 {
 	int result;
@@ -679,6 +706,16 @@ void CMyMenuWnd::AddAlarmVoice()
 	pVoice1->SetFixedXY({ 0,360 });
 }
 
+void CMyMenuWnd::refreshSuperscript(CMyListUI* pSender)
+{
+	CVideoListUI::Node* pNode;
+	CMyListUI* pHead;
+	pNode = (CVideoListUI::Node*)pSender->GetTag();
+	pHead = pNode->parent()->data()._pListElement;
+	pHead->mhintNumber--;
+	pHead->Invalidate();
+}
+
 void CMyMenuWnd::Notify(TNotifyUI & msg)
 {
 	if (msg.sType == DUI_MSGTYPE_SLIDER) {
@@ -694,13 +731,12 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 		LabelNotify(msg);
 	}
 	else if (msg.sType == DUI_MSGTYPE_PLAYER) {
-		if (!mPlayerWall) {
-			mPlayerWall = new CPlayerWallWnd(_T("playerwall.xml"));
-			mPlayerWall->Create(NULL, _T("PlayerWallWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
-			mPlayerWall->ShowWindow(true);
-			mPlayerWall->CenterWindow();
-			::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, msg.wParam, msg.lParam);
+		CMyListUI* pSender = (CMyListUI*)msg.pSender;
+		if (pSender->Info->status == RECORD_NSEEN) {
+			pSender->Info->status = RECORD_SEEN;
+			refreshSuperscript(pSender);
 		}
+		PlayVideo(msg.wParam,msg.lParam);
 	}
 	else if (msg.sType == DUI_MSGTYPE_COPYFILE) {
 		CopyFileNotify(msg);
@@ -744,8 +780,9 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 		 break;
 		//-------------------------------------------
-		case USER_MSG_LOGOFF:
+	case USER_MSG_LOGOFF: {
 			Print("Menu case logoff msg");
+		}
 			break;
 		//-------------------------------------------
 		case USER_MSG_INITFILE:
@@ -758,6 +795,8 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				if (pShadow) {
 					for (int i = 0; i < 6; i++) {
 						if (pShadow->GetAlarmFileNumber(i + 1)) {
+							CPort* pPort = pPortMgr->GetPortById(i+1);
+							Print("Init add port:%d with %d files", pPort->m_Id, pShadow->GetAlarmFileNumber(i+1));
 							AddAlarmMenuItem(pPortMgr->GetPortById(i+1));
 						}
 					}
@@ -786,6 +825,10 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			if (wParam == RECORD_ALARM) {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->AddRecordFile(pInfo);
+
+				//port->virgin ++;
+				CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
+				port->m_virginNumber++;
 			}
 			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
@@ -798,6 +841,12 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			if (wParam == RECORD_ALARM) {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);
+
+				// if pInfo is virgin  ,port->virgin--
+				if (pInfo->status == RECORD_NSEEN) {
+					CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
+					port->m_virginNumber--;
+				}
 			}
 			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
@@ -894,19 +943,18 @@ void CMyMenuWnd::InitAwOnOffRecord()
 	sprintf_s(sqlStmt, "SELECT COUNT(*) FROM log;");
 	stmt = sqlite.Statement(sqlStmt);
 	while (stmt->NextRow()) {
-		mTotalPage = stmt->ValueInt(0);
+		mAwTotalPage = stmt->ValueInt(0);
 	}
-	if (mTotalPage % 13) {
-		mTotalPage = mTotalPage / 13 + 1;
+	if (mAwTotalPage % 13) {
+		mAwTotalPage = mAwTotalPage / 13 + 1;
 	}
 	else {
-		mTotalPage = mTotalPage / 13;
+		mAwTotalPage = mAwTotalPage / 13;
 	}
-	printf("mTotalPage : %d\n", mTotalPage);
-	if(mTotalPage>0)
-		mPage = 1;
-	else mPage = 0;
-	sPage.Format(_T("第%d/%d"), mPage, mTotalPage);
+	if(mAwTotalPage>0)
+		mAwPage = 1;
+	else mAwPage = 0;
+	sPage.Format(_T("第%d/%d"), mAwPage, mAwTotalPage);
 	pPage->SetText(sPage);
 }
 
@@ -976,8 +1024,8 @@ void CMyMenuWnd::AddAwOnOffRecord(CTime sTime, CDuiString sType)
 
 void CMyMenuWnd::AwPage(int page)
 {
-	if (page <= mTotalPage && page>0) {
-		mPage = page;
+	if (page <= mAwTotalPage && page>0) {
+		mAwPage = page;
 		pAwOnOffRecordList->RemoveAll();
 		char sqlStmt[128];
 		sprintf_s(sqlStmt, "SELECT * FROM log LIMIT 13 OFFSET %d;", (page - 1) * 13 + 1);
@@ -990,24 +1038,24 @@ void CMyMenuWnd::AwPage(int page)
 		}
 		pAwOnOffRecordList->GetItemAt(0)->SetFocus();
 		pAwOnOffRecordList->SelectItem(0);
-		sPage.Format(_T("第%d/%d"), page, mTotalPage);
+		sPage.Format(_T("第%d/%d"), page, mAwTotalPage);
 		pPage->SetText(sPage);
 	}
 }
 
 void CMyMenuWnd::AwOnOffRecordNextPage()
 {
-	if (mPage < mTotalPage) {
-		mPage++;
-		AwPage(mPage);
+	if (mAwPage < mAwTotalPage) {
+		mAwPage++;
+		AwPage(mAwPage);
 	}
 }
 
 void CMyMenuWnd::AwOnOffRecordLastPage()
 {
-	if (mPage > 1) {
-		mPage--;
-		AwPage(mPage);
+	if (mAwPage > 1) {
+		mAwPage--;
+		AwPage(mAwPage);
 	}
 }
 
@@ -1308,8 +1356,9 @@ CMenuItemUI* CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int ba
 
 void CMyMenuWnd::AddAlarmMenuItem(CPort* pPort)
 {
-	CMenuItemUI* pItem  = AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
-	pItem->SetTag((UINT_PTR)pPort);
+	pAlarmItem[pPort->GetId()-1]  = AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	pAlarmItem[pPort->GetId() - 1]->SetMark(_T("true"));
+	pAlarmItem[pPort->GetId() - 1]->SetTag((UINT_PTR)pPort);
 }
 
 void CMyMenuWnd::AddVideoObtainMenuItem(CPort* pPort)
@@ -1340,7 +1389,7 @@ void CMyMenuWnd::InitAlarmVoice()
 {
 	int Sel = 1;
 	int VoiveNum= 2;
-	int AlarmOnOff = 0;
+	bool AlarmOnOff = true;
 	int VoiceSel = 0;
 	int isExistVoice;
 	char sqlStmt[128];
@@ -1354,12 +1403,16 @@ void CMyMenuWnd::InitAlarmVoice()
 	for (int i = 0; i < VoiveNum-1; i++) {
 		AddAlarmVoice();
 	}
-	//选中默认
-	if (Sel == 1){
+	Sel = 1;
+	//选中默认  0:默认，1录制
+	if (Sel == 0){
 		pDefaultVoice->SetVoiceSel(true);
 	}
 	else {
 		if(pVoice1)
 		pVoice1->SetVoiceSel(true);
 	}
+	AlarmOnOff = true;
+	pAlmVicSwitch->SetValue(AlarmOnOff);
+	ShowAlarmVoiceList(AlarmOnOff);
 }

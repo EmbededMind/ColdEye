@@ -34,6 +34,7 @@ public:
 	void PreparePlay(WPARAM wParam, LPARAM lParam);
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
+	void InitPlayTime(LPARAM);
 	BOOL StopPlay();
 	bool OnSlow(void* param);
 	bool OnFast(void* param);
@@ -49,6 +50,8 @@ private:
 	CButtonUI* pSlow;
 	CButtonUI* pPlay;
 	CButtonUI* pFast;
+	CLabelUI* pBeginTime;
+	CLabelUI* pEndTime;
 	CSliderUI* pSlider;
 
 	DWORD mFileTime;

@@ -85,3 +85,8 @@ void CAWOnOffListLabelUI::DoEvent(TEventUI & event)
 	}
 }
 
+LPCTSTR CAWOnOffListLabelUI::GetClass() const
+{
+	return _T("AWOnOffListLabelUI");
+}
+
