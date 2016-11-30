@@ -44,6 +44,7 @@ if (m_FileType == 2)
 
 	m_pFileInfo->nOwner = m_Owner;
 	m_pFileInfo->tBegin = time.GetTime();
+	m_pFileInfo->status = RECORD_NSEEN;
 	
 
 	Notify(FILE_OPT_ADD, m_FileType, (LPARAM)m_pFileInfo);
