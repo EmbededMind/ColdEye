@@ -150,14 +150,11 @@ bool CMyMenuWnd::OnHomeWatch(void * param)
 {
 	TNotifyUI* pMsg = (TNotifyUI*)param;
 
-	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
-		if (pMsg->lParam == VK_BACK) {
-			m_pm.FindControl(_T("button_home"))->SetFocus();
-		}
-		else if (pMsg->lParam == VK_RETURN) {
-			m_pm.FindControl(_T("notice"))->SetVisible(true);
-		}
-	}
+	//Print("home message :%S", pMsg->sType);
+	//if (pMsg->sType == DUI_MSGTYPE_CLICK) {
+	//	m_pm.FindControl(_T("layout_home_watch"))->SetVisible(false);
+	//	m_pm.FindControl(_T("notice"))->SetVisible(true);
+	//}
 	return false;
 }
 
@@ -1395,6 +1392,10 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	case VK_BACK:
 		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+		}
+		if (m_pm.FindControl(_T("button_home")) == pHomeWatch) {
+			m_pm.FindControl(_T("homewatch"))->SetFocus();
+			m_pm.FindControl(_T("layout_home_watch"))->SetVisible(true);
 		}
 		else if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ShipNameItemUI")) == 0) {
 			ExpandCameraName();

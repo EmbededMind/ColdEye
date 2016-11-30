@@ -95,7 +95,7 @@ void CMsgWnd::OnClick(TNotifyUI &msg)
 	}
 	else if (sName == _T("cancel_copy")) {
 		if (MSGID_OK == MessageBox(m_pm.GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定停止复制视频？"), NULL, NULL)) {
-			Print("Cancel Copy ");
+			Close(0);
 		}
 	}
 }
