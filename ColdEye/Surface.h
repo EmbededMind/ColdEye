@@ -11,6 +11,8 @@
 
 #include "FuckButton.h"
 
+#include "H264Play.h"
+
 // CSurface
 
 class CSurface : public CWnd
@@ -54,6 +56,9 @@ public:
 	void          ConnectRealPlay();         //打开实时播放数据流
 	void          DisconnectRealPlay();      //关闭实时播放
 	 
+	void          SetOsdText(OSD_INFO_TXT*  pOsdInfo);
+	void          SetOsdText(int xPos, int yPos, CString& text);
+	void          SetOsdText(int xPos, int yPos, char* pText);
 
 	void          StartRealPlay();           //解码实时播放数据流，播放实时视频
 	void          StopRealPlay();            //停止播放实时视频

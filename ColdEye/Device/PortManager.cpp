@@ -91,7 +91,9 @@ void CPortManager::BindPortId(CPort* pPort, int id)
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
 			}
-
+			else {
+				Print("Sql done :%s", sqlStmt);
+			}
 			return;
 		}
 	}
