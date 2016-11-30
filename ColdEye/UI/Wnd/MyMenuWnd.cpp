@@ -1659,6 +1659,9 @@ void CMyMenuWnd::DeleteVideoObtainMenuItem(CPort* pPort) {
 	DeleteMenuItem(pPort, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
 }
 
+
+
+
 void CMyMenuWnd::DeletePortConfigMenuItem(CPort* pPort)
 {
 	DeleteMenuItem(pPort, _T("layout_submenu_setting"), CAMERA_SET);
