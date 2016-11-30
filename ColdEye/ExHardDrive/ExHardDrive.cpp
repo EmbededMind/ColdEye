@@ -232,10 +232,6 @@ BOOL CExHardDrive::Updata()
 BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 {
 	if (!mIsInsert || !mIsThreadAlive) return 0;
-	if(FileInfo->status == RECORD_LOCKED)
-		return 0;
-	if (FileInfo->bIsOccupied)
-		return 0;
 	mFileInfo = FileInfo;
 	CTime time = FileInfo->tBegin;
 	CString filename, filepath, owner;
