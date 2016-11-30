@@ -598,6 +598,7 @@ void CMyMenuWnd::ExpandCameraName()
 		size.cy = rect.top - 204;
 		pChildLayout2->SetFixedXY(size);
 		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+		pItem->SetFocus();
 		pItem->SetStatus(false);
 	}
 }
@@ -1706,15 +1707,19 @@ void CMyMenuWnd::InitAlarmVoice()
 	mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
 	state = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff;
 
+	if (CRecordAlarmSound::GetInstance()->ScanVoice()) {
+		AddAlarmVoice();
+	}
 
 	//选中默认  0:默认，1录制
 	if (mAlarmVoiceSel == 0){
 		pDefaultVoice->SetVoiceSel(true);
 	}
 	else {
-		if (!pVoice1) 
-			AddAlarmVoice();
-		pVoice1->SetVoiceSel(true);
+		if(pVoice1)
+			pVoice1->SetVoiceSel(true);
+		else 
+			pDefaultVoice->SetVoiceSel(true);
 	}
 	pAlmVicSwitch->SetValue(state);
 	ShowAlarmVoiceList(state);
