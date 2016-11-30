@@ -1452,7 +1452,7 @@ Print("Third Menu Sel :%d", inx);
 						DeviceConfig config;
 						Print("Set name id is:%d", camera[nPort - 1].pShipname->GetTag());
 						if(camera[nPort - 1].pShipname->GetTag())
-							config.NameId  = camera[nPort-1].pShipname->GetTag();    //Tag :1~18
+						config.NameId  = camera[nPort-1].pShipname->GetTag();    //Tag :1~18
 						config.IsCameraOn  = camera[nPort-1].pSwitch->GetValue();
 						config.Volumn      = camera[nPort-1].pVolum->GetValue();
 						config.IsRecordEnabled = camera[nPort-1].pSaveVideo->GetValue();
@@ -1464,6 +1464,7 @@ Print("Third Menu Sel :%d", inx);
 				else {
 					CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 					if (pPort) {
+						FillPortConfig(pPort);
 					}
 				}
 			}
@@ -1669,7 +1670,7 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 
 	camera[inx].pTitle->SetText(pPort->GetName());
 	camera[inx].pShipname->SetText(pPort->GetName());
-	camera[inx].pShipname->SetTag(7);
+	camera[inx].pShipname->SetTag(pPort->GetNameId());
 	camera[inx].pSwitch->SetValue(pPort->m_DevConfig.IsCameraOn);
 	camera[inx].pVolum->SetValue(pPort->m_DevConfig.Volumn);
 	camera[inx].pSaveVideo->SetValue(pPort->m_DevConfig.IsRecordEnabled);
