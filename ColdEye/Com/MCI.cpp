@@ -103,9 +103,11 @@ int CMCI::GetTotaltime()
 BOOL CMCI::Save()
 {
 	mciSendCommand(m_PlayDeviceID, MCI_CLOSE, NULL, NULL);
-	DeleteFile(m_rFilePath);
-	if(PathFileExists(m_rFilePathTmp))
+	if (PathFileExists(m_rFilePathTmp))
+	{
+		DeleteFile(m_rFilePath);
 		CFile::Rename(m_rFilePathTmp, m_rFilePath);
+	}
 	return 0;
 }
 
