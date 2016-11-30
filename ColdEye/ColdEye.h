@@ -63,6 +63,7 @@ public:
 	void      StoreAlarmLightConfig();
 	void      StoreAlarmSoundConfig();
 	void      StoreSystemConfig();
+	void      StoreBoatName();
 
 	HWND      GetMenuWndHandle();
 	UINT      GetLoginThreadPID();

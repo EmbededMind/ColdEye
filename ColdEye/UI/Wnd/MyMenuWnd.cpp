@@ -1373,8 +1373,6 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 		else {
 			if(FocusedItem[1]){
 				KeyDown_VK_BACK();
-				focusLevel--;
-				FocusedItem[1] = NULL;
 				UpdataItemColor();
 			}
 		}
@@ -1405,15 +1403,28 @@ Print("Third Menu Sel :%d", inx);
 		else {
 			if (ShipNameIsChange()) {
 				if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
-					Print("Message ok");
+					CDuiString& boat_name  =  pShipName->GetText();
+
+					CString name = boat_name.GetData();
+
+					char tmp[40];
+
+					WideCharToMultiByte(CP_ACP, 0,  name, -1,  tmp,  40, NULL, false);
+
+					std::string& strName = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.boat_name;
+
+					strName = tmp;
+
+					((CColdEyeApp*)AfxGetApp())->StoreBoatName();
 				}
 				else {
-					FocusedItem[1]->SetFocus();
+					std::string& strName = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.boat_name;
+					CString name;
+					name.Format(_T("%S"), strName.c_str());
+					pShipName->SetText(name);
 				}
 			}
-			else {
-				FocusedItem[1]->SetFocus();
-			}
+			BackTOMenuItem();
 		}
 
 		break;
@@ -1447,18 +1458,15 @@ Print("Third Menu Sel :%d", inx);
 
 						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
 					}
-					//Print("Camera %d ,Vol:%d", nPort, camera[nPort-1].pVolum->GetValue());
-					//::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, );
 				}
 				else {
-					//恢复设置
+					CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
+					if (pPort) {
+					}
 				}
 			}
-			else if(FocusedItem[1]){
-				FocusedItem[1]->SetFocus();
-			}
 		}
-
+		BackTOMenuItem();
 		break;
 	//----------------系统设置---------------------
 	case 13:
@@ -1470,10 +1478,12 @@ Print("Third Menu Sel :%d", inx);
 				((CColdEyeApp*)AfxGetApp())->StoreSystemConfig();
 			}
 			else {
-				//恢复之前设置
+
+				pSysLight->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.brightness);
+				pSysVolum->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.volumn);
 			}
 		}
-		FocusedItem[1]->SetFocus();
+		BackTOMenuItem();
 		break;
 	//----------------看船时间---------------------
 	case 14:
@@ -1491,10 +1501,13 @@ Print("Third Menu Sel :%d", inx);
 				}
 			}
 			else {
-				//恢复之前设置的看船时间
+				DWORD aw_begining, aw_end;
+				aw_begining = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
+				aw_end = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
+				SetWatchTime(aw_begining,aw_end);
 			}
 		}
-		FocusedItem[1]->SetFocus();
+		BackTOMenuItem();
 		break;
 	//--------------报警音----------------------
 	case 15:
@@ -1509,10 +1522,13 @@ Print("Third Menu Sel :%d", inx);
 				((CColdEyeApp*)AfxGetApp())->StoreAlarmSoundConfig();
 			}
 			else {
-
+				bool state = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff ;
+				pAlmVicSwitch->SetValue(state);
+				ShowAlarmVoiceList(state);
+				mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
 			}
 		}
-		FocusedItem[1]->SetFocus();
+		BackTOMenuItem();
 		break;
 	//-------------报警灯---------------------
 	case 16:
@@ -1523,9 +1539,10 @@ Print("Third Menu Sel :%d", inx);
 				((CColdEyeApp*)AfxGetApp())->StoreAlarmLightConfig();
 			}
 			else {
+				pAlarmLight->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_light_onoff);
 			}
 		}
-		FocusedItem[1]->SetFocus();
+		BackTOMenuItem();
 		break; 
 	//----------------自动看船开关记录---------------
 
@@ -1533,12 +1550,12 @@ Print("Third Menu Sel :%d", inx);
 		AwPage(1);
 		pAwOnOffRecordList->UnSelectAllItems();
 		if (FocusedItem[1]) {
-			FocusedItem[1]->SetFocus();
+			BackTOMenuItem();
 		}
 		break;
 	default:
 		if (FocusedItem[1]) {
-			FocusedItem[1]->SetFocus();
+			BackTOMenuItem();
 		}
 		m_pm.Invalidate();
 		break;
@@ -1685,4 +1702,11 @@ void CMyMenuWnd::InitAlarmVoice()
 	}
 	pAlmVicSwitch->SetValue(AlarmOnOff);
 	ShowAlarmVoiceList(AlarmOnOff);
+}
+
+void CMyMenuWnd::BackTOMenuItem()
+{
+	FocusedItem[1]->SetFocus();
+	FocusedItem[1] = NULL;
+	focusLevel--;
 }

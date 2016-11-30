@@ -167,6 +167,7 @@ private:
 
 	void   FillPortConfig(CPort* pPort);
 	void   InitAlarmVoice();
+	void   BackTOMenuItem();
 	
 	CMenuItemUI* pAlarmItem[6];
 

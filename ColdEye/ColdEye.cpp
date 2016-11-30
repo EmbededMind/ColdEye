@@ -320,6 +320,20 @@ void CColdEyeApp::StoreSystemConfig()
 }
 
 
+
+void CColdEyeApp::StoreBoatName()
+{
+	char sqlStmt[128];
+	sprintf_s(sqlStmt, "UPDATE host_config SET boat_name = '%s';", m_SysConfig.boat_name.c_str());
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
 bool CColdEyeApp::SetAwTime(DWORD tBegining, DWORD tEnd)
 {
 	char sqlStmt[64];
