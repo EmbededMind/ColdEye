@@ -133,6 +133,7 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 }
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
+	m_pPlayCamera = pCamera;
 	SetMyTimer();
 	if (!m_isAlarm)
 		m_isAlarm = true;
