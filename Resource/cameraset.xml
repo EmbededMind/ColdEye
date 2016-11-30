@@ -23,7 +23,7 @@
 				</HorizontalLayout>
 				<HorizontalLayout height="33">
 					<ShipNameItem width="80" text="集控台" 	userdata="10"/>
-					<ShipNameItem width="80" text="监控台" 	 ="11"/>
+					<ShipNameItem width="80" text="监控台" 	userdata="11"/>
 					<ShipNameItem width="80" text="船长室"	userdata="12"/>
 					<ShipNameItem width="80" text="船员室" 	userdata="13"/>
 					<ShipNameItem width="80" text="主机舱" 	userdata="14"/>

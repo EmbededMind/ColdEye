@@ -152,6 +152,15 @@ void CMyListUI::DoEvent(TEventUI & event)
 			}
 		}
 
+		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
+			if (event.wParam == 'L') { //¼ÓËø
+				CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+				if (node->data()._level == 1) {
+					m_pManager->SendNotify(this, DUI_MSGTYPE_LISTLABEL, event.wParam, event.lParam);
+				}
+			}
+		}
+
 	}
 	CListLabelElementUI::DoEvent(event);
 }

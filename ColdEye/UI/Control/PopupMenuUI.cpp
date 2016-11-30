@@ -1,11 +1,13 @@
 #include "stdafx.h"
 
 #include "Control\PopupMenuUI.h"
+#include "Device\Port.h"
 
 IMPLEMENT_DUICONTROL(CPopupMenuUI)
 
 CPopupMenuUI::CPopupMenuUI()
-	:mHintNumber(0)
+	:mHintNumber(0),
+	isMark(false)
 {
 }
 
@@ -69,16 +71,45 @@ void CPopupMenuUI::SetMenuBkColor(DWORD menuColor, DWORD itemColor)
 	
 }
 
+void CPopupMenuUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
+{
+	CButtonUI::SetAttribute(pstrName, pstrValue);
+	if (_tcsicmp(pstrName, _T("ismark")) == 0) 
+		SetMark(pstrValue);
+}
+
+void CPopupMenuUI::SetMark(LPCTSTR pstrValue)
+{
+	if (_tcsicmp(pstrValue, _T("true")) == 0)
+		isMark = true;
+	else isMark = false;
+}
+
 void CPopupMenuUI::PaintStatusImage(HDC hDC)
 {
 	CButtonUI::PaintStatusImage(hDC);
 	CDuiString text;
+	CPort *pPort = (CPort*)GetTag();
+
+	if (pPort) {
+		Print("id:%d",pPort->GetId());
+		mHintNumber = pPort->m_virginNumber;
+		Print("num:%d", mHintNumber);
+	}
+	else {
+		Print("Port err");
+	}
+	//mHintNumber = pPort->m_virginNumber;
+//Print("mHintNumber:%d", pPort->m_virginNumber);
+
+	//mHintNumber = pPort->m_virginNumber;
 	if (mHintNumber<99)
 		text.Format(_T("%d"), mHintNumber);
 	else
 		text = _T("99");
 
-	if (mHintNumber != 0) {
+	Print("Mark:%d",isMark);
+	if (mHintNumber != 0 && isMark==true) {
 		RECT rcPos = {259, 10, 294, 45};
 		RECT textPos = GetPos();
 

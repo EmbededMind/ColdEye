@@ -64,6 +64,7 @@ public:
 	DeviceConfig           m_DevConfig;
 	AutoWatchConfig        m_AwConfig;
 	CCamera*               m_pCamera;
+	int                    m_virginNumber;
 
 	void  SetId(uint16_t id);
 	void  SetNameId(uint16_t id);

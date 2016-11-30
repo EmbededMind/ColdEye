@@ -19,11 +19,13 @@ public:
 
 	void SetMenuBkColor(DWORD menuColor, DWORD itemColor);
 
-	
+	void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	void SetMark(LPCTSTR pstrValue);
 	void SetHintNum(int num);
 	int GetHintNum();
 
 protected:
+	int isMark;
 	int mHintNumber;
 	int ButtonId;
 };

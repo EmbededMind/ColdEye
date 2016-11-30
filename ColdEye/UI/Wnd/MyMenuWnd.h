@@ -85,8 +85,10 @@ public :
 	void ThirdMenuSetFocus(CDuiString);
 	int DetectHardDriver(list<CRecordFileInfo*>*);
 	void PrepareCopy(list<CRecordFileInfo*>*,UINT8);
+	void PlayVideo(WPARAM wParam, LPARAM lParam);
 	void RecordVoice();
 	void AddAlarmVoice();
+	void refreshSuperscript(CMyListUI*); //Ë¢ÐÂ½Ç±ê
 	void Notify(TNotifyUI& msg);
 
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -139,6 +141,8 @@ private:
 
 	void   FillPortConfig(CPort* pPort);
 	void   InitAlarmVoice();
+	
+	CMenuItemUI* pAlarmItem[6];
 
 	CTabLayoutUI *pLayout_third;
 	CTabLayoutUI *pLayout_Menuitem;
@@ -157,7 +161,8 @@ private:
 	CLabelUI* pPage;		//Ò³Âë
 
 	CButtonUI *FocusedItem[2];
-	int mTotalPage;
-	int mPage;
+	UINT8 mAlarmVoiceSel;
+	int mAwTotalPage;
+	int mAwPage;
 	CPlayerWallWnd	*mPlayerWall;
 };

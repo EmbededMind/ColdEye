@@ -10,6 +10,7 @@ public:
 	CAWOnOffListLabelUI();
 	CAWOnOffListLabelUI(CTime ,CDuiString);
 	~CAWOnOffListLabelUI();
+	LPCTSTR GetClass() const;
 	virtual void DoPaint(HDC hDC, const RECT& rcPaint);
 	virtual void DrawItemText(HDC hDC, const RECT& rcItem);
 	virtual void DrawItemBk(HDC hDC, const RECT& rcItem);

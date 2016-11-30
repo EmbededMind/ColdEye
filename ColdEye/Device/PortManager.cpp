@@ -51,6 +51,12 @@ void CPortManager::LoadPortsParam()
 
 		i++;
 	}
+
+	CDBShadow* pShadow = CDBShadow::GetInstance();
+	for (int i = 0; i < 6; i++) {
+		mPorts[i].m_virginNumber = pShadow->GetVirginFileCnt(i+1);
+		Print("Port %d has %d virgin files", i+1, mPorts[i].m_virginNumber);
+	}
 }
 
 

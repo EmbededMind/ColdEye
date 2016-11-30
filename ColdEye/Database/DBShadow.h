@@ -20,6 +20,8 @@ private:
 	int mRecordFileCnts[6];
 	int mAlarmFileCnts[6];
 
+	int mVirginFileCnts[6];
+
 
 	void  CheckTables();
 
@@ -31,9 +33,10 @@ public:
 	list<CRecordFileInfo*> mReocrdFileInfoList;
 	list<CRecordFileInfo*> mAlarmFileInfoList;
 
-
-
+	int GetVirginFileCnt(int id);
+	
 	static CDBShadow* GetInstance();
+
 
 	virtual void Update(UINT opt, WPARAM wParam, LPARAM lParam);
 
