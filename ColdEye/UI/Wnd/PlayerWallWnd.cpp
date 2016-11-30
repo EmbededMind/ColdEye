@@ -153,6 +153,14 @@ void CPlayerWallWnd::InitPlayTime(LPARAM lParam)
 	pEndTime->SetText(tend.Format(_T("%H:%M:%S")));
 }
 
+void CPlayerWallWnd::InitPlayBtImage()
+{
+	sPlayFocusedImg = (LPCTSTR)_T("file='image/play_focused.png'");
+	sPlayNoFocusImg = (LPCTSTR)_T("file='image/play.png'");
+	sStopFocusedImg = (LPCTSTR)_T("flie='image/pause_focused.png'");
+	sStopNoFocusImg = (LPCTSTR)_T("file='image/pause.png'");
+}
+
 
 //void EOFCallBack(LONG mPort, LONG nUser)
 //{
@@ -247,6 +255,8 @@ bool CPlayerWallWnd::OnPlay(void * param)
 					printf("play err = %d\n", err);
 				}
 				else {
+					pPlay->SetBkImage(sStopNoFocusImg);
+					pPlay->SetFocusedImage(sStopFocusedImg);
 					mStatus = playing;
 				}
 			}

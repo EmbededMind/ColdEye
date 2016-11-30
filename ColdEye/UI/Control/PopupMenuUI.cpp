@@ -91,11 +91,11 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 	CDuiString text;
 	CPort *pPort = (CPort*)GetTag();
 
-	//if (pPort) {
-	//	Print("id:%d",pPort->GetId());
-	//	mHintNumber = pPort->m_virginNumber;
-	//	Print("num:%d", mHintNumber);
-	//}
+	if (pPort) {
+		Print("id:%d",pPort->GetId());
+		mHintNumber = pPort->m_virginNumber;
+		Print("num:%d", mHintNumber);
+	}
 	//else {
 	//	Print("Port err");
 	//}
@@ -108,7 +108,6 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 	else
 		text = _T("99");
 
-	Print("Mark:%d",isMark);
 	if (mHintNumber != 0 && isMark==true) {
 		RECT rcPos = {259, 10, 294, 45};
 		RECT textPos = GetPos();

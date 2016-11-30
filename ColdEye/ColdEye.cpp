@@ -228,13 +228,15 @@ bool CColdEyeApp::LoadSystemConfig()
 	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
 
 	if (stmt->NextRow()) {
-		m_SysConfig.boat_name = stmt->ValueString(0);
-		m_SysConfig.auto_watch_status = stmt->ValueInt(1);
-		m_SysConfig.watch_time_begining = stmt->ValueInt(2);
-		m_SysConfig.watch_time_end = stmt->ValueInt(3);
-		m_SysConfig.alarm_sound_onoff  = stmt->ValueInt(4);
-		m_SysConfig.alarm_sound = stmt->ValueInt(5);
-		m_SysConfig.brightness = stmt->ValueInt(6);
+		m_SysConfig.boat_name =                  stmt->ValueString(0);
+		m_SysConfig.auto_watch_on =              stmt->ValueInt(1);
+		m_SysConfig.watch_time_begining =        stmt->ValueInt(2);
+		m_SysConfig.watch_time_end =             stmt->ValueInt(3);
+		m_SysConfig.alarm_light_onoff  =         stmt->ValueInt(4);
+		m_SysConfig.alarm_sound_onoff =          stmt->ValueInt(5);
+		m_SysConfig.alarm_sound_id =             stmt->ValueInt(6);
+		m_SysConfig.brightness =                 stmt->ValueInt(7);
+		m_SysConfig.volumn =                     stmt->ValueInt(8);
 		return true;
 	}
 	else {
@@ -251,22 +253,71 @@ void CColdEyeApp::MakeSystemConfigDefault()
 	char sqlStmt[128];
 
 	m_SysConfig.boat_name = "SealedGhost";
+
+	m_SysConfig.auto_watch_on = 1;
 	m_SysConfig.watch_time_begining = 18 * 60;
 	m_SysConfig.watch_time_end = 12 * 60;
-	m_SysConfig.auto_watch_status = 1;
-	m_SysConfig.alarm_sound_onoff  = 1;
-	m_SysConfig.alarm_sound = 0;
-	m_SysConfig.brightness = 0;
 
-	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d, %d,%d, %d);",
-		m_SysConfig.boat_name.c_str(), m_SysConfig.watch_time_begining, m_SysConfig.auto_watch_status,
-		 m_SysConfig.watch_time_end, m_SysConfig.alarm_sound_onoff,m_SysConfig.alarm_sound, m_SysConfig.brightness);
+	m_SysConfig.alarm_light_onoff = 0;
+
+	m_SysConfig.alarm_sound_onoff  = 1;
+	m_SysConfig.alarm_sound_id = 0;
+
+	m_SysConfig.brightness = 0;
+	m_SysConfig.volumn = 5;
+
+
+	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d,%d, %d, %d, %d, %d);",
+		m_SysConfig.boat_name.c_str(), m_SysConfig.auto_watch_on,m_SysConfig.watch_time_begining, m_SysConfig.watch_time_end,
+		m_SysConfig.alarm_light_onoff, m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id, m_SysConfig.brightness, m_SysConfig.volumn);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
 	}
 }
 
+
+
+void CColdEyeApp::StoreAlarmLightConfig()
+{
+	char sqlStmt[64];
+	sprintf_s(sqlStmt, "UPDATE host_config SET arm_lgt_on = %d;", m_SysConfig.alarm_light_onoff);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
+void CColdEyeApp::StoreAlarmSoundConfig()
+{
+	char sqlStmt[64];
+	sprintf_s(sqlStmt, "UPDATE host_config SET arm_snd_on = %d, arm_snd_id = %d;",m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
+void CColdEyeApp::StoreSystemConfig()
+{
+	char sqlStmt[64];
+	sprintf_s(sqlStmt, "UPDATE host_config SET brtness = %d, vol = %d;", m_SysConfig.brightness, m_SysConfig.volumn);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
 
 
 bool CColdEyeApp::SetAwTime(DWORD tBegining, DWORD tEnd)

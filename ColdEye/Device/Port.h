@@ -21,9 +21,9 @@
 typedef struct {
 	DWORD       Begining;
 	DWORD       End;
-	bool        IsAlarmSoundOn;
-	bool        IsAlarmLightOn;
-	uint16_t    AlarmSoundId;
+	//bool        IsAlarmSoundOn;
+	//bool        IsAlarmLightOn;
+	//uint16_t    AlarmSoundId;
 }AutoWatchConfig;
 
 

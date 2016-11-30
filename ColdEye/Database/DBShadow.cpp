@@ -194,7 +194,7 @@ void CDBShadow::SynchronizeWithDB()
 			mAlarmFileCnts[pInfo->nOwner - 1]++;
 
 			if (pInfo->status == RECORD_NSEEN) {
-				mVirginFileCnts[pInfo->nOwner]++;
+				mVirginFileCnts[pInfo->nOwner-1]++;
 			}
 		}
 		else {
@@ -210,6 +210,8 @@ void CDBShadow::SynchronizeWithDB()
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);
 			}
+
+			delete pInfo;
 		}
 	}
 }

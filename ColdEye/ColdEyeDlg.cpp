@@ -276,7 +276,7 @@ void CColdEyeDlg::OnPaint()
 
 
 		dc.FillSolidRect(m_rAwTipText, RGB(58, 58, 58));
-		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_status) {
+		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
 			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已开启"));
 		}
 		else{

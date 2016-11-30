@@ -22,6 +22,21 @@
 
 #include <list>
 
+//==============BkColor=====================
+#define LAYOUT_POP_FOCUSED		0xFFFFFFFF
+#define	LAYOUT_POP_NOFOCUS		0xFFE6E6EF
+
+#define LAYOUT_MENUITEM_FOCUSED		 0xFFFFFFFF
+#define LAYOUT_MENUITEM_NOFOCUS		 0xFFE6E6EF
+#define LAYOUT_MNEUITEM_SEL_NOFOCUS	 0xFFEFEFF4
+
+#define LAYOUT_THIRD_NOFOUCS		 0xFFEFEFF4
+#define LAYOUT_THIRD_FOCUSED		 0xFFFFFFFF
+
+#define ITEM_FOCUS					 0xFF4198FE
+#define POPMENU_SEL_NOFOCUS			 0xFF47688F
+#define MENUITEM_SEL_NOFOCUS		 0xFF4178B7
+
 using namespace std;
 
 
@@ -69,6 +84,9 @@ public :
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
 
+	// BkColor
+	void UpdataItemColor();
+
 	// Item Notify
 	void SliderNotify(TNotifyUI& msg);
 	void EditNotify(TNotifyUI& msg);
@@ -93,6 +111,7 @@ public :
 
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+	void SetAllVirginNum();
 	void DeleteAlarmCtl(CameraInfo);
 	void DeleteCameraSetCtl(CameraInfo);
 	void DeleteVideoObtain(CameraInfo);
@@ -120,6 +139,8 @@ public :
 	bool ShipNameIsChange();
 	bool SysSetIsChange();
 	bool AwTimeIsChange();
+	bool AlarmVoiceIsChange();
+	bool AlarmLightIsChange();
 
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	void KeyDown_VK_BACK();
@@ -161,6 +182,7 @@ private:
 	CLabelUI* pPage;		//Ò³Âë
 
 	CButtonUI *FocusedItem[2];
+	UINT8 focusLevel;
 	UINT8 mAlarmVoiceSel;
 	int mAwTotalPage;
 	int mAwPage;

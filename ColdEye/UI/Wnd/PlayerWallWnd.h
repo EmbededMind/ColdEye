@@ -35,6 +35,7 @@ public:
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	void InitPlayTime(LPARAM);
+	void InitPlayBtImage();
 	BOOL StopPlay();
 	bool OnSlow(void* param);
 	bool OnFast(void* param);
@@ -59,4 +60,9 @@ private:
 	PlayStatus mStatus;
 	UINT8 mFastMultiple;
 	UINT8 mSlowMultiple;
+
+	CDuiString sPlayFocusedImg;
+	CDuiString sPlayNoFocusImg;
+	CDuiString sStopFocusedImg;
+	CDuiString sStopNoFocusImg;
 };
