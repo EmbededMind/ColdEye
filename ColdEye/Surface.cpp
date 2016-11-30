@@ -255,7 +255,6 @@ BOOL CSurface::ShouldWatch(CTime& refTime)
 
 	HostConfig& config  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig;
 	
-	config.watch_time_begining  = config.watch_time_end;
 
 	if (config.watch_time_end < config.watch_time_begining) {
 		if (minute < config.watch_time_end || minute >= config.watch_time_begining) {
