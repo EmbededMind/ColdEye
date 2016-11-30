@@ -386,29 +386,32 @@ void CSurface::StartRealPlay()
 
 
 	if (H264_PLAY_OpenStream(m_lPlayPort, &byFileHeadBuf, 1, SOURCE_BUF_MIN * 100)) {
-		OSD_INFO_TXT osd;
-		osd.bkColor = RGB(72, 209, 204);
-		osd.color = RGB(0,0,0);
-		osd.pos_x = 10;
-		osd.pos_y = 80;
-		osd.isTransparent = 1;
-		osd.isBold = 1;
-		strcpy_s(osd.text,  "SealedGhost");
+		//OSD_INFO_TXT osd;
+		//osd.bkColor = RGB(72, 209, 204);
+		//osd.color = RGB(0,0,0);
+		//osd.pos_x = 10;
+		//osd.pos_y = 80;
+		//osd.isTransparent = 1;
+		//osd.isBold = 1;
+		//CString& name  = m_BindedPort->GetName();
+		//char [40];
+		//WideCharToMultiByte();
+		//strcpy_s(osd.text,  );
 
-		H264_PLAY_SetOsdTex(m_lPlayPort, &osd);
+		//H264_PLAY_SetOsdTex(m_lPlayPort, &osd);
 
 
-		H264_PLAY_RigisterDrawFun(m_lPlayPort, cbDefaultDrawOSD, (LONG)this);
+		//H264_PLAY_RigisterDrawFun(m_lPlayPort, cbDefaultDrawOSD, (LONG)this);
 
 
-		SDK_OSDInfo Osd;
-		Osd.index = 1;
-		Osd.nChannel = 0;
-		Osd.nX = 100;
-		Osd.nY = 100;
-		
-		strcpy_s(Osd.pOSDStr, "LOL");
-		long lRet = H264_DVR_SetDevConfig(m_BindedCamera->GetLoginId(), E_SDK_SET_OSDINFO, 0, (char*)&Osd, sizeof(SDK_OSDInfo));
+		//SDK_OSDInfo Osd;
+		//Osd.index = 1;
+		//Osd.nChannel = 0;
+		//Osd.nX = 100;
+		//Osd.nY = 100;
+		//
+		//strcpy_s(Osd.pOSDStr, "LOL");
+		//long lRet = H264_DVR_SetDevConfig(m_BindedCamera->GetLoginId(), E_SDK_SET_OSDINFO, 0, (char*)&Osd, sizeof(SDK_OSDInfo));
 
 
 		if (!H264_PLAY_SetStreamOpenMode(m_lPlayPort, STREAME_REALTIME)) {
