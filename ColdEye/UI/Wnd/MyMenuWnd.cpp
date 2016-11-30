@@ -586,6 +586,8 @@ void CMyMenuWnd::ExpandCameraName()
 		pChildItem = (CContainerUI*)pChildItem->GetItemAt(0);
 		pChildItem = (CContainerUI*)pChildItem->GetItemAt(0);
 		pChildItem->SetFocus();
+		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+		pItem->SetStatus(true);
 	}
 	else {
 		pChildLayout1->SetVisible(false);
@@ -767,7 +769,8 @@ void CMyMenuWnd::RecordVoice()
 	if (MSGID_OK == result) {
 		CMCI::GetInstance()->Save();
 		CRecordAlarmSound::GetInstance()->Save();
-		AddAlarmVoice();
+		if(!pVoice1)
+			AddAlarmVoice();
 	}
 	else if (MSGID_CANCEL == result) {
 		CMCI::GetInstance()->NotSave();
@@ -1297,6 +1300,8 @@ bool CMyMenuWnd::CameraSetIsChange()
 {
 	CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 	if (pPort) {
+
+	Print("newname id:%d  oldid:%d", camera[pPort->m_Id - 1].pShipname->GetTag(), pPort->GetNameId());
 		if (camera[pPort->m_Id - 1].pShipname->GetTag() != pPort->GetNameId())
 			return true;
 		if (camera[pPort->m_Id - 1].pSwitch->GetValue() != pPort->m_DevConfig.IsCameraOn)
@@ -1369,6 +1374,9 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	case VK_BACK:
 		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+		}
+		else if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ShipNameItemUI")) == 0) {
+			ExpandCameraName();
 		}
 		else {
 			if(FocusedItem[1]){
@@ -1529,6 +1537,19 @@ Print("Third Menu Sel :%d", inx);
 				pAlmVicSwitch->SetValue(state);
 				ShowAlarmVoiceList(state);
 				mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+				if (mAlarmVoiceSel) {
+					if (pVoice1) {
+						pDefaultVoice->SetVoiceSel(false);
+						pVoice1->SetVoiceSel(true);
+					}
+					else {
+						pDefaultVoice->SetVoiceSel(true);
+					}
+				}
+				else {
+					pDefaultVoice->SetVoiceSel(true);
+					pVoice1->SetVoiceSel(false);
+				}
 			}
 		}
 		BackTOMenuItem();
@@ -1679,33 +1700,22 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 
 void CMyMenuWnd::InitAlarmVoice()
 {
-	bool AlarmOnOff;
-	int VoiceSel = 0;
-	bool isExistVoice;
-	char sqlStmt[128];
-	sprintf_s(sqlStmt, "SELECT * FROM host_config;");
-	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-	while (stmt->NextRow()) {
-		AlarmOnOff = stmt->ValueInt(4);
-		VoiceSel = stmt->ValueInt(5);
-	}
-	isExistVoice = CRecordAlarmSound::GetInstance()->ScanVoice();
-	if (isExistVoice) {
-		AddAlarmVoice();
-	}
-	else {
-		VoiceSel = 0;
-	}
+	bool state;
+	mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+	state = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff;
+
+
 	//选中默认  0:默认，1录制
-	if (VoiceSel == 0){
+	if (mAlarmVoiceSel == 0){
 		pDefaultVoice->SetVoiceSel(true);
 	}
 	else {
-		if(pVoice1)
+		if (!pVoice1) 
+			AddAlarmVoice();
 		pVoice1->SetVoiceSel(true);
 	}
-	pAlmVicSwitch->SetValue(AlarmOnOff);
-	ShowAlarmVoiceList(AlarmOnOff);
+	pAlmVicSwitch->SetValue(state);
+	ShowAlarmVoiceList(state);
 }
 
 void CMyMenuWnd::BackTOMenuItem()
