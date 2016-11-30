@@ -133,12 +133,16 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 }
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
+	Print("Play");
 	m_pPlayCamera = pCamera;
 	SetMyTimer();
 	if (!m_isAlarm)
 		m_isAlarm = true;
 	else
+	{
+		Print("m_isAlarm == true");
 		return 0;
+	}
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
@@ -146,13 +150,27 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 	FILE *pFile;
 	if (type == ALARM_VOICE_DEFAULT)
 	{
-		fopen_s(&pFile, m_Name, "rb");
-		Print("ALARM_VOICE_DEFAULT");
+		if (PathFileExists(_T(RECORD_VOICE_NAME)))
+		{
+			fopen_s(&pFile, m_Name, "rb");
+			Print("ALARM_VOICE_DEFAULT");
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	else
 	{
-		Print("ALARM_VOICE_RECORD");
-		fopen_s(&pFile, m_rName, "rb");
+		if (PathFileExists(_T(ALARM_VOICE_NAME)))
+		{
+			Print("ALARM_VOICE_RECORD");
+			fopen_s(&pFile, m_rName, "rb");
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	
 	fseek(pFile, 0, SEEK_END);//首先到文件末尾查看文件长度
