@@ -132,7 +132,9 @@ public :
 	void GetCameraItem(CVerticalLayoutUI *pLayout);
 	void CameraInfoInit(CameraInfo cameraInfo);
 	CameraInfo GetCameraSetInfo(int id);
-	void UpdataCameraName();	//更新船名
+	void UpdataCameraName(CPort*);	//更新船名
+	void SetMenuItemName(CVerticalLayoutUI* pLayout, CPort* pPort);
+
 
 	void SetWatchTime(DWORD beginTime, DWORD endTime);
 	void GetWatchTime(DWORD* pBegining, DWORD* pEnd);

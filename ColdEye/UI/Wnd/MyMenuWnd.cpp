@@ -1294,8 +1294,34 @@ CameraInfo CMyMenuWnd::GetCameraSetInfo(int id)
 	return setInfo;
 }
 
-void CMyMenuWnd::UpdataCameraName()
+void CMyMenuWnd::UpdataCameraName(CPort* pPort)
 {
+	CVerticalLayoutUI* pAlarmVideo = (CVerticalLayoutUI*)m_pm.FindControl(_T("layout_submenu_alarm"));
+	CVerticalLayoutUI* pCameraSet = (CVerticalLayoutUI*)m_pm.FindControl(_T("layout_submenu_setting"));
+	CVerticalLayoutUI* pVideoObtain = (CVerticalLayoutUI*)m_pm.FindControl(_T("layout_submenu_videoget"));
+
+	//报警视频按键
+	SetMenuItemName(pAlarmVideo, pPort);
+	//摄像头设置按键
+	SetMenuItemName(pCameraSet, pPort);
+	//视频调取按键设置
+	SetMenuItemName(pVideoObtain, pPort);
+}
+
+void CMyMenuWnd::SetMenuItemName(CVerticalLayoutUI* pLayout, CPort* pPort)
+{
+	CMenuItemUI* pItem;
+	CPort* _pPort;
+	for (int i=0; i < pLayout->GetCount(); i += 2) {
+		pItem = (CMenuItemUI*)pLayout->GetItemAt(i);
+		_pPort = (CPort*)pItem->GetTag();
+		if (_pPort) {
+			if (_pPort == pPort) {
+				pItem->SetText(pPort->GetName());
+				break;
+			}
+		}
+	}
 }
 
 void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
@@ -1506,6 +1532,7 @@ Print("Third Menu Sel :%d", inx);
 						}
 
 						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
+						UpdataCameraName(pPort);
 					}
 				}
 				else {
