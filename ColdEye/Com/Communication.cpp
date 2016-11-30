@@ -255,7 +255,7 @@ Print("OverAlarm");
 	{
 Print("mIsAlarm true");
 		mIsAlarm = false;
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
+		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, pDev);
 		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 		CRecordAlarmSound::GetInstance()->StopTalk();
 	}
