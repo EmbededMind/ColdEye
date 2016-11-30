@@ -207,6 +207,10 @@ uint8_t CCommunication::RecSetVolumeProc(uint8_t *pch)
 
 bool CCommunication::Alarm(CCamera * pDev)
 {
+	if(!(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff))
+	{
+		return false;
+	}
 	if (IsChannelCleaning())
 	{
 Print("Alarm  LY");
@@ -226,14 +230,15 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 		CleanChannel();
 		uint64_t mac64;
 		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		char sqlStmt[128];
+		//char sqlStmt[128];
 		int type;
-		sprintf_s(sqlStmt, "SELECT * FROM normal_record;");
-		SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-		while (stmt->NextRow()) {
-			type = stmt->ValueInt(1);
-		}
-		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), 1);//现在固定为1 等DB好了 改回来
+		//sprintf_s(sqlStmt, "SELECT * FROM normal_record;");
+		//SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+		//while (stmt->NextRow()) {
+		//	type = stmt->ValueInt(1);
+		//}
+		type = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), type);//现在固定为1 等DB好了 改回来
 		return true;
 	}
 	else

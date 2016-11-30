@@ -98,6 +98,8 @@ void CMyMenuWnd::InitWindow()
 	pAwTime[2]->SetItemRelation(pAwTime[1], pAwTime[3]);
 	pAwTime[3]->SetItemRelation(pAwTime[2], NULL);
 
+	
+
 	//-------------------------摄像机设置界面添加-------------------------------
 	CDialogBuilder Camera1builder, Camera2builder, Camera3builder, Camera4builder, Camera5builder, Camera6builder;
 	CVerticalLayoutUI *CamareChildLayout;
@@ -603,6 +605,8 @@ void CMyMenuWnd::ExpandCameraName()
 		pChildItem = (CContainerUI*)pChildItem->GetItemAt(0);
 		pChildItem = (CContainerUI*)pChildItem->GetItemAt(0);
 		pChildItem->SetFocus();
+		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+		pItem->SetStatus(true);
 	}
 	else {
 		pChildLayout1->SetVisible(false);
@@ -611,6 +615,7 @@ void CMyMenuWnd::ExpandCameraName()
 		size.cy = rect.top - 204;
 		pChildLayout2->SetFixedXY(size);
 		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+		pItem->SetFocus();
 		pItem->SetStatus(false);
 	}
 }
@@ -784,7 +789,8 @@ void CMyMenuWnd::RecordVoice()
 	if (MSGID_OK == result) {
 		CMCI::GetInstance()->Save();
 		CRecordAlarmSound::GetInstance()->Save();
-		AddAlarmVoice();
+		if(!pVoice1)
+			AddAlarmVoice();
 	}
 	else if (MSGID_CANCEL == result) {
 		CMCI::GetInstance()->NotSave();
@@ -1315,6 +1321,8 @@ bool CMyMenuWnd::CameraSetIsChange()
 {
 	CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 	if (pPort) {
+
+	Print("newname id:%d  oldid:%d", camera[pPort->m_Id - 1].pShipname->GetTag(), pPort->GetNameId());
 		if (camera[pPort->m_Id - 1].pShipname->GetTag() != pPort->GetNameId())
 			return true;
 		if (camera[pPort->m_Id - 1].pSwitch->GetValue() != pPort->m_DevConfig.IsCameraOn)
@@ -1353,7 +1361,7 @@ bool CMyMenuWnd::SysSetIsChange()
 
 bool CMyMenuWnd::AwTimeIsChange()
 {
-	DWORD begine=NULL, end=NULL;
+	DWORD begine=0, end=0;
 	GetWatchTime(&begine, &end);
 	if (begine != ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining)
 		return true;
@@ -1387,6 +1395,9 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	case VK_BACK:
 		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+		}
+		else if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ShipNameItemUI")) == 0) {
+			ExpandCameraName();
 		}
 		else {
 			if(FocusedItem[1]){
@@ -1509,7 +1520,7 @@ Print("Third Menu Sel :%d", inx);
 	//----------------看船时间---------------------
 	case 14:
 		Print("Aw time change");
-		if (/*AwTimeIsChange()*/ true) {
+		if (AwTimeIsChange()) {
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				//保存看船时间
 				DWORD aw_begining, aw_end;
@@ -1547,6 +1558,19 @@ Print("Third Menu Sel :%d", inx);
 				pAlmVicSwitch->SetValue(state);
 				ShowAlarmVoiceList(state);
 				mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+				if (mAlarmVoiceSel) {
+					if (pVoice1) {
+						pDefaultVoice->SetVoiceSel(false);
+						pVoice1->SetVoiceSel(true);
+					}
+					else {
+						pDefaultVoice->SetVoiceSel(true);
+					}
+				}
+				else {
+					pDefaultVoice->SetVoiceSel(true);
+					pVoice1->SetVoiceSel(false);
+				}
 			}
 		}
 		BackTOMenuItem();
@@ -1700,33 +1724,26 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 
 void CMyMenuWnd::InitAlarmVoice()
 {
-	bool AlarmOnOff;
-	int VoiceSel = 0;
-	bool isExistVoice;
-	char sqlStmt[128];
-	sprintf_s(sqlStmt, "SELECT * FROM host_config;");
-	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-	while (stmt->NextRow()) {
-		AlarmOnOff = stmt->ValueInt(4);
-		VoiceSel = stmt->ValueInt(5);
-	}
-	isExistVoice = CRecordAlarmSound::GetInstance()->ScanVoice();
-	if (isExistVoice) {
+	bool state;
+	mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+	state = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff;
+
+	if (CRecordAlarmSound::GetInstance()->ScanVoice()) {
 		AddAlarmVoice();
 	}
-	else {
-		VoiceSel = 0;
-	}
+
 	//选中默认  0:默认，1录制
-	if (VoiceSel == 0){
+	if (mAlarmVoiceSel == 0){
 		pDefaultVoice->SetVoiceSel(true);
 	}
 	else {
 		if(pVoice1)
-		pVoice1->SetVoiceSel(true);
+			pVoice1->SetVoiceSel(true);
+		else 
+			pDefaultVoice->SetVoiceSel(true);
 	}
-	pAlmVicSwitch->SetValue(AlarmOnOff);
-	ShowAlarmVoiceList(AlarmOnOff);
+	pAlmVicSwitch->SetValue(state);
+	ShowAlarmVoiceList(state);
 }
 
 void CMyMenuWnd::BackTOMenuItem()
