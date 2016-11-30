@@ -146,8 +146,12 @@ BOOL CColdEyeApp::InitInstance()
 
 	CDBShadow::GetInstance()->SynchronizeWithDB();
 
-	CDBLogger::GetInstance()->LogPowerOn(CTime::GetCurrentTime(), 1);
-	CDBLogger::GetInstance()->GenerateLastPowerOffLog();
+	CTime time  = CTime::GetCurrentTime();
+
+	CDBLogger* pLogger  = CDBLogger::GetInstance();
+	pLogger->LogSystemTime(time);
+	pLogger->GenerateLastPowerOffLog();
+	CDBLogger::GetInstance()->LogPowerOn(time, 1);
 
 	CPortManager::GetInstance()->LoadPortsParam();
 

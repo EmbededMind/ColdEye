@@ -476,7 +476,12 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	switch (msg.wParam){
 	case VK_LEFT:
 		if (pItem->GetValue()) {
-			pItem->SetValue(false);
+			if (_tcscmp(pItem->GetName(), _T("camera_switch")) == 0) {
+				if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_camera_switch.xml"), NULL, NULL, NULL, NULL)) {
+					pItem->SetValue(false);
+				}
+			}
+
 			if (pItem == pAlmVicSwitch) {
 				ShowAlarmVoiceList(pItem->GetValue());
 			}
@@ -1531,13 +1536,17 @@ Print("Third Menu Sel :%d", inx);
 						CTime time  = CTime::GetCurrentTime();
 						CDBLogger* pLogger  = CDBLogger::GetInstance();
 						if (pPort->m_DevConfig.IsCameraOn != config.IsCameraOn) {
+							pPort->m_DevConfig.IsCameraOn  = config.IsCameraOn;
 							pLogger->LogCameraOnOff(time, pPort);
 						}
 						if (pPort->m_DevConfig.IsAutoWatchEnabled != config.IsAutoWatchEnabled) {
+							pPort->m_DevConfig.IsAutoWatchEnabled  = config.IsAutoWatchEnabled;
 							pLogger->LogCameraAWOnOff(time, pPort);
-						}
+						}						
 
 						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
+						
+						camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("ÉèÖÃ"));
 						UpdataCameraName(pPort);
 					}
 				}
@@ -1765,7 +1774,7 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 {
 	int inx = pPort->GetId() - 1;
 
-	camera[inx].pTitle->SetText(pPort->GetName());
+	camera[inx].pTitle->SetText(pPort->GetName()+_T("ÉèÖÃ"));
 	camera[inx].pShipname->SetText(pPort->GetName());
 	camera[inx].pShipname->SetTag(pPort->GetNameId());
 	camera[inx].pSwitch->SetValue(pPort->m_DevConfig.IsCameraOn);

@@ -145,7 +145,8 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 		//--------------------------------------------------------------------------
 		case VK_BACK:
 			if (!m_pm.GetFocus()) {
-				Close(0);
+				if(SkinType!=_T("mb_recordingvoice.xml"))
+					Close(0);
 			}
 			break;
 		//--------------------------------------------------------------------------
