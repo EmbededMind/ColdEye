@@ -376,11 +376,14 @@ afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lPar
 	
 	CSurface* pSurface  = FindSurface(pPort);
 	if (pSurface != NULL) {
+		pPort->m_DevConfig.NameId      = pConfig->NameId;
 		pPort->m_DevConfig.IsCameraOn  = pConfig->IsCameraOn;
 		pPort->m_DevConfig.NameId  = pConfig->NameId;
 		pPort->m_DevConfig.Volumn  = pConfig->Volumn;
 		pPort->m_DevConfig.IsRecordEnabled  = pConfig->IsRecordEnabled;
 		pPort->m_DevConfig.IsAutoWatchEnabled  = pConfig->IsAutoWatchEnabled;
+
+		pPort->StoreDeviceConfig();
 
 		pSurface->ExecuteConfig();
 	}

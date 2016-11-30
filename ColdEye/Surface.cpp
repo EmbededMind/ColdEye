@@ -649,20 +649,19 @@ void CSurface::OnAlarmTrigged()
 		else {
 			Print("Alloc file failed when alarm trigged");
 		}
-		int type = 0;
-		int OnOff = 0;
-		char sqlStmt[128];
-		sprintf_s(sqlStmt, "SELECT * FROM host_config;");
-		SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-		while (stmt->NextRow()) {
-			OnOff = stmt->ValueInt(4);
-			type = stmt->ValueInt(5);
-		}
-		if (OnOff)
-		{
-			CRecordAlarmSound::GetInstance()->Play(m_BindedCamera, type);
+		//int type = 0;
+		//int OnOff = 0;
+		//char sqlStmt[128];
+		//sprintf_s(sqlStmt, "SELECT * FROM host_config;");
+		//SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
+		//while (stmt->NextRow()) {
+		//	OnOff = stmt->ValueInt(4);
+		//	type = stmt->ValueInt(5);
+		//}
+		//if (OnOff)
+		//{
 			CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
-		}
+		//}
 	}
 }
 

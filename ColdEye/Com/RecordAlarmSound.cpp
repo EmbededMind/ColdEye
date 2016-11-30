@@ -118,9 +118,11 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 	if (type == ALARM_VOICE_DEFAULT)
 	{
 		fopen_s(&pFile, m_Name, "rb");
+		Print("ALARM_VOICE_DEFAULT");
 	}
 	else
 	{
+		Print("ALARM_VOICE_RECORD");
 		fopen_s(&pFile, m_rName, "rb");
 	}
 	

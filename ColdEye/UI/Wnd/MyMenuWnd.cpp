@@ -1210,6 +1210,7 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 					if (pPort) {
 
 						DeviceConfig config;
+						config.NameId  = camera[nPort-1].pShipname->GetTag();    //Tag :1~18
 						config.IsCameraOn  = camera[nPort-1].pSwitch->GetValue();
 						config.Volumn      = camera[nPort-1].pVolum->GetValue();
 						config.IsRecordEnabled = camera[nPort-1].pSaveVideo->GetValue();
@@ -1246,7 +1247,8 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 		break;
 	//----------------看船时间---------------------
 	case 14:
-		if (AwTimeIsChange()) {
+		Print("Aw time change");
+		if (/*AwTimeIsChange()*/ true) {
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				//保存看船时间
 				DWORD aw_begining, aw_end;
@@ -1269,6 +1271,9 @@ void CMyMenuWnd::KeyDown_VK_BACK()
 	//----------------报警音-------------------
 	case 15:
 	    
+		break;
+	//---------------报警灯------------------
+	case 16:
 		break;
 	//----------------自动看船开关记录--------------
 	case 17:

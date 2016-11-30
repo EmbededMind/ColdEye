@@ -151,10 +151,27 @@ bool  CPort::IsActive()
 	return m_bIsActive;
 }
 
+//
+//bool				IsCameraOn;
+//bool				IsRecordEnabled;
+//bool				IsAutoWatchEnabled;
+//bool				IsVideoFlip;
+//uint16_t            Volumn;
+//uint16_t            NameId;
 
-void CPort::StoreConfig()
+void CPort::StoreDeviceConfig()
 {
+	char sqlStmt[128];
 
+	sprintf_s(sqlStmt, "UPDATE port SET name_id = %d, cam_on = %d, flip_on = %d, vol = %d, record_on = %d, aw_on = %d WHERE id = %d;",
+	    m_DevConfig.NameId, m_DevConfig.IsCameraOn, m_DevConfig.IsVideoFlip, m_DevConfig.Volumn, m_DevConfig.IsRecordEnabled, m_DevConfig.IsAutoWatchEnabled, m_Id);
+
+	if (! sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
 }
 
 

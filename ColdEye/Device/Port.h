@@ -90,7 +90,7 @@ public:
 
 	bool       IsActive();
 
-	void       StoreConfig();
+	void       StoreDeviceConfig();
 
 	void       Config(DeviceConfig& config);
 
