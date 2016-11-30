@@ -98,21 +98,19 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 		static unsigned int j = 0;
 		if (i<pDevice->num - 1)//一段音频640bit，num统计有多少段
 		{
+			if (j >= 4)
+			{
+				j = 0;
+				i = 0;
+				PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(pDevice->m_pPlayCamera));
+			}
 			pDevice->SendTalkData((LPBYTE)(pDevice->pBuf) + i * 640, 640);//发送
 			i++;
 		}
 		else
 		{
 			i = 0;
-			if (j < 4)
-			{
-				j++;
-			}
-			else
-			{
-				j = 0;
-				PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(pDevice->m_pPlayCamera));
-			}
+			j++;
 		}
 	}
 }
