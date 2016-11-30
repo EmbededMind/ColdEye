@@ -111,7 +111,6 @@
 #define ALARM_VOICE_NAME	       "D:\\VOICE\\G711"
 #define NORMAL_RECORD_PATH         "D:\\NormalRecord\\"
 #define ALARM_RECORD_PATH          "E:\\AlarmRecord\\"
-#define SOUND_PATH                 "E:\\AlarmRecord\\"
 #define NORMALDISK                 "d:\\"
 #define ALARMDISK                  "e:\\"
 
