@@ -319,7 +319,7 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			FocusedItem[0] = pItem; 
 			pNextFocusLayout = (CContainerUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel()); //下一集焦点的布局
 			if (userdata == _T("4")) {
-				pHomeWatch->SetFocus();
+				//pHomeWatch->SetFocus();
 			}
 			else if (pNextFocusLayout->GetCount() > 0) {
 				focusLevel++;
@@ -1396,10 +1396,10 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
 		}
-		if (m_pm.FindControl(_T("button_home")) == pHomeWatch) {
-			m_pm.FindControl(_T("homewatch"))->SetFocus();
-			m_pm.FindControl(_T("layout_home_watch"))->SetVisible(true);
-		}
+		//if (m_pm.FindControl(_T("button_home")) == pHomeWatch) {
+		//	m_pm.FindControl(_T("homewatch"))->SetFocus();
+		//	m_pm.FindControl(_T("layout_home_watch"))->SetVisible(true);
+		//}
 		else if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ShipNameItemUI")) == 0) {
 			ExpandCameraName();
 		}
@@ -1765,4 +1765,5 @@ void CMyMenuWnd::BackTOMenuItem()
 	FocusedItem[1]->SetFocus();
 	FocusedItem[1] = NULL;
 	focusLevel--;
+	m_pm.Invalidate();
 }
