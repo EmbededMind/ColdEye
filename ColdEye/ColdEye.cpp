@@ -342,6 +342,7 @@ bool CColdEyeApp::SetAwTime(DWORD tBegining, DWORD tEnd)
 	if (sqlite.DirectStatement(sqlStmt)) {
 		m_SysConfig.watch_time_begining  = tBegining;
 		m_SysConfig.watch_time_end  = tEnd;
+		Print("Sql done:%s", sqlStmt);
 		return true;
 	}
 	else {
