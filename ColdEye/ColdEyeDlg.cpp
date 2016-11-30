@@ -13,6 +13,8 @@
 
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
+
+#include "Pattern\MsgSquare.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -40,6 +42,7 @@ protected:
 														// 实现
 protected:
 	DECLARE_MESSAGE_MAP()
+
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -52,6 +55,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -463,7 +467,17 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event(VK_BACK, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_AUTOWATCH:
-				
+				{
+					MSG msg;
+					msg.wParam   = 666;
+					msg.lParam  = USER_MSG_SYSTEM_CONFIG;
+
+					CColdEyeApp* pApp  = (CColdEyeApp*)AfxGetApp();
+
+					pApp->m_SysConfig.auto_watch_status = pApp->m_SysConfig.auto_watch_status>0?0:1;
+
+					CMsgSquare::GetInstance()->Broadcast(msg);
+				}
 				break;
 			case KB_LEFT:
 				keybd_event(VK_LEFT, 0, 0, 0);

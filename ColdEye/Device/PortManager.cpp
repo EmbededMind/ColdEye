@@ -86,7 +86,7 @@ void CPortManager::BindPortId(CPort* pPort, int id)
 			pPort->SetId(id);
 
 			char sqlStmt[128];
-			sprintf_s(sqlStmt, "UPDATE port SET id = %d WHERE pos = %d;", id, i+1);
+			sprintf_s(sqlStmt, "UPDATE port SET id = %d, name_id = %d WHERE pos = %d;", id, pPort->GetNameId(),i+1);
 
 			if (!sqlite.DirectStatement(sqlStmt)) {
 				Print("Sql error:%s", sqlStmt);

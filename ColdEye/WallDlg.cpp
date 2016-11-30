@@ -526,6 +526,10 @@ afx_msg LRESULT CWallDlg::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
 			}
 		}
 		else {
+			if (FindSurface(pPort) == NULL) {
+				Invest(pPort);
+			}
+
 			// 10s ÷ÿ¡¨°£
 			if (mReconnectPort.size() == 0) {
 				SetTimer(TIMER_ID_RECONNECT, 10 * 1000, NULL);

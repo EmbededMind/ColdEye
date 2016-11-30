@@ -42,3 +42,14 @@ void CMsgSquare::Broadcast(MSG& msg)
 		}
 	}
 }
+
+
+
+void CMsgSquare::RemoveAudience(HWND hWnd)
+{
+	map<UINT, list<HWND>* >::iterator iter  = mSquare.begin();
+
+	for (iter; iter != mSquare.end(); iter++) {
+		iter->second->remove(hWnd);
+	}
+}
