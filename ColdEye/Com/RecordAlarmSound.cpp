@@ -125,12 +125,14 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
 
 	FILE *pFile;
-	if (type = ALARM_VOICE_DEFAULT)
+	if (type == ALARM_VOICE_DEFAULT)
 	{
 		fopen_s(&pFile, m_Name, "rb");
+		Print("ALARM_VOICE_DEFAULT");
 	}
 	else
 	{
+		Print("ALARM_VOICE_RECORD");
 		fopen_s(&pFile, m_rName, "rb");
 	}
 	
