@@ -71,7 +71,7 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 					pEdit->SetText(oldText);
 				}
 				else {
-					//CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_shipname_input.xml"), NULL, NULL);
+					CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_shipname_input.xml"), NULL, NULL,NULL,NULL);
 				}
 			}
 			else {//É¾³ý°´¼ü
