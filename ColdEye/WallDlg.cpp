@@ -213,25 +213,30 @@ void CWallDlg::ExecuteSurfaceLayout()
 	float surface_area_height = rClient.Height()- margin * 2;
 	
 
-	orgX    = (rClient.Width() - surface_area_width) / 2;
 
-	if (surface_area_width * 9 / 16 > surface_area_height) {
-		surface_area_width  = surface_area_height * 16 / 9;
-		orgX  = (rClient.Width() - surface_area_width) / 2;
-	}
 
-	surface_area_height  = surface_area_width * 9 / 16;
+	//if (surface_area_width * 9 / 16 > surface_area_height) {
+	//	surface_area_width  = surface_area_height * 16 / 9;
+	//	orgX  = (rClient.Width() - surface_area_width) / 2;
+	//}
+
+	//surface_area_height  = surface_area_width * 3 / 4;
 
 	orgY  = (rClient.Height() - surface_area_height) / 2;
 
-	long nWidth  = surface_area_width / mCols - grap*2;
-	long nHeight = surface_area_height / mRows - grap*2;
+	//long nWidth  = surface_area_width / mCols - grap*2;
+	//long nHeight = surface_area_height / mRows - grap*2;
+	long nWidth = (surface_area_width - grap * 2 * mCols) / mCols;
+	long nHeight = nWidth = nWidth * 3 / 4;
+
+	orgX = (rClient.Width() - surface_area_width) / 2;
+	orgY = rClient.Height() / 2 - (grap * 2 + nHeight)*mRows/2;
 
 	int cnt = 0;
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] != NULL) {
 			long xPos   = orgX + (cnt % mCols) *(nWidth+grap*2);
-			long yPos   = orgY + (cnt / mCols) *(nHeight+grap*2);
+			long yPos   = orgY + (cnt / mCols) *(nHeight+grap*2)+grap;
 
 			mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, nWidth, nHeight, 0);
 			cnt++;
