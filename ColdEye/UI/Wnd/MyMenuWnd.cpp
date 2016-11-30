@@ -1538,6 +1538,8 @@ Print("Third Menu Sel :%d", inx);
 						}
 
 						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
+						
+						camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("ÉèÖÃ"));
 						UpdataCameraName(pPort);
 					}
 				}
@@ -1765,7 +1767,7 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 {
 	int inx = pPort->GetId() - 1;
 
-	camera[inx].pTitle->SetText(pPort->GetName());
+	camera[inx].pTitle->SetText(pPort->GetName()+_T("ÉèÖÃ"));
 	camera[inx].pShipname->SetText(pPort->GetName());
 	camera[inx].pShipname->SetTag(pPort->GetNameId());
 	camera[inx].pSwitch->SetValue(pPort->m_DevConfig.IsCameraOn);
