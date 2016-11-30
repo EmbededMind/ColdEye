@@ -7,6 +7,8 @@
 #include "Pattern\MsgSquare.h"
  
 #include "Database\DBShadow.h"
+#include "Database\DBLogger.h"
+
 #include "Com\RecordAlarmSound.h"
 #include "Com\MCI.h"
 
@@ -93,6 +95,7 @@ void CMyMenuWnd::InitWindow()
 	pAwTime[1] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_minute")));
 	pAwTime[2] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time2_hour")));
 	pAwTime[3] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time2_minute")));
+
 	pAwTime[0]->SetItemRelation(NULL, pAwTime[1]);
 	pAwTime[1]->SetItemRelation(pAwTime[0], pAwTime[2]);
 	pAwTime[2]->SetItemRelation(pAwTime[1], pAwTime[3]);
@@ -1488,6 +1491,15 @@ Print("Third Menu Sel :%d", inx);
 						config.IsRecordEnabled = camera[nPort-1].pSaveVideo->GetValue();
 						config.IsAutoWatchEnabled = camera[nPort-1].pAutoWatch->GetValue();
 
+						CTime time  = CTime::GetCurrentTime();
+						CDBLogger* pLogger  = CDBLogger::GetInstance();
+						if (pPort->m_DevConfig.IsCameraOn != config.IsCameraOn) {
+							pLogger->LogCameraOnOff(time, pPort);
+						}
+						if (pPort->m_DevConfig.IsAutoWatchEnabled != config.IsAutoWatchEnabled) {
+							pLogger->LogCameraAWOnOff(time, pPort);
+						}
+
 						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
 					}
 				}
@@ -1526,7 +1538,8 @@ Print("Third Menu Sel :%d", inx);
 				//保存看船时间
 				DWORD aw_begining, aw_end;
 				GetWatchTime(&aw_begining, &aw_end);
-				Print("begin:%d, end:%d", aw_begining, aw_end);
+				Print("Get watch time:%02d:%02d--%02d:%02d", aw_begining/60, aw_begining%60, aw_end/60, aw_end%60);
+
 				if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
 					MSG msg;
 					msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;

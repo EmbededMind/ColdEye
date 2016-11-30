@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Device\Camera.h"
+#include "Device\Port.h"
 
 class CDBLogger
 {
@@ -13,9 +13,9 @@ public :
 
 	void LogPowerOn(CTime& time, int on_off);
 	void LogSystemTime(CTime& time);
-	void LogAutoWatch(CTime& time);
-	void LogCameraOnOff(CTime& time, CCamera* pCamera);
-	void LogCameraAWOnOff(CTime& time, CCamera* pCamera);
+	void LogAutoWatch(CTime& time, bool on_off);
+	void LogCameraOnOff(CTime& time, CPort* pPort);
+	void LogCameraAWOnOff(CTime& time, CPort* pPort);
 
 	void GenerateLastPowerOffLog();
 

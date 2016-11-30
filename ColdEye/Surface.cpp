@@ -253,14 +253,16 @@ BOOL CSurface::ShouldWatch(CTime& refTime)
 {
 	UINT minute = refTime.GetHour() * 60 + refTime.GetMinute();
 
+	HostConfig& config  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig;
+	
 
-	if (m_BindedPort->m_AwConfig.End < m_BindedPort->m_AwConfig.Begining) {
-		if (minute < m_BindedPort->m_AwConfig.End || minute >= m_BindedPort->m_AwConfig.Begining) {
+	if (config.watch_time_end < config.watch_time_begining) {
+		if (minute < config.watch_time_end || minute >= config.watch_time_begining) {
 			return TRUE;
 		}
 	}
-	else if (m_BindedPort->m_AwConfig.End > m_BindedPort->m_AwConfig.Begining) {
-		if (minute >= m_BindedPort->m_AwConfig.Begining && minute < m_BindedPort->m_AwConfig.End) {
+	else if (config.watch_time_end > config.watch_time_begining) {
+		if (minute >= config.watch_time_begining && minute < config.watch_time_end) {
 			return TRUE;
 		}
 	}
@@ -292,8 +294,9 @@ UINT CSurface::GetNextWatchEventElapse(CTime& refTime)
 	
 	UINT second  = refTime.GetHour()*3600 + refTime.GetMinute() * 60 + refTime.GetSecond();
 
-	UINT begin_sec  = m_BindedPort->m_AwConfig.Begining*60;
-	UINT end_sec    = m_BindedPort->m_AwConfig.End* 60;
+
+	UINT begin_sec  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining *60;
+	UINT end_sec    = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end* 60;
 
 	Print("Get next elapse...");
 	Print("second  %02d:%02d:%02d", second/3600, (second%3600)/60, second%60);
@@ -1137,8 +1140,8 @@ afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lP
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lParam)
 {	
 
-	m_BindedPort->m_AwConfig.Begining  = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
-	m_BindedPort->m_AwConfig.End       = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
+	//m_BindedPort->m_AwConfig.Begining  = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
+	//m_BindedPort->m_AwConfig.End       = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
 
 	CTime time  = CTime::GetCurrentTime();
 	Print("Current time: %02d:%02d:%02d", time.GetHour(), time.GetMinute(), time.GetSecond());

@@ -186,7 +186,8 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 bool CRecordAlarmSound::Save()
 {
 	DeleteFile(_T(RECORD_VOICE_NAME));
-	CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
+	if(PathFileExists(_T(RECORD_VOICE_NAME_TMP)))
+		CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
 	return false;
 }
 
