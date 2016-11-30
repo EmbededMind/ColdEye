@@ -29,6 +29,12 @@ CDBShadow* CDBShadow::GetInstance()
 }
 
 
+int CDBShadow::GetVirginFileCnt(int id)
+{
+	return mVirginFileCnts[id - 1];
+}
+
+
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);
@@ -151,6 +157,8 @@ void CDBShadow::SynchronizeWithDB()
 		if (pInfo->tEnd > pInfo->tBegin) {
 			mReocrdFileInfoList.push_back(pInfo);
 			mRecordFileCnts[pInfo->nOwner - 1]++;
+
+
 		}
 		else {
 			Print("Invalid record information");
@@ -184,6 +192,10 @@ void CDBShadow::SynchronizeWithDB()
 		if (pInfo->tEnd > pInfo->tBegin) {
 			mAlarmFileInfoList.push_back(pInfo);
 			mAlarmFileCnts[pInfo->nOwner - 1]++;
+
+			if (pInfo->status == RECORD_NSEEN) {
+				mVirginFileCnts[pInfo->nOwner]++;
+			}
 		}
 		else {
 			Print("Invalid alarm record information");

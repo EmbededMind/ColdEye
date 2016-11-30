@@ -20,6 +20,7 @@ CPlayerWallWnd::CPlayerWallWnd(CDuiString skinName)
 
 CPlayerWallWnd::~CPlayerWallWnd()
 {
+	
 }
 
 LPCTSTR CPlayerWallWnd::GetWindowClassName() const
@@ -34,9 +35,9 @@ CDuiString CPlayerWallWnd::GetSkinFile()
 
 LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	Print("PlayWallMsg:%d",uMsg);
 	switch (uMsg){
 	case USER_MSG_PLAY_START:
+		InitPlayTime(lParam);
 		PreparePlay(wParam, lParam);
 		H264_PLAY_Play(mPort, pVPlayer->GetHWND());
 		H264_PLAY_SetFileEndCallBack(mPort, EOFCallBack, (LONG)this);
@@ -46,6 +47,17 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 	case WM_TIMER:
 		OnTimer(uMsg, wParam, lParam, bHandled);
+		break;
+
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case VK_BACK:
+			StopPlay();
+			pVPlayer->Close();
+			pAlphaMarkWnd->Close();
+			Close();
+			break;
+		}
 		break;
 	}
 	bHandled = FALSE;
@@ -61,6 +73,8 @@ void CPlayerWallWnd::InitWindow()
 	pFast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));
 	if (pFast) pFast->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnFast);
 	pSlider = static_cast<CSliderUI*>(m_pm.FindControl(_T("progress")));
+	pBeginTime = static_cast<CLabelUI*>(m_pm.FindControl(_T("time_begin")));
+	pEndTime = static_cast<CLabelUI*>(m_pm.FindControl(_T("time_end")));
 
 	if (!pVPlayer) {
 		pVPlayer = new CVPlayer(_T("vplayer.xml"));
@@ -119,11 +133,26 @@ LRESULT CPlayerWallWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 
 LRESULT CPlayerWallWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	Print("PlayerWall KeyDown");
-	m_pm.SendNotify(m_pm.GetFocus(), DUI_MSGTYPE_KEYDOWN, wParam, lParam);
+	if (wParam == VK_BACK) {
+		WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+	}
+	else {
+		m_pm.SendNotify(m_pm.GetFocus(), DUI_MSGTYPE_KEYDOWN, wParam, lParam);
+	}
 
 	return LRESULT();
 }
+
+void CPlayerWallWnd::InitPlayTime(LPARAM lParam)
+{
+	CRecordFileInfo *info = (CRecordFileInfo*)lParam;
+	CTime tbegin, tend;
+	tbegin = info->tBegin;
+	tend = info->tEnd;
+	pBeginTime->SetText(tbegin.Format(_T("%H:%M:%S")));
+	pEndTime->SetText(tend.Format(_T("%H:%M:%S")));
+}
+
 
 //void EOFCallBack(LONG mPort, LONG nUser)
 //{
