@@ -224,6 +224,7 @@ Print("Alarm  LY");
 
 bool CCommunication::RecAlarmProc(uint8_t *pch)
 {
+	Print("RecAlarmProc");
 	if (pch[5] == 1)
 	{
 		H264_DVR_StopVoiceCom(this->mTalkHandle);
@@ -238,7 +239,7 @@ bool CCommunication::RecAlarmProc(uint8_t *pch)
 		//	type = stmt->ValueInt(1);
 		//}
 		type = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
-		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), type);//现在固定为1 等DB好了 改回来
+		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), type);
 		return true;
 	}
 	else
@@ -256,6 +257,7 @@ Print("mIsAlarm true");
 		mIsAlarm = false;
 		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
 		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+		CRecordAlarmSound::GetInstance()->StopTalk();
 	}
 	return true;
 }
