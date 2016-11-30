@@ -199,12 +199,14 @@ void CMyLabelUI::StatusUpdate()
 		|| GetName() == _T("camera_set_shipwatch")) {
 		if (m_Value) {
 			if (GetName() == _T("camera_set_video_save")) {
-				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_STROAGE, 0);
-				m_Value = false;
+				if (MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), _T("关闭储存摄像机视频后，你将无法回"), _T("放视频，是否确定关闭？"),NULL,NULL)) {
+					m_Value = false;
+				}
 			}
 			else {
-				//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, CLOSE_AUTOWATCH, 0);
-				m_Value = false;
+				if (MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), _T("关闭摄像机自动看船后，该摄像头将"), _T("不会发生报警，是否确定关闭？"), NULL, NULL)) {
+					m_Value = false;
+				}
 			}
 		}
 		else {
@@ -214,25 +216,10 @@ void CMyLabelUI::StatusUpdate()
 	}
 	else {
 		if (GetName() == _T("sysset_version")) {
-			SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_FILE, 0);
-			//int i = 2;
-			//if (i == 0)
-			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_DRIVE, 0);
-			//else if (i == 1) {
-			//	if (MSGID_OK == CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_request.xml"), NULL, NULL)) {
-			//		CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update.xml"), _T("V2.0.0"), NULL);
-			//		CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_update_success.xml"), _T("软件版本：V2.0.0"), NULL);
-			//	}
-			//}
-			//else if (i == 2)
-			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, NO_UPDATE_FILE, 0);
-			//else if (i == 3)
-			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, UPDATE_REQUEST,0);
-			//else if(i==4)
-			//	SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, SOFT_UPDATE_SUCCESS, 0);
+			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"), NULL, NULL);
 		}
 		else if (GetName() == _T("sysset_reset")) {
-			//SendMessage(m_pManager->GetPaintWindow(), USER_MSG_MESSAGE_BOX, FACTORY_RESET, 0);
+			CMsgWnd::MessageBox(m_pManager->GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"), NULL, NULL);
 		}
 	}
 }

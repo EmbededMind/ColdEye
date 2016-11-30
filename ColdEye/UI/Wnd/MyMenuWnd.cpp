@@ -476,7 +476,12 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	switch (msg.wParam){
 	case VK_LEFT:
 		if (pItem->GetValue()) {
-			pItem->SetValue(false);
+			if (_tcscmp(pItem->GetName(), _T("camera_switch")) == 0) {
+				if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_camera_switch.xml"), NULL, NULL, NULL, NULL)) {
+					pItem->SetValue(false);
+				}
+			}
+
 			if (pItem == pAlmVicSwitch) {
 				ShowAlarmVoiceList(pItem->GetValue());
 			}
