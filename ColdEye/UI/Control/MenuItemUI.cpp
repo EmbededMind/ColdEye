@@ -82,13 +82,24 @@ void CMenuItemUI::SetItemBkColor(CControlUI* pfocusItem,DWORD Color1, DWORD Colo
 void CMenuItemUI::DoEvent(TEventUI& event)
 {
 	if (event.Type == UIEVENT_KEYDOWN) {
-		if (GetKeyState(VK_CONTROL)) {
+		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
 			if (event.wParam=='U') {
-				list<CRecordFileInfo*> RecordInfo;
-				UINT8 type;
-				RecordInfo = FindRecordFile(&type);
-				m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);
-				return;
+				CDuiString userdata = GetUserData();
+				int id = StrToInt(userdata);
+				Print("id :%d",id);
+				if (id >= 0 && id < 6) {
+					list<CRecordFileInfo*> RecordInfo;
+					UINT8 type;
+					RecordInfo = FindRecordFile(&type);
+					m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);
+				}
+				else if (id >= 18 && id < 23) {
+					list<CRecordFileInfo*> RecordInfo;
+					UINT8 type;
+					RecordInfo = FindRecordFile(&type);
+					m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);
+				}
+				
 			}
 		}
 

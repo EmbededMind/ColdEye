@@ -86,6 +86,8 @@ void CMyMenuWnd::InitWindow()
 
 	pAwOnOffRecordList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
 	pPage = static_cast<CLabelUI*>(m_pm.FindControl(_T("page")));
+	pHomeWatch = static_cast<CButtonUI*>(m_pm.FindControl(_T("button_home")));
+	if (pHomeWatch) pHomeWatch->OnNotify += MakeDelegate(this, &CMyMenuWnd::OnHomeWatch);
 	//-------------------------看船时间控件关联---------------------------------
 	pAwTime[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
 	pAwTime[1] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_minute")));
@@ -143,6 +145,21 @@ void CMyMenuWnd::InitWindow()
 	InitAwOnOffRecord();
 }
 
+
+bool CMyMenuWnd::OnHomeWatch(void * param)
+{
+	TNotifyUI* pMsg = (TNotifyUI*)param;
+
+	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
+		if (pMsg->lParam == VK_BACK) {
+			m_pm.FindControl(_T("button_home"))->SetFocus();
+		}
+		else if (pMsg->lParam == VK_RETURN) {
+			m_pm.FindControl(_T("notice"))->SetVisible(true);
+		}
+	}
+	return false;
+}
 
 void CMyMenuWnd::UpdataItemColor()
 {
@@ -302,7 +319,7 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			FocusedItem[0] = pItem; 
 			pNextFocusLayout = (CContainerUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel()); //下一集焦点的布局
 			if (userdata == _T("4")) {
-				
+				pHomeWatch->SetFocus();
 			}
 			else if (pNextFocusLayout->GetCount() > 0) {
 				focusLevel++;
@@ -588,6 +605,8 @@ void CMyMenuWnd::ExpandCameraName()
 		pChildItem = (CContainerUI*)pChildItem->GetItemAt(0);
 		pChildItem = (CContainerUI*)pChildItem->GetItemAt(0);
 		pChildItem->SetFocus();
+		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+		pItem->SetStatus(true);
 	}
 	else {
 		pChildLayout1->SetVisible(false);
@@ -596,6 +615,7 @@ void CMyMenuWnd::ExpandCameraName()
 		size.cy = rect.top - 204;
 		pChildLayout2->SetFixedXY(size);
 		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
+		pItem->SetFocus();
 		pItem->SetStatus(false);
 	}
 }
@@ -769,7 +789,8 @@ void CMyMenuWnd::RecordVoice()
 	if (MSGID_OK == result) {
 		CMCI::GetInstance()->Save();
 		CRecordAlarmSound::GetInstance()->Save();
-		AddAlarmVoice();
+		if(!pVoice1)
+			AddAlarmVoice();
 	}
 	else if (MSGID_CANCEL == result) {
 		CMCI::GetInstance()->NotSave();
@@ -1283,14 +1304,15 @@ void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
 		tMinute2 = endTime%60;
 
 		pAwTime[0]->SetValue(tHour1);
-		pAwTime[1]->SetValue(tHour2);
-		pAwTime[2]->SetValue(tMinute1);
+		pAwTime[1]->SetValue(tMinute1);
+		pAwTime[2]->SetValue(tHour2);
 		pAwTime[3]->SetValue(tMinute2);
 	}
 }
 
 void CMyMenuWnd::GetWatchTime(DWORD* pBegining, DWORD* pEnd)
 {	
+
 	*pBegining = pAwTime[0]->GetValue() + pAwTime[1]->GetValue();
 	*pEnd = pAwTime[2]->GetValue()+ pAwTime[3]->GetValue();
 }
@@ -1299,6 +1321,8 @@ bool CMyMenuWnd::CameraSetIsChange()
 {
 	CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 	if (pPort) {
+
+	Print("newname id:%d  oldid:%d", camera[pPort->m_Id - 1].pShipname->GetTag(), pPort->GetNameId());
 		if (camera[pPort->m_Id - 1].pShipname->GetTag() != pPort->GetNameId())
 			return true;
 		if (camera[pPort->m_Id - 1].pSwitch->GetValue() != pPort->m_DevConfig.IsCameraOn)
@@ -1371,6 +1395,9 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	case VK_BACK:
 		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+		}
+		else if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ShipNameItemUI")) == 0) {
+			ExpandCameraName();
 		}
 		else {
 			if(FocusedItem[1]){
@@ -1498,7 +1525,7 @@ Print("Third Menu Sel :%d", inx);
 				//保存看船时间
 				DWORD aw_begining, aw_end;
 				GetWatchTime(&aw_begining, &aw_end);
-
+				Print("begin:%d, end:%d", aw_begining, aw_end);
 				if (((CColdEyeApp*)AfxGetApp())->SetAwTime(aw_begining, aw_end)) {
 					MSG msg;
 					msg.message = USER_MSG_CAMERA_CONFIG_AWTIME;
@@ -1531,6 +1558,19 @@ Print("Third Menu Sel :%d", inx);
 				pAlmVicSwitch->SetValue(state);
 				ShowAlarmVoiceList(state);
 				mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+				if (mAlarmVoiceSel) {
+					if (pVoice1) {
+						pDefaultVoice->SetVoiceSel(false);
+						pVoice1->SetVoiceSel(true);
+					}
+					else {
+						pDefaultVoice->SetVoiceSel(true);
+					}
+				}
+				else {
+					pDefaultVoice->SetVoiceSel(true);
+					pVoice1->SetVoiceSel(false);
+				}
 			}
 		}
 		BackTOMenuItem();
@@ -1661,6 +1701,9 @@ void CMyMenuWnd::DeleteVideoObtainMenuItem(CPort* pPort) {
 	DeleteMenuItem(pPort, _T("layout_submenu_videoget"), VIDEO_OBTAIN);
 }
 
+
+
+
 void CMyMenuWnd::DeletePortConfigMenuItem(CPort* pPort)
 {
 	DeleteMenuItem(pPort, _T("layout_submenu_setting"), CAMERA_SET);
@@ -1681,33 +1724,26 @@ void CMyMenuWnd::FillPortConfig(CPort* pPort)
 
 void CMyMenuWnd::InitAlarmVoice()
 {
-	bool AlarmOnOff;
-	int VoiceSel = 0;
-	bool isExistVoice;
-	char sqlStmt[128];
-	sprintf_s(sqlStmt, "SELECT * FROM host_config;");
-	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-	while (stmt->NextRow()) {
-		AlarmOnOff = stmt->ValueInt(4);
-		VoiceSel = stmt->ValueInt(5);
-	}
-	isExistVoice = CRecordAlarmSound::GetInstance()->ScanVoice();
-	if (isExistVoice) {
+	bool state;
+	mAlarmVoiceSel = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
+	state = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff;
+
+	if (CRecordAlarmSound::GetInstance()->ScanVoice()) {
 		AddAlarmVoice();
 	}
-	else {
-		VoiceSel = 0;
-	}
+
 	//选中默认  0:默认，1录制
-	if (VoiceSel == 0){
+	if (mAlarmVoiceSel == 0){
 		pDefaultVoice->SetVoiceSel(true);
 	}
 	else {
 		if(pVoice1)
-		pVoice1->SetVoiceSel(true);
+			pVoice1->SetVoiceSel(true);
+		else 
+			pDefaultVoice->SetVoiceSel(true);
 	}
-	pAlmVicSwitch->SetValue(AlarmOnOff);
-	ShowAlarmVoiceList(AlarmOnOff);
+	pAlmVicSwitch->SetValue(state);
+	ShowAlarmVoiceList(state);
 }
 
 void CMyMenuWnd::BackTOMenuItem()

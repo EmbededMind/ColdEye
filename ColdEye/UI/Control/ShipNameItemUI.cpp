@@ -12,6 +12,12 @@ CShipNameItemUI::~CShipNameItemUI()
 {
 }
 
+
+LPCTSTR CShipNameItemUI::GetClass() const
+{
+	return _T("ShipNameItemUI");
+}
+
 void CShipNameItemUI::DoEvent(TEventUI &event)
 {
 	int userdata, line, row;

@@ -227,7 +227,7 @@ void CWallDlg::ExecuteSurfaceLayout()
 	//long nWidth  = surface_area_width / mCols - grap*2;
 	//long nHeight = surface_area_height / mRows - grap*2;
 	long nWidth = (surface_area_width - grap * 2 * mCols) / mCols;
-	long nHeight = nWidth = nWidth * 3 / 4;
+	long nHeight =  nWidth * 3 / 4;
 
 	orgX = (rClient.Width() - surface_area_width) / 2;
 	orgY = rClient.Height() / 2 - (grap * 2 + nHeight)*mRows/2;

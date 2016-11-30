@@ -84,6 +84,8 @@ public :
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
 
+
+	bool OnHomeWatch(void* param);
 	// BkColor
 	void UpdataItemColor();
 
@@ -168,7 +170,7 @@ private:
 	void   FillPortConfig(CPort* pPort);
 	void   InitAlarmVoice();
 	void   BackTOMenuItem();
-	
+
 	CMenuItemUI* pAlarmItem[6];
 
 	CTabLayoutUI *pLayout_third;
@@ -186,6 +188,7 @@ private:
 	CSwitchUI*	pAlarmLight;		//报警灯光
 	CListUI*	pAwOnOffRecordList;		//自动看船开关记录列表
 	CLabelUI* pPage;		//页码
+	CButtonUI* pHomeWatch;	//回家看船
 
 	CButtonUI *FocusedItem[2];
 	UINT8 focusLevel;

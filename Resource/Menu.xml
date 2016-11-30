@@ -286,7 +286,7 @@
 				<Text float="true" pos="217,312,0,0" width="839" height="200" font="5" textcolor="#FF666666" text="       回家看船开启后，有人上船偷盗，设备会发出报警声音并且发出警告灯光，吓退盗贼，同时向你的手机报警，拍摄盗贼照片到您手机上，存留证据，减少看船支出，全方面保障船舶的财产生命安全。"/>
 				<Button name="button_home" float="true" pos="511,562,0,0" width="250" height="94" borderround="6,6" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" font="0" text="开启" focusedimage="file='image/按钮-选中.png'"/>
 			</HorizontalLayout>
-			<HorizontalLayout bkcolor="#FFFFFFFF">
+			<HorizontalLayout name="notice" bkcolor="#FFFFFFFF">
 				<Text float="true" pos="366,247,0,0" width="540" height="50" font="3" textcolor="#FF666666" text="未连接设备，请联系当地经销商！"/>
 			</HorizontalLayout>
 		</TabLayout>
