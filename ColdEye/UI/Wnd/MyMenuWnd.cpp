@@ -847,7 +847,6 @@ void CMyMenuWnd::refreshSuperscript(CMyListUI* pSender)
 		CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 		pPort->m_virginNumber -= 1;
 		FocusedItem[1]->Invalidate();
-
 		SetAllVirginNum();
 	}
 
@@ -984,6 +983,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				//port->virgin ++;
 				CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
 				port->m_virginNumber++;
+				SetAllVirginNum();
 			}
 			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
@@ -1002,6 +1002,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 					CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
 					port->m_virginNumber--;
 				}
+				SetAllVirginNum();
 			}
 			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;

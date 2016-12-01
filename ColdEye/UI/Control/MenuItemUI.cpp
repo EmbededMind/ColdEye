@@ -265,7 +265,7 @@ list<CRecordFileInfo*> CMenuItemUI::FindRecordFile(UINT8* type)
 	CVideoListUI::Node *node;
 	inx = StrToInt(GetUserData());
 	if (inx >= 0 && inx < 6) { //±¨¾¯ÊÓÆµ
-		Listname.Format(_T("video_alarmlisti%d"), inx+1);
+		Listname.Format(_T("video_alarmlist%d"), inx+1);
 		pList = (CVideoListUI*)m_pManager->FindControl(Listname);
 		num_record = pList->GetCount();
 		*type = 1;

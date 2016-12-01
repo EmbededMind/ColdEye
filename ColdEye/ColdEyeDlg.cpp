@@ -329,6 +329,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+
 BOOL CColdEyeDlg::SetVolumeLevel(int type)
 {
 	HRESULT hr;
