@@ -178,9 +178,12 @@ BOOL CColdEyeDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
 	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
+	SetWindowLong(m_hWnd, GWL_STYLE, GetWindowLong(m_hWnd, GWL_STYLE) & ~WS_CAPTION); //去标题栏
+	SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME));
 	mWall.ShowWindow(SW_SHOW);
 
 	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
+	::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
 	mMenu.ShowWindow(false);
 
 
