@@ -271,7 +271,7 @@ void CColdEyeDlg::OnPaint()
 		PaintTitle(&dc);
 
 		CFont font;
-		font.CreatePointFont(240, _T("方正兰亭中黑"));
+		font.CreatePointFont(240, _T("方正兰亭中黑_GBK"));
 
 		CPen* pOldPen;
 		CFont* pOldFont;

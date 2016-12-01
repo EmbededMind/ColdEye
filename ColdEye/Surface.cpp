@@ -114,6 +114,19 @@ IMPLEMENT_DYNAMIC(CSurface, CWnd)
 
 CSurface::CSurface()
 {
+	//OSD_INFO_TXT osd;
+	//osd.bkColor = RGB(72, 209, 204);
+	//osd.color = RGB(0,0,0);
+	//osd.pos_x = 10;
+	//osd.pos_y = 80;
+	//osd.isTransparent = 1;
+	//osd.isBold = 1;
+	m_OsdInfoText.bkColor  = RGB(72, 209, 204);
+	m_OsdInfoText.color   = RGB(0, 0, 0);
+	m_OsdInfoText.pos_x  = 10;
+	m_OsdInfoText.pos_y  = 10;
+	m_OsdInfoText.isTransparent  = 1;
+
 	RegisterWindowClass();
 }
 
@@ -233,6 +246,8 @@ void CSurface::ExecuteConfig()
 			DisconnectRealPlay();
 		}
 	}
+
+	SetOsdText(10, 10, m_BindedPort->GetName());
 }
 
 
@@ -389,33 +404,7 @@ void CSurface::StartRealPlay()
 
 
 	if (H264_PLAY_OpenStream(m_lPlayPort, &byFileHeadBuf, 1, SOURCE_BUF_MIN * 100)) {
-		//OSD_INFO_TXT osd;
-		//osd.bkColor = RGB(72, 209, 204);
-		//osd.color = RGB(0,0,0);
-		//osd.pos_x = 10;
-		//osd.pos_y = 80;
-		//osd.isTransparent = 1;
-		//osd.isBold = 1;
-		//CString& name  = m_BindedPort->GetName();
-		//char [40];
-		//WideCharToMultiByte();
-		//strcpy_s(osd.text,  );
-
-		//H264_PLAY_SetOsdTex(m_lPlayPort, &osd);
-
-
-		//H264_PLAY_RigisterDrawFun(m_lPlayPort, cbDefaultDrawOSD, (LONG)this);
-
-
-		//SDK_OSDInfo Osd;
-		//Osd.index = 1;
-		//Osd.nChannel = 0;
-		//Osd.nX = 100;
-		//Osd.nY = 100;
-		//
-		//strcpy_s(Osd.pOSDStr, "LOL");
-		//long lRet = H264_DVR_SetDevConfig(m_BindedCamera->GetLoginId(), E_SDK_SET_OSDINFO, 0, (char*)&Osd, sizeof(SDK_OSDInfo));
-
+		H264_PLAY_SetOsdTex(m_lPlayPort, &m_OsdInfoText);
 
 		if (!H264_PLAY_SetStreamOpenMode(m_lPlayPort, STREAME_REALTIME)) {
 			TRACE("Play set stream open mode failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
@@ -813,6 +802,26 @@ BOOL CSurface::RegisterWindowClass(HINSTANCE hInstance)
 
 
 
+
+void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
+{
+	bool bkState  = m_bIsRealPlaying;
+
+	if (m_bIsRealPlaying) {
+		StopRealPlay();
+	}
+
+	m_OsdInfoText.pos_x  = xPos;
+	m_OsdInfoText.pos_y  = yPos;
+	
+	char tmp[40];
+	WideCharToMultiByte(CP_ACP, 0, cam_name, -1, tmp, 40, NULL,NULL);
+	strcpy_s(m_OsdInfoText.text, tmp);
+
+	if (bkState) {
+		StartRealPlay();
+	}
+}
 
 
 

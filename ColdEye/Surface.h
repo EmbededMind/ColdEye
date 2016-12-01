@@ -56,7 +56,6 @@ public:
 	void          ConnectRealPlay();         //打开实时播放数据流
 	void          DisconnectRealPlay();      //关闭实时播放
 	 
-	void          SetOsdText(OSD_INFO_TXT*  pOsdInfo);
 	void          SetOsdText(int xPos, int yPos, CString& text);
 	void          SetOsdText(int xPos, int yPos, char* pText);
 
@@ -108,6 +107,8 @@ protected:
 
 
 private:
+	OSD_INFO_TXT  m_OsdInfoText;
+
 	long          m_hRealPlay;
 	WORD          m_wAlarmStamp;
 	BOOL          ShouldWatch();
