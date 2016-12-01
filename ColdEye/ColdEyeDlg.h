@@ -9,6 +9,13 @@
 #include "Com\SerialPort.h"
 #include "Wnd\MsgWnd.h"
 
+const enum MonitorPowerCmd
+{
+	MonitorPowerOn = -1,
+	MonitorGoLowePower = 1,
+	MonitorPowerOff = 2,
+};
+
 class CMsgWnd;
 
 // CColdEyeDlg 对话框
@@ -52,6 +59,7 @@ private:
 
 	bool isFlashDisk;
 
+	MonitorPowerCmd m_MonitorPower;
 										// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_COLDEYE_DIALOG };
