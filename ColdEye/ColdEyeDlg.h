@@ -80,7 +80,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT OnUserMsgScanDev(WPARAM wParam, LPARAM lParam);
-	BOOL SetVolumeLevel(int type);
+	int SetVolumeLevel(int type);
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnSize(UINT nType, int cx, int cy);

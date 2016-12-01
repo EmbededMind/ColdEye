@@ -329,7 +329,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 }
 
 
-BOOL CColdEyeDlg::SetVolumeLevel(int type)
+int CColdEyeDlg::SetVolumeLevel(int type)
 {
 	HRESULT hr;
 	IMMDeviceEnumerator* pDeviceEnumerator = 0;
@@ -382,7 +382,7 @@ BOOL CColdEyeDlg::SetVolumeLevel(int type)
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
 			pDeviceEnumerator->Release();
-			return true;
+			return (int)(100*fVolume);
 		}
 	}
 	catch (...) {
@@ -392,7 +392,7 @@ BOOL CColdEyeDlg::SetVolumeLevel(int type)
 		if (pDeviceEnumerator) pDeviceEnumerator->Release();
 		throw;
 	}
-	return 0;
+	return -1;
 }
 
 
@@ -432,6 +432,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 {
 	static int KBmessage_NO = 0;
 	static int CAmessage_NO = 0;
+	int volume;
 	if (port == COM_KB)
 	{
 		onedata *p = (onedata*)pData;
@@ -488,7 +489,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event('U', 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLUP:
-				this->SetVolumeLevel(ENLARGE_VOLUME);
+				volume = this->SetVolumeLevel(ENLARGE_VOLUME);
+				//PostMessage();
 				break;
 			case KB_DOWN:
 				keybd_event(VK_DOWN, 0, 0, 0);
@@ -501,7 +503,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event(VK_F8, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLDOWN:
-				this->SetVolumeLevel(REDUCE_VOLUME);
+				volume = this->SetVolumeLevel(REDUCE_VOLUME);
+				//PostMessage();
 				break;
 			case KB_TALKQUIET:
 				SetVolumeLevel(1);
