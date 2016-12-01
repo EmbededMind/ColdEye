@@ -375,7 +375,7 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 void CMyMenuWnd::LabelNotify(TNotifyUI & msg)
 {
 	CDuiString sName = msg.pSender->GetName();
-	CMyEditUI *pItem = (CMyEditUI*)msg.pSender;
+	CMyLabelUI *pItem = (CMyLabelUI*)msg.pSender;
 	CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)pItem->GetParent();
 	switch (msg.wParam) {
 	case VK_DOWN:
@@ -389,7 +389,25 @@ void CMyMenuWnd::LabelNotify(TNotifyUI & msg)
 	case VK_UP:
 		pParentLayout->GetItemAt(pParentLayout->GetItemIndex(pItem) - 2)->SetFocus();
 		break;
-
+	//--------------------------------------
+	case VK_RETURN:
+		// 软件更新
+		if(_tcscmp(sName,_T("sysset_version"))==0){
+			VirsionUpdata();
+		}
+		//恢复出厂设置
+		if (_tcscmp(sName, _T("sysset_reset"))==0) {
+			FactoryReset();
+		}
+		//是否储存摄像头视频
+		if (_tcscmp(sName, _T("camera_set_video_save")) == 0) {
+			IsStorage(pItem);
+		}
+		//自动看船设置
+		if (_tcscmp(sName, _T("camera_set_shipwatch")) == 0) {
+			IsAutoWatch(pItem);
+		}
+		break;
 	}
 }
 
@@ -593,6 +611,55 @@ void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 	default:
 		break;
 	}
+}
+
+void CMyMenuWnd::VirsionUpdata()
+{
+	bool UFlash_state = 0;// U盘状态
+
+	if (UFlash_state) {
+
+	}
+	else {
+		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("未检测到U盘，请重试！"), NULL, NULL);
+	}
+}
+
+void CMyMenuWnd::FactoryReset()
+{
+	if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_okcancel.xml"), NULL, _T("确定恢复出厂设置？"), NULL, NULL)) {
+
+	}
+	else {
+
+	}
+}
+
+void CMyMenuWnd::IsStorage(CMyLabelUI *pItem)
+{
+	if (pItem->GetValue()) {
+		if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_okcancel.xml"), _T("关闭储存摄像机视频后，你将无法回"), _T("放视频，是否确定关闭？"), NULL, NULL)) {
+			pItem->SetValue(false);
+		}
+	}
+	else {
+		pItem->SetValue(true);
+	}
+	pItem->Invalidate();
+
+}
+
+void CMyMenuWnd::IsAutoWatch(CMyLabelUI *pItem)
+{
+	if (pItem->GetValue()) {
+		if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_okcancel.xml"), _T("关闭摄像机自动看船后，该摄像头将"), _T("不会发生报警，是否确定关闭？"), NULL, NULL)) {
+			pItem->SetValue(false);
+		}
+	}
+	else {
+		pItem->SetValue(true);
+	}
+	pItem->Invalidate();
 }
 
 void CMyMenuWnd::ExpandCameraName()

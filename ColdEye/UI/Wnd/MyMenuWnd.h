@@ -100,6 +100,10 @@ public :
 	void SwitchNotify(TNotifyUI& msg);
 	void ListLabelNotify(TNotifyUI& msg);
 
+	void VirsionUpdata();
+	void FactoryReset();
+	void IsStorage(CMyLabelUI *pItem);
+	void IsAutoWatch(CMyLabelUI *pItem);
 	void ExpandCameraName();
 	void ShowAlarmVoiceList(bool);
 	void ThirdMenuSetFocus(CDuiString);

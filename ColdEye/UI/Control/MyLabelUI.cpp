@@ -175,14 +175,15 @@ void CMyLabelUI::DoEvent(TEventUI & event)
 
 			case VK_UP:
 			case VK_DOWN:
+			case VK_RETURN:
 				m_pManager->SendNotify(this, DUI_MSGTYPE_LABEL, event.wParam, event.lParam);
 				break;
 			case VK_LEFT:
-				StatusUpdate();
+				//StatusUpdate();
 				break;
 
 			case VK_RIGHT:
-				StatusUpdate();
+				//StatusUpdate();
 				break;
 			}
 		}
