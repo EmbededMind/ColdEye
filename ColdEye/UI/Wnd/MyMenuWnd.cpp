@@ -481,6 +481,9 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 					pItem->SetValue(false);
 				}
 			}
+			else {
+				pItem->SetValue(false);
+			}
 
 			if (pItem == pAlmVicSwitch) {
 				ShowAlarmVoiceList(pItem->GetValue());
