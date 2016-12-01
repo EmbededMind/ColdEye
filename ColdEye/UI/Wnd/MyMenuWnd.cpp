@@ -149,11 +149,6 @@ void CMyMenuWnd::InitWindow()
 	}
 	InitAlarmVoice();
 	InitAwOnOffRecord();
-
-	CPort *pPort = new CPort;
-	pPort->SetId(1);
-	pPort->SetNameId(1);
-	AddPortConfigMenuItem(pPort);
 	
 }
 
@@ -172,7 +167,6 @@ bool CMyMenuWnd::OnHomeWatch(void * param)
 
 void CMyMenuWnd::UpdataItemColor()
 {
-	Print("focusLevel:%d ",focusLevel);
 	if (focusLevel == 0) {
 		//²¼¾Ö
 		pLayout_PopMenu->SetBkColor(LAYOUT_POP_FOCUSED);
