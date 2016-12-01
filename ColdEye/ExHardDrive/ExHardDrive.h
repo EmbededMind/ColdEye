@@ -26,6 +26,7 @@ private:
 	CString mUpDateFilePath;
 	CString mCopyFromPath;
 	CString mCopyToPath;
+	UINT mRecordType;
 
 	HANDLE mEndEvent;
 	HANDLE mUpdataEvent;
@@ -74,6 +75,7 @@ public:
 	void CancelCopy();
 	/******************/
 	BOOL ScanDisk(CWnd *pOwner);
+	void CheckCopyFolder();
 
 };
 

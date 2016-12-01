@@ -50,6 +50,7 @@ BOOL CExHardDrive::Init(CWnd * pOwner, CString diskname)
 	mHOwner = static_cast<CColdEyeDlg*>(mCOwner)->GetMyMenu().GetHWND();
 	mIsInsert = TRUE;
 	mCancelCopy = false;
+	CheckCopyFolder();
 	return TRUE;
 }
 
@@ -152,7 +153,18 @@ BOOL CExHardDrive::FindUpdataFile(CString path)
 BOOL CExHardDrive::RecordFilePath(CString path, CString FileName)
 {
 	mCopyFromPath = path;
-	mCopyToPath = mDiskName + FileName;
+	if (mRecordType)
+	{
+		mCopyToPath = mDiskName + _T("AlarmRecord\\");
+	}
+	else
+	{
+		mCopyToPath = mDiskName + _T("NormalRecord\\");
+	}
+	CString tmp;
+	tmp.Format(_T("%d\\"), mFileInfo->nOwner);
+	mCopyToPath += tmp;
+	mCopyToPath += FileName;
 	Print("CopyFile path : %S", mCopyToPath);
 	SetEvent(mCopyEvent);
 	return 0;
@@ -234,6 +246,7 @@ BOOL CExHardDrive::CopyRecord(CRecordFileInfo *FileInfo, UINT FileType)
 {
 	if (!mIsInsert || !mIsThreadAlive) return 0;
 	mFileInfo = FileInfo;
+	mRecordType = FileType;
 	CTime time = FileInfo->tBegin;
 	CString filename, filepath, owner;
 	filename.Format(_T("%d%02d%02d%02d%02d%02d.h264"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
@@ -296,5 +309,30 @@ BOOL CExHardDrive::ScanDisk(CWnd *pOwner)
 		}
 	}
 	return false;
+}
+
+void CExHardDrive::CheckCopyFolder()
+{
+	if (!PathIsDirectory(mDiskName + _T("NormalRecord\\")))
+	{
+		CreateDirectory(mDiskName + _T("NormalRecord\\"), NULL);
+	}
+	if (!PathIsDirectory(mDiskName + _T("AlarmRecord\\")))
+	{
+		CreateDirectory(mDiskName + _T("AlarmRecord\\"), NULL);
+	}
+	CString tmp;
+	for (int i = 1; i < 7; i++)
+	{
+		tmp.Format(_T("%d\\"), i);
+		if (!PathIsDirectory(mDiskName + _T("NormalRecord\\") + tmp))
+		{
+			CreateDirectory(mDiskName + _T("NormalRecord\\") + tmp, NULL);
+		}
+		if (!PathIsDirectory(mDiskName + _T("AlarmRecord\\") + tmp))
+		{
+			CreateDirectory(mDiskName + _T("AlarmRecord\\") + tmp, NULL);
+		}
+	}
 }
 
