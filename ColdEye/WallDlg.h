@@ -61,4 +61,6 @@ protected:
 	afx_msg LRESULT OnUserMsgDisconnect(WPARAM wParam, LPARAM lParam);
 
 	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
+
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };

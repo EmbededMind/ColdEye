@@ -275,6 +275,7 @@ BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_LOGOFF, &CWallDlg::OnUserMsgLogoff)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CWallDlg::OnUserMsgCameraConfigChange)
 	ON_WM_TIMER()
+	ON_WM_ERASEBKGND()
 	ON_MESSAGE(USER_MSG_DISCONNECT, &CWallDlg::OnUserMsgDisconnect)
 	ON_MESSAGE(USER_MSG_RELOGIN, &CWallDlg::OnUserMsgRelogin)
 END_MESSAGE_MAP()
@@ -552,4 +553,13 @@ afx_msg LRESULT CWallDlg::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
+}
+
+BOOL CWallDlg::OnEraseBkgnd(CDC * pDC)
+{
+	CRect rc;
+	GetClientRect(&rc);
+	pDC->FillSolidRect(&rc, RGB(64,84,115));
+	//return CFrameWnd::OnEraseBkgnd(pDC);   
+	return TRUE;
 }
