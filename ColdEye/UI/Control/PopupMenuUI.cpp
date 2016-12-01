@@ -113,10 +113,10 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 			textPos.bottom = textPos.top + 38;
 		}
 		else {
-			textPos.left += 269;
-			textPos.top += 14;
-			textPos.right = textPos.left + 290;
-			textPos.bottom = textPos.top + 38;
+			textPos.left += 270;
+			textPos.top += 16;
+			textPos.right = textPos.left + 291;
+			textPos.bottom = textPos.top + 41;
 		}
 
 		dest.Format(_T("file='image\\Õ÷‘≤–Œ.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
