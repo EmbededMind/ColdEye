@@ -65,6 +65,7 @@ void CMyMenuWnd::InitWindow()
 	pLayout_PopMenu = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_popmenu")));
 	pLayout_Menuitem = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_menuitem")));
 	pLayout_third = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
+	pLayout_HomeWatch = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("home")));
 	pShipName = static_cast<CMyEditUI*>(m_pm.FindControl(_T("edit_shipname")));
 	std::string& tmp = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.boat_name;
 	CString text;
@@ -88,8 +89,10 @@ void CMyMenuWnd::InitWindow()
 
 	pAwOnOffRecordList = static_cast<CListUI*>(m_pm.FindControl(_T("watch_record")));
 	pPage = static_cast<CLabelUI*>(m_pm.FindControl(_T("page")));
-	pHomeWatch = static_cast<CButtonUI*>(m_pm.FindControl(_T("button_home")));
-	if (pHomeWatch) pHomeWatch->OnNotify += MakeDelegate(this, &CMyMenuWnd::OnHomeWatch);
+
+	pHome = static_cast<CButtonUI*>(m_pm.FindControl(_T("homewatch")));
+	pHomeWatchOpen = static_cast<CButtonUI*>(m_pm.FindControl(_T("button_home")));
+	if (pHomeWatchOpen) pHomeWatchOpen->OnNotify += MakeDelegate(this, &CMyMenuWnd::OnHomeWatch);
 	//-------------------------看船时间控件关联---------------------------------
 	pAwTime[0] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_hour")));
 	pAwTime[1] = static_cast<CTimeButtonUI*>(m_pm.FindControl(_T("time1_minute")));
@@ -154,11 +157,11 @@ bool CMyMenuWnd::OnHomeWatch(void * param)
 	TNotifyUI* pMsg = (TNotifyUI*)param;
 
 	//Print("home message :%S", pMsg->sType);
-	//if (pMsg->sType == DUI_MSGTYPE_CLICK) {
-	//	m_pm.FindControl(_T("layout_home_watch"))->SetVisible(false);
-	//	m_pm.FindControl(_T("notice"))->SetVisible(true);
-	//}
-	return false;
+	if (pMsg->sType == DUI_MSGTYPE_CLICK) {
+		pLayout_HomeWatch->SelectItem(1);
+		m_pm.FindControl(_T("button_home"))->SetFocus();
+	}
+	return true;
 }
 
 void CMyMenuWnd::UpdataItemColor()
@@ -319,7 +322,9 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			FocusedItem[0] = pItem; 
 			pNextFocusLayout = (CContainerUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel()); //下一集焦点的布局
 			if (userdata == _T("4")) {
-				//pHomeWatch->SetFocus();
+				pHomeWatchOpen->SetFocus();
+				pHome->SetBkColor(0xFF47688F);
+				pHome->SetTextColor(0xFFFFFFFF);
 			}
 			else if (pNextFocusLayout->GetCount() > 0) {
 				focusLevel++;
@@ -1122,7 +1127,7 @@ void CMyMenuWnd::InitAwOnOffRecord()
 	if(mAwTotalPage>0)
 		mAwPage = 1;
 	else mAwPage = 0;
-	sPage.Format(_T("第%d/%d"), mAwPage, mAwTotalPage);
+	sPage.Format(_T("第%d/%d页"), mAwPage, mAwTotalPage);
 	pPage->SetText(sPage);
 }
 
@@ -1206,7 +1211,7 @@ void CMyMenuWnd::AwPage(int page)
 		}
 		pAwOnOffRecordList->GetItemAt(0)->SetFocus();
 		pAwOnOffRecordList->SelectItem(0);
-		sPage.Format(_T("第%d/%d"), page, mAwTotalPage);
+		sPage.Format(_T("第%d/%d页"), page, mAwTotalPage);
 		pPage->SetText(sPage);
 	}
 }
@@ -1350,6 +1355,8 @@ void CMyMenuWnd::SetWatchTime(DWORD beginTime,DWORD endTime)
 		pAwTime[2]->SetValue(tHour2);
 		pAwTime[3]->SetValue(tMinute2);
 	}
+	if (beginTime > endTime)
+		m_pm.FindControl(_T("morrow"))->SetVisible(true);
 }
 
 void CMyMenuWnd::GetWatchTime(DWORD* pBegining, DWORD* pEnd)
@@ -1435,13 +1442,22 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	switch (wParam)
 	{
 	case VK_BACK:
+		if (!m_pm.GetFocus()) {
+			pLayout_HomeWatch->SelectItem(0);
+			pHomeWatchOpen->SetFocus();
+			break;
+		}
+
 		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0) {
 			WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
 		}
-		//if (m_pm.FindControl(_T("button_home")) == pHomeWatch) {
-		//	m_pm.FindControl(_T("homewatch"))->SetFocus();
-		//	m_pm.FindControl(_T("layout_home_watch"))->SetVisible(true);
-		//}
+		else if (m_pm.GetFocus() == pHomeWatchOpen) {
+			if (pLayout_HomeWatch->GetCurSel() == 0) {
+				pHome->SetBkColor(ITEM_FOCUS);
+				pHome->SetTextColor(0xFF666666);
+				pHome->SetFocus();
+			}
+		}
 		else if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ShipNameItemUI")) == 0) {
 			ExpandCameraName();
 		}
