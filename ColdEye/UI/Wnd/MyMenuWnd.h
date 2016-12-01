@@ -179,6 +179,7 @@ private:
 	CTabLayoutUI *pLayout_third;
 	CTabLayoutUI *pLayout_Menuitem;
 	CTabLayoutUI *pLayout_PopMenu;
+	CTabLayoutUI* pLayout_HomeWatch;
 	CContainerUI *pKeyBoard;	//键盘控件
 	CMyEditUI * pShipName;		//船名
 	CMySliderUI* pSysVolum;		//系统音量
@@ -191,7 +192,8 @@ private:
 	CSwitchUI*	pAlarmLight;		//报警灯光
 	CListUI*	pAwOnOffRecordList;		//自动看船开关记录列表
 	CLabelUI* pPage;		//页码
-	CButtonUI* pHomeWatch;	//回家看船
+	CButtonUI* pHome;
+	CButtonUI* pHomeWatchOpen;	//回家看船开启
 
 	CButtonUI *FocusedItem[2];
 	UINT8 focusLevel;
