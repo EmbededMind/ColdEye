@@ -330,11 +330,8 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				focusLevel++;
 				pLayout_third->SetVisible(true);
 				pNextFocusLayout->GetItemAt(0)->SetFocus();
-				if (_tcscmp(m_pm.GetFocus()->GetParent()->GetName(), _T("layout_submenu_alarm")) == 0) {
-					CPort* pPort;
-					pPort = (CPort*)static_cast<CMenuItemUI*>(m_pm.GetFocus())->GetTag();
-					pPort->m_virginNumber = 0;
-				}
+				//刷新角标
+				refreshSuperscript((CMenuItemUI*)pNextFocusLayout->GetItemAt(0));
 
 				UpdataItemColor();
 			}
@@ -349,14 +346,14 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				CPort *pPort;
 				CMenuItemUI* pItem = (CMenuItemUI*)pLayout->GetItemAt(ItemIndex - 2);
 				pItem->SetFocus();
-				pPort = (CPort*)pItem->GetTag();
-				pPort->m_virginNumber = 0;
+				refreshSuperscript(pItem);
 			}
 			break;
 		//-----------------------------------------------
 		case VK_DOWN:
 			if (pLayout->GetItemAt(ItemIndex + 2)) {
 				pLayout->GetItemAt(ItemIndex + 2)->SetFocus();
+				refreshSuperscript((CMenuItemUI*)pLayout->GetItemAt(ItemIndex + 2));
 			}
 			break;
 		//-----------------------------------------------
@@ -371,11 +368,17 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 		//-----------------------------------------------
 		case VK_BACK:
 			FocusedItem[0]->SetFocus();
+			if (_tcscmp(FocusedItem[0]->GetName(), _T("alarmvideo")) == 0) {
+				//刷新角标
+				SetAllVirginNum();
+			}
+
 			FocusedItem[1] = NULL;
 			focusLevel--;
 			pLayout_third->SelectItem(0);
 			pLayout_third->SetVisible(false);
 			UpdataItemColor();
+			
 			break;
 		}
 	}
@@ -912,30 +915,76 @@ void CMyMenuWnd::AddAlarmVoice()
 	pVoice1->SetFixedXY({ 0,360 });
 }
 
-void CMyMenuWnd::refreshSuperscript(CMyListUI* pSender)
+void CMyMenuWnd::refreshSuperscript(CMenuItemUI* pItem)
 {
-	CRecordFileInfo* pInfo  = pSender->Info;
-	CVideoListUI::Node* pNode;
-	CMyListUI* pHead;
-	pNode = (CVideoListUI::Node*)pSender->GetTag();
-	pHead = pNode->parent()->data()._pListElement;
 
-	if (pHead->mhintNumber > 0) {
-		pHead->mhintNumber--;
-		pHead->Invalidate();
+	if (_tcscmp(FocusedItem[0]->GetName(), _T("alarmvideo")) == 0) {
+		list<CPort*>::iterator iter;
+		for (iter = MenuItemVirginNum.begin(); iter != MenuItemVirginNum.end(); iter++) {
+			if ((*iter) == (CPort*)(pItem->GetTag()))
+				break;
+		}
+		if (iter == MenuItemVirginNum.end()) {
+			MenuItemVirginNum.push_back((CPort*)(pItem->GetTag()));
+
+			//添加待修改角标的列表文件信息
+			CDuiString ListName;
+			ListName.Format(_T("video_alarmlist%d"), StrToInt(pItem->GetUserData()) + 1);
+			CVideoListUI* pList = (CVideoListUI*)m_pm.FindControl(ListName);
+			RefreshListNum(pList);
+			//RefreshMenuItemNum();
 
 
-		CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
-		pPort->m_virginNumber -= 1;
-		FocusedItem[1]->Invalidate();
-		SetAllVirginNum();
+			//CVideoListUI* pList =
+				//RefreshHeadListNum();
+			/*					list<CRecordFileInfo*>::iterator iter;
+			for (iter = RecordVirginNum.begin(); iter != RecordVirginNum.end(); iter++) {
+
+			}*/
+		}
 	}
 
+
+	//CRecordFileInfo* pInfo  = pSender->Info;
+	//CVideoListUI::Node* pNode;
+	//CMyListUI* pHead;
+	//pNode = (CVideoListUI::Node*)pSender->GetTag();
+	//pHead = pNode->parent()->data()._pListElement;
+
+	//if (pHead->mhintNumber > 0) {
+	//	pHead->mhintNumber--;
+	//	pHead->Invalidate();
+
+
+	//	CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
+	//	pPort->m_virginNumber -= 1;
+	//	FocusedItem[1]->Invalidate();
+	//	SetAllVirginNum();
+	//}
+}
+
+void CMyMenuWnd::RefreshListNum(CVideoListUI* pList)
+{
+	CMyListUI* pListLabel;
 	char sqlStmt[128];
-	sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pInfo->status, pInfo->nOwner, pInfo->tBegin);
-	if (!sqlite.DirectStatement(sqlStmt)) {
-		Print("Sql error:%s", sqlStmt);
+	for (int i = 0; i < pList->GetCount(); i++) {
+		pListLabel = (CMyListUI*)pList->GetItemAt(i);
+		RecordVirginNum.push_back(pListLabel);
+
+		sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pListLabel->Info->status, pListLabel->Info->nOwner, pListLabel->Info->tBegin);
+		if (!sqlite.DirectStatement(sqlStmt)) {
+			Print("Sql error:%s", sqlStmt);
+		}
 	}
+}
+
+void CMyMenuWnd::RefreshMenuItemNum()
+{
+	list<CPort*>::iterator iter;
+	for (iter = MenuItemVirginNum.begin(); iter != MenuItemVirginNum.end(); iter++) {
+		(*iter)->m_virginNumber = 0;
+	}
+	MenuItemVirginNum.empty();
 }
 
 void CMyMenuWnd::Notify(TNotifyUI & msg)
@@ -956,7 +1005,6 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 		CMyListUI* pSender = (CMyListUI*)msg.pSender;
 		if (pSender->Info->status == RECORD_NSEEN) {
 			pSender->Info->status = RECORD_SEEN;
-			refreshSuperscript(pSender);
 		}
 		PlayVideo(msg.wParam,msg.lParam);
 	}
@@ -1153,6 +1201,24 @@ void CMyMenuWnd::InitAlarmFile(list<CRecordFileInfo*>* pList)
 
 void CMyMenuWnd::SetAllVirginNum()
 {
+	//MenuItem  角标
+	list<CPort*>::iterator MenuIteriter;
+	for (MenuIteriter = MenuItemVirginNum.begin(); MenuIteriter != MenuItemVirginNum.end(); MenuIteriter++) {
+		(*MenuIteriter)->m_virginNumber = 0;
+	}
+	MenuItemVirginNum.empty();
+
+	//List Head
+	list<CMyListUI*>::iterator RecordInfoiter;
+	for (RecordInfoiter = RecordVirginNum.begin(); RecordInfoiter != RecordVirginNum.end(); RecordInfoiter++) {
+		CVideoListUI::Node* pNode;
+		pNode = (CVideoListUI::Node*)(*RecordInfoiter)->GetTag();
+		if (pNode->data()._level == 0)
+			(*RecordInfoiter)->mhintNumber = 0;
+	}
+	RecordVirginNum.empty();
+
+	//Pop 角标
 	int totalVirginNum = 0;
 	for (int i = 0; i < 6; i++) {
 		if (pAlarmItem[i]) {
