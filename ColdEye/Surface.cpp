@@ -631,7 +631,9 @@ void CSurface::OnAlarmTrigged()
 	}
 
 	m_wAlarmStamp = ALARM_TIMEOUT_CNT;
+
 	Print("Alarm event");
+
 
 	if (!m_bIsAlarming) {
 		m_bIsAlarming = true;
@@ -646,8 +648,9 @@ void CSurface::OnAlarmTrigged()
 		else {
 			Print("Alloc file failed when alarm trigged");
 		}
-		CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 	}
+
+	CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 }
 
 
@@ -666,6 +669,8 @@ void CSurface::OnAlarmStop()
 
 	m_pAlmFile = NULL;
 	m_AlarmFileButler.ReleaseRecordFile();
+
+	CCommunication::GetInstance()->OverTalk();
 }
 
 
