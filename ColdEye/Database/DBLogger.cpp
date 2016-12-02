@@ -63,7 +63,7 @@ void CDBLogger::LogAutoWatch(CTime& t, bool on_off)
 {
 	char sqlStmt[128];
 
-	sprintf_s(sqlStmt, "INSERT INTO log VALUES(%I64d, 2, %d);", t.GetTime(), on_off);
+	sprintf_s(sqlStmt, "INSERT INTO log VALUES(%I64d, 3, %d);", t.GetTime(), on_off);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
