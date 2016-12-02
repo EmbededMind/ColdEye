@@ -380,6 +380,10 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			UpdataItemColor();
 			
 			break;
+
+		case 'Q':
+
+			break;
 		}
 	}
 }
@@ -971,6 +975,9 @@ void CMyMenuWnd::RefreshListNum(CVideoListUI* pList)
 		pListLabel = (CMyListUI*)pList->GetItemAt(i);
 		RecordVirginNum.push_back(pListLabel);
 
+		if (pListLabel->Info->status == RECORD_NSEEN)
+			pListLabel->Info->status = RECORD_SEEN;
+
 		sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pListLabel->Info->status, pListLabel->Info->nOwner, pListLabel->Info->tBegin);
 		if (!sqlite.DirectStatement(sqlStmt)) {
 			Print("Sql error:%s", sqlStmt);
@@ -1083,7 +1090,6 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 						}
 					}
 				}
-
 			}
 			else {
 				InitRecordFile((list<CRecordFileInfo*>*)lParam);
@@ -1267,6 +1273,7 @@ void CMyMenuWnd::InitAwOnOffRecord()
 	CDuiString sOption,sPage;
 	while (stmt->NextRow()) {
 		CTime time = stmt->ValueInt(0);
+		if (stmt->ValueInt(1) == 2) return;
 		sOption = GetStringOption(stmt->ValueInt(1), stmt->ValueInt(2));
 		AddAwOnOffRecord(time, sOption);
 	}
@@ -1300,9 +1307,9 @@ CDuiString CMyMenuWnd::GetStringOption(int option,int tag)
 		}
 		break;
 
-	case LOG_SYS_TIME:
-		return _T("gg");
-		break;
+	//case LOG_SYS_TIME:
+	//	return _T("gg");
+	//	break;
 
 		//自动看船开关（全局）
 	case LOG_AUTO_WATCH:

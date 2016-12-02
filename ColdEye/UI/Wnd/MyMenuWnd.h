@@ -107,7 +107,7 @@ public :
 	void ExpandCameraName();
 	void ShowAlarmVoiceList(bool);
 	void ThirdMenuSetFocus(CDuiString);
-	int DetectHardDriver(list<CRecordFileInfo*>*);
+	int  DetectHardDriver(list<CRecordFileInfo*>*);
 	void PrepareCopy(list<CRecordFileInfo*>*,UINT8);
 	void PlayVideo(WPARAM wParam, LPARAM lParam);
 	void RecordVoice();
