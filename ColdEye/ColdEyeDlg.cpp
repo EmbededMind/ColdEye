@@ -66,6 +66,7 @@ CColdEyeDlg::CColdEyeDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_MonitorPower = MonitorPowerOn;
+	mBrightness = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.brightness;
 }
 
 
@@ -382,7 +383,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
 			pDeviceEnumerator->Release();
-			return (int)(100*fVolume);
+			return (int)(10*fVolume);
 		}
 	}
 	catch (...) {
@@ -497,6 +498,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event(VK_DOWN, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_BRIUP:
+				mBrightness++;
+				if (mBrightness > 10)
+					mBrightness = 10;
+				mGammaRamp.SetBrightness(NULL,50 + mBrightness*15);
+				//PostMessage();
 				break;
 			case KB_FUNC:
 				keybd_event(VK_F8, 0, 0, 0);
@@ -514,6 +520,12 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event('S', 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_BRIDOWN:
+				mBrightness--;
+				if (mBrightness < 0)
+					mBrightness = 0;
+				Print("brightness %d", mBrightness);
+				mGammaRamp.SetBrightness(NULL, mBrightness * 25);
+				//PostMessage();
 				break;
 			case KB_SWITCH:
 			{

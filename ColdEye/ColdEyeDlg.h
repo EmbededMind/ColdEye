@@ -8,6 +8,7 @@
 #include "Wnd\MyMenuWnd.h"
 #include "Com\SerialPort.h"
 #include "Wnd\MsgWnd.h"
+#include "GammaRamp.h"
 
 const enum MonitorPowerCmd
 {
@@ -60,6 +61,9 @@ private:
 	bool isFlashDisk;
 
 	MonitorPowerCmd m_MonitorPower;
+
+	CGammaRamp mGammaRamp;
+	WORD mBrightness;
 										// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_COLDEYE_DIALOG };

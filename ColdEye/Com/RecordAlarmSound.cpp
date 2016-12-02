@@ -13,9 +13,9 @@ CRecordAlarmSound::~CRecordAlarmSound()
 	}
 }
 
-CCamera* CRecordAlarmSound::m_pPlayCamera;
 
-UINT CRecordAlarmSound::m_TimeId;
+CRecordAlarmSound* CRecordAlarmSound::m_pThis;
+
 
 BOOL CRecordAlarmSound::InputTalkData(BYTE * pBuf, DWORD nBufLen)
 {
@@ -39,13 +39,14 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 }
 void CRecordAlarmSound::SetMyTimer()
 {
-	m_TimeId = SetTimer(NULL ,NULL, 30000, MyTimerProc);
+	m_TimeIdStopAlarm = SetTimer(NULL ,NULL, 30000, MyTimerProcAlarm);
+	//m_TimeIdStopLED = SetTimer(NULL, NULL, 60000, );
 }
 
-void CRecordAlarmSound::MyTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+void CRecordAlarmSound::MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
 {
-	KillTimer(NULL, m_TimeId);
-	PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(m_pPlayCamera));
+	KillTimer(NULL, m_pThis->m_TimeIdStopAlarm);
+	PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(m_pThis->m_pPlayCamera));
 }
 
 BOOL CRecordAlarmSound::StopTalk()

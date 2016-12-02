@@ -9,7 +9,8 @@ private:CRecordAlarmSound() {
 	H264_PLAY_GetPort(&m_port);
 	m_pTalkDecodeBuf = nullptr;
 	m_isAlarm = false;
-	m_TimeId = 0;
+	m_TimeIdStopAlarm = 0;
+	m_pThis = this;
 };
 public:
 	static CRecordAlarmSound* GetInstance() {
@@ -26,8 +27,9 @@ public:
 	char m_rtmpName[50];
 	char m_rName[50];
 	char m_Name[50];
-	static CCamera *m_pPlayCamera;
-	static UINT m_TimeId;
+	CCamera *m_pPlayCamera;
+	UINT m_TimeIdStopAlarm;
+	UINT m_TimeIdStopLED;
 	void Record(CCamera *pCamera);
 	bool Save();
 	bool NotSave();
@@ -37,6 +39,7 @@ public:
 	BOOL InputTalkData(BYTE *pBuf, DWORD nBufLen);
 	BOOL ScanVoice();
 protected:
+	static CRecordAlarmSound *m_pThis;
 	CCamera *m_pRecordCamera;
 	LONG m_TalkHandle;
 	LONG m_port;
@@ -44,6 +47,6 @@ protected:
 	BYTE *m_pTalkDecodeBuf;
 	bool m_isAlarm;
 	void SetMyTimer();
-	static void CALLBACK MyTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime);
+	static void CALLBACK MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 };
 
