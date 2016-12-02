@@ -112,7 +112,9 @@ public :
 	void PlayVideo(WPARAM wParam, LPARAM lParam);
 	void RecordVoice();
 	void AddAlarmVoice();
-	void refreshSuperscript(CMyListUI*); //刷新角标
+	void refreshSuperscript(CMenuItemUI*); //刷新角标
+	void RefreshListNum(CVideoListUI* pList);	//刷新头结点角标
+	void RefreshMenuItemNum();
 	void Notify(TNotifyUI& msg);
 
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -178,6 +180,8 @@ private:
 	void   InitAlarmVoice();
 	void   BackTOMenuItem();
 
+	list<CPort*> MenuItemVirginNum;
+	list<CMyListUI*> RecordVirginNum;
 	CMenuItemUI* pAlarmItem[6];
 
 	CTabLayoutUI *pLayout_third;
