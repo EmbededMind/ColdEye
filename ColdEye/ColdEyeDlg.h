@@ -55,6 +55,8 @@ private:
 	CBitmap  m_bmpUFlash;
 	CRect    m_rFlash;
 
+	CFont    m_TextFont;
+
 	std::list<uint8_t> mPendMacPort;
 	std::list<CPort*>  mSearchPort;
 
