@@ -260,6 +260,9 @@ public:
 	void AddItem(CRecordFileInfo* pInfo);
 	void RefreshList();
 	void DeleteRecordFile(CRecordFileInfo* pInfo);
+
+	void CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRecordFileInfo * pInfo, CVideoListUI::Node* pNode);
+	int IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo);
 private:
 	Node* _root;
 

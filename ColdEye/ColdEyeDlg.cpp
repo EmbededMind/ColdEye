@@ -183,7 +183,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	mWall.ShowWindow(SW_SHOW);
 
 	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
-	::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
+	//::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
 	mMenu.ShowWindow(false);
 
 
@@ -827,6 +827,7 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	m_SysTime  = CTime::GetCurrentTime();
+
 	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
 	
 

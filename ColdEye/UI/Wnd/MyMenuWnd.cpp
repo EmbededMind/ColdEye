@@ -149,7 +149,8 @@ void CMyMenuWnd::InitWindow()
 	}
 	InitAlarmVoice();
 	InitAwOnOffRecord();
-	
+
+	//m_pm.SetDPI(60);
 }
 
 
@@ -1268,29 +1269,37 @@ void CMyMenuWnd::InitAwOnOffRecord()
 {
 	pAwOnOffRecordList->RemoveAll();
 	char sqlStmt[128];
+	SQLiteStatement* stmt;
+	CDuiString sOption,sPage;	
+
+	sprintf_s(sqlStmt, "SELECT COUNT(*) FROM log;");
+	stmt = sqlite.Statement(sqlStmt);
+	if (stmt->NextRow()) {
+		mAwTotalRecord = stmt->ValueInt(0)-1;
+		Print("total:%d", mAwTotalRecord);
+	}
+	else {
+		mAwTotalRecord = 0;
+	}
+
 	sprintf_s(sqlStmt, "SELECT * FROM log LIMIT 13 OFFSET 1;");
-	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-	CDuiString sOption,sPage;
+	stmt = sqlite.Statement(sqlStmt);
 	while (stmt->NextRow()) {
 		CTime time = stmt->ValueInt(0);
-		if (stmt->ValueInt(1) == 2) return;
 		sOption = GetStringOption(stmt->ValueInt(1), stmt->ValueInt(2));
 		AddAwOnOffRecord(time, sOption);
 	}
-	sprintf_s(sqlStmt, "SELECT COUNT(*) FROM log;");
-	stmt = sqlite.Statement(sqlStmt);
-	while (stmt->NextRow()) {
-		mAwTotalPage = stmt->ValueInt(0);
-	}
-	if (mAwTotalPage % 13) {
-		mAwTotalPage = mAwTotalPage / 13 + 1;
+
+	if (mAwTotalRecord % 13) {
+		mAwTotalPage = mAwTotalRecord / 13 + 1;
 	}
 	else {
-		mAwTotalPage = mAwTotalPage / 13;
+		mAwTotalPage = mAwTotalRecord / 13;
 	}
 	if(mAwTotalPage>0)
 		mAwPage = 1;
 	else mAwPage = 0;
+
 	sPage.Format(_T("µÚ%d/%dÒ³"), mAwPage, mAwTotalPage);
 	pPage->SetText(sPage);
 }
@@ -1369,14 +1378,21 @@ void CMyMenuWnd::AwPage(int page)
 		SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
 		CDuiString sOption, sPage;
 		while (stmt->NextRow()) {
-			CTime time = stmt->ValueInt(0);
+			CTime time = stmt->ValueInt(0); 
+			if (stmt->ValueInt(1) == 2) {
+				continue;
+			}
+
 			sOption = GetStringOption(stmt->ValueInt(1), stmt->ValueInt(2));
 			AddAwOnOffRecord(time, sOption);
 		}
-		pAwOnOffRecordList->GetItemAt(0)->SetFocus();
-		pAwOnOffRecordList->SelectItem(0);
-		sPage.Format(_T("µÚ%d/%dÒ³"), page, mAwTotalPage);
-		pPage->SetText(sPage);
+		if (pAwOnOffRecordList->GetItemAt(0)) {
+			pAwOnOffRecordList->GetItemAt(0)->SetFocus();
+			pAwOnOffRecordList->SelectItem(0);
+			sPage.Format(_T("µÚ%d/%dÒ³"), page, mAwTotalPage);
+			pPage->SetText(sPage);
+		}
+
 	}
 }
 
