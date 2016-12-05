@@ -649,7 +649,6 @@ void CSurface::OnAlarmTrigged()
 			Print("Alloc file failed when alarm trigged");
 		}
 	}
-
 	CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 }
 
@@ -662,15 +661,13 @@ void CSurface::OnAlarmStop()
 	m_bIsAlarming = false;
 
 	Print("Alarm stop");
-	CCommunication::GetInstance()->OverAlarm(this->m_BindedCamera);//向摄像头的语音附件发送 报警关闭请求
+	//CCommunication::GetInstance()->OverAlarm(this->m_BindedCamera);//向摄像头的语音附件发送 报警关闭请求
 
 	m_wAlarmStamp = 0;
 	KillTimer(TIMER_ID_ALARM);
 
 	m_pAlmFile = NULL;
 	m_AlarmFileButler.ReleaseRecordFile();
-
-	CCommunication::GetInstance()->OverTalk();
 }
 
 

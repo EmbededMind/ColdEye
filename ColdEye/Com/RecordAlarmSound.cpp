@@ -39,13 +39,15 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 }
 void CRecordAlarmSound::SetMyTimer()
 {
-	m_TimeIdStopAlarm = SetTimer(NULL ,NULL, 30000, MyTimerProcAlarm);
+	if(!m_TimeIdStopAlarm)
+		m_TimeIdStopAlarm = SetTimer(NULL ,NULL, 30000, MyTimerProcAlarm);
 	//m_TimeIdStopLED = SetTimer(NULL, NULL, 60000, );
 }
 
 void CRecordAlarmSound::MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
 {
 	KillTimer(NULL, m_pThis->m_TimeIdStopAlarm);
+	m_pThis->m_TimeIdStopAlarm = NULL;
 	PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(m_pThis->m_pPlayCamera));
 }
 
@@ -136,7 +138,6 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
 	Print("Play");
 	m_pPlayCamera = pCamera;
-	SetMyTimer();
 	if (!m_isAlarm)
 		m_isAlarm = true;
 	else
@@ -144,6 +145,7 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 		Print("m_isAlarm == true");
 		return 0;
 	}
+	SetMyTimer();
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
