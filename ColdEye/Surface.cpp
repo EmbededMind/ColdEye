@@ -1073,9 +1073,11 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				break;
 			//------------------------------------------
 			case VK_RETURN:
-				if (mIsLargeMode) {
-					ModifyStyle(WS_POPUP, WS_CHILD);
+				if (mIsLargeMode) {					
 					ZoomIn();
+				}
+				else {
+					ZoomOut();
 				}
 				break;
 			//------------------------------------------
