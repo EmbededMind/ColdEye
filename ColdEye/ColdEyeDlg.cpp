@@ -76,48 +76,74 @@ void CColdEyeDlg::UpdateLayout()
 	CRect  rClient;
 	GetClientRect(rClient);
 
-	m_pTitleBk_left[0] = { 0,0 };
-	m_pTitleBk_left[1] = { 455,0 };
-	m_pTitleBk_left[2] = { 406,100 };
-	m_pTitleBk_left[3] = { 0,100 };
+	int title_height  = rClient.Height() /10;
 
-	m_pTitleBk_center[0] = { m_pTitleBk_left[1].x,0 };
-	m_pTitleBk_center[1] = { m_pTitleBk_left[1].x + 725,0 };
-	m_pTitleBk_center[2] = { m_pTitleBk_left[2].x + 725,100 };
-	m_pTitleBk_center[3] = { m_pTitleBk_left[2].x,100 };
+	int firstBkRight  = rClient.Width() *3 /10;
 
-	m_pTitleBk_right[0] = { m_pTitleBk_center[1].x,0 };
-	m_pTitleBk_right[1] = { m_pTitleBk_center[1].x + 420,0 };
-	m_pTitleBk_right[2] = { m_pTitleBk_center[2].x + 469,100 };
-	m_pTitleBk_right[3] = { m_pTitleBk_center[2].x,100 };
+	int thirdBkLeft   = rClient.Width() - rClient.Width() *3 /10;
 
-	LONG   titleHeight = rClient.Height() / 10;
-	LONG   tipTextHeight  = titleHeight / 3;
+	int secondBkLeft  = firstBkRight+1;
+	int secondBkRight = thirdBkLeft-1;
 
-	m_rTitle.left  = rClient.left;
-	m_rTitle.top   = rClient.top;
-	m_rTitle.right = rClient.right;
-	m_rTitle.bottom = m_rTitle.top + titleHeight;
+	int offset  = title_height * 0.288675;
 
-	m_rSysTimeText.left  = 40;
-	m_rSysTimeText.right = m_rSysTimeText.left + 370;
-
-	m_rSysTimeText.top  = 37;
-	m_rSysTimeText.bottom  = m_rSysTimeText.top + 39;
+	m_pTitleBk_left[0].x  =  rClient.left;          m_pTitleBk_left[0].y  = 0;
+	m_pTitleBk_left[1].x  =  firstBkRight + offset; m_pTitleBk_left[1].y = 0;
+	m_pTitleBk_left[2].x  =  firstBkRight - offset; m_pTitleBk_left[2].y = title_height;
+	m_pTitleBk_left[3].x  =  rClient.left;          m_pTitleBk_left[3].y = title_height;
 
 
-	m_rAwTipText.left  = 704;
-	m_rAwTipText.right = m_rAwTipText.left+ 250;
-	m_rAwTipText.top  = 37;
-	m_rAwTipText.bottom = m_rAwTipText.top + 39;
-
-	m_rHwTipText.left = 1226;
-	m_rHwTipText.right = m_rHwTipText.left  + 250;
-	m_rHwTipText.top = 37;
-	m_rHwTipText.bottom = m_rHwTipText.top + 39;
+	m_pTitleBk_center[0].x  = secondBkLeft + offset ;  m_pTitleBk_center[0].y = 0;
+	m_pTitleBk_center[1].x  = secondBkRight + offset ; m_pTitleBk_center[1].y = 0;
+	m_pTitleBk_center[2].x  = secondBkRight - offset ; m_pTitleBk_center[2].y = title_height;
+	m_pTitleBk_center[3].x  = secondBkLeft  - offset ; m_pTitleBk_center[3].y = title_height;
 
 
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top + titleHeight, rClient.Width(), rClient.Height()-titleHeight-titleHeight/5, 0);
+	m_pTitleBk_right[0].x  = thirdBkLeft + offset;  m_pTitleBk_right[0].y  = 0;
+	m_pTitleBk_right[1].x  = rClient.right;         m_pTitleBk_right[1].y  = 0;
+	m_pTitleBk_right[2].x  = rClient.right;         m_pTitleBk_right[2].y  = title_height;
+	m_pTitleBk_right[3].x  = thirdBkLeft - offset;  m_pTitleBk_right[3].y  = title_height;
+	
+
+	m_TextFont.DeleteObject();
+	m_TextFont.CreatePointFont(title_height/4*10,  _T("方正兰亭中黑_GBK"));
+	//m_TextFont.CreateFont(title_height / 4 * 10, _T("方正兰亭中黑_GBK"));
+	LOGFONT  fontInfo;
+	m_TextFont.GetLogFont(&fontInfo);
+
+
+	m_rSysTimeText.left = rClient.left + offset;
+	m_rSysTimeText.top  = rClient.top + title_height/4;
+	m_rSysTimeText.right  = firstBkRight - offset;
+	m_rSysTimeText.bottom = title_height - title_height/4;
+
+	m_rAwTipText.left  = secondBkLeft + offset;
+	m_rAwTipText.top  = m_rSysTimeText.top;
+	m_rAwTipText.right  = secondBkRight -offset;
+	m_rAwTipText.bottom = m_rSysTimeText.bottom;
+
+	m_rHwTipText.left  = thirdBkLeft +offset;
+	m_rHwTipText.top  = m_rSysTimeText.top;
+	m_rHwTipText.right  = rClient.right - title_height /4;
+	m_rHwTipText.bottom  = m_rSysTimeText.bottom;
+
+	
+
+	int flash_width  = m_rHwTipText.Width() * 1/5;
+	int flash_height = flash_width*3/5;
+
+	m_rHwTipText.right  -= flash_width;
+
+	CRect rFlash;
+	rFlash.left  = m_rHwTipText.right + 1;
+	rFlash.right = rFlash.left + flash_width;
+	rFlash.top   = (title_height- flash_height) /2;
+	rFlash.bottom = rFlash.top + flash_height;
+
+	GetDlgItem(IDC_UFLASH)->MoveWindow(rFlash);
+
+
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height - title_height /5, 0);
 }
 
 
@@ -173,7 +199,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	// 加载U盘图标
-	GetDlgItem(IDC_UFLASH)->MoveWindow(CRect(1490, 31, 1550, 69));
+	
 
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
@@ -186,8 +212,11 @@ BOOL CColdEyeDlg::OnInitDialog()
 	::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
 	mMenu.ShowWindow(false);
 
+	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
 
-	SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
+	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
+
+	//SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
 	mWall.SetFocus();
 
 	if (CSerialPort::GetInstance(COM_KB)->InitPort(this, COM_KB, 9600, 'N', 8, 1, EV_RXCHAR, 512))
@@ -258,8 +287,6 @@ void CColdEyeDlg::OnPaint()
 
 		// 绘制图标
 		//dc.DrawIcon(x, y, m_hIcon);
-
-
 	}
 	else
 	{
@@ -267,38 +294,61 @@ void CColdEyeDlg::OnPaint()
 		CRect rClient;
 		GetClientRect(rClient);
 
-		//dc.FillSolidRect(&rClient, RGB(171, 130, 255));
 		PaintTitle(&dc);
 
 		CFont font;
-		font.CreatePointFont(240, _T("方正兰亭中黑_GBK"));
+		//font.CreatePointFont(240, _T("方正兰亭中黑_GBK"));
 
 		CPen* pOldPen;
 		CFont* pOldFont;
-		pOldFont = dc.SelectObject(&font);
 
-		dc.SetTextColor(0xFFFFFF);
-		dc.FillSolidRect(m_rSysTimeText, RGB(0, 0, 0));
-		dc.Rectangle(m_rSysTimeText);
-		dc.Rectangle(m_rAwTipText);
-		dc.Rectangle(m_rHwTipText);
-		 
-		dc.TextOutW(m_rSysTimeText.left + 1, m_rSysTimeText.top+1, m_SysTime.Format(_T("%Y-%m-%d %H:%M:%S")));
+		CPen framePen;
+		framePen.CreatePen(PS_SOLID, 2, RGB(135, 206, 235));
+
+		LOGFONT fontInfo;
+		m_TextFont.GetLogFont(&fontInfo);
+	
+
+		pOldFont = dc.SelectObject(&m_TextFont);
+		pOldPen  = dc.SelectObject(&framePen);
+
+		pOldPen  = dc.SelectObject(&framePen);
+
+		dc.SetBkMode(TRANSPARENT);
+		dc.SetTextColor(RGB(255, 255, 255));
+
+		CString text  = m_SysTime.Format(_T("%Y-%m-%d %H:%M"));
+		CSize textSize  = dc.GetTextExtent(text);
+
+		int offset_x  = (m_rSysTimeText.Width() - textSize.cx) /2;
+		int offset_y  = (m_rSysTimeText.Height() - textSize.cy) /2;
+
+		dc.DrawTextW(text, m_rSysTimeText, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 
-		dc.FillSolidRect(m_rAwTipText, RGB(58, 58, 58));
+
 		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
-			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已开启"));
+			text  = _T("自动看船已开启");
 		}
-		else{
-			dc.TextOutW(m_rAwTipText.left + 1, m_rAwTipText.top + 1, _T("自动看船已关闭"));
+		else {
+			text  = _T("自动看船已关闭");
 		}
+		textSize = dc.GetTextExtent(text);
+		offset_x = (m_rSysTimeText.Width() - textSize.cx) / 2;
+		offset_y = (m_rSysTimeText.Height() - textSize.cy) / 2;
+		dc.DrawTextW(text, m_rAwTipText, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-		dc.FillSolidRect(m_rHwTipText, RGB(0, 0, 0));
-		dc.SetTextColor(0x7ED321);
-		dc.TextOutW(m_rHwTipText.left + 1, m_rHwTipText.top + 1, _T("未开启回家看船"));
+
+		//dc.Rectangle(m_rHwTipText);
+		text  = _T("未开启回家看船");
+		textSize = dc.GetTextExtent(text);
+		offset_x = (m_rHwTipText.Width() - textSize.cx) / 2;
+		offset_y = (m_rHwTipText.Height() - textSize.cy) / 2;
+		dc.DrawTextW(text, m_rHwTipText, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
 
 		dc.SelectObject(pOldFont);
+		dc.SelectObject(pOldPen);
 
 		CDialogEx::OnPaint();
 	}
