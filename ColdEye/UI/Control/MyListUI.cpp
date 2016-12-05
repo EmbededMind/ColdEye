@@ -108,6 +108,7 @@ void CMyListUI::DoEvent(TEventUI & event)
 		if (event.wParam == VK_RETURN){
 			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
 			int num;
+
 			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
 			if (node->has_children()){
 				static_cast<CVideoListUI*>(pList)->ExpandNode(node, !node->data()._expand);

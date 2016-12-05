@@ -114,12 +114,14 @@ void CDBLogger::GenerateLastPowerOffLog()
 	SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
 	if (stmt->NextRow()) {
 		last_shutdown_time = stmt->ValueInt(0);
+		Print("Last systime : %I64d", last_shutdown_time);
 
 		if (last_shutdown_time > 0) {
 			sprintf_s(sqlStmt, "SELECT max(time) FROM log WHERE opt = 1 AND tag = 0;");
 			stmt = sqlite.Statement(sqlStmt);
 			if (stmt->NextRow()) {
 				last_shutdown_log_time = stmt->ValueInt(0);
+				Print("Last shutdown log time: %I64d", last_shutdown_log_time);
 			}
 		}
 
@@ -130,6 +132,9 @@ void CDBLogger::GenerateLastPowerOffLog()
 				Print("Sql error:%s", sqlStmt);
 			}
 		}
+	}
+	else {
+		Print("Have no opt = 2");
 	}
 }
 

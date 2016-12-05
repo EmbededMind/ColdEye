@@ -206,6 +206,7 @@ private:
 	CButtonUI *FocusedItem[2];
 	UINT8 focusLevel;
 	UINT8 mAlarmVoiceSel;
+	int mAwTotalRecord;
 	int mAwTotalPage;
 	int mAwPage;
 	CPlayerWallWnd	*mPlayerWall;
