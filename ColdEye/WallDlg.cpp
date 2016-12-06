@@ -72,6 +72,9 @@ bool CWallDlg::Ingest(CPort* pPort)
 	 mSurfaces[pos]->ShowWindow(SW_SHOW);
 
 
+	 mSurfaces[pos]->BindPort(pPort);
+	 mSurfaces[pos]->ExecuteConfig();
+
 	 DesignSurfaceLayout();
 	 ExecuteSurfaceLayout();
 
@@ -234,10 +237,14 @@ void CWallDlg::TestIngestOne()
 	Ingest(pNewPort);
 }
 
+
+
+
 void CWallDlg::TestSplitOne()
 {
 
 }
+
 
 
 void CWallDlg::DoDataExchange(CDataExchange* pDX)
