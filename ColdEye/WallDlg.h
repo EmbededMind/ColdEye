@@ -20,10 +20,10 @@ public:
 
 
 public:
-    bool      Invest(CPort* pPort);
+    bool      Ingest(CPort* pPort);
 	
 
-	BOOL Invest(CCamera* pCamera);
+	BOOL Ingest(CCamera* pCamera);
 
 	void Delete(CSurface* pSurface);
 
