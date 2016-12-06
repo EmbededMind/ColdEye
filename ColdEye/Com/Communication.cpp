@@ -1,296 +1,182 @@
 #include "stdafx.h"
 #include "Communication.h"
-#include "Com\SerialPort.h"
-#include "Com\RecordAlarmSound.h"
-#include "Com\RecordAlarmSound.h"
-#include "ColdEyeDlg.h"
 
-
-CCommunication::CCommunication()
+void CCommunication::HostTalk(CCamera *pDev)
 {
-	mIsAlarm = false;
+	mState->HostTalk(pDev);
 }
 
-
-CCommunication::~CCommunication()
+void CCommunication::CameraTalk()
 {
+	mState->CameraTalk(mPdev);
 }
 
-bool CCommunication::IsChannelCleaning()
+void CCommunication::StopTalk()
 {
-	if (this->mPdev || this->mTalkHandle)
-		return false;
-	return true;
+	mState->StopTalk();
 }
 
-bool CCommunication::CleanChannel()
+void CCommunication::Alarm(CCamera *pDev)
 {
-	this->mPdev = nullptr;
-	this->mTalkHandle = NULL;
-	return false;
+	mState->Alarm(pDev);
 }
 
-bool CCommunication::AskTalk(CCamera * pDev)
+void CCommunication::StopAlarm()
 {
-	printf("AskTalk\n");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x01, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	return true;
+	mState->StopAlarm();
 }
 
-bool CCommunication::RecTalkProc(uint8_t *pch)
+void CCommunication::SetVolume(CCamera *pDev, int Volume)
 {
-	printf("RecTalkProc\n");
-	if (pch[5] == 0x01)
-	{
-		printf("RecTalkProc pch[5] == 0x01\n");
-		uint64_t mac64;
-		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		if (this->mPdev && this->mPdev != Mac_CCamera_Map[mac64])
-		{
-			printf("RecTalkProc this->mPdev && this->mPdev != Mac_CCamera_Map[mac64] \n");
-			H264_DVR_StopVoiceCom(this->mTalkHandle);
-			CleanChannel();
-		}
-		if (this->mPdev == Mac_CCamera_Map[mac64])
-		{
-			printf("RecTalkProc this->mPdev == Mac_CCamera_Map[mac64]\n");
-			return true;
-		}
-		if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map[mac64]->GetLoginId()))
-		{
-			printf("H264_DVR_StartLocalVoiceCom\n");
-			this->mPdev = Mac_CCamera_Map.at(mac64);
-			return true;
-		}
-		else
-		{
-			printf("mac : %s\n",Mac_CCamera_Map[mac64]->mCommonNetConfig.sMac);
-			long err = H264_DVR_GetLastError();
-			printf("err = %d\n", err);
-		}
-	}
-	else
-	{
-		return false;
-	}
+	mState->SetVolume(pDev, Volume);
 }
 
-bool CCommunication::ReplyTalk(uint8_t *pch)
+void CCommunication::ControlLED(int Switch)
 {
-	if (IsChannelCleaning())//SDK没打开
-	{
-Print("IsChannelCleaning");
-		uint64_t mac64;
-		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		if (this->mTalkHandle = H264_DVR_StartLocalVoiceCom(Mac_CCamera_Map.at(mac64)->GetLoginId()))
-		{
-Print("H264_DVR_StartLocalVoiceCom");
-			this->mPdev = Mac_CCamera_Map.at(mac64);
-			CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x01, this->mPdev);
-			CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-			return true;
-		}	
-	}
-	else//SDK打开了
-	{
-		if (mIsAlarm)//报警打开了SDK
-		{
-			uint64_t mac64;
-			mac64 = CUtil::ArrayToUint64(&pch[6]);
-			OverAlarm(mPdev);
-		}
-		else
-		{
-			CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x02, this->mPdev);
-			CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-		}
-		return false;
-	}
-	return false;
+	mState->ControlLED(Switch);
 }
 
-bool CCommunication::OverTalk()
+void CCommunication::SetLED(int isON)
 {
-	if (!IsChannelCleaning())
-	{
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x03, 0x00, this->mPdev);
-		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-		return true;
-	}
-	return false;
+	mState->SetLED(isON);
 }
 
-bool CCommunication::RecOverTalkProc(uint8_t *pch)
+void CCommunication::Handle()
 {
-	if (!IsChannelCleaning())
-	{
-		if (pch[5] == 1)
-		{
-			uint64_t mac64;
-			mac64 = CUtil::ArrayToUint64(&pch[6]);
-			if (Mac_CCamera_Map.at(mac64) == this->mPdev)
-			{
-				H264_DVR_StopVoiceCom(this->mTalkHandle);
-				CleanChannel();
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return false;
-	}
+	mState->Handle();
 }
 
-bool CCommunication::YouTalk()
+void CCommunication::GetPortMac(int port)
 {
-	if (!IsChannelCleaning())
-	{
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x02, 0x00, this->mPdev);
-		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-		return true;
-	}
-	return false;
+	mState->GetPortMac(port);
 }
 
-bool CCommunication::RecYouTalkProc(uint8_t *pch)
+void CCommunication::CameraCanTalk(CCamera * pDev)
 {
-	if (!IsChannelCleaning())
-	{
-		if (pch[5] == 1)
-		{
-			//I don't konwn;
-		}
-		else
-		{
-			//I don't konwn;
-		}
-	}
-	return false;
+	mState->CameraCanTalk(pDev);
 }
 
-bool CCommunication::AskSetVolume(CCamera *pDev, uint8_t Volume)
+void CCommunication::ReplyHostTalk(CCamera *pDev)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x01, Volume, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	return true;
+	mState->ReplyHandle(pDev);
 }
 
-uint8_t CCommunication::RecSetVolumeProc(uint8_t *pch)
+void CCommunication::ReplyCameraTalk(CCamera *pDev)
 {
-	if (pch[5] == 1)
-	{
-		return pch[4];
-	}
-	else
-	{
-		return pch[4];
-	}
+	mState->ReplyCameraTalk(pDev);
 }
 
-bool CCommunication::Alarm(CCamera * pDev)
+void CCommunication::ReplyStopTalk()
 {
-	if(!(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff))
-	{
-		return false;
-	}
-	if (IsChannelCleaning() && !mIsAlarm)
-	{
-Print("Alarm  LY");
-		mIsAlarm = true;
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pDev);
-		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-		return true;
-	}
-	return false;
+	mState->ReplyStopTalk();
 }
 
-bool CCommunication::RecAlarmProc(uint8_t *pch)
+void CCommunication::ReplyAlarm(CCamera *pDev)
 {
-	Print("RecAlarmProc");
-	if (pch[5] == 1)
-	{
-		H264_DVR_StopVoiceCom(this->mTalkHandle);
-		CleanChannel();
-		uint64_t mac64;
-		mac64 = CUtil::ArrayToUint64(&pch[6]);
-		//char sqlStmt[128];
-		int type;
-		//sprintf_s(sqlStmt, "SELECT * FROM normal_record;");
-		//SQLiteStatement* stmt = sqlite.Statement(sqlStmt);
-		//while (stmt->NextRow()) {
-		//	type = stmt->ValueInt(1);
-		//}
-		type = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
-		CRecordAlarmSound::GetInstance()->Play(Mac_CCamera_Map.at(mac64), type);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	mState->ReplyAlarm(pDev);
 }
 
-bool CCommunication::OverAlarm(CCamera * pDev)
+void CCommunication::ReplyStopAlarm(CCamera *pDev)
 {
-Print("OverAlarm");
-	if (mIsAlarm && !IsChannelCleaning())
-	{
-Print("mIsAlarm true");
-		CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, pDev);
-		CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-		CRecordAlarmSound::GetInstance()->StopTalk();
-	}
-	return true;
+	mState->ReplyStopAlarm(pDev);
 }
 
-bool CCommunication::RecOverAlarmProc(uint8_t *pch)
+void CCommunication::ReplySetVolume(CCamera *pDev)
 {
-	mIsAlarm = false;
-	if (pch[5] == 1)
-	{
-		Print("OverAlarm Succeed");
-		return true;
-	}
-	else
-	{
-		Print("OverAlarm Fail");
-		return false;
-	}
+	mState->ReplySetVolume(pDev);
 }
 
-bool CCommunication::Handle(uint8_t param)//握手 param == 1: 返回注册表 
+void CCommunication::ReplyControlLED(bool isSucceed)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, param, 0x00, NULL);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	return true;
+	mState->ReplyControlLED(isSucceed);
 }
 
-bool CCommunication::Handle(uint8_t param, uint8_t port) //param == 2：返回摸个摄像头的MAC地址, port 端口号
+void CCommunication::ReplySetLED(bool isSucceed)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, param, port, NULL);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	return true;
+	mState->ReplySetLED(isSucceed);
 }
 
-bool CCommunication::RecHandleProc(uint8_t * pch)
+void CCommunication::ReplyHandle(bool isSucceed)
 {
-	PostMessage(((CColdEyeDlg*)AfxGetApp()->m_pMainWnd)->GetSafeHwnd(), USER_MSG_HANDLE, pch[4], (LPARAM)(pch));
-	return 0;
+	mState->ReplyHandle(isSucceed);
 }
 
-bool CCommunication::ControlLED(CCamera * pDev, uint8_t Switch)
+void CCommunication::ReplyGetPortMac(int port)
 {
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x06, Switch, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	return false;
+	mState->ReplyGetPortMac(port);
 }
 
+void CCommunication::ReplyCameraAskTalk(CCamera * pDev)
+{
+	mState->ReplyCameraAskTalk(pDev);
+}
+
+IState* CCommunication::GetFreeState()
+{
+	return FreeState;
+}
+
+IState* CCommunication::GetAlarmState()
+{
+	return AlarmState;
+}
+
+IState* CCommunication::GetCameraTalkState()
+{
+	return CameraTalkState;
+}
+
+IState* CCommunication::GetHostTalkState()
+{
+	return HostTalkState;
+}
+
+IState* CCommunication::GetWaitReplyState()
+{
+	return WaitReplyState;
+}
+
+IState * CCommunication::GetState()
+{
+	return mState;
+}
+
+IState * CCommunication::GetOldState()
+{
+	return mOldState;
+}
+
+void CCommunication::SetFreeState()
+{
+	mOldState = mState;
+	mState = FreeState;
+}
+
+void CCommunication::SetAlarmState()
+{
+	mOldState = mState;
+	mState = AlarmState;
+}
+
+void CCommunication::SetCameraTalkState()
+{
+	mOldState = mState;
+	mState = CameraTalkState;
+}
+
+void CCommunication::SetHostTalkState()
+{
+	mOldState = mState;
+	mState = HostTalkState;
+}
+
+void CCommunication::SetWaitReplyState()
+{
+	mOldState = mState;
+	mState = WaitReplyState;
+}
+
+void CCommunication::RecoveState()
+{
+	mState = mOldState;
+}

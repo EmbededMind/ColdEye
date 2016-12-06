@@ -1,49 +1,79 @@
 #pragma once
+#include "IStatus.h"
+#include "FreeState.h"
+#include "AlarmState.h"
+#include "CameraTalkState.h"
+#include "HostTalkState.h"
+#include "WaitReply.h"
 #include "Device\Camera.h"
-#include "Com\Util.h"
+
 class CCommunication
 {
+private:
+	IState *FreeState;
+	IState *AlarmState;
+	IState *CameraTalkState;
+	IState *HostTalkState;
+	IState *WaitReplyState;
+
+	IState *mState;
+	IState *mOldState;
+
 public:
-	~CCommunication();
+	CCamera *mPdev;
+	LONG mHandle;
 	static CCommunication* GetInstance()
 	{
-		static CCommunication com;
-		return &com;
+		static CCommunication instance;
+		return &instance;
+	}
+	CCommunication() {
+		FreeState = new CFreeState(this);
+		AlarmState = new CAlarmState(this);
+		CameraTalkState = new CCameraTalkState(this);
+		HostTalkState = new CHostTalkState(this);
+		WaitReplyState = new CWaitReplyState(this);
+
+		mState = FreeState;
 	};
-private:
-	CCommunication();
-	uint8_t mOrder[17];
-	bool mIsAlarm;
-public:
-	CCamera * mPdev;
-	long mTalkHandle;
-	bool IsChannelCleaning();
-	bool CleanChannel();
+	~CCommunication() {};
+	void HostTalk(CCamera *pDev);
+	void CameraTalk();
+	void StopTalk();
+	void Alarm(CCamera *pDev);
+	void StopAlarm();
+	void SetVolume(CCamera *pDev, int Volume);
+	void ControlLED(int Switch);
+	void SetLED(int isON);
+	void Handle();
+	void GetPortMac(int port);
+	void CameraCanTalk(CCamera *pDev);
 
-	bool AskTalk(CCamera *pDev);
-	bool RecTalkProc(uint8_t *pch);
+	void ReplyHostTalk(CCamera *pDev);
+	void ReplyCameraTalk(CCamera *pDev);
+	void ReplyStopTalk();
+	void ReplyAlarm(CCamera *pDev);
+	void ReplyStopAlarm(CCamera *pDev);
+	void ReplySetVolume(CCamera *pDev);
+	void ReplyControlLED(bool isSucceed);
+	void ReplySetLED(bool isSucceed);
+	void ReplyHandle(bool isSucceed);
+	void ReplyGetPortMac(int port);
+	void ReplyCameraAskTalk(CCamera *pDev);
 
-	bool ReplyTalk(uint8_t *pch);
+	IState* GetFreeState();
+	IState* GetAlarmState();
+	IState* GetCameraTalkState();
+	IState* GetHostTalkState();
+	IState* GetWaitReplyState();
+	IState* GetState();
+	IState* GetOldState();
 
-	bool OverTalk();
-	bool RecOverTalkProc(uint8_t *pch);
+	void SetFreeState();
+	void SetAlarmState();
+	void SetCameraTalkState();
+	void SetHostTalkState();
+	void SetWaitReplyState();
 
-	bool YouTalk();
-	bool RecYouTalkProc(uint8_t *pch);
-
-	bool AskSetVolume(CCamera *pDev, uint8_t Volume);
-	uint8_t RecSetVolumeProc(uint8_t *pch);
-
-	bool Alarm(CCamera *pDev);
-	bool RecAlarmProc(uint8_t *pch);
-
-	bool OverAlarm(CCamera *pDev);
-	bool RecOverAlarmProc(uint8_t *pch);
-
-	bool Handle(uint8_t param);
-	bool Handle(uint8_t param, uint8_t port);
-	bool RecHandleProc(uint8_t *pch);
-
-	bool ControlLED(CCamera *pDev, uint8_t Switch);
+	void RecoveState();
 };
-

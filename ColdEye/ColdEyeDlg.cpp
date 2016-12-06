@@ -10,7 +10,7 @@
 #include "Com\Communication.h"
 #include "Dbt.h"
 #include "ExHardDrive\ExHardDrive.h"
-
+#include "Com\Util.h"
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
 
@@ -593,46 +593,73 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		//.....
 
 		//if (p->ch[1] == 0x02 && p->ch[2] == 0x01)
+		uint64_t mac64 = CUtil::ArrayToUint64(&p->ch[6]);
+		CCamera *pDev;
+		if (Mac_CCamera_Map.find(mac64) == Mac_CCamera_Map.end())
+		{
+			pDev = NULL;
+		}
+		else
+		{
+			pDev = Mac_CCamera_Map[mac64];
+		}
+		
 		if (true)
 		{
 			switch (p->ch[3])
 			{
 			case 0x01:
-				CCommunication::GetInstance()->RecSetVolumeProc(p->ch);
+				if(p->ch[5] == 1)
+					CCommunication::GetInstance()->ReplySetVolume(pDev);
+				else
+					CCommunication::GetInstance()->ReplySetVolume(0);
 				break;
 			case 0x02:
 				switch (p->ch[4])
 				{
 				case 1:
-					CCommunication::GetInstance()->RecTalkProc(p->ch);
+					if (p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyHostTalk(pDev);
+					else
+						CCommunication::GetInstance()->ReplyHostTalk(0);
 					break;
 				case 2:
-					CCommunication::GetInstance()->RecYouTalkProc(p->ch);
+					if (p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyCameraTalk(pDev);
+					else
+						CCommunication::GetInstance()->ReplyCameraTalk(0);
 					break;
 				case 3:
-					CCommunication::GetInstance()->RecOverTalkProc(p->ch);
+					CCommunication::GetInstance()->ReplyStopTalk();
 					break;
 				default:
 					break;
 				}
 				break;
 			case 0x03:
-				CCommunication::GetInstance()->ReplyTalk(p->ch);
+				CCommunication::GetInstance()->ReplyCameraAskTalk(pDev);
 				break;
 			case 0x04:
 				if (p->ch[4] == 1)
 				{
-					CCommunication::GetInstance()->RecAlarmProc(p->ch);
+					if(p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyAlarm(pDev);
+					else
+						CCommunication::GetInstance()->ReplyAlarm(0);
 				}
 				if (p->ch[4] == 2)
 				{
-					CCommunication::GetInstance()->RecOverAlarmProc(p->ch);
+					if (p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyStopAlarm(pDev);
+					else
+						CCommunication::GetInstance()->ReplyStopAlarm(0);
 				}
 				break;
 			case 0x05:
 				/*CCommunication::GetInstance()->RecHandleProc(p->ch);*/
 				if (p->ch[4] == 1)  //端口状态信息。
 				{
+					CCommunication::GetInstance()->ReplyHandle(1);
 					CPortManager*  pPortMgr  = CPortManager::GetInstance();
 					CPort*         pPort ;
 					for (int i = 0; i < 6; i++) {
@@ -676,6 +703,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				}
 				else if (p->ch[4] == 2) //端口mac
 				{
+					CCommunication::GetInstance()->ReplyGetPortMac(1);
 					//for (int i = 0; i < p->num; i++) {
 					//	printf("%02X ", p->ch[i]);
 					//}
@@ -841,11 +869,11 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 
 		Print("%d Pend mac", id);
 
-		CCommunication::GetInstance()->Handle(2, id);
+		CCommunication::GetInstance()->GetPortMac(id);
 
 	}
 	else {
-		CCommunication::GetInstance()->Handle(1);
+		CCommunication::GetInstance()->Handle();
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
@@ -878,7 +906,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 		if (pPort->m_Id) {
 			// 向 m_Id 号端口发送 设置 音量命令。
 			Print("Set %d camera vol:%d", pPort->m_Id, pConfig->Volumn);
-			CCommunication::GetInstance()->AskSetVolume(pPort->m_pCamera, pConfig->Volumn);
+			CCommunication::GetInstance()->SetVolume(pPort->GetCamera(), pConfig->Volumn);
 		}
 	}
 
@@ -889,6 +917,6 @@ LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
 {
 Print("MSG Stop Alarm");
 	CCamera *pDev = (CCamera*)lParam;
-	CCommunication::GetInstance()->OverAlarm(pDev);
+	CCommunication::GetInstance()->StopAlarm();
 	return 0;
 }
