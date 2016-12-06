@@ -205,8 +205,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
 	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
-	SetWindowLong(m_hWnd, GWL_STYLE, GetWindowLong(m_hWnd, GWL_STYLE) & ~WS_CAPTION); //去标题栏
-	SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME));
+	//SetWindowLong(m_hWnd, GWL_STYLE, GetWindowLong(m_hWnd, GWL_STYLE) & ~WS_CAPTION); //去标题栏
+	//SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME));
 	mWall.ShowWindow(SW_SHOW);
 
 	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
@@ -215,6 +215,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
 
+	LONG style  = GetWindowLong(m_hWnd, GWL_STYLE);
+	SetWindowLong(m_hWnd, GWL_STYLE,  style & (~(WS_CAPTION | WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME)));
 	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
 
 	//SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
