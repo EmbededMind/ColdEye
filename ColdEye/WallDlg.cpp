@@ -58,7 +58,7 @@ CWallDlg::~CWallDlg()
 {
 }
 
-bool CWallDlg::Invest(CPort* pPort)
+bool CWallDlg::Ingest(CPort* pPort)
 {
      ASSERT(pPort->m_Id > 0);
 	 
@@ -237,7 +237,8 @@ void CWallDlg::ExecuteSurfaceLayout()
 			long xPos   = orgX + (cnt % mCols) *(nWidth+grap*2);
 			long yPos   = orgY + (cnt / mCols) *(nHeight+grap*2)+grap;
 
-			mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, nWidth, nHeight, 0);
+			/*mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, nWidth, nHeight, 0);*/
+			mSurfaces[i]->SetPos(xPos + grap, yPos+grap, nWidth, nHeight);
 			cnt++;
 		}
 	}
@@ -487,7 +488,7 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogin(WPARAM wParam, LPARAM lParam)
 
 		pPort->m_State = ONLINE;
 
-		Invest(pPort);        //视频墙增加surface
+		Ingest(pPort);        //视频墙增加surface
 
 		MSG msg;
 		msg.message = USER_MSG_LOGIN;
@@ -532,7 +533,7 @@ afx_msg LRESULT CWallDlg::OnUserMsgRelogin(WPARAM wParam, LPARAM lParam)
 		}
 		else {
 			if (FindSurface(pPort) == NULL) {
-				Invest(pPort);
+				Ingest(pPort);
 			}
 
 			// 10s 重连。

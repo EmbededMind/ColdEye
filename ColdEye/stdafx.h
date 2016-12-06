@@ -86,7 +86,9 @@
 
 #define USER_MSG_STOP_ALARM					(WM_USER + 200) //报警取消
 
-#define USER_MSG_SYS_VOLUM						(WM_USER + 210) //系统音量
+#define USER_MSG_SYS_VOLUM					(WM_USER + 210) //系统音量
+
+#define USER_MSG_ALARM_LIGHT				(WM_USER + 220) //报警灯光
 
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))

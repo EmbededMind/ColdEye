@@ -254,32 +254,32 @@
 				</VerticalLayout>	
 	<!--视频调取-->
 				<VerticalLayout>
-					<VideoList name="video_list1" vscrollbarstyle="width='45' ">
+					<VideoList name="video_list1" vscrollbarstyle="width='45'" >
 					
 					</VideoList>	
 				</VerticalLayout>
 				<VerticalLayout>
-					<VideoList name="video_list2" vscrollbarstyle="width='45' ">
+					<VideoList name="video_list2" vscrollbarstyle="width='45' " >
 					
 					</VideoList>	
 				</VerticalLayout>
 				<VerticalLayout>
-					<VideoList name="video_list3" vscrollbarstyle="width='45' ">
+					<VideoList name="video_list3" vscrollbarstyle="width='45' " >
 					
 					</VideoList>	
 				</VerticalLayout>
 				<VerticalLayout>
-					<VideoList name="video_list4" vscrollbarstyle="width='45' ">
+					<VideoList name="video_list4" vscrollbarstyle="width='45' " >
 					
 					</VideoList>	
 				</VerticalLayout>
 				<VerticalLayout>
-					<VideoList name="video_list5" vscrollbarstyle="width='45' ">
+					<VideoList name="video_list5" vscrollbarstyle="width='45' " >
 					
 					</VideoList>	
 				</VerticalLayout>
 				<VerticalLayout>
-					<VideoList name="video_list6" vscrollbarstyle="width='45'">
+					<VideoList name="video_list6" vscrollbarstyle="width='45'" >
 					
 					</VideoList>	
 				</VerticalLayout>

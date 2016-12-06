@@ -182,7 +182,7 @@ public:
 		}
 		pListElement->SetText(node->data()._text);
 		pListElement->SetTag((UINT_PTR)node);
-		pListElement->SetFixedHeight(65);	//¸ß¶È160
+		pListElement->SetFixedHeight(65);
 		int index = 0;
 
 		if (parent == _root)
@@ -260,6 +260,9 @@ public:
 	void AddItem(CRecordFileInfo* pInfo);
 	void RefreshList();
 	void DeleteRecordFile(CRecordFileInfo* pInfo);
+
+	void CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRecordFileInfo * pInfo, CVideoListUI::Node* pNode);
+	int IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo);
 private:
 	Node* _root;
 

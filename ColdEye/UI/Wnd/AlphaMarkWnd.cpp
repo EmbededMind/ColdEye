@@ -50,8 +50,7 @@ LRESULT CAlphaMarkWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 		pBt_fast->SetText(PlayText);
 		break;
 
-	case WM_SETFOCUS:
-		SetFocus(pPlayerWall->GetHWND());
+	case WM_SETFOCUS:		SetFocus(pPlayerWall->GetHWND());
 		break;
 	}	 
 	bHandled = FALSE;

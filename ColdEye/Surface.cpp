@@ -803,6 +803,52 @@ BOOL CSurface::RegisterWindowClass(HINSTANCE hInstance)
 }
 
 
+void CSurface::SetPos(int x, int y, int cx, int cy)
+{
+	SetPos(CRect(x, y, cx, cy));
+}
+
+
+void CSurface::SetPos(CRect& r)
+{
+	SetSplitPosParam(r);
+	if (!mIsLargeMode) {
+		this->SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.right, mSplitPos.bottom, 0);
+	}	
+}
+
+
+void CSurface::SetSplitPosParam(CRect& r)
+{
+	
+}
+
+
+void CSurface::ZoomIn()
+{
+	if (mIsLargeMode) {
+		mIsLargeMode = false;
+		ModifyStyle(WS_POPUP, WS_CHILD);
+		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.right, mSplitPos.bottom, 0);
+	}
+}
+
+
+
+void CSurface::ZoomOut()
+{
+	if (!mIsLargeMode) {
+		mIsLargeMode  = true;
+		ModifyStyle(WS_CHILD, WS_POPUP);
+		int  ScreenHeight  = GetSystemMetrics(SM_CXFULLSCREEN);
+		int  ScreenWidth   = GetSystemMetrics(SM_CYFULLSCREEN);
+
+		int  height  = ScreenHeight;
+		int  width   = height * 4 /3;
+
+		SetWindowPos(NULL, (ScreenWidth- width)/2, 0, width, height, SWP_SHOWWINDOW);
+	}
+}
 
 
 void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
@@ -1025,6 +1071,16 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				mDelBtn.ShowWindow(SW_SHOW);
 				mReverseBtn.SetFocus();
 				break;
+			//------------------------------------------
+			case VK_RETURN:
+				if (mIsLargeMode) {					
+					ZoomIn();
+				}
+				else {
+					ZoomOut();
+				}
+				break;
+			//------------------------------------------
 			default:
 				if (GetKeyState(VK_CONTROL) && !(pMsg->lParam & 0x20000000)) {
 					switch (pMsg->wParam)

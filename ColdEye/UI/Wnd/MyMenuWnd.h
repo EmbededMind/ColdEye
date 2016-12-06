@@ -83,6 +83,7 @@ public :
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
+	void AdapTive();
 
 
 	bool OnHomeWatch(void* param);
@@ -206,7 +207,12 @@ private:
 	CButtonUI *FocusedItem[2];
 	UINT8 focusLevel;
 	UINT8 mAlarmVoiceSel;
+	int mAwTotalRecord;
 	int mAwTotalPage;
 	int mAwPage;
+
+	//adaptice
+	int mDPI;
+	int m_DispSize = 1600;
 	CPlayerWallWnd	*mPlayerWall;
 };

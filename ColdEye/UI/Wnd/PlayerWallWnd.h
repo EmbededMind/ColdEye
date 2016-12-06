@@ -6,6 +6,7 @@
 #include "H264Play.h"
 #include "File/RecordFileInfo.h"
 
+#include <list>
 class CAlphaMarkWnd;
 using namespace std;
 
@@ -31,11 +32,13 @@ public:
 	virtual CDuiString GetSkinFile();
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	void InitWindow();
-	void PreparePlay(WPARAM wParam, LPARAM lParam);
+	void PreparePlay(WPARAM wParam, CRecordFileInfo* );
+	void InitPlayer();
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
-	void InitPlayTime(LPARAM);
+	void InitPlayTime(CRecordFileInfo*pInfo);
 	void InitPlayBtImage();
+	void ClosePlayer();
 	BOOL StopPlay();
 	bool OnSlow(void* param);
 	bool OnFast(void* param);
@@ -65,4 +68,7 @@ private:
 	LPCTSTR sPlayNoFocusImg;
 	LPCTSTR sStopFocusedImg;
 	LPCTSTR sStopNoFocusImg;
+
+	list<CRecordFileInfo*>* pListInfo;
+	UINT8 VoideType;
 };

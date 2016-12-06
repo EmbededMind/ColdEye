@@ -119,68 +119,22 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
 	CTime tbegin = CTime(pInfo->tBegin);
 	CTime tend = CTime(pInfo->tEnd);
-	CVideoListUI::Node* pNode = NULL;;
-	if(pItem){
+	CVideoListUI::Node* pNode = NULL;
+	if (pItem) {
 		pNode = (CVideoListUI::Node*)pItem->GetTag();
 	}
-	refTime.GetDay();
-	CTime tInfoBegin = CTime(pInfo->tBegin);
-	
 
-	int Day;
-	Day = refTime.GetDay() - tInfoBegin.GetDay();
-	if (Day < 0)
-		Day = 0;
-	//Print("_Day:%d,  nowDay:%d,redBegDay:%d",Day, refTime.GetDay(), tInfoBegin.GetDay());
-	if (Day == 0) {
-		if (pItem) {
-			CTime tHeadBegin = CTime(pItem->Info->tBegin);
-			if (tHeadBegin.GetDay() != tInfoBegin.GetDay()) {//当天没有头结点
-				pNode = AddHeadNode(_T("今天"), 0, pInfo);
-				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-			}
-			else {
-				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-			}
+	//判断是否存在节点
+	if (pItem) {
+		if (IsNewDay(pItem->Info, pInfo)) {
+			CompareBeginTime(refTime, tbegin, tend, pInfo, pNode);
 		}
 		else {
-			pNode = AddHeadNode(_T("今天"), 0, pInfo);
-			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
+			pNode = AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 		}
 	}
-	else if (Day == 1) {
-		if (pItem) {
-
-			CTime tHeadBegin = CTime(pItem->Info->tBegin);
-			if (tHeadBegin.GetDay() != tInfoBegin.GetDay()) {//当天没有头结点
-				pNode = AddHeadNode(_T("昨天"), 0, pInfo);
-				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-			}
-			else {
-				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-			}
-		}
-		else {
-			pNode = AddHeadNode(_T("昨天"), 0, pInfo);
-			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-		}
-	}
-	else {
-		if (pItem) {
-
-			CTime tHeadBegin = CTime(pItem->Info->tBegin);
-			if (tHeadBegin.GetDay() != tInfoBegin.GetDay()) {//当天没有头结点
-				pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
-				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-			}
-			else {
-				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-			}
-		}
-		else {
-			pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
-			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
-		}
+	else { //无任何头结点
+		CompareBeginTime(refTime, tbegin, tend, pInfo, pNode);
 	}
 
 }
@@ -202,13 +156,24 @@ void CVideoListUI::RefreshList()
 		if (!pItem) return;
 		int Day;
 		if (pItem) {
-			Day = refTime.GetTime() / (3600 * 24) - pItem->Info->tBegin / (3600 * 24);
-			if (Day == 1) {
-				pNode->data()._text = _T("昨天");
+			//年月日都相等
+			if (refTime.GetYear() == CTime(pItem->Info->tBegin).GetYear() && refTime.GetMonth() == CTime(pItem->Info->tBegin).GetMonth()) {
+				if (refTime.GetDay() - CTime(pItem->Info->tBegin).GetDay() == 1) {
+					pNode->data()._text = _T("昨天");
+				}
+				else {
+					tbegin = CTime(pItem->Info->tBegin);
+					pNode->data()._text = tbegin.Format("%Y-%m-%d");
+				}
 			}
-			else {
-				tbegin = CTime(pItem->Info->tBegin);
-				pNode->data()._text = tbegin.Format("%Y-%m-%d");
+			//跨月
+			else if (refTime.GetYear() == CTime(pItem->Info->tBegin).GetYear() && refTime.GetMonth() - CTime(pItem->Info->tBegin).GetMonth() - 1) {
+				if(refTime.GetDay()==1)
+					pNode->data()._text = _T("昨天");
+				else {
+					tbegin = CTime(pItem->Info->tBegin);
+					pNode->data()._text = tbegin.Format("%Y-%m-%d");
+				}
 			}
 		}
 		else {
@@ -253,4 +218,42 @@ void CVideoListUI::DeleteRecordFile(CRecordFileInfo* pInfo)
 	}
 	
 }
+
+void CVideoListUI::CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRecordFileInfo * pInfo, CVideoListUI::Node* pNode)
+{
+	if (refTime.GetYear() == tbegin.GetYear() && refTime.GetMonth() == tbegin.GetMonth() && refTime.GetDay() == tbegin.GetDay()) {
+		pNode = AddHeadNode(_T("今天"), 0, pInfo);
+		AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
+	}
+	else if (refTime.GetYear() == tbegin.GetYear() && refTime.GetMonth() == tbegin.GetMonth()) {
+		if (refTime.GetDay() - tbegin.GetDay() == 1) {
+			pNode = AddHeadNode(_T("昨天"), 0, pInfo);
+			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
+		}
+		else {
+			pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
+			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
+		}
+	}
+}
+
+int CVideoListUI::IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo)
+{
+	int year, month, day, InfoYear,InfoMonth,InfoDay;
+	year = CTime(HeadInfo->tBegin).GetYear();
+	month = CTime(HeadInfo->tBegin).GetMonth();
+	day = CTime(HeadInfo->tBegin).GetDay();
+	InfoYear = CTime(pInfo->tBegin).GetYear();
+	InfoMonth = CTime(pInfo->tBegin).GetMonth();
+	InfoDay = CTime(pInfo->tBegin).GetDay();
+	if (year != InfoYear)
+		return 1;
+	if (month != InfoMonth)
+		return 1;
+	if (day != InfoDay)
+		return 1;
+
+	return 0;
+}
+
 

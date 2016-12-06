@@ -90,6 +90,11 @@ public:
 	
 	void          Delete();
 
+	void          SetPos(CRect& rPos);
+	void          SetPos(int x, int y, int cx, int cy);
+	void          SetSplitPosParam(CRect& rPos);
+
+
 protected:
 	//CWnd          mControlWnd;
 	//CWnd          mSurface;
@@ -105,7 +110,6 @@ protected:
 
 
 
-
 private:
 	OSD_INFO_TXT  m_OsdInfoText;
 
@@ -114,6 +118,12 @@ private:
 	BOOL          ShouldWatch();
 	BOOL          ShouldWatch(CTime& refTime);
 	UINT          GetNextWatchEventElapse(CTime& refTime);
+
+	bool          mIsLargeMode;
+
+	CRect         mSplitPos;
+	void          ZoomOut();
+	void          ZoomIn();
 
 protected:
 	DECLARE_MESSAGE_MAP()
