@@ -89,10 +89,7 @@ public:
 	void          OnCameraLogOff();                 //É¾³ýÉãÏñ»ú
 	
 	void          Delete();
-
-	void          SetPos(CRect& rPos);
-	void          SetPos(int x, int y, int cx, int cy);
-	void          SetSplitPosParam(CRect& rPos);
+	void          SetPos(CRect& r);
 
 
 protected:
@@ -121,9 +118,11 @@ private:
 
 	bool          mIsLargeMode;
 
+	CWnd*         pSaveParent;
 	CRect         mSplitPos;
 	void          ZoomOut();
 	void          ZoomIn();
+
 
 protected:
 	DECLARE_MESSAGE_MAP()

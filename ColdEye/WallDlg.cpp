@@ -68,48 +68,15 @@ bool CWallDlg::Ingest(CPort* pPort)
 	 ASSERT(mSurfaces[pos] == NULL);
 
 	 mSurfaces[pos]  = new CSurface();
-	 mSurfaces[pos]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER|WS_THICKFRAME, CRect(0,0,0,0), this, pPort->GetId());
+	 mSurfaces[pos]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(0,0,0,0), this, pPort->GetId());
 	 mSurfaces[pos]->ShowWindow(SW_SHOW);
-	 mSurfaces[pos]->BindPort(pPort);
-	 mSurfaces[pos]->ExecuteConfig();
+
 
 	 DesignSurfaceLayout();
 	 ExecuteSurfaceLayout();
 
 	 return true;
 }
-
-
-/**@brief 视频墙新加一个摄像头
- *
- */
-//BOOL CWallDlg::Invest(CCamera* pCamera)
-//{
-////	pCamera->LoadLocalConfig();
-////
-////	pCamera->AttachPort(CPortManager::GetInstance()->GetPortById(1));
-//
-//	for (int i = 0; i < 6; i++) {
-//		if (mSurfaces[i] == NULL) {
-//			pCamera->m_Id = i + 1;
-//
-//			mSurfaces[i] = new CSurface();
-//			mSurfaces[i]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER|WS_THICKFRAME, CRect(0,0,0,0), this, pCamera->m_Id);
-//			mSurfaces[i]->ShowWindow(SW_SHOW);
-//
-//
-//			mSurfaces[i]->BindCamera(pCamera);
-//
-//			mSurfaces[i]->ExecuteLocalConfig();
-//
-//			DesignSurfaceLayout();
-//			ExecuteSurfaceLayout();
-//			return TRUE;
-//		}
-//	}
-//
-//	return FALSE;
-//}
 
 
 
@@ -126,12 +93,6 @@ CSurface* CWallDlg::FindSurface(long loginId)
 {
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] != NULL) {
-			//ASSERT(mSurfaces[i]->m_BindedCamera != NULL);
-
-
-			//if (mSurfaces[i]->m_BindedCamera->GetLoginId() == loginId) {
-			//	return mSurfaces[i];
-			//}
 
 			ASSERT(mSurfaces[i]->m_BindedPort != NULL);
 			if (mSurfaces[i]->m_BindedPort->m_pCamera->GetLoginId() == loginId) {
@@ -200,46 +161,41 @@ void CWallDlg::DesignSurfaceLayout()
 void CWallDlg::ExecuteSurfaceLayout()
 {
 	CRect rClient;
-	GetClientRect(rClient);
-
-	const long margin  = 50;
-	const long grap    = 30;
-	long  orgX ;
-	long  orgY ;
-
-	//long surface_area_width  = rClient.Width()- margin * 4;
-	//long surface_area_height = rClient.Height() - margin * 2;
-	float surface_area_width  = rClient.Width() - margin * 4;
-	float surface_area_height = rClient.Height()- margin * 2;
-	
+	GetClientRect(&rClient);
 
 
+	float hMargin  = rClient.Width() /20.0;
+	float vMargin  = rClient.Height() /10.0;
 
-	//if (surface_area_width * 9 / 16 > surface_area_height) {
-	//	surface_area_width  = surface_area_height * 16 / 9;
-	//	orgX  = (rClient.Width() - surface_area_width) / 2;
-	//}
+	float grap     = rClient.Height() /40.0;
 
-	//surface_area_height  = surface_area_width * 3 / 4;
+	float hLimit   = (rClient.Width() - 2*(hMargin + grap*mCols)) /4 / mCols;
+	float vLimit   = (rClient.Height() - 2*(vMargin + grap*mRows)) /3 / mRows;
+	float limit  = hLimit > vLimit ? vLimit : hLimit;
 
-	//orgY  = (rClient.Height() - surface_area_height) / 2;
+	int yOrg  = (rClient.Height() - (3*limit+2*grap)*mRows) / 2;
+	int xOrg  = (rClient.Width() - (4*limit+2*grap)*mCols) / 2;
 
-	//long nWidth  = surface_area_width / mCols - grap*2;
-	//long nHeight = surface_area_height / mRows - grap*2;
-	long nWidth = (surface_area_width - grap * 2 * mCols) / mCols;
-	long nHeight =  nWidth * 3 / 4;
 
-	orgX = (rClient.Width() - surface_area_width) / 2;
-	orgY = rClient.Height() / 2 - (grap * 2 + nHeight)*mRows/2;
+	int  width = 4 * limit;
+	int  height = 3 * limit;
+
+    CRect r;
 
 	int cnt = 0;
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] != NULL) {
-			long xPos   = orgX + (cnt % mCols) *(nWidth+grap*2);
-			long yPos   = orgY + (cnt / mCols) *(nHeight+grap*2)+grap;
 
-			/*mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, nWidth, nHeight, 0);*/
-			mSurfaces[i]->SetPos(xPos + grap, yPos+grap, nWidth, nHeight);
+			long xPos   = xOrg + (cnt % mCols) *(width+grap*2);
+			long yPos   = yOrg + (cnt / mCols) *(height+grap*2);
+			
+			r.left  = xPos + grap;
+			r.right = r.left + width;
+			r.top   = yPos + grap;
+			r.bottom= r.top + height;
+			//ClientToScreen(r);
+			/*mSurfaces[i]->SetWindowPos(NULL, xPos+grap, yPos+grap, width, height, 0);*/
+			mSurfaces[i]->SetPos(r);
 			cnt++;
 		}
 	}
@@ -265,6 +221,25 @@ void CWallDlg::DeleteSurface(CSurface* pSurface)
 
 
 
+void CWallDlg::TestIngestOne()
+{
+	static int Id  = 0;
+
+	if(Id >= 6)
+		return;
+
+	Id++;
+	CPort * pNewPort  = new CPort();
+	pNewPort->SetId(Id);
+	Ingest(pNewPort);
+}
+
+void CWallDlg::TestSplitOne()
+{
+
+}
+
+
 void CWallDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -279,6 +254,7 @@ BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_WM_ERASEBKGND()
 	ON_MESSAGE(USER_MSG_DISCONNECT, &CWallDlg::OnUserMsgDisconnect)
 	ON_MESSAGE(USER_MSG_RELOGIN, &CWallDlg::OnUserMsgRelogin)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -293,7 +269,6 @@ BOOL CWallDlg::OnInitDialog()
 	H264_DVR_Init(_cbDisconnect, (DWORD)this);
 	H264_DVR_SetDVRMessCallBack(_cbDVRMessage, (long)this);
 
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -303,6 +278,17 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 	if (pMsg->message == WM_KEYDOWN) {
 		switch (pMsg->wParam)
 		{
+		case VK_UP:
+		TestIngestOne();
+		break;
+		//-----------------------
+		case VK_DOWN:
+		break;
+		//-----------------------
+		case VK_RETURN:
+		return true;
+		break;
+		//-----------------------
 		default:
 			break;
 		}
@@ -563,4 +549,12 @@ BOOL CWallDlg::OnEraseBkgnd(CDC * pDC)
 	pDC->FillSolidRect(&rc, RGB(64,84,115));
 	//return CFrameWnd::OnEraseBkgnd(pDC);   
 	return TRUE;
+}
+
+void CWallDlg::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+					   // TODO: 在此处添加消息处理程序代码
+					   // 不为绘图消息调用 CDialogEx::OnPaint()
+	//dc.Rectangle(mSurfaceArea);
 }

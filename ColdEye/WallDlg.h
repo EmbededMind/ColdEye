@@ -23,7 +23,6 @@ public:
     bool      Ingest(CPort* pPort);
 	
 
-	BOOL Ingest(CCamera* pCamera);
 
 	void Delete(CSurface* pSurface);
 
@@ -42,6 +41,17 @@ protected:
 	DWORD            mRows;
 	DWORD            mCols;
 
+
+private:
+	int              mMargin;
+	int              mGrap;
+	CRect            mSurfaceArea;
+	int              mSurfaceWidth;
+	int              mSurfaceHeight;
+
+
+	void             TestIngestOne();
+	void             TestSplitOne();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
@@ -63,4 +73,6 @@ protected:
 	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
 
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+public:
+	afx_msg void OnPaint();
 };
