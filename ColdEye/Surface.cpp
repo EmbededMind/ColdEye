@@ -849,6 +849,8 @@ Print("Zoom out");
 		CRect rc;
 		GetDesktopWindow()->GetWindowRect(&rc);
 
+
+
 		SetWindowPos(&wndTopMost, rc.left, rc.top, rc.right, rc.bottom, SWP_SHOWWINDOW);
 	}
 }
@@ -877,7 +879,6 @@ void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 
 
 BEGIN_MESSAGE_MAP(CSurface, CWnd)
-	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
 	ON_WM_NCPAINT()
 	ON_WM_KILLFOCUS()
@@ -1071,7 +1072,6 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				else {
 					ZoomOut();
 				}
-
 				return true;
 				break;
 			//------------------------------------------
@@ -1325,19 +1325,5 @@ void CSurface::OnClose()
 	CMsgSquare::GetInstance()->RemoveAudience(m_hWnd);
 	
 	CWnd::OnClose();
-}
-
-
-
-void CSurface::OnPaint()
-{
-	CPaintDC dc(this);
-
-	CRect rClient;
-	GetClientRect(rClient);
-
-	dc.MoveTo(rClient.left, rClient.top);
-	dc.LineTo(rClient.right, rClient.bottom);
-
 }
 
