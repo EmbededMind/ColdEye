@@ -19,6 +19,7 @@ private:
 	IState *mState;
 	IState *mOldState;
 
+	UINT mTimerID;
 public:
 	CCamera *mPdev;
 	LONG mHandle;
@@ -27,6 +28,7 @@ public:
 		static CCommunication instance;
 		return &instance;
 	}
+	static void CALLBACK MyTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 	CCommunication() {
 		FreeState = new CFreeState(this);
 		AlarmState = new CAlarmState(this);

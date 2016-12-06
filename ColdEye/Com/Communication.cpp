@@ -1,6 +1,13 @@
 #include "stdafx.h"
 #include "Communication.h"
 
+void CCommunication::MyTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+{
+	KillTimer(NULL, GetInstance()->mTimerID);
+	if(GetInstance()->GetState() == GetInstance()->GetWaitReplyState())
+		GetInstance()->RecoveState();
+}
+
 void CCommunication::HostTalk(CCamera *pDev)
 {
 	mState->HostTalk(pDev);
@@ -58,7 +65,7 @@ void CCommunication::CameraCanTalk(CCamera * pDev)
 
 void CCommunication::ReplyHostTalk(CCamera *pDev)
 {
-	mState->ReplyHandle(pDev);
+	mState->ReplyHostTalk(pDev);
 }
 
 void CCommunication::ReplyCameraTalk(CCamera *pDev)
@@ -149,6 +156,7 @@ IState * CCommunication::GetOldState()
 void CCommunication::SetFreeState()
 {
 	Print("转到空闲状态");
+	KillTimer(NULL, mTimerID);
 	mOldState = mState;
 	mState = FreeState;
 }
@@ -156,6 +164,7 @@ void CCommunication::SetFreeState()
 void CCommunication::SetAlarmState()
 {
 	Print("转到报警状态");
+	KillTimer(NULL, mTimerID);
 	mOldState = mState;
 	mState = AlarmState;
 }
@@ -163,6 +172,7 @@ void CCommunication::SetAlarmState()
 void CCommunication::SetCameraTalkState()
 {
 	Print("转到摄像头讲话状态");
+	KillTimer(NULL, mTimerID);
 	mOldState = mState;
 	mState = CameraTalkState;
 }
@@ -170,6 +180,7 @@ void CCommunication::SetCameraTalkState()
 void CCommunication::SetHostTalkState()
 {
 	Print("转到主机讲话状态");
+	KillTimer(NULL, mTimerID);
 	mOldState = mState;
 	mState = HostTalkState;
 }
@@ -179,10 +190,15 @@ void CCommunication::SetWaitReplyState()
 	Print("转到等待状态");
 	mOldState = mState;
 	mState = WaitReplyState;
+	mTimerID = SetTimer(NULL, NULL, 200, MyTimerProc);
 }
 
 void CCommunication::RecoveState()
 {
 	Print("返回原来状态");
+	IState* tmp;
+	KillTimer(NULL, mTimerID);
+	tmp = mState;
 	mState = mOldState;
+	mOldState = tmp;
 }

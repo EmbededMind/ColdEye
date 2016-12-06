@@ -16,7 +16,7 @@ void CCameraTalkState::HostTalk(CCamera *pDev)
 void CCameraTalkState::StopTalk()
 {
 	Print("Í£Ö¹½²»°");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x01, 0x00, ComManagement->mPdev);
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x03, 0x00, ComManagement->mPdev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 	ComManagement->SetWaitReplyState();
 }

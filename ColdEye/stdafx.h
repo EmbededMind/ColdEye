@@ -101,6 +101,7 @@
 #define TIMER_ID_AUTO_WATCH               3
 #define TIMER_ID_ALARM                    4
 #define TIMER_ID_RECONNECT                5
+#define TIMER_ID_HANDLE                   6
 
 
  /*****************************************

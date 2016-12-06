@@ -250,6 +250,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 
 	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
+	SetTimer(TIMER_ID_HANDLE, 10000, NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -648,10 +649,12 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		CCamera *pDev;
 		if (Mac_CCamera_Map.find(mac64) == Mac_CCamera_Map.end())
 		{
+			Print("pDev == NULL");
 			pDev = NULL;
 		}
 		else
 		{
+			Print("pDev != NULL");
 			pDev = Mac_CCamera_Map[mac64];
 		}
 		
@@ -666,21 +669,25 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 					CCommunication::GetInstance()->ReplySetVolume(0);
 				break;
 			case 0x02:
+				Print("case 0x02");
 				switch (p->ch[4])
 				{
 				case 1:
+					Print("p->ch[4] == 1");
 					if (p->ch[5] == 1)
 						CCommunication::GetInstance()->ReplyHostTalk(pDev);
 					else
 						CCommunication::GetInstance()->ReplyHostTalk(0);
 					break;
 				case 2:
+					Print("p->ch[4] == 2");
 					if (p->ch[5] == 1)
 						CCommunication::GetInstance()->ReplyCameraTalk(pDev);
 					else
 						CCommunication::GetInstance()->ReplyCameraTalk(0);
 					break;
 				case 3:
+					Print("p->ch[4] == 3");
 					CCommunication::GetInstance()->ReplyStopTalk();
 					break;
 				default:
@@ -900,40 +907,44 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	//发送握手
 	static int i = 0;
 	static int CntDiv_10S  = 0;
-	CntDiv_10S++;
-	if (CntDiv_10S >= 10) {
-		CntDiv_10S  = 0;
+	if (nIDEvent == TIMER_ID_SECOND_TICK)
+	{
+		CntDiv_10S++;
+		if (CntDiv_10S >= 10) {
+			CntDiv_10S = 0;
 
-		if (mSearchPort.size() > 0) {
-			CPort* pPort  = mSearchPort.front();
-			mSearchPort.pop_front();
-			PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+			if (mSearchPort.size() > 0) {
+				CPort* pPort = mSearchPort.front();
+				mSearchPort.pop_front();
+				PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+			}
+		}
+
+		m_SysTime = CTime::GetCurrentTime();
+
+		CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
+
+
+		InvalidateRect(m_rSysTimeText);
+		InvalidateRect(m_rAwTipText);
+		InvalidateRect(m_rHwTipText);
+
+	}
+	else if (nIDEvent == TIMER_ID_HANDLE)
+	{
+		if (mPendMacPort.size() > 0) {
+			uint8_t id = mPendMacPort.front();
+			mPendMacPort.pop_front();
+
+			Print("%d Pend mac", id);
+
+			CCommunication::GetInstance()->GetPortMac(id);
+
+		}
+		else {
+			CCommunication::GetInstance()->Handle();
 		}
 	}
-
-	m_SysTime  = CTime::GetCurrentTime();
-
-	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
-	
-
-	InvalidateRect(m_rSysTimeText);
-	InvalidateRect(m_rAwTipText);
-	InvalidateRect(m_rHwTipText);
-
-
-	if (mPendMacPort.size() > 0) {
-	    uint8_t id  = mPendMacPort.front();
-		mPendMacPort.pop_front();
-
-		Print("%d Pend mac", id);
-
-		CCommunication::GetInstance()->GetPortMac(id);
-
-	}
-	else {
-		CCommunication::GetInstance()->Handle();
-	}
-
 	CDialogEx::OnTimer(nIDEvent);
 }
 

@@ -18,10 +18,12 @@
 
 void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 {
+	Print("ReplyHostTalk");
 	if (pDev)//空指针
 	{
 		if (ComManagement->GetOldState() == ComManagement->GetFreeState())//空闲状态下请求的
 		{
+			Print("空闲状态下请求的");
 			LONG handle = H264_DVR_StartLocalVoiceCom(pDev->GetLoginId());
 			ComManagement->mHandle = handle;
 			ComManagement->mPdev = pDev;
@@ -30,6 +32,7 @@ void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 		}
 		else if(ComManagement->GetOldState() == ComManagement->GetCameraTalkState())//摄像头讲话下请求
 		{
+			Print("摄像头讲话下请求");
 			if (ComManagement->mPdev == pDev)
 			{
 				ComManagement->SetHostTalkState();
