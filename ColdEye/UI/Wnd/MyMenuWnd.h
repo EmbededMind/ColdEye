@@ -83,6 +83,7 @@ public :
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
+	void AdapTive();
 
 
 	bool OnHomeWatch(void* param);
@@ -209,5 +210,9 @@ private:
 	int mAwTotalRecord;
 	int mAwTotalPage;
 	int mAwPage;
+
+	//adaptice
+	int mDPI;
+	int m_DispSize = 1600;
 	CPlayerWallWnd	*mPlayerWall;
 };

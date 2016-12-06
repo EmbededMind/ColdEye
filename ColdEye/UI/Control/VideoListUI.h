@@ -182,7 +182,7 @@ public:
 		}
 		pListElement->SetText(node->data()._text);
 		pListElement->SetTag((UINT_PTR)node);
-		pListElement->SetFixedHeight(65);	//¸ß¶È160
+		pListElement->SetFixedHeight(65);
 		int index = 0;
 
 		if (parent == _root)

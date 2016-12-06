@@ -150,7 +150,27 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
+	//AdapTive();
 	//m_pm.SetDPI(60);
+}
+
+void CMyMenuWnd::AdapTive()
+{
+	m_DispSize = 1600;
+	CDPI* pDpi = m_pm.GetDPIObj();
+	float m_scale;
+	//pDpi->SetDPIAwareness(PROCESS_DPI_UNAWARE);
+	// 4:3
+	float iWidth = GetSystemMetrics(SM_CXSCREEN);
+	float iHeight = GetSystemMetrics(SM_CYSCREEN);
+	//4:3
+	if (13 == (int)((iWidth / iHeight) * 10)) {
+		m_scale = ((int)((iWidth / m_DispSize) * 100)) / 100.0;
+		mDPI = m_scale*pDpi->GetDPI();
+		Print("mdpi:%d", mDPI);
+		m_pm.SetDPI(mDPI);
+	}
+	Print("Scale:%d,DPI:%d", pDpi->GetScale());
 }
 
 
@@ -877,7 +897,7 @@ void CMyMenuWnd::PlayVideo(WPARAM wParam,LPARAM lParam)
 	//int   cx = GetSystemMetrics(SM_CXSCREEN);
 	//int   cy = GetSystemMetrics(SM_CYSCREEN);
 	//::MoveWindow(mPlayerWall->GetHWND(), cx / 2 - rcPlayer.Width() / 2, 108, rcPlayer.Width(), cy-108, true);
-	//mPlayerWall->CenterWindow();
+	mPlayerWall->CenterWindow();
 	::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, wParam, lParam);
 }
 
@@ -1842,6 +1862,7 @@ Print("Third Menu Sel :%d", inx);
 				((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_light_onoff = pAlarmLight->GetValue();
 
 				((CColdEyeApp*)AfxGetApp())->StoreAlarmLightConfig();
+				::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd,USER_MSG_ALARM_LIGHT,pAlarmLight->GetValue(),NULL);
 			}
 			else {
 				pAlarmLight->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_light_onoff);

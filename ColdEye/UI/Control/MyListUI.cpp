@@ -116,6 +116,16 @@ void CMyListUI::DoEvent(TEventUI & event)
 			else
 			{
 				CDuiString name = GetParent()->GetParent()->GetName();
+				CMyListUI* pElement;
+				int inx;
+				inx = pList->GetItemIndex(this);
+				while (pList->GetItemAt(inx)) {
+					pElement = static_cast<CMyListUI*>(pList->GetItemAt(inx));
+					node = (CVideoListUI::Node*)pElement->GetTag();
+					if(node->data()._level==1)
+						infoForPlayer.push_back(pElement->Info);
+					inx++;
+				}
 				name.Assign(name,name.GetLength() - 1);
 				if (_tcscmp(name, _T("video_alarmlist")) == 0) {
 					event.wParam = RECORD_ALARM;
@@ -123,7 +133,8 @@ void CMyListUI::DoEvent(TEventUI & event)
 				else {
 					event.wParam = RECORD_NORMAl;
 				}
-				m_pManager->SendNotify(this, DUI_MSGTYPE_PLAYER, event.wParam, (LPARAM)Info);
+				m_pManager->SendNotify(this, DUI_MSGTYPE_PLAYER, event.wParam, (LPARAM)&infoForPlayer);
+				//Print("count:%d", listInfo.size());
 			}
 			if (node->data()._level == 0 && node->data()._expand) {
 				pList->SelectItem(pList->GetItemIndex(this) + 1);
@@ -161,7 +172,6 @@ void CMyListUI::DoEvent(TEventUI & event)
 				}
 			}
 		}
-
 	}
 	CListLabelElementUI::DoEvent(event);
 }
