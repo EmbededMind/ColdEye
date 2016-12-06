@@ -818,6 +818,12 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 					}
 					break;
 				}
+				case 6:
+					CCommunication::GetInstance()->ReplyControlLED(1);
+					break;
+				case 7:
+					CCommunication::GetInstance()->ReplySetLED(1);
+					break;
 				default:
 					break;
 			}
@@ -975,6 +981,6 @@ Print("MSG Stop Alarm");
 
 LRESULT CColdEyeDlg::OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam)
 {
-	Print("  dsfsdadfgnngdsdfgnbadgn");
-	return LRESULT();
+	CCommunication::GetInstance()->SetLED(wParam);
+	return LRESULT(0);
 }

@@ -36,15 +36,15 @@ void CAlarmState::StopAlarm()
 //	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 //	ComManagement->SetWaitReplyState();
 //}
-//
-//void CAlarmState::ControlLED(int Switch)
-//{
-//	Print("øÿ÷∆LED");
-//	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x06, Switch, 0x00, NULL);
-//	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-//	ComManagement->SetWaitReplyState();
-//}
-//
+
+void CAlarmState::ControlLED(int Switch)
+{
+	Print("øÿ÷∆LED");
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x06, Switch, 0x00, NULL);
+	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
+	ComManagement->SetWaitReplyState();
+}
+
 //void CAlarmState::SetLED(int isON)
 //{
 //	Print("…Ë÷√LED");

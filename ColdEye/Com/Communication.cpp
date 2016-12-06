@@ -148,30 +148,35 @@ IState * CCommunication::GetOldState()
 
 void CCommunication::SetFreeState()
 {
+	Print("转到空闲状态");
 	mOldState = mState;
 	mState = FreeState;
 }
 
 void CCommunication::SetAlarmState()
 {
+	Print("转到报警状态");
 	mOldState = mState;
 	mState = AlarmState;
 }
 
 void CCommunication::SetCameraTalkState()
 {
+	Print("转到摄像头讲话状态");
 	mOldState = mState;
 	mState = CameraTalkState;
 }
 
 void CCommunication::SetHostTalkState()
 {
+	Print("转到主机讲话状态");
 	mOldState = mState;
 	mState = HostTalkState;
 }
 
 void CCommunication::SetWaitReplyState()
 {
+	Print("转到等待状态");
 	mOldState = mState;
 	mState = WaitReplyState;
 }

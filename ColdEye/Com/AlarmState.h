@@ -19,7 +19,7 @@ public:
 	void StopTalk();
 	void StopAlarm();
 	//void SetVolume(CCamera *pDev, int Volume);
-	//void ControlLED(int Switch);
+	void ControlLED(int Switch);
 	//void SetLED(int isON);
 	//void Handle();
 	//void GetPortMac(int port);
