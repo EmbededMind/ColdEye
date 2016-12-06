@@ -183,5 +183,6 @@ void CCommunication::SetWaitReplyState()
 
 void CCommunication::RecoveState()
 {
+	Print("·µ»ØÔ­À´×´Ì¬");
 	mState = mOldState;
 }
