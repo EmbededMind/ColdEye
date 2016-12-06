@@ -1185,10 +1185,19 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 				CMsgSquare::GetInstance()->Broadcast(msg);
 
 				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
+
+				mReverseBtn.ShowWindow(SW_HIDE);
+				mDelBtn.ShowWindow(SW_HIDE);
+
+				this->SetFocus();
+				if (m_bIsRealPlaying) {
+					H264_PLAY_Pause(m_lPlayPort, 0);
+				}
 			}
 			// É¾³ýÉãÏñÍ·
 			else if (lParam == (LPARAM)&mDelBtn) {
 
+				// Do show confirm window
 				// if (IDOK)
 				Print("Clicked delete camera");
 				OnCameraLogOff();
