@@ -132,6 +132,7 @@ public:
 	afx_msg void OnNcPaint();
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	virtual BOOL OnEraseBkgnd(CDC* pDC);
 protected:
 	afx_msg LRESULT OnUserMsgRelogin(WPARAM wParam, LPARAM lParam);
 public:

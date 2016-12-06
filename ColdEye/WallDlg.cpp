@@ -554,8 +554,8 @@ BOOL CWallDlg::OnEraseBkgnd(CDC * pDC)
 	CRect rc;
 	GetClientRect(&rc);
 	pDC->FillSolidRect(&rc, RGB(64,84,115));
-	//return CFrameWnd::OnEraseBkgnd(pDC);   
-	return TRUE;
+  
+	return FALSE;
 }
 
 void CWallDlg::OnPaint()

@@ -822,15 +822,9 @@ Print("Zoom in");
 	if (mIsLargeMode) {
 		mIsLargeMode = false;
 
-		//DWORD style  = ::GetWindowLong(GetSafeHwnd(), GWL_STYLE);
-		//style  &= ~WS_POPUP;
-		//style  |= WS_CHILD;
-		//::SetWindowLong(GetSafeHwnd(), GWL_STYLE, style);
-		//
-		//SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
-
-		SetParent(pSaveParent);
 		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
+
+		SetParent(pSaveParent);		
 	}
 }
 
@@ -843,15 +837,16 @@ Print("Zoom out");
 		mIsLargeMode  = true;
 		pSaveParent  = GetParent();
 
-
-		SetParent(GetDesktopWindow());
-
+		
 		CRect rc;
-		GetDesktopWindow()->GetWindowRect(&rc);
+		AfxGetMainWnd()->GetClientRect(&rc);
 
+		SetParent(AfxGetMainWnd());
 
-
-		SetWindowPos(&wndTopMost, rc.left, rc.top, rc.right, rc.bottom, SWP_SHOWWINDOW);
+		SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		SetWindowPos(pSaveParent, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		
+		this->SetFocus();
 	}
 }
 
@@ -881,6 +876,7 @@ void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_WM_SETFOCUS()
 	ON_WM_NCPAINT()
+	ON_WM_ERASEBKGND()
 	ON_WM_KILLFOCUS()
 	ON_WM_TIMER()
 	ON_MESSAGE(USER_MSG_RELOGIN, &CSurface::OnUserMsgRelogin)
@@ -1017,6 +1013,7 @@ int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mDelBtn.ModifyStyle(0, BS_OWNERDRAW);
 	mDelBtn.ShowWindow(SW_HIDE);
 
+
 	CMsgSquare* pSquare  = CMsgSquare::GetInstance();
 
 	pSquare->AddAudience(m_hWnd, USER_MSG_CAMERA_CONFIG_AWTIME);
@@ -1053,8 +1050,12 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN) { 
-
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (mIsLargeMode) {
+			return true;
+		}
+	}
+	else if (pMsg->message == WM_KEYDOWN) { 			
 		switch (pMsg->wParam)
 		{
 			case VK_F8:
@@ -1073,6 +1074,30 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 					ZoomOut();
 				}
 				return true;
+				break;
+			//------------------------------------------
+			case VK_LEFT:
+				if (mIsLargeMode) {
+					return true;
+				}
+			break;
+			//------------------------------------------
+			case VK_RIGHT:
+				if (mIsLargeMode) {
+					return true;
+				}
+			break;
+			//------------------------------------------
+			case VK_UP:
+				if (mIsLargeMode) {
+					return true;
+				}
+				break;
+			//------------------------------------------
+			case VK_DOWN:
+				if (mIsLargeMode) {
+					return true;
+				}
 				break;
 			//------------------------------------------
 			default:
@@ -1328,3 +1353,11 @@ void CSurface::OnClose()
 	CWnd::OnClose();
 }
 
+
+BOOL CSurface::OnEraseBkgnd(CDC* pDC)
+{
+	CRect rClient;
+	GetClientRect(rClient);
+	pDC->FillSolidRect(rClient, RGB(0, 0, 0));
+	return TRUE;
+}
