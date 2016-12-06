@@ -803,33 +803,34 @@ BOOL CSurface::RegisterWindowClass(HINSTANCE hInstance)
 }
 
 
-void CSurface::SetPos(int x, int y, int cx, int cy)
-{
-	SetPos(CRect(x, y, cx, cy));
-}
-
-
 void CSurface::SetPos(CRect& r)
 {
-	SetSplitPosParam(r);
+	mSplitPos  = r;
+
 	if (!mIsLargeMode) {
-		this->SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.right, mSplitPos.bottom, 0);
+		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
 	}	
 }
 
 
-void CSurface::SetSplitPosParam(CRect& r)
-{
-	
-}
+
 
 
 void CSurface::ZoomIn()
 {
+Print("Zoom in");
 	if (mIsLargeMode) {
 		mIsLargeMode = false;
-		ModifyStyle(WS_POPUP, WS_CHILD);
-		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.right, mSplitPos.bottom, 0);
+
+		//DWORD style  = ::GetWindowLong(GetSafeHwnd(), GWL_STYLE);
+		//style  &= ~WS_POPUP;
+		//style  |= WS_CHILD;
+		//::SetWindowLong(GetSafeHwnd(), GWL_STYLE, style);
+		//
+		//SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
+
+		SetParent(pSaveParent);
+		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
 	}
 }
 
@@ -837,16 +838,18 @@ void CSurface::ZoomIn()
 
 void CSurface::ZoomOut()
 {
+Print("Zoom out");
 	if (!mIsLargeMode) {
 		mIsLargeMode  = true;
-		ModifyStyle(WS_CHILD, WS_POPUP);
-		int  ScreenHeight  = GetSystemMetrics(SM_CXFULLSCREEN);
-		int  ScreenWidth   = GetSystemMetrics(SM_CYFULLSCREEN);
+		pSaveParent  = GetParent();
 
-		int  height  = ScreenHeight;
-		int  width   = height * 4 /3;
 
-		SetWindowPos(NULL, (ScreenWidth- width)/2, 0, width, height, SWP_SHOWWINDOW);
+		SetParent(GetDesktopWindow());
+
+		CRect rc;
+		GetDesktopWindow()->GetWindowRect(&rc);
+
+		SetWindowPos(&wndTopMost, rc.left, rc.top, rc.right, rc.bottom, SWP_SHOWWINDOW);
 	}
 }
 
@@ -897,18 +900,7 @@ END_MESSAGE_MAP()
 
 // CSurface 消息处理程序
 
-void CSurface::OnPaint()
-{
-	CPaintDC dc(this); // device context for painting
-					   // TODO: 在此处添加消息处理程序代码
-					   // 不为绘图消息调用 CWnd::OnPaint()
-					   //CRect rect;
-					   //this->GetClientRect(rect);
 
-					   //dc.MoveTo(0, 0);
-					   //dc.LineTo(rect.right, rect.bottom);
-
-}
 
 
 void CSurface::OnSetFocus(CWnd* pOldWnd)
@@ -1079,6 +1071,8 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				else {
 					ZoomOut();
 				}
+
+				return true;
 				break;
 			//------------------------------------------
 			default:
@@ -1332,3 +1326,18 @@ void CSurface::OnClose()
 	
 	CWnd::OnClose();
 }
+
+
+
+void CSurface::OnPaint()
+{
+	CPaintDC dc(this);
+
+	CRect rClient;
+	GetClientRect(rClient);
+
+	dc.MoveTo(rClient.left, rClient.top);
+	dc.LineTo(rClient.right, rClient.bottom);
+
+}
+

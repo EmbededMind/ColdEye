@@ -142,8 +142,8 @@ void CColdEyeDlg::UpdateLayout()
 
 	GetDlgItem(IDC_UFLASH)->MoveWindow(rFlash);
 
-
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height - title_height /5, 0);
+	Print("Set wall pos (x:%d y:%d cx:%d cy:%d)", rClient.left, rClient.top+title_height, rClient.Width(), rClient.Height()-title_height);
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height, SWP_NOZORDER);
 }
 
 
