@@ -165,6 +165,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	         //UEER_MSG_CAMERA_CONFIG_CHANGE
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CColdEyeDlg::OnUserMsgCameraConfigChange)
 	ON_MESSAGE(USER_MSG_STOP_ALARM, &CColdEyeDlg::OnUserMsgStopAlarm)
+	ON_MESSAGE(USER_MSG_ALARM_LIGHT, &CColdEyeDlg::OnUserMsgSetAlarmLight)
 END_MESSAGE_MAP()
 
 
@@ -209,7 +210,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	mWall.ShowWindow(SW_SHOW);
 
 	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
-	//::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
+	::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
 	mMenu.ShowWindow(false);
 
 	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
@@ -942,4 +943,10 @@ Print("MSG Stop Alarm");
 	CCamera *pDev = (CCamera*)lParam;
 	CCommunication::GetInstance()->OverAlarm(pDev);
 	return 0;
+}
+
+LRESULT CColdEyeDlg::OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam)
+{
+	Print("  dsfsdadfgnngdsdfgnbadgn");
+	return LRESULT();
 }

@@ -25,5 +25,6 @@ public:
 public:
 	int	mhintNumber;
 	CRecordFileInfo* Info;
+	list<CRecordFileInfo*> infoForPlayer;
 };
 

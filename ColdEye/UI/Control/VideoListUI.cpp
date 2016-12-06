@@ -130,7 +130,7 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 			CompareBeginTime(refTime, tbegin, tend, pInfo, pNode);
 		}
 		else {
-			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
+			pNode = AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 		}
 	}
 	else { //无任何头结点
