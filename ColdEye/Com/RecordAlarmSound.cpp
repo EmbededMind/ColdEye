@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RecordAlarmSound.h"
 #include "Com\Alaw_encoder.h"
-#include "Com\Communication.h"
+//#include "Com\Communication.h"
 #include "shlwapi.h"
 
 CRecordAlarmSound::~CRecordAlarmSound()
@@ -41,7 +41,6 @@ void CRecordAlarmSound::SetMyTimer()
 {
 	if(!m_TimeIdStopAlarm)
 		m_TimeIdStopAlarm = SetTimer(NULL ,NULL, 30000, MyTimerProcAlarm);
-	//m_TimeIdStopLED = SetTimer(NULL, NULL, 60000, );
 }
 
 void CRecordAlarmSound::MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
@@ -60,7 +59,6 @@ BOOL CRecordAlarmSound::StopTalk()
 
 	StopTalkPlay(m_port);	//关闭数据流,已共享的方式关闭播放声音，关闭播放通道
 	H264_DVR_StopVoiceCom(m_TalkHandle);	//停止语音对讲
-	CCommunication::GetInstance()->CleanChannel();
 	m_TalkHandle = 0;
 	return true;
 }
@@ -70,7 +68,6 @@ void __stdcall TalkDataCallBack(LONG lTalkHandle, char *pDataBuf, long dwBufSize
 	if (pDevice)
 	{
 		pDevice->InputTalkData((BYTE *)pDataBuf, dwBufSize);
-		/*PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(pDevice->m_pPlayCamera));*/
 	}
 }
 void __stdcall AudioDataCallBack(LPBYTE pDataBuffer, DWORD dwDataLength, long nUser)
@@ -95,8 +92,6 @@ void CRecordAlarmSound::Record(CCamera *pCamera)
 	BOOL bRet = H264_PLAY_StartAudioCapture(AudioDataCallBack, nAudioBit, dwSampleRate, nLen, (long)this);//回调中又创建了文件,开始录影
 																										  //bRet = StartTalkPlay(499);//这个是从摄像头回来的，录音是不需要的
 	long lHandle = H264_DVR_StartVoiceCom_MR(pCamera->GetLoginId(), TalkDataCallBack, (DWORD)this);//二：开启语音对讲，负责数据转发，接受从摄像头发过来的数据
-	CCommunication::GetInstance()->mTalkHandle = lHandle;
-	CCommunication::GetInstance()->mPdev = pCamera;
 	if (lHandle <= 0)//输入音频
 	{
 		//stop audio data capture
@@ -138,13 +133,6 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
 	Print("Play");
 	m_pPlayCamera = pCamera;
-	if (!m_isAlarm)
-		m_isAlarm = true;
-	else
-	{
-		Print("m_isAlarm == true");
-		return 0;
-	}
 	SetMyTimer();
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
@@ -188,8 +176,6 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 	BOOL bRet = H264_PLAY_StartAudioCapture(AudioDataCallBack_2, nAudioBit, dwSampleRate, nLen, (long)this);//打开音频采集功能
 	long handle;
 	handle = H264_DVR_StartVoiceCom_MR(pCamera->GetLoginId(), TalkDataCallBack, (DWORD)this);//二：开启语音对讲，负责数据转发
-	CCommunication::GetInstance()->mTalkHandle = handle;
-	CCommunication::GetInstance()->mPdev = pCamera;
 	if (handle <= 0)//输入音频
 	{
 		//stop audio data capture

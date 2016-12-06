@@ -1105,15 +1105,14 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 					switch (pMsg->wParam)
 					{
 					case 'T':
-						CCommunication::GetInstance()->AskTalk(this->m_BindedCamera);
+						CCommunication::GetInstance()->HostTalk(this->m_BindedCamera);
 						return TRUE;
-
 					case 'O':
-						CCommunication::GetInstance()->YouTalk();
+						CCommunication::GetInstance()->CameraTalk();
 						return true;
 
 					case 'S':
-						CCommunication::GetInstance()->OverTalk();
+						CCommunication::GetInstance()->StopTalk();
 						return true;
 
 					default:

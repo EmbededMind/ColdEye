@@ -6,11 +6,10 @@
 #include "WallDlg.h"
 #include "afxdialogex.h"
 #include "Com\Communication.h"
-
 #include "Pattern\MsgSquare.h"
-
-
 #include "Device\PortManager.h"
+#include "Com\Util.h"
+
 
 /**@brief 报警消息回调
  *
