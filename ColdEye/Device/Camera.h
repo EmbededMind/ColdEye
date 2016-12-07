@@ -77,6 +77,7 @@ public:
 
 	BOOL SetClientWindow(HWND hWnd);
 
+	BOOL SetCameraTime(CTime& time);
 
 	void OnLogin();
 
