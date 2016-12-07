@@ -214,6 +214,37 @@ BOOL CCamera::Login()
 
 
 
+BOOL CCamera::SetCameraTime(CTime& time)
+{
+	SDK_SYSTEM_TIME sdkTime;
+	sdkTime.year      = time.GetYear();
+	sdkTime.month     = time.GetMonth();
+	sdkTime.day       = time.GetDay();
+	sdkTime.wday      = time.GetDayOfWeek();
+	sdkTime.hour      = time.GetHour();
+	sdkTime.minute    = time.GetMinute();
+	sdkTime.second    = time.GetSecond();
+	sdkTime.isdst     = 0;
+	
+	if (m_LoginId > 0) {
+		if(H264_DVR_SetSystemDateTime(m_LoginId, &sdkTime)){
+			return TRUE;
+		}
+		else{
+			Print("设置时间失败:%d", H264_DVR_GetLastError());
+			return FALSE;
+		}
+	}
+	else {
+		Print("无效登录句柄");
+	}
+
+	return FALSE;
+}
+
+
+
+
 void CCamera::OnLogin()
 {
 

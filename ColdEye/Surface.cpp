@@ -846,6 +846,7 @@ Print("Zoom out");
 		SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		SetWindowPos(pSaveParent, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		
+
 		this->SetFocus();
 	}
 }
