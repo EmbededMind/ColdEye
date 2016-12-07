@@ -93,9 +93,10 @@ void CWaitReplyState::ReplyStopAlarm(CCamera *pDev)
 	if (pDev)
 	{
 		CRecordAlarmSound::GetInstance()->StopTalk();
+		ComManagement->SetFreeState();
 		return;
 	}
-	CRecordAlarmSound::GetInstance()->StopTalk();
+	ComManagement->SetFreeState();
 }
 
 void CWaitReplyState::ReplySetVolume(bool isSucceed)
