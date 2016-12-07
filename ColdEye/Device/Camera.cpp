@@ -292,7 +292,6 @@ void CCamera::SetSDKCameraParam()
 	if (lRet < 0) {
 		Print("Set camear param failed:%d", H264_DVR_GetLastError());
 	}
-
 }
 
 
@@ -308,11 +307,12 @@ void CCamera::GetSDKCameraParam()
 	if (lRet < 0) {
 		Print("Get camera param failed:%d", H264_DVR_GetLastError());
 	}
+	else {
+		Print("Get camear param ok");
 #ifdef _DEBUG
-	else if (lRet > 0) {
 		DumpParam();
-	}
 #endif
+	}
 }
 
 

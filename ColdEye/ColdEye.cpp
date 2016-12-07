@@ -511,6 +511,7 @@ UINT __stdcall LoginThread(PVOID pM)
 					if (pCamera->Login())
 					{
 						pCamera->SetCameraTime(CTime::GetCurrentTime());
+						pCamera->GetSDKCameraParam();
 						PostMessage(pWallDlg->m_hWnd, USER_MSG_LOGIN, true, msg.lParam);
 					}
 					else
