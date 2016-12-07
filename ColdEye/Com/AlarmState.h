@@ -17,7 +17,7 @@ public:
 
 	void HostTalk(CCamera *pDev);
 	void StopTalk();
-	void StopAlarm();
+	void StopAlarm(CCamera *pDev);
 	//void SetVolume(CCamera *pDev, int Volume);
 	void ControlLED(int Switch);
 	//void SetLED(int isON);

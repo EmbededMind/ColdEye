@@ -28,9 +28,10 @@ void CCommunication::Alarm(CCamera *pDev)
 	mState->Alarm(pDev);
 }
 
-void CCommunication::StopAlarm()
+void CCommunication::StopAlarm(CCamera *pDev)
 {
-	mState->StopAlarm();
+	Print("CCommunication StopAlarm");
+	mState->StopAlarm(pDev);
 }
 
 void CCommunication::SetVolume(CCamera *pDev, int Volume)

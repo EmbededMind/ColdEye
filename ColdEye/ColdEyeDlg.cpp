@@ -988,7 +988,7 @@ LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
 {
 Print("MSG Stop Alarm");
 	CCamera *pDev = (CCamera*)lParam;
-	CCommunication::GetInstance()->StopAlarm();
+	CCommunication::GetInstance()->StopAlarm(pDev);
 	return 0;
 }
 
