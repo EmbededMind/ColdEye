@@ -43,7 +43,7 @@ public:
 	void CameraTalk();
 	void StopTalk();
 	void Alarm(CCamera *pDev);
-	void StopAlarm();
+	void StopAlarm(CCamera *pDev);
 	void SetVolume(CCamera *pDev, int Volume);
 	void ControlLED(int Switch);
 	void SetLED(int isON);

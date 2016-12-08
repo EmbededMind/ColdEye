@@ -18,15 +18,15 @@ void CAlarmState::StopTalk()
 	Print("报警中...取消报警...");
 	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, ComManagement->mPdev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetFreeState();
+	ComManagement->SetWaitReplyState();
 }
 
-void CAlarmState::StopAlarm()
+void CAlarmState::StopAlarm(CCamera *pDev)
 {
 	Print("报警中...取消报警...");
 	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, ComManagement->mPdev);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetFreeState();
+	ComManagement->SetWaitReplyState();
 }
 
 //void CAlarmState::SetVolume(CCamera *pDev, int Volume)

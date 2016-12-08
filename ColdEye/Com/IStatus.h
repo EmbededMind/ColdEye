@@ -8,7 +8,7 @@ public:
 	virtual void CameraTalk(CCamera *pDev) {};
 	virtual void StopTalk() {};
 	virtual void Alarm(CCamera *pDev) {};
-	virtual void StopAlarm() {};
+	virtual void StopAlarm(CCamera *pDev) {};
 	virtual void SetVolume(CCamera *pDev, int Volume) {};
 	virtual void ControlLED(int Switch) {};
 	virtual void SetLED(int isON) {};

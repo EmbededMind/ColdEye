@@ -42,7 +42,7 @@ void CFreeState::ControlLED(int Switch)
 void CFreeState::SetLED(int isON)
 {
 	Print("ÉèÖÃLED");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x07, isON, 0x00, NULL);
+	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x07, 0x01, isON, NULL);
 	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
 	ComManagement->SetWaitReplyState();
 }

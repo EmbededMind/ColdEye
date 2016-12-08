@@ -71,6 +71,7 @@ void CWaitReplyState::ReplyStopTalk()
 		ComManagement->mHandle = NULL;
 		ComManagement->mPdev = NULL;
 		ComManagement->SetFreeState();
+		return;
 	}
 	ComManagement->SetFreeState();
 }
@@ -82,6 +83,7 @@ void CWaitReplyState::ReplyAlarm(CCamera *pDev)
 		uint8_t type = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_id;
 		CRecordAlarmSound::GetInstance()->Play(pDev, type);
 		ComManagement->SetAlarmState();
+		return;
 	}
 	ComManagement->SetFreeState();
 }
@@ -91,9 +93,10 @@ void CWaitReplyState::ReplyStopAlarm(CCamera *pDev)
 	if (pDev)
 	{
 		CRecordAlarmSound::GetInstance()->StopTalk();
+		ComManagement->SetFreeState();
 		return;
 	}
-	CRecordAlarmSound::GetInstance()->StopTalk();
+	ComManagement->SetFreeState();
 }
 
 void CWaitReplyState::ReplySetVolume(bool isSucceed)
