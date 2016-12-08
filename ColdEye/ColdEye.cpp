@@ -242,6 +242,7 @@ bool CColdEyeApp::LoadSystemConfig()
 		m_SysConfig.alarm_sound_id =             stmt->ValueInt(6);
 		m_SysConfig.brightness =                 stmt->ValueInt(7);
 		m_SysConfig.volumn =                     stmt->ValueInt(8);
+		m_SysConfig.alarm_sound_sec  =           stmt->ValueInt(9);
 		return true;
 	}
 	else {
@@ -272,9 +273,9 @@ void CColdEyeApp::MakeSystemConfigDefault()
 	m_SysConfig.volumn = 5;
 
 
-	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d,%d, %d, %d, %d, %d);",
+	sprintf_s(sqlStmt, "INSERT INTO host_config VALUES('%s', %d, %d, %d,%d, %d, %d, %d, %d,%d);",
 		m_SysConfig.boat_name.c_str(), m_SysConfig.auto_watch_on,m_SysConfig.watch_time_begining, m_SysConfig.watch_time_end,
-		m_SysConfig.alarm_light_onoff, m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id, m_SysConfig.brightness, m_SysConfig.volumn);
+		m_SysConfig.alarm_light_onoff, m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id, m_SysConfig.brightness, m_SysConfig.volumn, m_SysConfig.alarm_sound_sec);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
@@ -300,7 +301,7 @@ void CColdEyeApp::StoreAlarmLightConfig()
 void CColdEyeApp::StoreAlarmSoundConfig()
 {
 	char sqlStmt[64];
-	sprintf_s(sqlStmt, "UPDATE host_config SET arm_snd_on = %d, arm_snd_id = %d;",m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id);
+	sprintf_s(sqlStmt, "UPDATE host_config SET arm_snd_on = %d, arm_snd_id = %d, arm_snd_sec = %d;",m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id, m_SysConfig.alarm_sound_sec);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
@@ -510,6 +511,8 @@ UINT __stdcall LoginThread(PVOID pM)
 
 					if (pCamera->Login())
 					{
+						pCamera->SetCameraTime(CTime::GetCurrentTime());
+						pCamera->GetSDKCameraParam();
 						PostMessage(pWallDlg->m_hWnd, USER_MSG_LOGIN, true, msg.lParam);
 					}
 					else

@@ -10,7 +10,7 @@
 #include "Com\Communication.h"
 #include "Dbt.h"
 #include "ExHardDrive\ExHardDrive.h"
-
+#include "Com\Util.h"
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
 
@@ -142,7 +142,8 @@ void CColdEyeDlg::UpdateLayout()
 
 	GetDlgItem(IDC_UFLASH)->MoveWindow(rFlash);
 
-	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height - title_height /5, 0);
+	Print("Set wall pos (x:%d y:%d cx:%d cy:%d)", rClient.left, rClient.top+title_height, rClient.Width(), rClient.Height()-title_height);
+	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height, SWP_NOZORDER);
 
 
 	CRect rectDlg;
@@ -213,8 +214,6 @@ BOOL CColdEyeDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
 	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
-	SetWindowLong(m_hWnd, GWL_STYLE, GetWindowLong(m_hWnd, GWL_STYLE) & ~WS_CAPTION); //去标题栏
-	SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME));
 	mWall.ShowWindow(SW_SHOW);
 
 
@@ -222,9 +221,13 @@ BOOL CColdEyeDlg::OnInitDialog()
 	mMenu.ShowWindow(false);
 
 
-	//SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);	
+	
 	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
+
+	LONG style  = GetWindowLong(m_hWnd, GWL_STYLE);
+	SetWindowLong(m_hWnd, GWL_STYLE,  style & (~(WS_CAPTION | WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME)));
 	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
+
 	mWall.SetFocus();
 
 	if (CSerialPort::GetInstance(COM_KB)->InitPort(this, COM_KB, 9600, 'N', 8, 1, EV_RXCHAR, 512))
@@ -257,6 +260,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 
 	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
+	SetTimer(TIMER_ID_HANDLE, 10000, NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -651,46 +655,79 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		//.....
 
 		//if (p->ch[1] == 0x02 && p->ch[2] == 0x01)
+		uint64_t mac64 = CUtil::ArrayToUint64(&p->ch[6]);
+		CCamera *pDev;
+		if (Mac_CCamera_Map.find(mac64) == Mac_CCamera_Map.end())
+		{
+			Print("pDev == NULL");
+			pDev = NULL;
+		}
+		else
+		{
+			Print("pDev != NULL");
+			pDev = Mac_CCamera_Map[mac64];
+		}
+		
 		if (true)
 		{
 			switch (p->ch[3])
 			{
 			case 0x01:
-				CCommunication::GetInstance()->RecSetVolumeProc(p->ch);
+				if(p->ch[5] == 1)
+					CCommunication::GetInstance()->ReplySetVolume(pDev);
+				else
+					CCommunication::GetInstance()->ReplySetVolume(0);
 				break;
 			case 0x02:
+				Print("case 0x02");
 				switch (p->ch[4])
 				{
 				case 1:
-					CCommunication::GetInstance()->RecTalkProc(p->ch);
+					Print("p->ch[4] == 1");
+					if (p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyHostTalk(pDev);
+					else
+						CCommunication::GetInstance()->ReplyHostTalk(0);
 					break;
 				case 2:
-					CCommunication::GetInstance()->RecYouTalkProc(p->ch);
+					Print("p->ch[4] == 2");
+					if (p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyCameraTalk(pDev);
+					else
+						CCommunication::GetInstance()->ReplyCameraTalk(0);
 					break;
 				case 3:
-					CCommunication::GetInstance()->RecOverTalkProc(p->ch);
+					Print("p->ch[4] == 3");
+					CCommunication::GetInstance()->ReplyStopTalk();
 					break;
 				default:
 					break;
 				}
 				break;
 			case 0x03:
-				CCommunication::GetInstance()->ReplyTalk(p->ch);
+				CCommunication::GetInstance()->ReplyCameraAskTalk(pDev);
 				break;
 			case 0x04:
 				if (p->ch[4] == 1)
 				{
-					CCommunication::GetInstance()->RecAlarmProc(p->ch);
+					if(p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyAlarm(pDev);
+					else
+						CCommunication::GetInstance()->ReplyAlarm(0);
 				}
 				if (p->ch[4] == 2)
 				{
-					CCommunication::GetInstance()->RecOverAlarmProc(p->ch);
+					if (p->ch[5] == 1)
+						CCommunication::GetInstance()->ReplyStopAlarm(pDev);
+					else
+						CCommunication::GetInstance()->ReplyStopAlarm(0);
 				}
 				break;
 			case 0x05:
 				/*CCommunication::GetInstance()->RecHandleProc(p->ch);*/
 				if (p->ch[4] == 1)  //端口状态信息。
 				{
+					CCommunication::GetInstance()->ReplyHandle(1);
 					CPortManager*  pPortMgr  = CPortManager::GetInstance();
 					CPort*         pPort ;
 					for (int i = 0; i < 6; i++) {
@@ -734,6 +771,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				}
 				else if (p->ch[4] == 2) //端口mac
 				{
+					CCommunication::GetInstance()->ReplyGetPortMac(1);
 					//for (int i = 0; i < p->num; i++) {
 					//	printf("%02X ", p->ch[i]);
 					//}
@@ -797,6 +835,12 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 					}
 					break;
 				}
+				case 6:
+					CCommunication::GetInstance()->ReplyControlLED(1);
+					break;
+				case 7:
+					CCommunication::GetInstance()->ReplySetLED(1);
+					break;
 				default:
 					break;
 			}
@@ -873,40 +917,44 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 	//发送握手
 	static int i = 0;
 	static int CntDiv_10S  = 0;
-	CntDiv_10S++;
-	if (CntDiv_10S >= 10) {
-		CntDiv_10S  = 0;
+	if (nIDEvent == TIMER_ID_SECOND_TICK)
+	{
+		CntDiv_10S++;
+		if (CntDiv_10S >= 10) {
+			CntDiv_10S = 0;
 
-		if (mSearchPort.size() > 0) {
-			CPort* pPort  = mSearchPort.front();
-			mSearchPort.pop_front();
-			PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+			if (mSearchPort.size() > 0) {
+				CPort* pPort = mSearchPort.front();
+				mSearchPort.pop_front();
+				PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
+			}
+		}
+
+		m_SysTime = CTime::GetCurrentTime();
+
+		CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
+
+
+		InvalidateRect(m_rSysTimeText);
+		InvalidateRect(m_rAwTipText);
+		InvalidateRect(m_rHwTipText);
+
+	}
+	else if (nIDEvent == TIMER_ID_HANDLE)
+	{
+		if (mPendMacPort.size() > 0) {
+			uint8_t id = mPendMacPort.front();
+			mPendMacPort.pop_front();
+
+			Print("%d Pend mac", id);
+
+			CCommunication::GetInstance()->GetPortMac(id);
+
+		}
+		else {
+			CCommunication::GetInstance()->Handle();
 		}
 	}
-
-	m_SysTime  = CTime::GetCurrentTime();
-
-	CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
-	
-
-	InvalidateRect(m_rSysTimeText);
-	InvalidateRect(m_rAwTipText);
-	InvalidateRect(m_rHwTipText);
-
-
-	if (mPendMacPort.size() > 0) {
-	    uint8_t id  = mPendMacPort.front();
-		mPendMacPort.pop_front();
-
-		Print("%d Pend mac", id);
-
-		CCommunication::GetInstance()->Handle(2, id);
-
-	}
-	else {
-		CCommunication::GetInstance()->Handle(1);
-	}
-
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -937,7 +985,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 		if (pPort->m_Id) {
 			// 向 m_Id 号端口发送 设置 音量命令。
 			Print("Set %d camera vol:%d", pPort->m_Id, pConfig->Volumn);
-			CCommunication::GetInstance()->AskSetVolume(pPort->m_pCamera, pConfig->Volumn);
+			CCommunication::GetInstance()->SetVolume(pPort->GetCamera(), pConfig->Volumn);
 		}
 	}
 
@@ -948,12 +996,12 @@ LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
 {
 Print("MSG Stop Alarm");
 	CCamera *pDev = (CCamera*)lParam;
-	CCommunication::GetInstance()->OverAlarm(pDev);
+	CCommunication::GetInstance()->StopAlarm(pDev);
 	return 0;
 }
 
 LRESULT CColdEyeDlg::OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam)
 {
-	Print("  dsfsdadfgnngdsdfgnbadgn");
-	return LRESULT();
+	CCommunication::GetInstance()->SetLED(wParam);
+	return LRESULT(0);
 }

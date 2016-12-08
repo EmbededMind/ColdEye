@@ -89,10 +89,7 @@ public:
 	void          OnCameraLogOff();                 //É¾³ýÉãÏñ»ú
 	
 	void          Delete();
-
-	void          SetPos(CRect& rPos);
-	void          SetPos(int x, int y, int cx, int cy);
-	void          SetSplitPosParam(CRect& rPos);
+	void          SetPos(CRect& r);
 
 
 protected:
@@ -121,19 +118,21 @@ private:
 
 	bool          mIsLargeMode;
 
+	CWnd*         pSaveParent;
 	CRect         mSplitPos;
 	void          ZoomOut();
 	void          ZoomIn();
+
 
 protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg void OnNcPaint();
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	virtual BOOL OnEraseBkgnd(CDC* pDC);
 protected:
 	afx_msg LRESULT OnUserMsgRelogin(WPARAM wParam, LPARAM lParam);
 public:

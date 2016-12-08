@@ -803,33 +803,28 @@ BOOL CSurface::RegisterWindowClass(HINSTANCE hInstance)
 }
 
 
-void CSurface::SetPos(int x, int y, int cx, int cy)
-{
-	SetPos(CRect(x, y, cx, cy));
-}
-
-
 void CSurface::SetPos(CRect& r)
 {
-	SetSplitPosParam(r);
+	mSplitPos  = r;
+
 	if (!mIsLargeMode) {
-		this->SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.right, mSplitPos.bottom, 0);
+		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
 	}	
 }
 
 
-void CSurface::SetSplitPosParam(CRect& r)
-{
-	
-}
+
 
 
 void CSurface::ZoomIn()
 {
+Print("Zoom in");
 	if (mIsLargeMode) {
 		mIsLargeMode = false;
-		ModifyStyle(WS_POPUP, WS_CHILD);
-		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.right, mSplitPos.bottom, 0);
+
+		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
+
+		SetParent(pSaveParent);		
 	}
 }
 
@@ -837,16 +832,22 @@ void CSurface::ZoomIn()
 
 void CSurface::ZoomOut()
 {
+Print("Zoom out");
 	if (!mIsLargeMode) {
 		mIsLargeMode  = true;
-		ModifyStyle(WS_CHILD, WS_POPUP);
-		int  ScreenHeight  = GetSystemMetrics(SM_CXFULLSCREEN);
-		int  ScreenWidth   = GetSystemMetrics(SM_CYFULLSCREEN);
+		pSaveParent  = GetParent();
 
-		int  height  = ScreenHeight;
-		int  width   = height * 4 /3;
+		
+		CRect rc;
+		AfxGetMainWnd()->GetClientRect(&rc);
 
-		SetWindowPos(NULL, (ScreenWidth- width)/2, 0, width, height, SWP_SHOWWINDOW);
+		SetParent(AfxGetMainWnd());
+
+		SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		SetWindowPos(pSaveParent, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		
+
+		this->SetFocus();
 	}
 }
 
@@ -874,9 +875,9 @@ void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 
 
 BEGIN_MESSAGE_MAP(CSurface, CWnd)
-	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
 	ON_WM_NCPAINT()
+	ON_WM_ERASEBKGND()
 	ON_WM_KILLFOCUS()
 	ON_WM_TIMER()
 	ON_MESSAGE(USER_MSG_RELOGIN, &CSurface::OnUserMsgRelogin)
@@ -897,18 +898,7 @@ END_MESSAGE_MAP()
 
 // CSurface 消息处理程序
 
-void CSurface::OnPaint()
-{
-	CPaintDC dc(this); // device context for painting
-					   // TODO: 在此处添加消息处理程序代码
-					   // 不为绘图消息调用 CWnd::OnPaint()
-					   //CRect rect;
-					   //this->GetClientRect(rect);
 
-					   //dc.MoveTo(0, 0);
-					   //dc.LineTo(rect.right, rect.bottom);
-
-}
 
 
 void CSurface::OnSetFocus(CWnd* pOldWnd)
@@ -1024,6 +1014,7 @@ int CSurface::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mDelBtn.ModifyStyle(0, BS_OWNERDRAW);
 	mDelBtn.ShowWindow(SW_HIDE);
 
+
 	CMsgSquare* pSquare  = CMsgSquare::GetInstance();
 
 	pSquare->AddAudience(m_hWnd, USER_MSG_CAMERA_CONFIG_AWTIME);
@@ -1060,8 +1051,12 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN) { 
-
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (mIsLargeMode) {
+			return true;
+		}
+	}
+	else if (pMsg->message == WM_KEYDOWN) { 			
 		switch (pMsg->wParam)
 		{
 			case VK_F8:
@@ -1079,6 +1074,31 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				else {
 					ZoomOut();
 				}
+				return true;
+				break;
+			//------------------------------------------
+			case VK_LEFT:
+				if (mIsLargeMode) {
+					return true;
+				}
+			break;
+			//------------------------------------------
+			case VK_RIGHT:
+				if (mIsLargeMode) {
+					return true;
+				}
+			break;
+			//------------------------------------------
+			case VK_UP:
+				if (mIsLargeMode) {
+					return true;
+				}
+				break;
+			//------------------------------------------
+			case VK_DOWN:
+				if (mIsLargeMode) {
+					return true;
+				}
 				break;
 			//------------------------------------------
 			default:
@@ -1086,15 +1106,14 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 					switch (pMsg->wParam)
 					{
 					case 'T':
-						CCommunication::GetInstance()->AskTalk(this->m_BindedCamera);
+						CCommunication::GetInstance()->HostTalk(this->m_BindedCamera);
 						return TRUE;
-
 					case 'O':
-						CCommunication::GetInstance()->YouTalk();
+						CCommunication::GetInstance()->CameraTalk();
 						return true;
 
 					case 'S':
-						CCommunication::GetInstance()->OverTalk();
+						CCommunication::GetInstance()->StopTalk();
 						return true;
 
 					default:
@@ -1166,10 +1185,19 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 				CMsgSquare::GetInstance()->Broadcast(msg);
 
 				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
+
+				mReverseBtn.ShowWindow(SW_HIDE);
+				mDelBtn.ShowWindow(SW_HIDE);
+
+				this->SetFocus();
+				if (m_bIsRealPlaying) {
+					H264_PLAY_Pause(m_lPlayPort, 0);
+				}
 			}
 			// 删除摄像头
 			else if (lParam == (LPARAM)&mDelBtn) {
 
+				// Do show confirm window
 				// if (IDOK)
 				Print("Clicked delete camera");
 				OnCameraLogOff();
@@ -1332,4 +1360,13 @@ void CSurface::OnClose()
 	CMsgSquare::GetInstance()->RemoveAudience(m_hWnd);
 	
 	CWnd::OnClose();
+}
+
+
+BOOL CSurface::OnEraseBkgnd(CDC* pDC)
+{
+	CRect rClient;
+	GetClientRect(rClient);
+	pDC->FillSolidRect(rClient, RGB(0, 0, 0));
+	return TRUE;
 }
