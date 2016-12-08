@@ -187,8 +187,8 @@
 					<VerticalLayout name="prompt" visible="false" >
 						<Text text="“    ” 表示回删一位，“    ” 表示全部清空。" float="true" font="3" pos="172,561,756,600" textcolor="#FF666666" align="center"/>
 						<Text text="船舶名字最长为32个数字/字母。" float="true" font="3" pos="172,600,756,639" textcolor="#FF666666" align="center"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="231,566,0,0"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="523,566,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="210,560,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="497,565,0,0"/>
 					</VerticalLayout>
 					<Text text="【确认】按键弹出输入键盘" float="true" pos="276,948,0,0" width="377" height="30" font="2" textcolor="#FF666666"/>
 				</VerticalLayout>
@@ -226,11 +226,11 @@
 					<Label name="morrow" visible="false" float="true" pos="588,404,0,0" width="89" height="45" borderround="4,4" bkcolor="#FFFF0000" font="3" textcolor="#FFFFFFFF" align="center" text="次日"/>
 				</VerticalLayout>
 				
-				<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0">	<!--报警音-->
-					<VerticalLayout height="180">
+				<VerticalLayout name="layout_alarm" bkcolor="#FFF3F3F3" padding="70,80,69,0" height="530">	<!--报警音-->
+					<VerticalLayout height="180" >
 						<Label text="报警音" font="3" height="80" textpadding="353,21,353,20" bkcolor="#FFE5E3E3" textcolor="FF333333" />
 						<Control height="10" bkcolor="#FFF3F3F3"/>
-						<Switch  name="alarmvoice_switch" text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666" textpadding="45,0,605,0" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
+						<Switch  name="alarmvoice_switch" textpadding="45,0,605,0" text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666"  bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 						<Control height="10" bkcolor="#FFF3F3F3"/>
 					</VerticalLayout>
 					<VerticalLayout name="alarm_voice" visible="false" bkcolor="#FFF3F3F3" height="348">
@@ -240,10 +240,11 @@
 						<RevordVoiceBt name="record_btn" float="true" pos="270,212,0,0" height="94" width="250" font="0" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" text="录制报警音" focusedimage="file='image/按钮-选中.png'" borderround="6,6"/>
 					</VerticalLayout>
 				</VerticalLayout>
+				
 				<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0" height="180">	<!--报警灯光-->
 					<Label text="开启警告灯光" font="3" height="80" bkcolor="#FFE5E3E3" textcolor="FF333333" align="center" />
 					<Control height="10" bkcolor="#FFF3F3F3"/>
-					<Switch name="alarmlight_switch" text="开启警告灯光" height="80" font="3" textcolor="#FF666666" textpadding="45,0,500,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
+					<Switch name="alarmlight_switch" text="开启警告灯光" height="80" font="3" textcolor="#FF666666" textpadding="45,0,577,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 					<Control height="10" bkcolor="#FFF3F3F3"/>
 				</VerticalLayout>
 				

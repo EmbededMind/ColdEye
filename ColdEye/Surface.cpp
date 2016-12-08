@@ -14,6 +14,9 @@
 #include "Com\Communication.h"
 
 #include "Com\RecordAlarmSound.h"
+
+#include "Wnd/MsgWnd.h"
+
 CMutex mutex_RealData;
 
 /**@brief 实时数据回调
@@ -1196,11 +1199,14 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 			}
 			// 删除摄像头
 			else if (lParam == (LPARAM)&mDelBtn) {
+				CString text1;
+				text1.Format(_T("确定删除摄像机%s？如果误操作,需"),m_BindedPort->GetName());
+				if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_okcancel.xml"),text1, _T("断电后再次上电,方能恢复。"), NULL, NULL)) {
+					Print("Clicked delete camera");
+					OnCameraLogOff();
+				}
 
-				// Do show confirm window
-				// if (IDOK)
-				Print("Clicked delete camera");
-				OnCameraLogOff();
+
 			}
 			break;
 
@@ -1318,7 +1324,7 @@ void CSurface::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SetTextColor(textColor);
 
 	CFont font;
-	font.CreatePointFont(rect.Height()*3/5, _T("黑体"));
+	font.CreatePointFont(rect.Height()*2/5, _T("黑体"));
 
 	CFont* pOldFont = dc.SelectObject(&font);;
 
