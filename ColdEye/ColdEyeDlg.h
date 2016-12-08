@@ -27,10 +27,10 @@ public:
 	CColdEyeDlg(CWnd* pParent = NULL);	// 标准构造函数
 
 	CMsgWnd	*mMessageBox; 
+	CMyMenuWnd mMenu;
 
 protected:
 	CWallDlg  mWall;
-	CMyMenuWnd mMenu;
 
 	void UpdateLayout();
 

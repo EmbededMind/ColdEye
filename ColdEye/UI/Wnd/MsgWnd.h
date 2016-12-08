@@ -32,7 +32,6 @@ public:
 	static int MessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2,LPARAM lparam,WPARAM wParam)
 	{
 		CMsgWnd* pWnd = new CMsgWnd();
-		//((CColdEyeDlg*)((CColdEyeApp*)AfxGetApp())->m_pMainWnd)->mMessageBox = pWnd;
 		pWnd->videoType = (UINT8)wParam;
 
 		pWnd->SkinType = skinType;

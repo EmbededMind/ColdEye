@@ -26,3 +26,14 @@ CDuiString CVPlayer::GetSkinFile()
 		return mSkinFileName;
 }
 
+void CVPlayer::SetDpi(int dpi)
+{
+	mDpi = dpi;
+}
+
+void CVPlayer::InitWindow()
+{
+	m_pm.SetDPI(mDpi);
+}
+
+

@@ -64,6 +64,10 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void CPlayerWallWnd::InitWindow()
 {
+
+	if (pMenuWnd) {
+		m_pm.SetDPI(pMenuWnd->GetDpi());//pMenuWnd->GetDpi()
+	}
 	InitPlayBtImage();
 	pSlow = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_slow")));
 	if (pSlow) pSlow->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnSlow);
@@ -77,16 +81,18 @@ void CPlayerWallWnd::InitWindow()
 
 	if (!pVPlayer) {
 		pVPlayer = new CVPlayer(_T("vplayer.xml"));
+		pVPlayer->SetDpi(pMenuWnd->GetDpi());
 		pVPlayer->Create(m_hWnd, _T("VPlayer"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	}
 	if (!pAlphaMarkWnd) {
 		RECT rt;
 		pAlphaMarkWnd = new CAlphaMarkWnd(_T("alpha_mark.xml"));
+		pAlphaMarkWnd->SetPlayerWnd(this);
+		pAlphaMarkWnd->SetDpi(pMenuWnd->GetDpi());
 		pAlphaMarkWnd->Create(m_hWnd, _T("AlphaMarkWnd"), UI_WNDSTYLE_EX_FRAME, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 		::GetWindowRect(m_hWnd, &rt);
 		MoveWindow(pAlphaMarkWnd->GetHWND(), rt.left+707,rt.top+704, 186, 86, true);
 		pAlphaMarkWnd->ShowWindow(SW_HIDE);
-		pAlphaMarkWnd->SetPlayerWnd(this);
 	}
 }
 
@@ -333,4 +339,9 @@ bool CPlayerWallWnd::OnPlay(void * param)
 		}
 	}
 	return true;
+}
+
+void CPlayerWallWnd::SetMenuWnd(CMyMenuWnd * pWnd)
+{
+	pMenuWnd = pWnd;
 }

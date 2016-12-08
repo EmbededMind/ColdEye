@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window caption="0,0,0,97" size="1600,1200">
+<Window caption="0,0,0,97" size="1600,1100">
 	<Font shared="true" id="0" name="方正兰亭中黑_GBK" size="32"/>
 	<Font shared="true" id="1" name="方正兰亭中黑_GBK" size="20"/>
 	<Font shared="true" id="2" name="方正兰亭中黑_GBK" size="30"/>
@@ -9,9 +9,9 @@
 	
 	<!---------------------Default---------------------><!--控件默认属性-->
 	<!--菜单一级控件-->
-	<Default shared="true" name="PopupMenu" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFFFFFFF&quot; "/>
+	<Default shared="true" name="PopupMenu" value="height=&quot;106&quot; textpadding=&quot;120,0,80,0&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFFFFFFF&quot; "/>
 	<!--菜单二级控件-->
-	<Default shared="true" name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/row.png' source='0,0,343,106'&quot; focusedimage=&quot;file='image/row.png' source='344,0,686,106'&quot;"/>
+	<Default shared="true" name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/menuitem_bk.png' &quot; focusedimage=&quot;file='image/menuitem_focusedbk.png'&quot;"/>
 	<!--分割线-->
 	<Default shared="true" name="Control" value="height=&quot;2&quot; bkcolor=&quot;#FFBABABA&quot;" />  
 	<!--键盘控件-->
@@ -23,17 +23,18 @@
 	<!--摄像机设置船舶名称项-->
 	<Default shared="true" name="ShipNameItem" value="bkcolor=&quot;#FFD7E9FF&quot; borderround=&quot;4,4&quot; font=&quot;1&quot; align=&quot;center&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; "/>
 	<!--滑块-->
-	<Default shared="false" name="MySlider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; foreimage=&quot;file='image/slider_fore.png' mask='#FFE97FFF'&quot; thumbimage=&quot;file='image/thumb.png' mask='#FFDAEBF9'&quot; " />
+	<Default shared="false" name="MySlider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;27,27&quot; foreimage=&quot;file='image/slider_fore.png' mask='#FFE97FFF'&quot; thumbimage=&quot;file='image/thumb.png' mask='#FFDAEBF9'&quot; " />
 	<!---->
 	<Default shared="true"  name="MyLabel" value="float=&quot;true&quot; textpadding=&quot;45,0,0,0&quot; font=&quot;3&quot; align=&quot;left&quot; bkcolor=&quot;#FFF3F3F3&quot; focusbkcolor=&quot;#FF4198FE&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; statetextcolor=&quot;#FF4198FE&quot; statetextfocuscolor=&quot;#FFFFFFFF&quot;"/>
 	<!--视频列表-->
 	<Default shared="true" name="VideoList" value="padding=&quot;20,30,25,0&quot; itemfont=&quot;3&quot; itemselectedbkcolor=&quot;#FF4198FE&quot;"/>
 	<!--报警声音列表-->
 	<Default shared="true" name="AlarmVoiceList"  value="height=&quot;80&quot; font=&quot;3&quot; textcolor=&quot;#FF666666&quot; textpadding=&quot;105,0,0,0&quot; align=&quot;left&quot; normalimage=&quot;file='image/unsel.png' dest='679,29,704,54'&quot; pushedimage=&quot;file='image/sel.png' dest='679,29,704,54'&quot; "/>
+	<Default shared="true" name="MyList" value="height=&quot;65&quot;" />
 	
 	<!---------------------Style---------------------><!--动态添加控件时设置属性-->
 	<!--二级菜单控件-->
-	<Style name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/row.png' source='0,0,343,106'&quot; focusedimage=&quot;file='image/row.png' source='344,0,686,106'&quot;" /> 
+	<Style name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/menuitem_bk.png' &quot; focusedimage=&quot;file='image/menuitem_focusedbk.png'&quot;" /> 
 	<!--分割线-->
 	<Style name="control" value="height=&quot;2&quot; bkcolor=&quot;#FFBABABA&quot;" />
 	<!--树结构节点-->
@@ -44,6 +45,7 @@
 	<Style name="list" value="textcolor=&quot;#FFFFFF00&quot;"/>
 	<Style name="alarm_voice_list"  value="height=&quot;80&quot; font=&quot;3&quot; textcolor=&quot;#FF666666&quot; textpadding=&quot;105,0,0,0&quot; align=&quot;left&quot; normalimage=&quot;file='image/unsel.png' dest='679,29,704,54'&quot; pushedimage=&quot;file='image/sel.png' dest='679,29,704,54'&quot; "/>
 	<Style name="watch_record_style" value="height=&quot;65&quot; "/>
+	<Style name="list_element" value="height=&quot;65&quot;" />
 	
 	<VerticalLayout name="root" bkcolor="FFEFEFF4">
 		<VerticalLayout height="62">
@@ -51,15 +53,15 @@
 		</VerticalLayout>
 		<HorizontalLayout>
 			<VerticalLayout name="layout_popmenu" width="328" bkcolor="#FFFFFFFF">
-				<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/报警视频.png' source='0,0,328,106'" focusedimage="file='image/报警视频.png' source='328,0,657,106'" ismark="true"/>
+				<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/alarm_video_bk.png'"	 focusedimage="file='image/alarm_video_focusedbk.png'" ismark="true"/>
 				<Control />
-				<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/主机设置.png' source='0,0,328,106'" focusedimage="file='image/主机设置.png' source='328,0,657,106'" />
+				<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/host_set_bk.png'"	 focusedimage="file='image/host_set_focusedbk.png' " />
 				<Control />
-				<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='image/自动看船.png' source='0,0,328,106'" focusedimage="file='image/自动看船.png' source='328,0,657,106'" />
+				<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='image/aw_bk.png'" 			 focusedimage="file='image/aw_focusedbk.png'" />
 				<Control />
-				<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='image/视频调取.png' source='0,0,328,106'" focusedimage="file='image/视频调取.png' source='328,0,657,106'" />
+				<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='image/video_obtain_bk.png'" focusedimage="file='image/video_obtain_focusedbk.png'" />
 				<Control />
-				<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='image/回家看船.png' source='0,0,328,106'" focusedimage="file='image/回家看船.png' source='328,0,657,106'" />
+				<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='image/home_bk.png'" 		focusedimage="file='image/home_focusedbk.png'" />
 				<Control />
 			</VerticalLayout>
 			
@@ -79,7 +81,7 @@
 				<VerticalLayout name="layout_submenu_autowatch" >	<!--自动看船-->
 					<MenuItem name="watchtime" text="看船时间" userdata="14" />
 					<Control/>
-					<MenuItem name="alarm_voice" text="报警音" userdata="15" bkimage="file='image/row.png' source='0,0,343,106'" focusedimage="file='image/row.png' source='344,0,686,106'"/>
+					<MenuItem name="alarm_voice" text="报警音" userdata="15" />
 					<Control/>
 					<MenuItem name="alarm_light" text="报警灯光" userdata="16"/>
 					<Control/>
@@ -194,10 +196,12 @@
 				<VerticalLayout bkcolor="#FFF3F3F3" padding="70,80,69,136">
 					<Label text="系统设置" font="3" height="80" textpadding="339,21,339,20" bkcolor="#FFE5E3E3" textcolor="#FF333333" />
 					<Label text="亮度调节" font="3" height="68" textpadding="45,20,633,10" bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
-					<MySlider name="sysset_light" float="true" pos="178,176,0,0" bkimage="file='image/slider_bk.png' dest='102,7,682,75' " />
+					<Label name="bind_light" float="true" pos="0,148,790,80" bkimage="file='image/slider_light_bk.png'" height="80" /> 
+					<MySlider name="sysset_light" float="true" pos="178,175,0,0" bindbkimage="file='image/slider_light_bk.png'" focusedbkimage="file='image/slider_light_focusedbk.png'"/> 
 					<Control float="true" pos="45,246,745,248" />
 					<Label text="音量调节" font="3" float="true" pos="45,268,157,307"  bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
-					<MySlider name="sysset_voice" float="true" pos="178,344,0,0" bkimage="file='image/volumbk.png' dest='102,7,682,75' " />
+					<Label name="bind_voice" float="true" pos="0,320,790,80" bkimage="file='image/slider_volum_bk.png'" height="80" /> 
+					<MySlider name="sysset_voice" float="true" pos="178,347,0,0" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'"/>
 					<Control float="true" pos="45,414,745,416" />
 					<MyLabel name="sysset_version" pos="0,426,790,506" text="软件版本：V1.0.0"  statedisabletext="更新"/>
 					<Control float="true" pos="45,516,745,518" />
@@ -244,12 +248,15 @@
 				</VerticalLayout>
 				
 				<VerticalLayout>	<!--看船开关记录-->
+				
+				
 					 <List name="watch_record" itemvalign="vcenter" padding="24,25,30,0" itemtextpadding="45,0,0,0" itemfont="3" itemtextcolor="#FF666666" itemselectedtextcolor="#FFFFFFFF">
 						<ListHeader height="65" bkcolor="#FFF3F3F3">
 							<ListHeaderItem text="看船开关记录" align="center" textcolor="#FF333333" font="2"/>
 						</ListHeader>
-					<!--<Include source="listitem.xml"/>-->
 					</List>
+				
+					
 				  <Label name="page" float="true" pos="385,979,0,0" width="200" height="30" font="3" textcolor="#FF666666" text="第1/2页"/>
 				</VerticalLayout>	
 	<!--视频调取-->

@@ -2,7 +2,10 @@
 <Window caption="0,0,0,97" size="1600,1200">
 
 	<VerticalLayout name="root" bkcolor="FFEFEFF4">
-		<VerticalLayout name="playercontrol" bkcolor="#FF3F3F3F" bkcolor2="#FF222222" padding="0,1040,0,0">
+		<VerticalLayout height="1040">
+		</VerticalLayout>
+		
+		<VerticalLayout name="playercontrol" bkcolor="#FF3F3F3F" bkcolor2="#FF222222">
 			
 			<Button name="bt_slow" float="true" pos="70,42,0,0" width="76" height="76" bkimage="file='image/slow.png'" focusedimage="file='image/slow_focused.png'" />
 			<Button name="bt_play" float="true" pos="175,30,0,0" width="101" height="101" bkimage="file='image/play.png'" focusedimage="file='image/play_focused.png'"/>

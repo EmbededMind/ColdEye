@@ -58,6 +58,7 @@ typedef struct {
 	CDuiString record_type;
 } SwtichRecord;
 
+class CPlayerWallWnd;
 
 class CMyMenuWnd :
 	public WindowImplBase
@@ -83,6 +84,8 @@ public :
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual CDuiString GetSkinFile();
 	void InitWindow();
+	void CreataCameraLayout(int inx);
+	void BingingCameraSlider(CVerticalLayoutUI* pLayout);
 	void AdapTive();
 
 
@@ -157,6 +160,8 @@ public :
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	void KeyDown_VK_BACK();
 
+	int GetDpi();
+	float GetMyScale();
 	CameraInfo cameraInfo;
 	SwtichRecord recordInfo;
 	CameraItem camera[6];
@@ -176,6 +181,7 @@ private:
 
 	void  InitRecordFile(list<CRecordFileInfo*>* pList);
 	void  InitAlarmFile(list<CRecordFileInfo*>* pList);
+
 
 	void   FillPortConfig(CPort* pPort);
 	void   InitAlarmVoice();
@@ -213,6 +219,7 @@ private:
 
 	//adaptice
 	int mDPI;
+	float m_scale;
 	int m_DispSize = 1600;
 	CPlayerWallWnd	*mPlayerWall;
 };

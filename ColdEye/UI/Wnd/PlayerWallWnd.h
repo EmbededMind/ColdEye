@@ -5,9 +5,15 @@
 #include "Wnd\AlphaMarkWnd.h"
 #include "H264Play.h"
 #include "File/RecordFileInfo.h"
+#include "MyMenuWnd.h"
 
 #include <list>
+
+
+//class CPlayerWallWnd;
 class CAlphaMarkWnd;
+class CMyMenuWnd;
+
 using namespace std;
 
 using namespace DuiLib;
@@ -43,7 +49,10 @@ public:
 	bool OnSlow(void* param);
 	bool OnFast(void* param);
 	bool OnPlay(void* param);
+	void SetMenuWnd(CMyMenuWnd* pWnd);
 
+
+	CMyMenuWnd* pMenuWnd;
 private:
 	CDuiString mSkinFileName;
 

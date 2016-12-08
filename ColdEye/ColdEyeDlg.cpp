@@ -144,6 +144,15 @@ void CColdEyeDlg::UpdateLayout()
 
 	Print("Set wall pos (x:%d y:%d cx:%d cy:%d)", rClient.left, rClient.top+title_height, rClient.Width(), rClient.Height()-title_height);
 	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height, SWP_NOZORDER);
+
+
+	CRect rectDlg;
+	GetWindowRect(rectDlg);
+
+	int ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	int ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+
+	::MoveWindow(mMenu, (ScreenWidth- rectDlg.Width())/2, ScreenHeight / 10, ScreenHeight * 4 / 3, ScreenHeight-(ScreenHeight/10),true);
 }
 
 
@@ -199,18 +208,20 @@ BOOL CColdEyeDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	// 加载U盘图标
-	
+
+
 
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
 	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
 	mWall.ShowWindow(SW_SHOW);
 
+
 	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
-	::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
 	mMenu.ShowWindow(false);
 
+
+	
 	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
 
 	//LONG style  = GetWindowLong(m_hWnd, GWL_STYLE);
