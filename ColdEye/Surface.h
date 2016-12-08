@@ -13,6 +13,7 @@
 
 #include "H264Play.h"
 
+
 // CSurface
 
 class CSurface : public CWnd
