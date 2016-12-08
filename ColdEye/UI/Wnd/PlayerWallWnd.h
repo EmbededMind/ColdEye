@@ -42,7 +42,6 @@ public:
 	void InitPlayer();
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
-	void InitPlayTime(CRecordFileInfo*pInfo);
 	void InitPlayBtImage();
 	void ClosePlayer();
 	BOOL StopPlay();
