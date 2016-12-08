@@ -43,18 +43,8 @@ private:
 	CWinThread* mThread;
 	CWnd* mpOwner;
 	HWND mHOwner;
+	uint8_t mOrder[17];
 
-	HANDLE mEndEvent;
-	HANDLE mReplyCameraAskTalkEvent;
-	HANDLE mStopTalkEvent;
-	HANDLE mHostTalkEvent;
-	HANDLE mCameraTalkEvent;
-	HANDLE mAlarmEvent;
-	HANDLE mControlLEvent;
-	HANDLE mSetVolumeEvent;
-	HANDLE mSetLEDEvent;
-	HANDLE mHandleEvent;
-	HANDLE mGetPortMacEvent;
 	HANDLE mEventArray[12];
 
 	HANDLE mReplyStopTalkEvent;
@@ -71,13 +61,23 @@ private:
 	bool mIsThreadAlive;
 
 	static UINT CommunicationThread(LPVOID pParam);
-
 	bool mCurrentBool[12];
 	CCamera* mCurrentpDev[12];
 	int mCurrentInt[12];
 
 public:
 	HANDLE mStopAlarmEvent;
+	HANDLE mEndEvent;
+	HANDLE mReplyCameraAskTalkEvent;
+	HANDLE mStopTalkEvent;
+	HANDLE mHostTalkEvent;
+	HANDLE mCameraTalkEvent;
+	HANDLE mAlarmEvent;
+	HANDLE mControlLEvent;
+	HANDLE mSetVolumeEvent;
+	HANDLE mSetLEDEvent;
+	HANDLE mHandleEvent;
+	HANDLE mGetPortMacEvent;
 
 	CCamera *mPdev;
 	LONG mHandle;
@@ -109,7 +109,7 @@ public:
 	void SetLED(int isON);
 	void Handle();
 	void GetPortMac(int port);
-	void CameraCanTalk(CCamera *pDev);
+	//void CameraCanTalk(CCamera *pDev);
 
 	void ReplyHostTalk(CCamera *pDev);
 	void ReplyCameraTalk(CCamera *pDev);

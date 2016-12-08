@@ -710,9 +710,15 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				if (p->ch[4] == 2)
 				{
 					if (p->ch[5] == 1)
+					{
+						Print("StopAlarm");
 						CCommunication::GetInstance()->ReplyStopAlarm(pDev);
+					}
 					else
+					{
+						Print("StopAlarm");
 						CCommunication::GetInstance()->ReplyStopAlarm(0);
+					}
 				}
 				break;
 			case 0x05:

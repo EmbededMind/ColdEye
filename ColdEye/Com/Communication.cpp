@@ -20,12 +20,29 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			AfxEndThread(100);
 			break;
 		case CAMERACANTALK_EVENT_NUM:
-			pThis->mState->ReplyCameraAskTalk(pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM]);
+		{
+			LONG handle = H264_DVR_StartLocalVoiceCom(pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM]->GetLoginId());
+			if (handle)
+			{
+				pThis->mHandle = handle;
+				CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x01, pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM]);
+				CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+				pThis->SetCameraTalkState();
+			}
+			else
+			{
+				CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x02, NULL);
+				CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+				pThis->SetFreeState();
+			}
 			ResetEvent(pThis->mReplyCameraAskTalkEvent);
 			break;
+		}
 		case STOPTALK_EVENT_NUM:
 			ResetEvent(pThis->mReplyStopTalkEvent);
-			pThis->mState->StopTalk();
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x02, 0x03, 0x00, pThis->mPdev);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyStopTalkEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -41,16 +58,21 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case STOPALARM_EVENT_NUM:
 			ResetEvent(pThis->mReplyStopAlarmEvent);
-			pThis->mState->StopAlarm(pThis->mCurrentpDev[STOPALARM_EVENT_NUM]);
-			Event = WaitForSingleObject(pThis->mReplyStopAlarmEvent, TIMEOUT_TIME);
-			if (Event = WAIT_OBJECT_0)
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, pThis->mPdev);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
+			Event = WaitForSingleObject(pThis->mReplyStopAlarmEvent, 100000);
+			if (Event == WAIT_OBJECT_0)
 			{
 				pThis->mState->ReplyStopAlarm(pThis->mCurrentpDev[STOPALARM_EVENT_NUM]);
 				ResetEvent(pThis->mReplyStopAlarmEvent);
 			}
 			else
 			{
+				Print("Event %ld", Event);
 				Print("StopAlarm³¬Ê±ÁË");
+				long err = GetLastError();
+				Print("err = %d", err);
 				pThis->RecoveState();
 			}
 			ResetEvent(pThis->mStopAlarmEvent);
@@ -58,6 +80,9 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 		case HOSTTALK_EVENT_NUM:
 			ResetEvent(pThis->mReplyHostTalkEvent);
 			pThis->mState->HostTalk(pThis->mCurrentpDev[HOSTTALK_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x02, 0x01, 0x00, pThis->mCurrentpDev[HOSTTALK_EVENT_NUM]);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyHostTalkEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -73,7 +98,9 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case CAMERATALK_EVENT_NUM:
 			ResetEvent(pThis->mReplyCameraTalkEvent);
-			pThis->mState->CameraTalk(pThis->mCurrentpDev[CAMERATALK_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x02, 0x02, 0x00, pThis->mCurrentpDev[CAMERATALK_EVENT_NUM]);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyCameraTalkEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -89,7 +116,10 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case ALARM_EVENT_NUM:
 			ResetEvent(pThis->mReplyAlarmEvent);
-			pThis->mState->Alarm(pThis->mCurrentpDev[ALARM_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x04, 0x01, 0x00, pThis->mCurrentpDev[ALARM_EVENT_NUM]);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->mPdev = pThis->mCurrentpDev[ALARM_EVENT_NUM];
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyAlarmEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -105,7 +135,9 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case CONTROLLED_EVENT_NUM:
 			ResetEvent(pThis->mReplyControlLEDEvent);
-			pThis->mState->ControlLED(pThis->mCurrentInt[CONTROLLED_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x06, pThis->mCurrentInt[CONTROLLED_EVENT_NUM], 0x00, NULL);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyControlLEDEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -121,7 +153,9 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case SETVOLUME_EVENT_NUM:
 			ResetEvent(pThis->mReplySetVolumeEvent);
-			pThis->mState->SetVolume(pThis->mCurrentpDev[SETVOLUME_EVENT_NUM], pThis->mCurrentInt[SETVOLUME_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x01, pThis->mCurrentInt[SETVOLUME_EVENT_NUM], 0x00, pThis->mCurrentpDev[SETVOLUME_EVENT_NUM]);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplySetVolumeEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -137,7 +171,9 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case SETLED_EVENT_NUM:
 			ResetEvent(pThis->mReplySetLEDEvent);
-			pThis->mState->SetLED(pThis->mCurrentInt[SETLED_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x07, 0x01, pThis->mCurrentInt[SETLED_EVENT_NUM], NULL);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplySetLEDEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -153,11 +189,12 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case HANDLE_EVENT_NUM:
 			ResetEvent(pThis->mReplyHandleEvent);
-			pThis->mState->Handle();
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, NULL);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyHandleEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
-				Print("HANDLEÎ´³¬Ê±");
 				pThis->mState->ReplyHandle(pThis->mCurrentBool);
 				ResetEvent(pThis->mReplyHandleEvent);
 			}
@@ -170,7 +207,9 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			break;
 		case GETPORTMAC_EVENT_NUM:
 			ResetEvent(pThis->mReplyGetPortMacEvent);
-			pThis->mState->GetPortMac(pThis->mCurrentInt[GETPORTMAC_EVENT_NUM]);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x05, 0x02, pThis->mCurrentInt[GETPORTMAC_EVENT_NUM], NULL);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
 			Event = WaitForSingleObject(pThis->mReplyGetPortMacEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
@@ -338,67 +377,67 @@ BOOL CCommunication::StartThread()
 void CCommunication::HostTalk(CCamera *pDev)
 {
 	this->mCurrentpDev[HOSTTALK_EVENT_NUM] = pDev;
-	SetEvent(mHostTalkEvent);
+	this->mState->HostTalk(this->mCurrentpDev[HOSTTALK_EVENT_NUM]);
 }
 
 void CCommunication::CameraTalk()
 {
 	mCurrentpDev[CAMERATALK_EVENT_NUM] = mPdev;
-	SetEvent(mCameraTalkEvent);
+	this->mState->CameraTalk(mPdev);
 }
 
 void CCommunication::StopTalk()
 {
-	SetEvent(mStopTalkEvent);
+	this->mState->StopTalk();
 }
 
 void CCommunication::Alarm(CCamera *pDev)
 {
 	this->mCurrentpDev[ALARM_EVENT_NUM] = pDev;
-	SetEvent(mAlarmEvent);
+	this->mState->Alarm(pDev);
 }
 
 void CCommunication::StopAlarm(CCamera *pDev)
 {
 	this->mCurrentpDev[STOPALARM_EVENT_NUM] = pDev;
-	SetEvent(mStopAlarmEvent);
+	this->mState->StopAlarm(pDev);
 }
 
 void CCommunication::SetVolume(CCamera *pDev, int Volume)
 {
 	this->mCurrentpDev[SETVOLUME_EVENT_NUM] = pDev;
 	this->mCurrentInt[SETVOLUME_EVENT_NUM] = Volume;
-	SetEvent(mSetVolumeEvent);
+	this->mState->SetVolume(pDev, Volume);
 }
 
 void CCommunication::ControlLED(int Switch)
 {
 	this->mCurrentInt[CONTROLLED_EVENT_NUM] = Switch;
-	SetEvent(mControlLEvent);
+	this->mState->ControlLED(Switch);
 }
 
 void CCommunication::SetLED(int isON)
 {
 	this->mCurrentInt[SETLED_EVENT_NUM] = isON;
-	SetEvent(mSetLEDEvent);
+	this->mState->SetLED(isON);
 }
 
 void CCommunication::Handle()
 {
 	Print("HANDLE");
-	SetEvent(mHandleEvent);
+	this->mState->Handle();
 }
 
 void CCommunication::GetPortMac(int port)
 {
 	this->mCurrentInt[GETPORTMAC_EVENT_NUM] = port;
-	SetEvent(mGetPortMacEvent);
+	this->mState->GetPortMac(port);
 }
-
-void CCommunication::CameraCanTalk(CCamera * pDev)
-{
-	mState->CameraCanTalk(pDev);
-}
+//
+//void CCommunication::CameraCanTalk(CCamera * pDev)
+//{
+//	mState->CameraCanTalk(pDev);
+//}
 
 void CCommunication::ReplyHostTalk(CCamera *pDev)
 {
@@ -426,6 +465,7 @@ void CCommunication::ReplyAlarm(CCamera *pDev)
 void CCommunication::ReplyStopAlarm(CCamera *pDev)
 {
 	this->mCurrentpDev[STOPALARM_EVENT_NUM] = pDev;
+	Print("SetEvent(mReplyStopAlarmEvent)");
 	SetEvent(mReplyStopAlarmEvent);
 }
 
