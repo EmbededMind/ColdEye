@@ -99,7 +99,7 @@ void CWaitReplyState::ReplyStopAlarm(CCamera *pDev)
 	ComManagement->SetFreeState();
 }
 
-void CWaitReplyState::ReplySetVolume(bool isSucceed)
+void CWaitReplyState::ReplySetVolume(CCamera *pDev, int Volume)
 {
 	ComManagement->RecoveState();
 }
@@ -114,7 +114,7 @@ void CWaitReplyState::ReplySetLED(bool isSucceed)
 	ComManagement->RecoveState();
 }
 
-void CWaitReplyState::ReplyHandle()
+void CWaitReplyState::ReplyHandle(bool isSucceed)
 {
 	ComManagement->RecoveState();
 }

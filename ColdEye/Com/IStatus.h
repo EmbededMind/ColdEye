@@ -22,7 +22,7 @@ public:
 	virtual void ReplyStopTalk() {};
 	virtual void ReplyAlarm(CCamera *) {};
 	virtual void ReplyStopAlarm(CCamera *) {};
-	virtual void ReplySetVolume(bool) {};
+	virtual void ReplySetVolume(CCamera *,int) {};
 	virtual void ReplyControlLED(bool) {};
 	virtual void ReplySetLED(bool) {};
 	virtual void ReplyHandle(bool) {};

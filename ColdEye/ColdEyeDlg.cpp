@@ -253,6 +253,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
 	SetTimer(TIMER_ID_HANDLE, 10000, NULL);
+
+	CCommunication::GetInstance()->Init(this);
+	CCommunication::GetInstance()->StartThread();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -665,10 +668,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			switch (p->ch[3])
 			{
 			case 0x01:
-				if(p->ch[5] == 1)
-					CCommunication::GetInstance()->ReplySetVolume(pDev);
-				else
-					CCommunication::GetInstance()->ReplySetVolume(0);
+					CCommunication::GetInstance()->ReplySetVolume(pDev, p->ch[4]);
 				break;
 			case 0x02:
 				Print("case 0x02");
@@ -763,7 +763,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				}
 				else if (p->ch[4] == 2) //端口mac
 				{
-					CCommunication::GetInstance()->ReplyGetPortMac(1);
+					CCommunication::GetInstance()->ReplyGetPortMac(p->ch[5]);
 					//for (int i = 0; i < p->num; i++) {
 					//	printf("%02X ", p->ch[i]);
 					//}
@@ -828,10 +828,10 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 					break;
 				}
 				case 6:
-					CCommunication::GetInstance()->ReplyControlLED(1);
+					CCommunication::GetInstance()->ReplyControlLED(p->ch[4]);
 					break;
 				case 7:
-					CCommunication::GetInstance()->ReplySetLED(1);
+					CCommunication::GetInstance()->ReplySetLED(p->ch[5]);
 					break;
 				default:
 					break;

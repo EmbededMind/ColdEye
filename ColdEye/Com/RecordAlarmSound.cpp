@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RecordAlarmSound.h"
 #include "Com\Alaw_encoder.h"
-#include "Com\Communication.h"
+//#include "Com\Communication.h"
 #include "shlwapi.h"
 
 CRecordAlarmSound::~CRecordAlarmSound()
@@ -45,16 +45,9 @@ void CRecordAlarmSound::SetMyTimer()
 
 void CRecordAlarmSound::MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
 {
-	if (CCommunication::GetInstance()->GetState() == CCommunication::GetInstance()->GetWaitReplyState())
-	{
-		m_pThis->m_TimeIdStopAlarm = SetTimer(NULL, m_pThis->m_TimeIdStopAlarm, 1000, MyTimerProcAlarm);
-	}
-	else
-	{
-		KillTimer(NULL, m_pThis->m_TimeIdStopAlarm);
-		m_pThis->m_TimeIdStopAlarm = NULL;
-		PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(m_pThis->m_pPlayCamera));
-	}
+	KillTimer(NULL, m_pThis->m_TimeIdStopAlarm);
+	m_pThis->m_TimeIdStopAlarm = NULL;
+	PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(m_pThis->m_pPlayCamera));
 }
 
 BOOL CRecordAlarmSound::StopTalk()

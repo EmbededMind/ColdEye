@@ -18,11 +18,11 @@ public:
 	void HostTalk(CCamera *pDev);
 	void StopTalk();
 	void StopAlarm(CCamera *pDev);
-	//void SetVolume(CCamera *pDev, int Volume);
+	void SetVolume(CCamera *pDev, int Volume);
 	void ControlLED(int Switch);
-	//void SetLED(int isON);
-	//void Handle();
-	//void GetPortMac(int port);
+	void SetLED(int isON);
+	void Handle();
+	void GetPortMac(int port);
 
 	void ReplyCameraAskTalk(CCamera *pDev);
 };
