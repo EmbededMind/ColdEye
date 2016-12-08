@@ -224,9 +224,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	
 	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
 
-	//LONG style  = GetWindowLong(m_hWnd, GWL_STYLE);
-	////SetWindowLong(m_hWnd, GWL_STYLE,  style & (~(WS_CAPTION | WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME)));
-	//SetWindowLong(m_hWnd, GWL_STYLE, style | WS_BORDER);
+
 	DWORD dwStyle = GetStyle();//获取旧样式
 	DWORD dwNewStyle = WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 	dwNewStyle &= dwStyle;//按位与将旧样式去掉
@@ -235,7 +233,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	DWORD dwNewExStyle = WS_EX_LEFT | WS_EX_LTRREADING | WS_EX_RIGHTSCROLLBAR;
 	dwNewExStyle &= dwExStyle;//按位与将旧扩展样式去掉
 	SetWindowLong(m_hWnd, GWL_EXSTYLE, dwNewExStyle);//设置新的扩展样式
-	//SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);//告诉windows：我的样式改变了，窗口位置和大小保持原来不变！
+
 
 	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
 

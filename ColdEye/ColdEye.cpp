@@ -300,7 +300,7 @@ void CColdEyeApp::StoreAlarmLightConfig()
 
 void CColdEyeApp::StoreAlarmSoundConfig()
 {
-	char sqlStmt[64];
+	char sqlStmt[128];
 	sprintf_s(sqlStmt, "UPDATE host_config SET arm_snd_on = %d, arm_snd_id = %d, arm_snd_sec = %d;",m_SysConfig.alarm_sound_onoff, m_SysConfig.alarm_sound_id, m_SysConfig.alarm_sound_sec);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
