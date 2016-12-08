@@ -142,8 +142,16 @@ void CColdEyeDlg::UpdateLayout()
 
 	GetDlgItem(IDC_UFLASH)->MoveWindow(rFlash);
 
-
 	mWall.SetWindowPos(NULL, rClient.left, rClient.top + title_height, rClient.Width(), rClient.Height()- title_height - title_height /5, 0);
+
+
+	CRect rectDlg;
+	GetWindowRect(rectDlg);
+
+	int ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	int ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+
+	::MoveWindow(mMenu, (ScreenWidth- rectDlg.Width())/2, ScreenHeight / 10, ScreenHeight * 4 / 3, ScreenHeight-(ScreenHeight/10),true);
 }
 
 
@@ -199,8 +207,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	// 加载U盘图标
-	
+
+
 
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
@@ -209,15 +217,14 @@ BOOL CColdEyeDlg::OnInitDialog()
 	SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME));
 	mWall.ShowWindow(SW_SHOW);
 
+
 	mMenu.Create(m_hWnd, _T("MenuWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, {0,0,0,0});
-	::MoveWindow(mMenu, 0, 100, 1600, 1200,true);
 	mMenu.ShowWindow(false);
 
+
+	//SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);	
 	int ScreenHeight  = GetSystemMetrics(SM_CYSCREEN);
-
 	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
-
-	//SetWindowPos(NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
 	mWall.SetFocus();
 
 	if (CSerialPort::GetInstance(COM_KB)->InitPort(this, COM_KB, 9600, 'N', 8, 1, EV_RXCHAR, 512))

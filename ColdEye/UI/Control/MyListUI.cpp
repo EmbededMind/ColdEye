@@ -53,15 +53,16 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 		CDuiString dest;
 
 		if (mhintNumber>9) {
-			textPos.left += (rcPos.left + 4);
-			textPos.top += (rcPos.top + 7);
+			//textPos.left += (rcPos.left + 4);
+			textPos.left += (rcPos.left -51);
+			textPos.top += (rcPos.top + 6);
 			textPos.right = textPos.left + 50;
 			textPos.bottom = textPos.top + 50;
 		}
 		else {
-			textPos.left += (rcPos.left+11);
-			textPos.top += (rcPos.top+7);
-			textPos.right = textPos.left +50;
+			textPos.left += (rcPos.left - 45);
+			textPos.top += (rcPos.top + 6);
+			textPos.right = textPos.left + 50;
 			textPos.bottom = textPos.top + 50;
 		}
 

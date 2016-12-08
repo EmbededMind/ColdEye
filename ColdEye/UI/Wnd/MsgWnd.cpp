@@ -126,7 +126,6 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 						m_pm.FindControl(_T("cancel_btn"))->SetFocus();
 				}
 			}
-			
 			break;
 		//--------------------------------------------------------------------------
 		case VK_RIGHT:
@@ -297,7 +296,8 @@ LRESULT CMsgWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 void CMsgWnd::InitWindow()
 {
-	Print("initwindw");
+	m_pm.SetDPI(((CColdEyeDlg*)AfxGetMainWnd())->mMenu.GetDpi());
+
 	HWND MainDlg;
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));

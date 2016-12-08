@@ -3,6 +3,9 @@
 #include "UIlib.h"
 #include "H264Play.h"
 #include "File\RecordFileInfo.h"
+//#include "PlayerWallWnd.h"
+
+//class CPlayerWallWnd;
 
 using namespace std;
 
@@ -18,7 +21,10 @@ public:
 
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual CDuiString GetSkinFile();
+	void SetDpi(int dpi);
+	virtual void InitWindow();
  
 private:
 	CDuiString mSkinFileName;
+	int mDpi;
 };

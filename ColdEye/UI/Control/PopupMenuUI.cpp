@@ -21,8 +21,6 @@ void CPopupMenuUI::DoEvent(TEventUI& event)
 {
 	int iInx;
 
-	CContainerUI* pFocused;
-
 	if (event.Type == UIEVENT_KEYDOWN) {
 			m_pManager->SendNotify(this, DUI_MSGTYPE_MENU, event.wParam, event.lParam);
 	}
@@ -101,22 +99,27 @@ void CPopupMenuUI::PaintStatusImage(HDC hDC)
 		text = _T("99");
 
 	if (mHintNumber != 0 && isMark==true) {
+		
 		RECT rcPos = {259, 10, 294, 45};
 		RECT textPos = GetPos();
-
 		CDuiString dest;
 
+
 		if (mHintNumber>9) {
-			textPos.left += 263;
-			textPos.top += 17;
+			//textPos.left += 263;
+			//textPos.top += 17;
+			//textPos.right = textPos.left + 290;
+			//textPos.bottom = textPos.top + 38;
+			textPos.left += 237;
+			textPos.top += 16;
 			textPos.right = textPos.left + 290;
 			textPos.bottom = textPos.top + 38;
 		}
 		else {
-			textPos.left += 270;
+			textPos.left += 243;
 			textPos.top += 16;
-			textPos.right = textPos.left + 291;
-			textPos.bottom = textPos.top + 41;
+			textPos.right = textPos.left + 290;
+			textPos.bottom = textPos.top + 38;
 		}
 
 		dest.Format(_T("file='image\\Õ÷‘≤–Œ.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);

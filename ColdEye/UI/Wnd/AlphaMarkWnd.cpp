@@ -50,7 +50,8 @@ LRESULT CAlphaMarkWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 		pBt_fast->SetText(PlayText);
 		break;
 
-	case WM_SETFOCUS:		SetFocus(pPlayerWall->GetHWND());
+	case WM_SETFOCUS:		
+		SetFocus(pPlayerWall->GetHWND());
 		break;
 	}	 
 	bHandled = FALSE;
@@ -63,6 +64,7 @@ void CAlphaMarkWnd::Notify(TNotifyUI & msg)
 
 void CAlphaMarkWnd::InitWindow()
 {
+	m_pm.SetDPI(mDpi);
 	pBt_fast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));
 	pBt_slow = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_slow")));
 }
@@ -70,4 +72,9 @@ void CAlphaMarkWnd::InitWindow()
 void CAlphaMarkWnd::SetPlayerWnd(CPlayerWallWnd *pWnd)
 {
 	pPlayerWall = pWnd;
+}
+
+void CAlphaMarkWnd::SetDpi(int dpi)
+{
+	mDpi = dpi;
 }
