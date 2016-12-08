@@ -27,6 +27,7 @@ typedef struct {
 
 	bool        alarm_sound_onoff;
 	uint16_t    alarm_sound_id;
+	uint16_t    alarm_sound_sec;
 
 	uint16_t    brightness;
 	uint16_t    volumn;
@@ -62,8 +63,10 @@ public:
 
 	void      StoreAlarmLightConfig();
 	void      StoreAlarmSoundConfig();
+
 	void      StoreSystemConfig();
 	void      StoreBoatName();
+	
 
 	HWND      GetMenuWndHandle();
 	UINT      GetLoginThreadPID();
