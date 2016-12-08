@@ -214,7 +214,7 @@ void CMyMenuWnd::UpdataItemColor()
 		//布局
 		pLayout_PopMenu->SetBkColor(LAYOUT_POP_NOFOCUS);
 		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_FOCUSED);
-
+		pLayout_third->SetBkColor(LAYOUT_THIRD_NOFOUCS);
 		//一级菜单
 		CButtonUI* pItem;
 		for (int i = 0; i < pLayout_PopMenu->GetCount(); i += 2) {
@@ -737,7 +737,24 @@ void CMyMenuWnd::ExpandCameraName()
 
 void CMyMenuWnd::ShowAlarmVoiceList(bool Switch)
 {
+	CContainerUI* pParentLayout = (CContainerUI*)m_pm.FindControl(_T("layout_alarm"));
 	CContainerUI* pContain = (CContainerUI*)m_pm.FindControl(_T("alarm_voice"));
+	CControlUI* pRbtn = m_pm.FindControl(_T("record_btn"));
+	int Width1 = 180, Width2;
+	if (pVoice1)
+		Width2 = 422;
+	else
+		Width2 = 348;
+	//Width1 = pParentLayout->GetItemAt(0)->GetFixedHeight();
+	//Width2 = pParentLayout->GetItemAt(1)->GetFixedHeight();
+	//Print("w1:%d,w2:%d ,rbtn:%d",Width1,Width2, pRbtn->GetFixedHeight());
+	if (Switch) {
+		pParentLayout->SetFixedHeight(Width1 + Width2);
+	}
+	else {
+		pParentLayout->SetFixedHeight(Width1);
+	}
+
 	pContain->SetVisible(Switch);
 }
 
@@ -925,11 +942,11 @@ void CMyMenuWnd::AddAlarmVoice()
 	CContainerUI *layout = (CContainerUI*)pRecordBt->GetParent();
 	pVoice1 = new CAlarmVoiceListUI(_T("录音1"),_T("voice1"));
 	
-	RECT voicerc;
+	RECT layoutpadding;
 	SIZE size_btn = pRecordBt->GetFixedXY();
 	int v_height = pDefaultVoice->GetFixedHeight();
-	voicerc = pDefaultVoice->GetClientPos();
-	layout->SetFixedHeight(layout->GetFixedHeight()+v_height);
+	layout->SetFixedHeight(layout->GetFixedHeight()+ 80);
+	m_pm.FindControl(_T("layout_alarm"))->SetFixedHeight(604);
 
 	layout->Add(pVoice1);
 	pVoice1->SetAttribute(_T("style"), _T("alarm_voice_list"));
