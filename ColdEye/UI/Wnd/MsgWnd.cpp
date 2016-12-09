@@ -305,11 +305,9 @@ void CMsgWnd::InitWindow()
 	if (SkinType == _T("mb_recordingvoice.xml")) {
 		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
 		pMainDlg->mMessageBox = this;
-		//pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
 	}
 	else if (SkinType == _T("mb_update.xml")) {
 		UINT_PTR i;
-		//i = SetTimer(m_pm.GetPaintWindow(),1, 200, NULL);
 		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
 	}
 	else if (SkinType == _T("mb_copyvideo.xml")) {
@@ -318,7 +316,6 @@ void CMsgWnd::InitWindow()
 		totalSize = 0;
 		sendedSize = 0;
 		list<CRecordFileInfo*>::iterator iter;
-		Print("Copy %d", pRecordInfo->size());
 		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++)
 			totalSize += (*iter)->dlSize;
 
@@ -329,7 +326,6 @@ void CMsgWnd::InitWindow()
 		CMCI *pCmic = CMCI::GetInstance();
 		pCmic->Play();
 		TotalTime = pCmic->GetTotaltime();
-Print("alarm voice TotalTime:%d", TotalTime);
 		static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetMaxValue(TotalTime);
 		SetTimer(m_hWnd, TIME_PLAY_VOICE , 1000, NULL);
 	}

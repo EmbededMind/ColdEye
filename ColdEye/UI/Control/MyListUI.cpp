@@ -35,11 +35,14 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 {
 	if (Info->status== RECORD_LOCKED)
 	{
-		CRect rcPos;
-		CDuiString dest;
-		rcPos = { 825,23,851,55 };
-		dest.Format(_T("file='image\\Ëø2.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
-		DrawImage(hDC, dest);
+		if (((CVideoListUI::Node*)GetTag())->data()._level != 0) {
+			CRect rcPos;
+			CDuiString dest;
+			rcPos = { 825,17,851,50 };
+			dest.Format(_T("file='image\\Ëø2.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
+			DrawImage(hDC, dest);
+		}
+
 	}
 	if(mhintNumber !=0)
 	{

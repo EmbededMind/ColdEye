@@ -63,6 +63,7 @@ CDuiString CMyMenuWnd::GetSkinFile()
 void CMyMenuWnd::InitWindow()
 {
 	//AdapTive();
+	//m_scale = 1;
 	// 1440*1080
 	m_scale = 0.9;
 	mDPI = 86;
@@ -386,6 +387,9 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				focusLevel++;
 				UpdataItemColor();
 			}
+			else {
+				FocusedItem[1] = NULL;
+			}
 			break;
 		//-----------------------------------------------
 		case VK_BACK:
@@ -593,6 +597,11 @@ void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 						//refreshSuperscript(pSender);
 					}
 					pSender->Info->status = RECORD_LOCKED;
+				}
+				char sqlStmt[128];
+				sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pSender->Info->status, pSender->Info->nOwner, pSender->Info->tBegin);
+				if (!sqlite.DirectStatement(sqlStmt)) {
+					Print("Sql error:%s", sqlStmt);
 				}
 				pSender->Invalidate();
 			}

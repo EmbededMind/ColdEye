@@ -76,14 +76,13 @@ void CKeyBoardUI::DoEvent(TEventUI &event)
 			}
 			else {//删除按键
 				if (row == 9) {//全部删除
-					pEdit->SetText(_T(""));
-				}
-				else {//删除一位
 					if (oldText.GetLength() > 0) {
 						oldText.Assign(oldText, oldText.GetLength() - 1);
 						pEdit->SetText(oldText);
 					}
-
+				}
+				else {//删除一位
+					pEdit->SetText(_T(""));
 				}
 			}
 		}

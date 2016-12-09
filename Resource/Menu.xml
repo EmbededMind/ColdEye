@@ -157,7 +157,7 @@
 							<KeyBoard name="vk_g" text="g" userdata="16" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_h" text="h" userdata="17" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_i" text="i" userdata="18" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_delet" userdata="19" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_delet" userdata="19" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 						<HorizontalLayout name="line3" padding="20,0,0,0" height="67">
 							<KeyBoard name="vk_j" text="j" userdata="20" textcolor="#FF4561E3"/>
@@ -169,7 +169,7 @@
 							<KeyBoard name="vk_p" text="p" userdata="26" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_q" text="q" userdata="27" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_r" text="r" userdata="28" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_deleat1" userdata="29" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat1" userdata="29" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 						<HorizontalLayout name="line4" padding="20,0,0,0" height="67">
 							<KeyBoard name="vk_s" text="s" userdata="30" textcolor="#FF4561E3"/>
@@ -180,15 +180,15 @@
 							<KeyBoard name="vk_x" text="x" userdata="35" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_y" text="y" userdata="36" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_z" text="z" userdata="37" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_deleat2" userdata="38" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
-							<KeyBoard name="vk_deleat3" userdata="39" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat2" userdata="38" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat3" userdata="39" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 					</VerticalLayout>
 					<VerticalLayout name="prompt" visible="false" >
 						<Text text="“    ” 表示回删一位，“    ” 表示全部清空。" float="true" font="3" pos="172,561,756,600" textcolor="#FF666666" align="center"/>
 						<Text text="船舶名字最长为32个数字/字母。" float="true" font="3" pos="172,600,756,639" textcolor="#FF666666" align="center"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="210,560,0,0"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="497,565,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="208,560,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="497,565,0,0"/>
 					</VerticalLayout>
 					<Text text="【确认】按键弹出输入键盘" float="true" pos="276,948,0,0" width="377" height="30" font="2" textcolor="#FF666666"/>
 				</VerticalLayout>
