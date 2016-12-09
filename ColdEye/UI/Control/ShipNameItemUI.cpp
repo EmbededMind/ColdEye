@@ -33,7 +33,6 @@ void CShipNameItemUI::DoEvent(TEventUI &event)
 		userdata = StrToInt(GetUserData());
 		line = userdata / 10;
 		row = userdata % 10;
-		Print("line:%d, row:%d",line,row);
 		switch (event.wParam)
 		{
 		//case VK_UP:
