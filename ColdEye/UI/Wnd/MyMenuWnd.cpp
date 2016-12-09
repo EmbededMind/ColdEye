@@ -62,6 +62,13 @@ CDuiString CMyMenuWnd::GetSkinFile()
 
 void CMyMenuWnd::InitWindow()
 {
+	//AdapTive();
+	//m_scale = 1;
+	// 1440*1080
+	m_scale = 0.9;
+	mDPI = 86;
+	m_pm.SetDPI(mDPI);
+
 	pLayout_PopMenu = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_popmenu")));
 	pLayout_Menuitem = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_menuitem")));
 	pLayout_third = static_cast<CTabLayoutUI*>(m_pm.FindControl(_T("layout_thirdmenu")));
@@ -76,9 +83,12 @@ void CMyMenuWnd::InitWindow()
 
 	pSysLight = static_cast<CMySliderUI*>(m_pm.FindControl(_T("sysset_light")));
 	pSysLight->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.brightness);
+	pSysLight->bindControl = static_cast<CLabelUI*>(m_pm.FindControl(_T("bind_light")));
 
 	pSysVolum = static_cast<CMySliderUI*>(m_pm.FindControl(_T("sysset_voice")));
 	pSysVolum->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.volumn);
+	pSysVolum->bindControl = static_cast<CLabelUI*>(m_pm.FindControl(_T("bind_voice")));
+
 
 	pAlmVicSwitch = static_cast<CSwitchUI*>(m_pm.FindControl(_T("alarmvoice_switch")));
 	pDefaultVoice = static_cast<CAlarmVoiceListUI*>(m_pm.FindControl(_T("alarmvoice_default")));
@@ -104,37 +114,10 @@ void CMyMenuWnd::InitWindow()
 	pAwTime[2]->SetItemRelation(pAwTime[1], pAwTime[3]);
 	pAwTime[3]->SetItemRelation(pAwTime[2], NULL);
 
-	
-
 	//-------------------------摄像机设置界面添加-------------------------------
-	CDialogBuilder Camera1builder, Camera2builder, Camera3builder, Camera4builder, Camera5builder, Camera6builder;
-	CVerticalLayoutUI *CamareChildLayout;
-	CamareChildLayout = (CVerticalLayoutUI*)Camera1builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pLayout_third->AddAt(CamareChildLayout, 7);
-	GetCameraItem(CamareChildLayout);
-	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头1设置"));
-	CamareChildLayout = (CVerticalLayoutUI*)Camera2builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pLayout_third->AddAt(CamareChildLayout, 8);
-	GetCameraItem(CamareChildLayout);
-	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头2设置"));
-	CamareChildLayout = (CVerticalLayoutUI*)Camera3builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pLayout_third->AddAt(CamareChildLayout, 9);
-	GetCameraItem(CamareChildLayout);
-	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头3设置"));
-	CamareChildLayout = (CVerticalLayoutUI*)Camera4builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pLayout_third->AddAt(CamareChildLayout, 10);
-	GetCameraItem(CamareChildLayout);
-	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头4设置"));
-	CamareChildLayout = (CVerticalLayoutUI*)Camera5builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pLayout_third->AddAt(CamareChildLayout, 11);
-	GetCameraItem(CamareChildLayout);
-	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头5设置"));
-	CamareChildLayout = (CVerticalLayoutUI*)Camera6builder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
-	pLayout_third->AddAt(CamareChildLayout, 12);
-	GetCameraItem(CamareChildLayout);
-	static_cast<CVerticalLayoutUI*>(CamareChildLayout->GetItemAt(0))->GetItemAt(0)->SetText(_T("摄像头6设置"));
+	for (int i = 7; i < 13; i++)
+		CreataCameraLayout(i);
 
-	
 	DWORD tBegining  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
 	DWORD  tEnd  = ((CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
 
@@ -149,16 +132,33 @@ void CMyMenuWnd::InitWindow()
 	}
 	InitAlarmVoice();
 	InitAwOnOffRecord();
+}
 
-	//AdapTive();
-	//m_pm.SetDPI(60);
+
+void CMyMenuWnd::CreataCameraLayout(int inx)
+{
+	CDialogBuilder Camerabuilder;
+	CVerticalLayoutUI *CamareChildLayout;
+	CamareChildLayout = (CVerticalLayoutUI*)Camerabuilder.Create(_T("cameraset.xml"), NULL, this, &m_pm, NULL);
+	pLayout_third->AddAt(CamareChildLayout, inx);
+	GetCameraItem(CamareChildLayout);
+	BingingCameraSlider(CamareChildLayout);
+}
+
+
+void CMyMenuWnd::BingingCameraSlider(CVerticalLayoutUI* pLayout)
+{
+	CControlUI* pSliderBind = (CControlUI*)static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(2))->FindSubControl(_T("bind_cameraset"));
+	CMySliderUI* pSlider = (CMySliderUI*)static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(2))->FindSubControl(_T("camera_set_volume"));
+	pSlider->bindControl = (CLabelUI*)pSliderBind;
 }
 
 void CMyMenuWnd::AdapTive()
 {
 	m_DispSize = 1600;
 	CDPI* pDpi = m_pm.GetDPIObj();
-	float m_scale;
+	mDPI = pDpi->GetDPI();
+	m_scale=1;
 	//pDpi->SetDPIAwareness(PROCESS_DPI_UNAWARE);
 	// 4:3
 	float iWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -213,7 +213,7 @@ void CMyMenuWnd::UpdataItemColor()
 		//布局
 		pLayout_PopMenu->SetBkColor(LAYOUT_POP_NOFOCUS);
 		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_FOCUSED);
-
+		pLayout_third->SetBkColor(LAYOUT_THIRD_NOFOUCS);
 		//一级菜单
 		CButtonUI* pItem;
 		for (int i = 0; i < pLayout_PopMenu->GetCount(); i += 2) {
@@ -257,7 +257,7 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 	case VK_UP:
 		if (sName == _T("camera_set_volume")) {
 			CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)msg.pSender->GetParent();
-			pParentLayout->GetItemAt(1)->SetFocus();
+			pParentLayout->FindSubControl(_T("camera_switch"))->SetFocus();
 		}
 		else if (sName == _T("sysset_voice")) {
 			m_pm.FindControl(_T("sysset_light"))->SetFocus();
@@ -273,7 +273,7 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 		}
 		else if (sName == _T("camera_set_volume")) {
 			CVerticalLayoutUI *pParentLayout = (CVerticalLayoutUI*)Item->GetParent();
-			pParentLayout->GetItemAt(6)->SetFocus();
+			pParentLayout->FindSubControl(_T("camera_set_video_save"))->SetFocus();
 		}
 		break;
 		//-------------------------------------------------------
@@ -385,6 +385,9 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				focusLevel++;
 				UpdataItemColor();
 			}
+			else {
+				FocusedItem[1] = NULL;
+			}
 			break;
 		//-----------------------------------------------
 		case VK_BACK:
@@ -400,10 +403,6 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			pLayout_third->SetVisible(false);
 			UpdataItemColor();
 			
-			break;
-
-		case 'Q':
-
 			break;
 		}
 	}
@@ -570,6 +569,7 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	case VK_DOWN:
 		if (_tcscmp(sName, _T("camera_switch")) == 0) {
 			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
+			Print("inx:%d",inx);
 			camera[inx].pVolum->SetFocus();
 		}
 		else if (pItem == pAlmVicSwitch) {
@@ -595,6 +595,11 @@ void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 						//refreshSuperscript(pSender);
 					}
 					pSender->Info->status = RECORD_LOCKED;
+				}
+				char sqlStmt[128];
+				sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pSender->Info->status, pSender->Info->nOwner, pSender->Info->tBegin);
+				if (!sqlite.DirectStatement(sqlStmt)) {
+					Print("Sql error:%s", sqlStmt);
 				}
 				pSender->Invalidate();
 			}
@@ -739,7 +744,24 @@ void CMyMenuWnd::ExpandCameraName()
 
 void CMyMenuWnd::ShowAlarmVoiceList(bool Switch)
 {
+	CContainerUI* pParentLayout = (CContainerUI*)m_pm.FindControl(_T("layout_alarm"));
 	CContainerUI* pContain = (CContainerUI*)m_pm.FindControl(_T("alarm_voice"));
+	CControlUI* pRbtn = m_pm.FindControl(_T("record_btn"));
+	int Width1 = 180, Width2;
+	if (pVoice1)
+		Width2 = 422;
+	else
+		Width2 = 348;
+	//Width1 = pParentLayout->GetItemAt(0)->GetFixedHeight();
+	//Width2 = pParentLayout->GetItemAt(1)->GetFixedHeight();
+	//Print("w1:%d,w2:%d ,rbtn:%d",Width1,Width2, pRbtn->GetFixedHeight());
+	if (Switch) {
+		pParentLayout->SetFixedHeight(Width1 + Width2);
+	}
+	else {
+		pParentLayout->SetFixedHeight(Width1);
+	}
+
 	pContain->SetVisible(Switch);
 }
 
@@ -778,7 +800,7 @@ void CMyMenuWnd::ThirdMenuSetFocus(CDuiString userdata)
 	}
 	else if (inx == 13){
 		//系统设置
-		pChildLayout->GetItemAt(2)->SetFocus();
+		pSysLight->SetFocus();
 	}
 	else if (inx == 14){
 		//看船时间
@@ -881,6 +903,7 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 		}
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo_request.xml"), text, NULL, NULL, NULL);
 	}
+
 	if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo.xml"), text, NULL, (LPARAM)recordInfo, type)) {
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("复制成功！"), NULL, NULL);
 	}
@@ -890,13 +913,9 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 void CMyMenuWnd::PlayVideo(WPARAM wParam,LPARAM lParam)
 {
 	mPlayerWall = new CPlayerWallWnd(_T("playerwall.xml"));
+	mPlayerWall->SetMenuWnd(this);
 	mPlayerWall->Create(NULL, _T("PlayerWallWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mPlayerWall->ShowWindow(true);
-	//CRect rcPlayer;
-	//GetWindowRect(mPlayerWall->GetHWND(),rcPlayer);
-	//int   cx = GetSystemMetrics(SM_CXSCREEN);
-	//int   cy = GetSystemMetrics(SM_CYSCREEN);
-	//::MoveWindow(mPlayerWall->GetHWND(), cx / 2 - rcPlayer.Width() / 2, 108, rcPlayer.Width(), cy-108, true);
 	mPlayerWall->CenterWindow();
 	::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, wParam, lParam);
 }
@@ -930,14 +949,19 @@ void CMyMenuWnd::AddAlarmVoice()
 	CButtonUI *pRecordBt = (CButtonUI*)m_pm.FindControl(_T("record_btn")); //录制按键
 	CContainerUI *layout = (CContainerUI*)pRecordBt->GetParent();
 	pVoice1 = new CAlarmVoiceListUI(_T("录音1"),_T("voice1"));
-	SIZE size_bnt = pRecordBt->GetFixedXY();
-	size_bnt.cy += 64;
-	layout->SetFixedHeight(422);
-	pRecordBt->SetFixedXY(size_bnt);
-	pRecordBt->SetText(_T("重新录制报警音"));
+	
+	RECT layoutpadding;
+	SIZE size_btn = pRecordBt->GetFixedXY();
+	int v_height = pDefaultVoice->GetFixedHeight();
+	layout->SetFixedHeight(layout->GetFixedHeight()+ 80);
+	m_pm.FindControl(_T("layout_alarm"))->SetFixedHeight(604);
+
 	layout->Add(pVoice1);
 	pVoice1->SetAttribute(_T("style"), _T("alarm_voice_list"));
-	pVoice1->SetFixedXY({ 0,360 });
+
+	size_btn.cy += 80;
+	pRecordBt->SetFixedXY(size_btn);
+	pRecordBt->SetText(_T("重新录制报警音"));
 }
 
 void CMyMenuWnd::refreshSuperscript(CMenuItemUI* pItem)
@@ -1200,14 +1224,16 @@ void CMyMenuWnd::GetCameraItem(CVerticalLayoutUI * pLayout)
 	camera[iInx].pTitle = (CLabelUI*)pChildLayout->GetItemAt(0);		//标题
 	camera[iInx].pShipname = (CMyEditUI*)pChildLayout->GetItemAt(2);	//船名
 	pChildLayout = static_cast<CContainerUI*>(pLayout->GetItemAt(2));
-	camera[iInx].pSwitch = (CSwitchUI*)pChildLayout->GetItemAt(1);//摄像头开关
-	camera[iInx].pVolum = (CMySliderUI*)pChildLayout->GetItemAt(4);//音量
-	camera[iInx].pSaveVideo = (CMyLabelUI*)pChildLayout->GetItemAt(6);//视频存储设置
-	camera[iInx].pAutoWatch = (CMyLabelUI*)pChildLayout->GetItemAt(8);//自动看船设置
+	camera[iInx].pSwitch = (CSwitchUI*)pChildLayout->FindSubControl(_T("camera_switch"));//摄像头开关
+	camera[iInx].pVolum = (CMySliderUI*)pChildLayout->FindSubControl(_T("camera_set_volume"));//音量
+	camera[iInx].pSaveVideo = (CMyLabelUI*)pChildLayout->FindSubControl(_T("camera_set_video_save"));//视频存储设置
+	camera[iInx].pAutoWatch = (CMyLabelUI*)pChildLayout->FindSubControl(_T("camera_set_shipwatch"));//自动看船设置
 	name.Format(_T("video_list%d"), iInx + 1);
 	camera[iInx].pNormalList = (CVideoListUI*)m_pm.FindControl(name);	//视频列表
+	camera[iInx].pNormalList->SetListElementHeight(m_scale);
 	name.Format(_T("video_alarmlist%d"), iInx + 1);
 	camera[iInx].pAlarmList = (CVideoListUI*)m_pm.FindControl(name);	//报警视频列表
+	camera[iInx].pAlarmList->SetListElementHeight(m_scale);
 }
 
 void CMyMenuWnd::InitRecordFile(list<CRecordFileInfo*>* pList)
@@ -1225,6 +1251,7 @@ void CMyMenuWnd::InitAlarmFile(list<CRecordFileInfo*>* pList)
 		camera[(*iter)->nOwner - 1].pAlarmList->AddRecordFile(*iter);
 	}
 }
+
 
 void CMyMenuWnd::SetAllVirginNum()
 {
@@ -1381,6 +1408,7 @@ void CMyMenuWnd::AddAwOnOffRecord(CTime sTime, CDuiString sType)
 	pListEle = new CAWOnOffListLabelUI(sTime, sType);
 	pAwOnOffRecordList->Add(pListEle);
 	pListEle->SetAttribute(_T("style"), _T("watch_record_style"));
+	pListEle->SetFixedHeight(65 * m_scale);
 	Count = pAwOnOffRecordList->GetCount();
 	if (Count % 2)
 		pListEle->SetBkColor(0xFFF3F3F3);
@@ -1636,7 +1664,6 @@ bool CMyMenuWnd::AlarmLightIsChange()
 }
 
 
-
 LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (wParam)
@@ -1886,6 +1913,16 @@ Print("Third Menu Sel :%d", inx);
 		m_pm.Invalidate();
 		break;
 	}
+}
+
+int CMyMenuWnd::GetDpi()
+{
+	return mDPI;
+}
+
+float CMyMenuWnd::GetMyScale()
+{
+	return m_scale;
 }
 
 

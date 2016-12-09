@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window caption="0,0,0,97" size="1600,1200">
+<Window caption="0,0,0,97" size="1600,1100">
 	<Font shared="true" id="0" name="方正兰亭中黑_GBK" size="32"/>
 	<Font shared="true" id="1" name="方正兰亭中黑_GBK" size="20"/>
 	<Font shared="true" id="2" name="方正兰亭中黑_GBK" size="30"/>
@@ -9,9 +9,9 @@
 	
 	<!---------------------Default---------------------><!--控件默认属性-->
 	<!--菜单一级控件-->
-	<Default shared="true" name="PopupMenu" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFFFFFFF&quot; "/>
+	<Default shared="true" name="PopupMenu" value="height=&quot;106&quot; textpadding=&quot;120,0,80,0&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFFFFFFF&quot; "/>
 	<!--菜单二级控件-->
-	<Default shared="true" name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/row.png' source='0,0,343,106'&quot; focusedimage=&quot;file='image/row.png' source='344,0,686,106'&quot;"/>
+	<Default shared="true" name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/menuitem_bk.png' &quot; focusedimage=&quot;file='image/menuitem_focusedbk.png'&quot;"/>
 	<!--分割线-->
 	<Default shared="true" name="Control" value="height=&quot;2&quot; bkcolor=&quot;#FFBABABA&quot;" />  
 	<!--键盘控件-->
@@ -23,27 +23,29 @@
 	<!--摄像机设置船舶名称项-->
 	<Default shared="true" name="ShipNameItem" value="bkcolor=&quot;#FFD7E9FF&quot; borderround=&quot;4,4&quot; font=&quot;1&quot; align=&quot;center&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; "/>
 	<!--滑块-->
-	<Default shared="false" name="MySlider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; foreimage=&quot;file='image/slider_fore.png' mask='#FFE97FFF'&quot; thumbimage=&quot;file='image/thumb.png' mask='#FFDAEBF9'&quot; " />
+	<Default shared="false" name="MySlider" value="height=&quot;28&quot; width=&quot;478&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;27,27&quot; foreimage=&quot;file='image/slider_fore.png' mask='#FFE97FFF'&quot; thumbimage=&quot;file='image/thumb.png' mask='#FFDAEBF9'&quot; " />
 	<!---->
 	<Default shared="true"  name="MyLabel" value="float=&quot;true&quot; textpadding=&quot;45,0,0,0&quot; font=&quot;3&quot; align=&quot;left&quot; bkcolor=&quot;#FFF3F3F3&quot; focusbkcolor=&quot;#FF4198FE&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; statetextcolor=&quot;#FF4198FE&quot; statetextfocuscolor=&quot;#FFFFFFFF&quot;"/>
 	<!--视频列表-->
 	<Default shared="true" name="VideoList" value="padding=&quot;20,30,25,0&quot; itemfont=&quot;3&quot; itemselectedbkcolor=&quot;#FF4198FE&quot;"/>
 	<!--报警声音列表-->
 	<Default shared="true" name="AlarmVoiceList"  value="height=&quot;80&quot; font=&quot;3&quot; textcolor=&quot;#FF666666&quot; textpadding=&quot;105,0,0,0&quot; align=&quot;left&quot; normalimage=&quot;file='image/unsel.png' dest='679,29,704,54'&quot; pushedimage=&quot;file='image/sel.png' dest='679,29,704,54'&quot; "/>
+	<Default shared="true" name="MyList" value="height=&quot;65&quot;" />
 	
 	<!---------------------Style---------------------><!--动态添加控件时设置属性-->
 	<!--二级菜单控件-->
-	<Style name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/row.png' source='0,0,343,106'&quot; focusedimage=&quot;file='image/row.png' source='344,0,686,106'&quot;" /> 
+	<Style name="MenuItem" value="height=&quot;106&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; font=&quot;0&quot; bkcolor=&quot;#FFE6E6EF&quot; bkimage=&quot;file='image/menuitem_bk.png' &quot; focusedimage=&quot;file='image/menuitem_focusedbk.png'&quot;" /> 
 	<!--分割线-->
 	<Style name="control" value="height=&quot;2&quot; bkcolor=&quot;#FFBABABA&quot;" />
 	<!--树结构节点-->
 	<Style name="treenode" value="height=&quot;65&quot; selitemtextcolor=&quot;#FFFFFFFF&quot; itemtextcolor=&quot;#FF333333&quot;" /> 
 	<!--滑块开关-->
 	<Style name="slider_switch" value="float=&quot;true&quot; height=&quot;50&quot; width=&quot;81&quot; max=&quot;1&quot; min=&quot;0&quot; thumbsize=&quot;60,60&quot; bkimage=&quot;file='' mask='#FFE97FFF'&quot; foreimage=&quot;file='' mask='#FFE97FFF'&quot; thumbimage=&quot;file=''&quot; "/>
-	<Style name="slider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; bkimage=&quot;file='123.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; foreimage=&quot;file='321.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; thumbimage=&quot;file='3.png' mask='#FFDAEBF9'&quot; " />
+	<Style name="slider" value="height=&quot;28&quot; width=&quot;478&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; bkimage=&quot;file='123.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; foreimage=&quot;file='321.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; thumbimage=&quot;file='3.png' mask='#FFDAEBF9'&quot; " />
 	<Style name="list" value="textcolor=&quot;#FFFFFF00&quot;"/>
 	<Style name="alarm_voice_list"  value="height=&quot;80&quot; font=&quot;3&quot; textcolor=&quot;#FF666666&quot; textpadding=&quot;105,0,0,0&quot; align=&quot;left&quot; normalimage=&quot;file='image/unsel.png' dest='679,29,704,54'&quot; pushedimage=&quot;file='image/sel.png' dest='679,29,704,54'&quot; "/>
 	<Style name="watch_record_style" value="height=&quot;65&quot; "/>
+	<Style name="list_element" value="height=&quot;65&quot;" />
 	
 	<VerticalLayout name="root" bkcolor="FFEFEFF4">
 		<VerticalLayout height="62">
@@ -51,15 +53,15 @@
 		</VerticalLayout>
 		<HorizontalLayout>
 			<VerticalLayout name="layout_popmenu" width="328" bkcolor="#FFFFFFFF">
-				<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/报警视频.png' source='0,0,328,106'" focusedimage="file='image/报警视频.png' source='328,0,657,106'" ismark="true"/>
+				<PopupMenu name="alarmvideo" text="报警视频" userdata="0" bkimage="file='image/alarm_video_bk.png'"	 focusedimage="file='image/alarm_video_focusedbk.png'" ismark="true"/>
 				<Control />
-				<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/主机设置.png' source='0,0,328,106'" focusedimage="file='image/主机设置.png' source='328,0,657,106'" />
+				<PopupMenu name="setting"    text="主机设置" userdata="1" bkimage="file='image/host_set_bk.png'"	 focusedimage="file='image/host_set_focusedbk.png' " />
 				<Control />
-				<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='image/自动看船.png' source='0,0,328,106'" focusedimage="file='image/自动看船.png' source='328,0,657,106'" />
+				<PopupMenu name="autowatch"  text="自动看船" userdata="2" bkimage="file='image/aw_bk.png'" 			 focusedimage="file='image/aw_focusedbk.png'" />
 				<Control />
-				<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='image/视频调取.png' source='0,0,328,106'" focusedimage="file='image/视频调取.png' source='328,0,657,106'" />
+				<PopupMenu name="videoget"   text="视频调取" userdata="3" bkimage="file='image/video_obtain_bk.png'" focusedimage="file='image/video_obtain_focusedbk.png'" />
 				<Control />
-				<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='image/回家看船.png' source='0,0,328,106'" focusedimage="file='image/回家看船.png' source='328,0,657,106'" />
+				<PopupMenu name="homewatch"  text="回家看船" userdata="4" bkimage="file='image/home_bk.png'" 		focusedimage="file='image/home_focusedbk.png'" />
 				<Control />
 			</VerticalLayout>
 			
@@ -79,7 +81,7 @@
 				<VerticalLayout name="layout_submenu_autowatch" >	<!--自动看船-->
 					<MenuItem name="watchtime" text="看船时间" userdata="14" />
 					<Control/>
-					<MenuItem name="alarm_voice" text="报警音" userdata="15" bkimage="file='image/row.png' source='0,0,343,106'" focusedimage="file='image/row.png' source='344,0,686,106'"/>
+					<MenuItem name="alarm_voice" text="报警音" userdata="15" />
 					<Control/>
 					<MenuItem name="alarm_light" text="报警灯光" userdata="16"/>
 					<Control/>
@@ -155,7 +157,7 @@
 							<KeyBoard name="vk_g" text="g" userdata="16" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_h" text="h" userdata="17" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_i" text="i" userdata="18" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_delet" userdata="19" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_delet" userdata="19" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 						<HorizontalLayout name="line3" padding="20,0,0,0" height="67">
 							<KeyBoard name="vk_j" text="j" userdata="20" textcolor="#FF4561E3"/>
@@ -167,7 +169,7 @@
 							<KeyBoard name="vk_p" text="p" userdata="26" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_q" text="q" userdata="27" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_r" text="r" userdata="28" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_deleat1" userdata="29" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat1" userdata="29" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 						<HorizontalLayout name="line4" padding="20,0,0,0" height="67">
 							<KeyBoard name="vk_s" text="s" userdata="30" textcolor="#FF4561E3"/>
@@ -178,15 +180,15 @@
 							<KeyBoard name="vk_x" text="x" userdata="35" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_y" text="y" userdata="36" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_z" text="z" userdata="37" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_deleat2" userdata="38" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
-							<KeyBoard name="vk_deleat3" userdata="39" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat2" userdata="38" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat3" userdata="39" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 					</VerticalLayout>
 					<VerticalLayout name="prompt" visible="false" >
 						<Text text="“    ” 表示回删一位，“    ” 表示全部清空。" float="true" font="3" pos="172,561,756,600" textcolor="#FF666666" align="center"/>
 						<Text text="船舶名字最长为32个数字/字母。" float="true" font="3" pos="172,600,756,639" textcolor="#FF666666" align="center"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="231,566,0,0"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="523,566,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="208,560,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="497,565,0,0"/>
 					</VerticalLayout>
 					<Text text="【确认】按键弹出输入键盘" float="true" pos="276,948,0,0" width="377" height="30" font="2" textcolor="#FF666666"/>
 				</VerticalLayout>
@@ -194,10 +196,12 @@
 				<VerticalLayout bkcolor="#FFF3F3F3" padding="70,80,69,136">
 					<Label text="系统设置" font="3" height="80" textpadding="339,21,339,20" bkcolor="#FFE5E3E3" textcolor="#FF333333" />
 					<Label text="亮度调节" font="3" height="68" textpadding="45,20,633,10" bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
-					<MySlider name="sysset_light" float="true" pos="178,176,0,0" bkimage="file='image/slider_bk.png' dest='102,7,682,75' " />
+					<Label name="bind_light" float="true" pos="0,148,790,80" bkimage="file='image/slider_light_bk.png'" height="80" /> 
+					<MySlider name="sysset_light" float="true" pos="178,175,0,0" bindbkimage="file='image/slider_light_bk.png'" focusedbkimage="file='image/slider_light_focusedbk.png'"/> 
 					<Control float="true" pos="45,246,745,248" />
 					<Label text="音量调节" font="3" float="true" pos="45,268,157,307"  bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
-					<MySlider name="sysset_voice" float="true" pos="178,344,0,0" bkimage="file='image/volumbk.png' dest='102,7,682,75' " />
+					<Label name="bind_voice" float="true" pos="0,320,790,80" bkimage="file='image/slider_volum_bk.png'" height="80" /> 
+					<MySlider name="sysset_voice" float="true" pos="178,347,0,0" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'"/>
 					<Control float="true" pos="45,414,745,416" />
 					<MyLabel name="sysset_version" pos="0,426,790,506" text="软件版本：V1.0.0"  statedisabletext="更新"/>
 					<Control float="true" pos="45,516,745,518" />
@@ -222,11 +226,11 @@
 					<Label name="morrow" visible="false" float="true" pos="588,404,0,0" width="89" height="45" borderround="4,4" bkcolor="#FFFF0000" font="3" textcolor="#FFFFFFFF" align="center" text="次日"/>
 				</VerticalLayout>
 				
-				<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0">	<!--报警音-->
-					<VerticalLayout height="180">
+				<VerticalLayout name="layout_alarm" bkcolor="#FFF3F3F3" padding="70,80,69,0" height="530">	<!--报警音-->
+					<VerticalLayout height="180" >
 						<Label text="报警音" font="3" height="80" textpadding="353,21,353,20" bkcolor="#FFE5E3E3" textcolor="FF333333" />
 						<Control height="10" bkcolor="#FFF3F3F3"/>
-						<Switch  name="alarmvoice_switch" text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666" textpadding="45,0,605,0" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
+						<Switch  name="alarmvoice_switch" textpadding="45,0,605,0" text="开启报警音" height="80" font="3" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" textcolor="#FF666666"  bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 						<Control height="10" bkcolor="#FFF3F3F3"/>
 					</VerticalLayout>
 					<VerticalLayout name="alarm_voice" visible="false" bkcolor="#FFF3F3F3" height="348">
@@ -236,20 +240,24 @@
 						<RevordVoiceBt name="record_btn" float="true" pos="270,212,0,0" height="94" width="250" font="0" bkcolor="#FFACACAC" textcolor="#FFFFFFFF" text="录制报警音" focusedimage="file='image/按钮-选中.png'" borderround="6,6"/>
 					</VerticalLayout>
 				</VerticalLayout>
+				
 				<VerticalLayout bkcolor="#FFFFFFFF" padding="70,80,69,0" height="180">	<!--报警灯光-->
 					<Label text="开启警告灯光" font="3" height="80" bkcolor="#FFE5E3E3" textcolor="FF333333" align="center" />
 					<Control height="10" bkcolor="#FFF3F3F3"/>
-					<Switch name="alarmlight_switch" text="开启警告灯光" height="80" font="3" textcolor="#FF666666" textpadding="45,0,500,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
+					<Switch name="alarmlight_switch" text="开启警告灯光" height="80" font="3" textcolor="#FF666666" textpadding="45,0,577,0" onimage="file='image/switch_on.png' dest='665,16,745,77'" offimage="file='image/switch_off.png' dest='665,16,745,77'" bkcolor="#FFF3F3F3" focusedtextcolor="#FFFFFFFF"/>
 					<Control height="10" bkcolor="#FFF3F3F3"/>
 				</VerticalLayout>
 				
 				<VerticalLayout>	<!--看船开关记录-->
+				
+				
 					 <List name="watch_record" itemvalign="vcenter" padding="24,25,30,0" itemtextpadding="45,0,0,0" itemfont="3" itemtextcolor="#FF666666" itemselectedtextcolor="#FFFFFFFF">
 						<ListHeader height="65" bkcolor="#FFF3F3F3">
 							<ListHeaderItem text="看船开关记录" align="center" textcolor="#FF333333" font="2"/>
 						</ListHeader>
-					<!--<Include source="listitem.xml"/>-->
 					</List>
+				
+					
 				  <Label name="page" float="true" pos="385,979,0,0" width="200" height="30" font="3" textcolor="#FF666666" text="第1/2页"/>
 				</VerticalLayout>	
 	<!--视频调取-->

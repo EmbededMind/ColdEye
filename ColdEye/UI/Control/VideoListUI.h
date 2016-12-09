@@ -87,7 +87,7 @@ public:
 public:
 	CVideoListUI() : _root(NULL), m_dwDelayDeltaY(0), m_dwDelayNum(0), m_dwDelayLeft(0)
 	{
-		SetItemShowHtml(true);
+		//SetItemShowHtml(true);
 		_root = new Node;
 		_root->data()._level = -1;
 		_root->data()._expand = true;
@@ -182,7 +182,7 @@ public:
 		}
 		pListElement->SetText(node->data()._text);
 		pListElement->SetTag((UINT_PTR)node);
-		pListElement->SetFixedHeight(65);
+		//pListElement->SetFixedHeight(65);
 		int index = 0;
 
 		if (parent == _root)
@@ -263,9 +263,11 @@ public:
 
 	void CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRecordFileInfo * pInfo, CVideoListUI::Node* pNode);
 	int IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo);
+
+	void SetListElementHeight(float);
 private:
 	Node* _root;
-
+	int m_listElementHight;
 	LONG m_dwDelayDeltaY;
 	DWORD m_dwDelayNum;
 	DWORD m_dwDelayLeft;

@@ -126,7 +126,6 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 						m_pm.FindControl(_T("cancel_btn"))->SetFocus();
 				}
 			}
-			
 			break;
 		//--------------------------------------------------------------------------
 		case VK_RIGHT:
@@ -209,10 +208,13 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	case USER_MSG_COPY_INFO:
 		{
 			//ProgressReflash();
+			CDuiString text;
 			int Size = sendedSize + wParam;
 			int num_progress = 100*((double)Size / (double)totalSize);
 			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 			progress->SetValue(num_progress);
+			text.Format(_T("%d%%"), num_progress);
+			progress->SetText(text);
 		}
 		break;
 
@@ -225,11 +227,10 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 				if (iter == pRecordInfo->end()) {
 					CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 					progress->SetValue(totalSize);
-					Print("sendsize:%d",sendedSize);
 					Close(1);//¸´ÖÆ½áÊø
 					return 0;
 				}
-				CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
+				CExHardDrive::GetInstance()->CopyRecord((*iter), videoType);
 				return 0;
 			}
 		}
@@ -297,7 +298,8 @@ LRESULT CMsgWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 void CMsgWnd::InitWindow()
 {
-	Print("initwindw");
+	m_pm.SetDPI(((CColdEyeDlg*)AfxGetMainWnd())->mMenu.GetDpi());
+
 	HWND MainDlg;
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));
@@ -305,11 +307,9 @@ void CMsgWnd::InitWindow()
 	if (SkinType == _T("mb_recordingvoice.xml")) {
 		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
 		pMainDlg->mMessageBox = this;
-		//pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
 	}
 	else if (SkinType == _T("mb_update.xml")) {
 		UINT_PTR i;
-		//i = SetTimer(m_pm.GetPaintWindow(),1, 200, NULL);
 		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
 	}
 	else if (SkinType == _T("mb_copyvideo.xml")) {
@@ -318,7 +318,6 @@ void CMsgWnd::InitWindow()
 		totalSize = 0;
 		sendedSize = 0;
 		list<CRecordFileInfo*>::iterator iter;
-		Print("Copy %d", pRecordInfo->size());
 		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++)
 			totalSize += (*iter)->dlSize;
 
@@ -329,7 +328,6 @@ void CMsgWnd::InitWindow()
 		CMCI *pCmic = CMCI::GetInstance();
 		pCmic->Play();
 		TotalTime = pCmic->GetTotaltime();
-Print("alarm voice TotalTime:%d", TotalTime);
 		static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetMaxValue(TotalTime);
 		SetTimer(m_hWnd, TIME_PLAY_VOICE , 1000, NULL);
 	}

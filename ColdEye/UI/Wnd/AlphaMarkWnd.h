@@ -24,11 +24,12 @@ public:
 	void Notify(TNotifyUI& msg);
 	void InitWindow();
 	void SetPlayerWnd(CPlayerWallWnd*);
-
+	void SetDpi(int dpi);
 private:
 	CPlayerWallWnd *pPlayerWall;
 	CDuiString mSkinFileName;
 
 	CButtonUI* pBt_fast;
 	CButtonUI* pBt_slow;
+	int mDpi;
 };

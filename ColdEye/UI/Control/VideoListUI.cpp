@@ -78,6 +78,7 @@ CVideoListUI::Node * CVideoListUI::AddHeadNode(CString sText, int nID, CRecordFi
 {
 	CVideoListUI::Node* pNode = AddNode(sText, nID,pInfo);
 	pNode->data()._pListElement->SetBkColor(0XFFF3F3F3);
+	pNode->data()._pListElement->SetFixedHeight(m_listElementHight);
 	return pNode;
 }
 
@@ -92,6 +93,7 @@ CVideoListUI::Node * CVideoListUI::AddChildNode(CString sText, CVideoListUI::Nod
 	{
 		pNode->data()._pListElement->SetBkColor(0xFFE5E5E5);
 	}
+	pNode->data()._pListElement->SetFixedHeight(m_listElementHight);
 	return pNode;
 }
 
@@ -254,6 +256,11 @@ int CVideoListUI::IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo)
 		return 1;
 
 	return 0;
+}
+
+void CVideoListUI::SetListElementHeight(float m_scale)
+{
+	m_listElementHight = 60 * m_scale;
 }
 
 

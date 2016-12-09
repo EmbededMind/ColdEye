@@ -35,11 +35,19 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 {
 	if (Info->status== RECORD_LOCKED)
 	{
-		CRect rcPos;
-		CDuiString dest;
-		rcPos = { 825,23,851,55 };
-		dest.Format(_T("file='image\\Ëø2.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
-		DrawImage(hDC, dest);
+		if (((CVideoListUI::Node*)GetTag())->data()._level != 0) {			
+			CRect rcPos;
+			CDuiString dest;
+			rcPos = { 825,17,851,50 };
+			if (IsSelected()) {
+				dest.Format(_T("file='image\\lock_focused.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
+			}
+			else {
+				dest.Format(_T("file='image\\lock.png' dest='%d,%d,%d,%d'"), rcPos.left, rcPos.top, rcPos.right, rcPos.bottom);
+			}
+			DrawImage(hDC, dest);
+		}
+
 	}
 	if(mhintNumber !=0)
 	{
@@ -53,15 +61,16 @@ void CMyListUI::PaintStatusImage(HDC hDC)
 		CDuiString dest;
 
 		if (mhintNumber>9) {
-			textPos.left += (rcPos.left + 4);
-			textPos.top += (rcPos.top + 7);
+			//textPos.left += (rcPos.left + 4);
+			textPos.left += (rcPos.left -51);
+			textPos.top += (rcPos.top + 6);
 			textPos.right = textPos.left + 50;
 			textPos.bottom = textPos.top + 50;
 		}
 		else {
-			textPos.left += (rcPos.left+11);
-			textPos.top += (rcPos.top+7);
-			textPos.right = textPos.left +50;
+			textPos.left += (rcPos.left - 45);
+			textPos.top += (rcPos.top + 6);
+			textPos.right = textPos.left + 50;
 			textPos.bottom = textPos.top + 50;
 		}
 
