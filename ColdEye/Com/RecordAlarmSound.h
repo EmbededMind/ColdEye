@@ -9,7 +9,6 @@ private:CRecordAlarmSound() {
 	H264_PLAY_GetPort(&m_port);
 	m_pTalkDecodeBuf = nullptr;
 	m_isAlarm = false;
-	m_TimeIdStopAlarm = 0;
 	m_pThis = this;
 };
 public:
@@ -28,8 +27,6 @@ public:
 	char m_rName[50];
 	char m_Name[50];
 	CCamera *m_pPlayCamera;
-	UINT m_TimeIdStopAlarm;
-	UINT m_TimeIdStopLED;
 	void Record(CCamera *pCamera);
 	bool Save();
 	bool NotSave();
@@ -38,7 +35,7 @@ public:
 	BOOL SendTalkData(LPBYTE pDataBuffer, DWORD dwDataLength);
 	BOOL InputTalkData(BYTE *pBuf, DWORD nBufLen);
 	BOOL ScanVoice();
-protected:
+private:
 	static CRecordAlarmSound *m_pThis;
 	CCamera *m_pRecordCamera;
 	LONG m_TalkHandle;
@@ -46,7 +43,5 @@ protected:
 	BOOL StopTalkPlay(long nPort);
 	BYTE *m_pTalkDecodeBuf;
 	bool m_isAlarm;
-	void SetMyTimer();
-	static void CALLBACK MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 };
 

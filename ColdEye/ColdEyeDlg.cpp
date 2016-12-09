@@ -13,8 +13,9 @@
 #include "Com\Util.h"
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
-
+#include "Com\RecordAlarmSound.h"
 #include "Pattern\MsgSquare.h"
+#include "Com\AlarmLED.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -173,12 +174,15 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_WM_TIMER()
 	         //UEER_MSG_CAMERA_CONFIG_CHANGE
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CColdEyeDlg::OnUserMsgCameraConfigChange)
+<<<<<<< HEAD
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_NAME, &CColdEyeDlg::OnUserMsgCameraConfigName)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SWITCH, &CColdEyeDlg::OnUserMsgCameraConfigSwich)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_VOLUME, &CColdEyeDlg::OnUserMsgCameraConfigVolume)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SAVE, &CColdEyeDlg::OnUserMsgCameraConfigSave)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWSWITCH, &CColdEyeDlg::OnUserMsgCmaeraConfigAWSwitch)
 	ON_MESSAGE(USER_MSG_STOP_ALARM, &CColdEyeDlg::OnUserMsgStopAlarm)
+=======
+>>>>>>> dabf4ae2452ce22f793f7db8181afa6f3c193e45
 	ON_MESSAGE(USER_MSG_ALARM_LIGHT, &CColdEyeDlg::OnUserMsgSetAlarmLight)
 END_MESSAGE_MAP()
 
@@ -277,6 +281,10 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	SetTimer(TIMER_ID_SECOND_TICK, 1000, NULL);
 	SetTimer(TIMER_ID_HANDLE, 10000, NULL);
+
+	CCommunication::GetInstance()->Init(this);
+	CCommunication::GetInstance()->StartThread();
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -690,10 +698,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			switch (p->ch[3])
 			{
 			case 0x01:
-				if(p->ch[5] == 1)
-					CCommunication::GetInstance()->ReplySetVolume(pDev);
-				else
-					CCommunication::GetInstance()->ReplySetVolume(0);
+					CCommunication::GetInstance()->ReplySetVolume(pDev, p->ch[4]);
 				break;
 			case 0x02:
 				Print("case 0x02");
@@ -735,9 +740,15 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				if (p->ch[4] == 2)
 				{
 					if (p->ch[5] == 1)
+					{
+						Print("StopAlarm");
 						CCommunication::GetInstance()->ReplyStopAlarm(pDev);
+					}
 					else
+					{
+						Print("StopAlarm");
 						CCommunication::GetInstance()->ReplyStopAlarm(0);
+					}
 				}
 				break;
 			case 0x05:
@@ -769,7 +780,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 								pPort->m_State  = OFFLINE;
 							}
 							//检测到更换
-							else if (isReplaced) {
+							if (isReplaced) {
 								Print("Replace event---");
 								pPort->m_State  = PENDING_MAC;
 								mPendMacPort.push_back(i+1);// 加入请求mac的队列
@@ -788,7 +799,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				}
 				else if (p->ch[4] == 2) //端口mac
 				{
-					CCommunication::GetInstance()->ReplyGetPortMac(1);
+					CCommunication::GetInstance()->ReplyGetPortMac(p->ch[5]);
 					//for (int i = 0; i < p->num; i++) {
 					//	printf("%02X ", p->ch[i]);
 					//}
@@ -853,10 +864,13 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 					break;
 				}
 				case 6:
-					CCommunication::GetInstance()->ReplyControlLED(1);
+					if(p->ch[4] == 1)
+						CCommunication::GetInstance()->ReplyTurnOnLED();
+					else
+						CCommunication::GetInstance()->ReplyTurnOffLED();
 					break;
 				case 7:
-					CCommunication::GetInstance()->ReplySetLED(1);
+					CCommunication::GetInstance()->ReplySetLED(p->ch[5]);
 					break;
 				default:
 					break;
@@ -1008,20 +1022,13 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 	return 0;
 }
 
-LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
-{
-Print("MSG Stop Alarm");
-	CCamera *pDev = (CCamera*)lParam;
-	CCommunication::GetInstance()->StopAlarm(pDev);
-	return 0;
-}
-
 LRESULT CColdEyeDlg::OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam)
 {
-	CCommunication::GetInstance()->SetLED(wParam);
+	CCommunication::GetInstance()->SetLED(0);
 	return LRESULT(0);
 }
 
+<<<<<<< HEAD
 LRESULT CColdEyeDlg::OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam)
 {
 	return LRESULT();
@@ -1056,3 +1063,6 @@ LRESULT CColdEyeDlg::OnUserMsgCmaeraConfigAWSwitch(WPARAM wParam, LPARAM lParam)
 {
 	return LRESULT();
 }
+=======
+
+>>>>>>> dabf4ae2452ce22f793f7db8181afa6f3c193e45

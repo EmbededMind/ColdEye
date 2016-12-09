@@ -21,10 +21,11 @@ public:
 	void ReplyStopTalk();
 	void ReplyAlarm(CCamera *pDev);
 	void ReplyStopAlarm(CCamera *pDev);
-	void ReplySetVolume(bool);
-	void ReplyControlLED(bool);
+	void ReplySetVolume(CCamera *pDev, int Volume);
+	void ReplyTurnOnLED();
+	void ReplyTurnOffLED();
 	void ReplySetLED(bool);
-	void ReplyHandle();
+	void ReplyHandle(bool);
 	void ReplyGetPortMac(int port);
 };
 

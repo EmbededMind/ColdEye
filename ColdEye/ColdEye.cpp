@@ -286,7 +286,7 @@ void CColdEyeApp::MakeSystemConfigDefault()
 
 void CColdEyeApp::StoreAlarmLightConfig()
 {
-	char sqlStmt[64];
+	char sqlStmt[128];
 	sprintf_s(sqlStmt, "UPDATE host_config SET arm_lgt_on = %d;", m_SysConfig.alarm_light_onoff);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
@@ -314,7 +314,7 @@ void CColdEyeApp::StoreAlarmSoundConfig()
 
 void CColdEyeApp::StoreSystemConfig()
 {
-	char sqlStmt[64];
+	char sqlStmt[128];
 	sprintf_s(sqlStmt, "UPDATE host_config SET brtness = %d, vol = %d;", m_SysConfig.brightness, m_SysConfig.volumn);
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
@@ -342,7 +342,7 @@ void CColdEyeApp::StoreBoatName()
 
 bool CColdEyeApp::SetAwTime(DWORD tBegining, DWORD tEnd)
 {
-	char sqlStmt[64];
+	char sqlStmt[128];
 	sprintf_s(sqlStmt, "UPDATE host_config SET aw_begining = %d, aw_end = %d;", tBegining, tEnd);
 
 	if (sqlite.DirectStatement(sqlStmt)) {
