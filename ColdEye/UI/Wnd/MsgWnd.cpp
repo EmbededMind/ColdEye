@@ -208,10 +208,13 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	case USER_MSG_COPY_INFO:
 		{
 			//ProgressReflash();
+			CDuiString text;
 			int Size = sendedSize + wParam;
 			int num_progress = 100*((double)Size / (double)totalSize);
 			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 			progress->SetValue(num_progress);
+			text.Format(_T("%d%%"), num_progress);
+			progress->SetText(text);
 		}
 		break;
 
@@ -224,11 +227,10 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 				if (iter == pRecordInfo->end()) {
 					CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 					progress->SetValue(totalSize);
-					Print("sendsize:%d",sendedSize);
 					Close(1);//¸´ÖÆ½áÊø
 					return 0;
 				}
-				CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
+				CExHardDrive::GetInstance()->CopyRecord((*iter), videoType);
 				return 0;
 			}
 		}

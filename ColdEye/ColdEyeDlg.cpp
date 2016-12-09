@@ -963,8 +963,7 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 
 		}
 		else {
-			CCommunication::GetInstance()->Handle();
-		}
+			CCommunication::GetInstance()->Handle();		}
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }

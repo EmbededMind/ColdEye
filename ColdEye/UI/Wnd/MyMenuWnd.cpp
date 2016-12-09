@@ -84,12 +84,10 @@ void CMyMenuWnd::InitWindow()
 	pSysLight = static_cast<CMySliderUI*>(m_pm.FindControl(_T("sysset_light")));
 	pSysLight->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.brightness);
 	pSysLight->bindControl = static_cast<CLabelUI*>(m_pm.FindControl(_T("bind_light")));
-	pSysLight->SetFixedWidth(478);
 
 	pSysVolum = static_cast<CMySliderUI*>(m_pm.FindControl(_T("sysset_voice")));
 	pSysVolum->SetValue(((CColdEyeApp*)AfxGetApp())->m_SysConfig.volumn);
 	pSysVolum->bindControl = static_cast<CLabelUI*>(m_pm.FindControl(_T("bind_voice")));
-	pSysVolum->SetFixedWidth(478);
 
 
 	pAlmVicSwitch = static_cast<CSwitchUI*>(m_pm.FindControl(_T("alarmvoice_switch")));
@@ -905,6 +903,7 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 		}
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo_request.xml"), text, NULL, NULL, NULL);
 	}
+
 	if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo.xml"), text, NULL, (LPARAM)recordInfo, type)) {
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("¸´ÖÆ³É¹¦£¡"), NULL, NULL);
 	}
