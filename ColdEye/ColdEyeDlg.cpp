@@ -174,15 +174,12 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_WM_TIMER()
 	         //UEER_MSG_CAMERA_CONFIG_CHANGE
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CColdEyeDlg::OnUserMsgCameraConfigChange)
-<<<<<<< HEAD
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_NAME, &CColdEyeDlg::OnUserMsgCameraConfigName)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SWITCH, &CColdEyeDlg::OnUserMsgCameraConfigSwich)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_VOLUME, &CColdEyeDlg::OnUserMsgCameraConfigVolume)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SAVE, &CColdEyeDlg::OnUserMsgCameraConfigSave)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWSWITCH, &CColdEyeDlg::OnUserMsgCmaeraConfigAWSwitch)
-	ON_MESSAGE(USER_MSG_STOP_ALARM, &CColdEyeDlg::OnUserMsgStopAlarm)
-=======
->>>>>>> dabf4ae2452ce22f793f7db8181afa6f3c193e45
+
 	ON_MESSAGE(USER_MSG_ALARM_LIGHT, &CColdEyeDlg::OnUserMsgSetAlarmLight)
 END_MESSAGE_MAP()
 
@@ -1028,7 +1025,6 @@ LRESULT CColdEyeDlg::OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam)
 	return LRESULT(0);
 }
 
-<<<<<<< HEAD
 LRESULT CColdEyeDlg::OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam)
 {
 	return LRESULT();
@@ -1063,6 +1059,3 @@ LRESULT CColdEyeDlg::OnUserMsgCmaeraConfigAWSwitch(WPARAM wParam, LPARAM lParam)
 {
 	return LRESULT();
 }
-=======
-
->>>>>>> dabf4ae2452ce22f793f7db8181afa6f3c193e45
