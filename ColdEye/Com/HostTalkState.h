@@ -15,7 +15,7 @@ public:
 
 	void CameraTalk(CCamera *pDev);
 	void SetVolume(CCamera *pDev, int Volume);
-	void ControlLED(int Switch);
+	void TurnOffLED();
 	void SetLED(int isON);
 	void Handle();
 	void GetPortMac(int port);

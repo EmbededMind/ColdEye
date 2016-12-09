@@ -22,7 +22,8 @@ public:
 	void ReplyAlarm(CCamera *pDev);
 	void ReplyStopAlarm(CCamera *pDev);
 	void ReplySetVolume(CCamera *pDev, int Volume);
-	void ReplyControlLED(bool);
+	void ReplyTurnOnLED();
+	void ReplyTurnOffLED();
 	void ReplySetLED(bool);
 	void ReplyHandle(bool);
 	void ReplyGetPortMac(int port);

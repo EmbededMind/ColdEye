@@ -1,8 +1,14 @@
 #include "stdafx.h"
 #include "Communication.h"
 #include "ColdEyeDlg.h"
+#include "ColdEye.h"
 #include "Com\SerialPort.h"
 #include "Com\Util.h"
+#include "Com\RecordAlarmSound.h"
+
+static SYSTEMTIME st;     //SYSTEMTIME结构，用来设置第1次通知 的时间
+static FILETIME ftLocal, ftUTC; //FILETIME结构，用来接受STSTEMTIME结构的转换
+
 
 UINT CCommunication::CommunicationThread(LPVOID pParam)
 {
@@ -11,7 +17,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 	DWORD Event = 0;
 	for (;;)
 	{
-		Event = WaitForMultipleObjects(12, pThis->mEventArray, FALSE, INFINITE);
+		Event = WaitForMultipleObjects(15, pThis->mEventArray, FALSE, INFINITE);
 		switch (Event)
 		{
 		case END_EVENT_NUM:
@@ -131,25 +137,52 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 				Print("Alarm超时了");
 				pThis->RecoveState();
 			}
+			pThis->TurnOnLED();
+			CancelWaitableTimer(pThis->mAlarmSoundTimer);
+			pThis->liDueTimeAlarmSound.LowPart = 0;
+			pThis->liDueTimeAlarmSound.HighPart = 0;
+			pThis->liDueTimeAlarmSound.QuadPart = -(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_sec * 30000000);
+			SetWaitableTimer(pThis->mAlarmSoundTimer, &pThis->liDueTimeAlarmSound, 0, NULL, NULL, FALSE);
 			ResetEvent(pThis->mAlarmEvent);
 			break;
-		case CONTROLLED_EVENT_NUM:
-			ResetEvent(pThis->mReplyControlLEDEvent);
-			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x06, pThis->mCurrentInt[CONTROLLED_EVENT_NUM], 0x00, NULL);
+		case TURNOFFLED_EVENT_NUM:
+			ResetEvent(pThis->mReplyTurnOffLEDEvent);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x06, 0x02, 0x00, NULL);
 			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
 			pThis->SetWaitReplyState();
-			Event = WaitForSingleObject(pThis->mReplyControlLEDEvent, TIMEOUT_TIME);
+			Event = WaitForSingleObject(pThis->mReplyTurnOffLEDEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
-				pThis->mState->ReplyControlLED(pThis->mCurrentBool[CONTROLLED_EVENT_NUM]);
-				ResetEvent(pThis->mReplyControlLEDEvent);
+				pThis->mState->ReplyTurnOffLED();
+				ResetEvent(pThis->mReplyTurnOffLEDEvent);
 			}
 			else
 			{
-				Print("ControlLED超时了");
 				pThis->RecoveState();
 			}
-			ResetEvent(pThis->mControlLEvent);
+			ResetEvent(pThis->mTurnOffLEDEvent);
+			break;
+		case TURNONLED_EVENT_NUM:
+			ResetEvent(pThis->mReplyTurnOnLEDEvent);
+			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x06, 0x01, 0x00, NULL);
+			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
+			pThis->SetWaitReplyState();
+			Event = WaitForSingleObject(pThis->mReplyTurnOnLEDEvent, TIMEOUT_TIME);
+			if (Event == WAIT_OBJECT_0)
+			{
+				pThis->mState->ReplyTurnOnLED();
+				ResetEvent(pThis->mReplyTurnOnLEDEvent);
+			}
+			else
+			{
+				pThis->RecoveState();
+			}
+			CancelWaitableTimer(pThis->mLEDTimer);
+			pThis->liDueTimeLED.HighPart = 0;
+			pThis->liDueTimeLED.LowPart = 0;
+			pThis->liDueTimeLED.QuadPart = -600000000;
+			SetWaitableTimer(pThis->mLEDTimer, &pThis->liDueTimeLED, 0, NULL, NULL, FALSE);
+			ResetEvent(pThis->mTurnOnLEDEvent);
 			break;
 		case SETVOLUME_EVENT_NUM:
 			ResetEvent(pThis->mReplySetVolumeEvent);
@@ -223,6 +256,23 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			}
 			ResetEvent(pThis->mGetPortMacEvent);
 			break;
+		case 13:
+			pThis->StopAlarm(CRecordAlarmSound::GetInstance()->m_pPlayCamera);
+			CancelWaitableTimer(pThis->mAlarmSoundTimer);
+			pThis->liDueTimeAlarmSound.QuadPart = 0;
+			pThis->liDueTimeAlarmSound.LowPart = ftUTC.dwLowDateTime;
+			pThis->liDueTimeAlarmSound.HighPart = ftUTC.dwHighDateTime;
+			SetWaitableTimer(pThis->mAlarmSoundTimer, &pThis->liDueTimeAlarmSound, 99999999999, NULL, NULL, FALSE);
+			break;
+		case 14:
+			pThis->TurnOffLED();
+			CancelWaitableTimer(pThis->mLEDTimer);
+			pThis->liDueTimeLED.QuadPart = 0;
+			pThis->liDueTimeLED.LowPart = ftUTC.dwLowDateTime;
+			pThis->liDueTimeLED.HighPart = ftUTC.dwHighDateTime;
+			SetWaitableTimer(pThis->mLEDTimer, &pThis->liDueTimeLED, 99999999999, NULL, NULL, FALSE);
+			break;
+
 		}
 	}
 	return 0;
@@ -231,6 +281,19 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 BOOL CCommunication::Init(CWnd * pOwner)
 {
 	ASSERT(pOwner != NULL);
+
+	st.wYear = 4000; // 年
+	st.wMonth = 8;    // 月
+	st.wDayOfWeek = 0;    // 一周中的某个星期
+	st.wDay = 8;    // 日
+	st.wHour = 20;   // 小时（下午8点）
+	st.wMinute = 8;    // 分
+	st.wSecond = 0;    // 秒
+	st.wMilliseconds = 0;    // 毫秒
+
+	SystemTimeToFileTime(&st, &ftLocal);
+	LocalFileTimeToFileTime(&ftLocal, &ftUTC);
+
 	mpOwner = pOwner;
 	mHOwner = static_cast<CColdEyeDlg*>(pOwner)->GetMyMenu().GetHWND();
 
@@ -277,10 +340,15 @@ BOOL CCommunication::Init(CWnd * pOwner)
 	else
 		mAlarmEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	if (mControlLEvent != NULL)
-		ResetEvent(mControlLEvent);
+	if (mTurnOnLEDEvent != NULL)
+		ResetEvent(mTurnOnLEDEvent);
 	else
-		mControlLEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+		mTurnOnLEDEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	if (mTurnOffLEDEvent != NULL)
+		ResetEvent(mTurnOffLEDEvent);
+	else
+		mTurnOffLEDEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	if (mSetVolumeEvent != NULL)
 		ResetEvent(mSetVolumeEvent);
@@ -302,18 +370,19 @@ BOOL CCommunication::Init(CWnd * pOwner)
 	else
 		mGetPortMacEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	mEventArray[0] = mEndEvent;
-	mEventArray[1] = mReplyCameraAskTalkEvent;
-	mEventArray[2] = mStopTalkEvent;
-	mEventArray[3] = mStopAlarmEvent;
-	mEventArray[4] = mHostTalkEvent;
-	mEventArray[5] = mCameraTalkEvent;
-	mEventArray[6] = mAlarmEvent;
-	mEventArray[7] = mControlLEvent;
-	mEventArray[8] = mSetVolumeEvent;
-	mEventArray[9] = mSetLEDEvent;
-	mEventArray[10] = mHandleEvent;
-	mEventArray[11] = mGetPortMacEvent;
+	mEventArray[END_EVENT_NUM] = mEndEvent;
+	mEventArray[CAMERACANTALK_EVENT_NUM] = mReplyCameraAskTalkEvent;
+	mEventArray[STOPTALK_EVENT_NUM] = mStopTalkEvent;
+	mEventArray[STOPALARM_EVENT_NUM] = mStopAlarmEvent;
+	mEventArray[HOSTTALK_EVENT_NUM] = mHostTalkEvent;
+	mEventArray[CAMERATALK_EVENT_NUM] = mCameraTalkEvent;
+	mEventArray[ALARM_EVENT_NUM] = mAlarmEvent;
+	mEventArray[TURNOFFLED_EVENT_NUM] = mTurnOffLEDEvent;
+	mEventArray[TURNONLED_EVENT_NUM] = mTurnOnLEDEvent;
+	mEventArray[SETVOLUME_EVENT_NUM] = mSetVolumeEvent;
+	mEventArray[SETLED_EVENT_NUM] = mSetLEDEvent;
+	mEventArray[HANDLE_EVENT_NUM] = mHandleEvent;
+	mEventArray[GETPORTMAC_EVENT_NUM] = mGetPortMacEvent;
 
 	if (mReplyStopTalkEvent != NULL)
 		ResetEvent(mReplyStopTalkEvent);
@@ -340,10 +409,15 @@ BOOL CCommunication::Init(CWnd * pOwner)
 	else
 		mReplyAlarmEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	if (mReplyControlLEDEvent != NULL)
-		ResetEvent(mReplyControlLEDEvent);
+	if (mReplyTurnOffLEDEvent != NULL)
+		ResetEvent(mReplyTurnOffLEDEvent);
 	else
-		mReplyControlLEDEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+		mReplyTurnOffLEDEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	if (mReplyTurnOnLEDEvent != NULL)
+		ResetEvent(mReplyTurnOnLEDEvent);
+	else
+		mReplyTurnOnLEDEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	if (mReplySetVolumeEvent != NULL)
 		ResetEvent(mReplySetVolumeEvent);
@@ -364,6 +438,19 @@ BOOL CCommunication::Init(CWnd * pOwner)
 		ResetEvent(mReplyGetPortMacEvent);
 	else
 		mReplyGetPortMacEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	if (mAlarmSoundTimer != NULL)
+		ResetEvent(mAlarmSoundTimer);
+	else
+		mAlarmSoundTimer = CreateWaitableTimer(NULL, TRUE, NULL);
+
+	if (mLEDTimer != NULL)
+		ResetEvent(mLEDTimer);
+	else
+		mLEDTimer = CreateWaitableTimer(NULL, TRUE, NULL);
+
+	mEventArray[TIMER_ALARM_STOP] = mAlarmSoundTimer;
+	mEventArray[TIMER_LED_STOP] = mLEDTimer;
 	return 0;
 }
 
@@ -372,6 +459,13 @@ BOOL CCommunication::StartThread()
 	if (!(mThread = AfxBeginThread(CommunicationThread, this)))
 		return FALSE;
 	return TRUE;
+}
+
+CCommunication::~CCommunication()
+{
+	SetEvent(mEndEvent); 
+	CloseHandle(mAlarmSoundTimer);  
+	CloseHandle(mLEDTimer);
 }
 
 void CCommunication::HostTalk(CCamera *pDev)
@@ -410,10 +504,17 @@ void CCommunication::SetVolume(CCamera *pDev, int Volume)
 	this->mState->SetVolume(pDev, Volume);
 }
 
-void CCommunication::ControlLED(int Switch)
+void CCommunication::TurnOnLED()
 {
-	this->mCurrentInt[CONTROLLED_EVENT_NUM] = Switch;
-	this->mState->ControlLED(Switch);
+	if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_light_onoff)
+	{
+		this->mState->TurnOnLED();
+	}
+}
+
+void CCommunication::TurnOffLED()
+{
+	this->mState->TurnOffLED();
 }
 
 void CCommunication::SetLED(int isON)
@@ -465,7 +566,6 @@ void CCommunication::ReplyAlarm(CCamera *pDev)
 void CCommunication::ReplyStopAlarm(CCamera *pDev)
 {
 	this->mCurrentpDev[STOPALARM_EVENT_NUM] = pDev;
-	Print("SetEvent(mReplyStopAlarmEvent)");
 	SetEvent(mReplyStopAlarmEvent);
 }
 
@@ -476,10 +576,14 @@ void CCommunication::ReplySetVolume(CCamera *pDev, int Volume)
 	SetEvent(mReplySetVolumeEvent);
 }
 
-void CCommunication::ReplyControlLED(bool isSucceed)
+void CCommunication::ReplyTurnOnLED()
 {
-	this->mCurrentBool[CONTROLLED_EVENT_NUM] = isSucceed;
-	SetEvent(mReplyControlLEDEvent);
+	SetEvent(mReplyTurnOnLEDEvent);
+}
+
+void CCommunication::ReplyTurnOffLED()
+{
+	SetEvent(mReplyTurnOffLEDEvent);
 }
 
 void CCommunication::ReplySetLED(bool isSucceed)
@@ -490,7 +594,6 @@ void CCommunication::ReplySetLED(bool isSucceed)
 
 void CCommunication::ReplyHandle(bool isSucceed)
 {
-	Print("ReplyHandle");
 	this->mCurrentBool[HANDLE_EVENT_NUM] = isSucceed;
 	SetEvent(mReplyHandleEvent);
 }
@@ -586,4 +689,12 @@ void CCommunication::RecoveState()
 	tmp = mState;
 	mState = mOldState;
 	mOldState = tmp;
+}
+
+void TurnOnLED()
+{
+}
+
+void TrunOffLED()
+{
 }

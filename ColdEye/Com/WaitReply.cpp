@@ -104,7 +104,12 @@ void CWaitReplyState::ReplySetVolume(CCamera *pDev, int Volume)
 	ComManagement->RecoveState();
 }
 
-void CWaitReplyState::ReplyControlLED(bool isSucceed)
+void CWaitReplyState::ReplyTurnOnLED()
+{
+	ComManagement->RecoveState();
+}
+
+void CWaitReplyState::ReplyTurnOffLED()
 {
 	ComManagement->RecoveState();
 }

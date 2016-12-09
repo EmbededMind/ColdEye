@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "RecordAlarmSound.h"
 #include "Com\Alaw_encoder.h"
-//#include "Com\Communication.h"
+#include "ColdEye.h"
 #include "shlwapi.h"
-
+#include "Com\Communication.h"
 CRecordAlarmSound::~CRecordAlarmSound()
 {
 	H264_PLAY_FreePort(m_port);
@@ -36,18 +36,6 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 	bPlayOk = H264_PLAY_CloseStream(nPort);
 	bPlayOk &= H264_PLAY_StopSoundShare(nPort);
 	return bPlayOk;
-}
-void CRecordAlarmSound::SetMyTimer()
-{
-	if(!m_TimeIdStopAlarm)
-		m_TimeIdStopAlarm = SetTimer(NULL ,NULL, 30000, MyTimerProcAlarm);
-}
-
-void CRecordAlarmSound::MyTimerProcAlarm(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
-{
-	KillTimer(NULL, m_pThis->m_TimeIdStopAlarm);
-	m_pThis->m_TimeIdStopAlarm = NULL;
-	PostMessage(AfxGetApp()->m_pMainWnd->GetSafeHwnd(), USER_MSG_STOP_ALARM, 0, (LPARAM)(m_pThis->m_pPlayCamera));
 }
 
 BOOL CRecordAlarmSound::StopTalk()
@@ -133,7 +121,6 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
 	Print("Play");
 	m_pPlayCamera = pCamera;
-	SetMyTimer();
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
 	DWORD nAudioBit = 16;//这几个参数是采样率的意思
@@ -195,6 +182,7 @@ bool CRecordAlarmSound::Save()
 	if (PathFileExists(_T(RECORD_VOICE_NAME_TMP)))
 	{
 		DeleteFile(_T(RECORD_VOICE_NAME));
+		if (PathFileExists(_T(RECORD_VOICE_NAME)))
 		CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
 	}
 	return false;

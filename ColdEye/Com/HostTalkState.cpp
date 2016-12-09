@@ -17,10 +17,10 @@ void CHostTalkState::SetVolume(CCamera *pDev, int Volume)
 	SetEvent(ComManagement->mSetVolumeEvent);
 }
 
-void CHostTalkState::ControlLED(int Switch)
+void CHostTalkState::TurnOffLED()
 {
-	Print("¿ØÖÆLED");
-	SetEvent(ComManagement->mControlLEvent);
+	Print("TurnOffLED");
+	SetEvent(ComManagement->mTurnOffLEDEvent);
 }
 
 void CHostTalkState::SetLED(int isON)

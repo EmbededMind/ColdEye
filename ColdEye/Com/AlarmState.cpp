@@ -29,10 +29,16 @@ void CAlarmState::SetVolume(CCamera *pDev, int Volume)
 	SetEvent(ComManagement->mSetVolumeEvent);
 }
 
-void CAlarmState::ControlLED(int Switch)
+void CAlarmState::TurnOnLED()
 {
-	Print("¿ØÖÆLED");
-	SetEvent(ComManagement->mControlLEvent);
+	Print("TurnOnLED");
+	SetEvent(ComManagement->mTurnOnLEDEvent);
+}
+
+void CAlarmState::TurnOffLED()
+{
+	Print("TurnOffLED");
+	SetEvent(ComManagement->mTurnOffLEDEvent);
 }
 
 void CAlarmState::SetLED(int isON)

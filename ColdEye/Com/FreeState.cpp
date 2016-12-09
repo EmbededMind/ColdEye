@@ -24,11 +24,17 @@ void CFreeState::SetVolume(CCamera *pDev, int Volume)
 	SetEvent(ComManagement->mSetVolumeEvent);
 }
 
-void CFreeState::ControlLED(int Switch)
+void CFreeState::TurnOffLED()
 {
-	Print("¿ØÖÆLED");
-	SetEvent(ComManagement->mControlLEvent);
+	Print("TurnOffLED");
+	SetEvent(ComManagement->mTurnOffLEDEvent);
 }
+
+//void CFreeState::ControlLED(int Switch)
+//{
+//	Print("¿ØÖÆLED");
+//	SetEvent(ComManagement->mControlLEDEvent);
+//}
 
 void CFreeState::SetLED(int isON)
 {

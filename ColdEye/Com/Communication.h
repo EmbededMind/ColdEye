@@ -17,11 +17,15 @@
 #define HOSTTALK_EVENT_NUM         4
 #define CAMERATALK_EVENT_NUM       5
 #define ALARM_EVENT_NUM            6
-#define CONTROLLED_EVENT_NUM       7
-#define SETVOLUME_EVENT_NUM        8
-#define SETLED_EVENT_NUM           9
-#define HANDLE_EVENT_NUM           10
-#define GETPORTMAC_EVENT_NUM       11
+#define TURNOFFLED_EVENT_NUM       7
+#define TURNONLED_EVENT_NUM        8
+#define SETVOLUME_EVENT_NUM        9
+#define SETLED_EVENT_NUM           10
+#define HANDLE_EVENT_NUM           11
+#define GETPORTMAC_EVENT_NUM       12
+
+#define TIMER_ALARM_STOP           13
+#define TIMER_LED_STOP             14
 
 #define TIMEOUT_TIME               150
 
@@ -45,14 +49,15 @@ private:
 	HWND mHOwner;
 	uint8_t mOrder[17];
 
-	HANDLE mEventArray[12];
+	HANDLE mEventArray[15];
 
 	HANDLE mReplyStopTalkEvent;
 	HANDLE mReplyStopAlarmEvent;
 	HANDLE mReplyHostTalkEvent;
 	HANDLE mReplyCameraTalkEvent;
 	HANDLE mReplyAlarmEvent;
-	HANDLE mReplyControlLEDEvent;
+	HANDLE mReplyTurnOnLEDEvent;
+	HANDLE mReplyTurnOffLEDEvent;
 	HANDLE mReplySetVolumeEvent;
 	HANDLE mReplySetLEDEvent;
 	HANDLE mReplyHandleEvent;
@@ -61,10 +66,15 @@ private:
 	bool mIsThreadAlive;
 
 	static UINT CommunicationThread(LPVOID pParam);
-	bool mCurrentBool[12];
-	CCamera* mCurrentpDev[12];
-	int mCurrentInt[12];
+	bool mCurrentBool[15];
+	CCamera* mCurrentpDev[15];
+	int mCurrentInt[15];
 
+	HANDLE mLEDTimer;
+	HANDLE mAlarmSoundTimer;
+
+	LARGE_INTEGER liDueTimeAlarmSound;
+	LARGE_INTEGER liDueTimeLED;
 public:
 	HANDLE mStopAlarmEvent;
 	HANDLE mEndEvent;
@@ -73,7 +83,8 @@ public:
 	HANDLE mHostTalkEvent;
 	HANDLE mCameraTalkEvent;
 	HANDLE mAlarmEvent;
-	HANDLE mControlLEvent;
+	HANDLE mTurnOffLEDEvent;
+	HANDLE mTurnOnLEDEvent;
 	HANDLE mSetVolumeEvent;
 	HANDLE mSetLEDEvent;
 	HANDLE mHandleEvent;
@@ -98,14 +109,15 @@ public:
 
 		mState = FreeState;
 	};
-	~CCommunication() { SetEvent(mEndEvent); };
+	~CCommunication() ;
 	void HostTalk(CCamera *pDev);
 	void CameraTalk();
 	void StopTalk();
 	void Alarm(CCamera *pDev);
 	void StopAlarm(CCamera *pDev);
 	void SetVolume(CCamera *pDev, int Volume);
-	void ControlLED(int Switch);
+	void TurnOnLED();
+	void TurnOffLED();
 	void SetLED(int isON);
 	void Handle();
 	void GetPortMac(int port);
@@ -117,7 +129,8 @@ public:
 	void ReplyAlarm(CCamera *pDev);
 	void ReplyStopAlarm(CCamera *pDev);
 	void ReplySetVolume(CCamera *pDev, int Volume);
-	void ReplyControlLED(bool isSucceed);
+	void ReplyTurnOnLED();
+	void ReplyTurnOffLED();
 	void ReplySetLED(bool isSucceed);
 	void ReplyHandle(bool isSucceed);
 	void ReplyGetPortMac(int port);

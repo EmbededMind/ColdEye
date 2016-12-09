@@ -633,7 +633,7 @@ void CSurface::OnAlarmTrigged()
 	m_wAlarmStamp = ALARM_TIMEOUT_CNT;
 
 	Print("Alarm event");
-
+	CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 
 	if (!m_bIsAlarming) {
 		m_bIsAlarming = true;
@@ -649,7 +649,6 @@ void CSurface::OnAlarmTrigged()
 			Print("Alloc file failed when alarm trigged");
 		}
 	}
-	CCommunication::GetInstance()->Alarm(m_BindedCamera);//向摄像头发送报警信息
 }
 
 

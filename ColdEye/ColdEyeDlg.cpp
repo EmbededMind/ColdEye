@@ -13,8 +13,9 @@
 #include "Com\Util.h"
 #include "Database\DBShadow.h"
 #include "Database\DBLogger.h"
-
+#include "Com\RecordAlarmSound.h"
 #include "Pattern\MsgSquare.h"
+#include "Com\AlarmLED.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -164,7 +165,6 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_WM_TIMER()
 	         //UEER_MSG_CAMERA_CONFIG_CHANGE
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_CHANGE, &CColdEyeDlg::OnUserMsgCameraConfigChange)
-	ON_MESSAGE(USER_MSG_STOP_ALARM, &CColdEyeDlg::OnUserMsgStopAlarm)
 	ON_MESSAGE(USER_MSG_ALARM_LIGHT, &CColdEyeDlg::OnUserMsgSetAlarmLight)
 END_MESSAGE_MAP()
 
@@ -253,6 +253,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -747,7 +748,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 								pPort->m_State  = OFFLINE;
 							}
 							//检测到更换
-							else if (isReplaced) {
+							if (isReplaced) {
 								Print("Replace event---");
 								pPort->m_State  = PENDING_MAC;
 								mPendMacPort.push_back(i+1);// 加入请求mac的队列
@@ -831,7 +832,10 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 					break;
 				}
 				case 6:
-					CCommunication::GetInstance()->ReplyControlLED(p->ch[4]);
+					if(p->ch[4] == 1)
+						CCommunication::GetInstance()->ReplyTurnOnLED();
+					else
+						CCommunication::GetInstance()->ReplyTurnOffLED();
 					break;
 				case 7:
 					CCommunication::GetInstance()->ReplySetLED(p->ch[5]);
@@ -987,16 +991,10 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM l
 	return 0;
 }
 
-LRESULT CColdEyeDlg::OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam)
-{
-Print("MSG Stop Alarm");
-	CCamera *pDev = (CCamera*)lParam;
-	CCommunication::GetInstance()->StopAlarm(pDev);
-	return 0;
-}
-
 LRESULT CColdEyeDlg::OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam)
 {
-	CCommunication::GetInstance()->SetLED(wParam);
+	CCommunication::GetInstance()->SetLED(0);
 	return LRESULT(0);
 }
+
+

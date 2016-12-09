@@ -23,10 +23,10 @@ void CCameraTalkState::SetVolume(CCamera *pDev, int Volume)
 	SetEvent(ComManagement->mSetVolumeEvent);
 }
 
-void CCameraTalkState::ControlLED(int Switch)
+void CCameraTalkState::TurnOffLED()
 {
-	Print("¿ØÖÆLED");
-	SetEvent(ComManagement->mControlLEvent);
+	Print("TurnOffLED");
+	SetEvent(ComManagement->mTurnOffLEDEvent);
 }
 
 void CCameraTalkState::SetLED(int isON)
