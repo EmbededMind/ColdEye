@@ -289,6 +289,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -461,7 +462,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 
 			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
 			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
-
+			::MessageBeep(0xffffffff);
 			pAudioClient->Release();
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
@@ -482,7 +483,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 
 			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
 			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
-
+			::MessageBeep(0xffffffff);
 			pAudioClient->Release();
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
@@ -502,6 +503,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 				hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
 				if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
 
+				::MessageBeep(0xffffffff);
 				pAudioClient->Release();
 				pAudioEndpointVolume->Release();
 				pDevice->Release();
