@@ -109,4 +109,6 @@ protected:
 	afx_msg LRESULT OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCmaeraConfigAWSwitch(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgStarPlayAlarmVoice(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgStopPlayAlarmVoice(WPARAM wParam, LPARAM lParam);
 };

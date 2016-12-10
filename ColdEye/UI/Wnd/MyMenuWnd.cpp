@@ -481,9 +481,11 @@ void CMyMenuWnd::RecordVoiceNotify(TNotifyUI & msg)
 	case VK_UP:
 		if (pVoice1) {
 			pVoice1->SetFocus();
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STAR_PLAY_ALARM_VOICE, 2, NULL);
 		}
 		else {
 			pDefaultVoice->SetFocus();
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STAR_PLAY_ALARM_VOICE, 1, NULL);
 		}
 		break;
 	}
@@ -498,9 +500,12 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 	case VK_UP:
 		if (pSend == pVoice1) {
 			pDefaultVoice->SetFocus();
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 2, NULL);
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STAR_PLAY_ALARM_VOICE, 1, NULL);
 		}
 		else {
 			pAlmVicSwitch->SetFocus();
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 1, NULL);
 		}
 		break;
 
@@ -508,12 +513,16 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 		if (pSend == pDefaultVoice) {
 			if (pVoice1) {
 				pVoice1->SetFocus();
+				::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 1, NULL);
+				::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STAR_PLAY_ALARM_VOICE, 2, NULL);
 			}
 			else {
+				::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 2, NULL);
 				m_pm.FindControl(_T("record_btn"))->SetFocus();
 			}
 		}
 		else {
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 2, NULL);
 			m_pm.FindControl(_T("record_btn"))->SetFocus();
 		}
 		break;
@@ -524,11 +533,15 @@ void CMyMenuWnd::AlarmVoiceListNotify(TNotifyUI & msg)
 			pDefaultVoice->SetVoiceSel(true);
 			if(pVoice1)
 				pVoice1->SetVoiceSel(false);
+
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 1, NULL);
 		}
 		else {
 			mAlarmVoiceSel = 1;
 			pDefaultVoice->SetVoiceSel(false);
 			pVoice1->SetVoiceSel(true);
+
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 2, NULL);
 		}
 		m_pm.Invalidate();
 		break;
@@ -606,12 +619,12 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	case VK_DOWN:
 		if (_tcscmp(sName, _T("camera_switch")) == 0) {
 			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
-			Print("inx:%d",inx);
 			camera[inx].pVolum->SetFocus();
 		}
 		else if (pItem == pAlmVicSwitch) {
 			if (pItem->GetValue()) {
 				pDefaultVoice->SetFocus();
+				::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STAR_PLAY_ALARM_VOICE, 1, NULL);
 			}
 		}
 		break;
@@ -1906,6 +1919,13 @@ Print("Third Menu Sel :%d", inx);
 		break;
 	//--------------报警音----------------------
 	case 15:
+		if (m_pm.GetFocus() == pDefaultVoice) {
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 1, NULL);
+		}
+		else if (m_pm.GetFocus() == pVoice1) {
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd, USER_MSG_STOP_PLAY_ALARM_VOICE, 2, NULL);
+		}
+
 		if (AlarmVoiceIsChange()) {
 			if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				bool state = pAlmVicSwitch->GetValue() > 0;

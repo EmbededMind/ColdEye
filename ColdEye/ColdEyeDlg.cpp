@@ -182,6 +182,8 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_ALARM_LIGHT, &CColdEyeDlg::OnUserMsgSetAlarmLight)
 
 	ON_MESSAGE(USER_MSG_SYS_VOLUME, &CColdEyeDlg::OnUserMsgSysVolume)
+	ON_MESSAGE(USER_MSG_STAR_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStarPlayAlarmVoice)
+	ON_MESSAGE(USER_MSG_STOP_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStopPlayAlarmVoice)
 END_MESSAGE_MAP()
 
 
@@ -1111,5 +1113,17 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam)
 	volume = this->SetVolumeLevel(wParam);
 	Print("Volum:%d, %d",volume,wParam);
 	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume,(LPARAM)GetFocus());
+	return 0;
+}
+
+
+afx_msg LRESULT CColdEyeDlg::OnUserMsgStarPlayAlarmVoice(WPARAM wParam, LPARAM lParam)
+{
+	return 0;
+}
+
+
+afx_msg LRESULT CColdEyeDlg::OnUserMsgStopPlayAlarmVoice(WPARAM wParam, LPARAM lParam)
+{
 	return 0;
 }
