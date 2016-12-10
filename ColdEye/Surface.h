@@ -111,6 +111,7 @@ protected:
 private:
 	OSD_INFO_TXT  m_OsdInfoText;
 
+
 	long          m_hRealPlay;
 	WORD          m_wAlarmStamp;
 	BOOL          ShouldWatch();

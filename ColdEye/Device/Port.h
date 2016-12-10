@@ -92,6 +92,7 @@ public:
 	bool       IsActive();
 
 	void       StoreDeviceConfig();
+	void       StoreVolumn();
 
 	void       Config(DeviceConfig& config);
 

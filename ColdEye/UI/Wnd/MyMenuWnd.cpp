@@ -11,6 +11,7 @@
 
 #include "Com\RecordAlarmSound.h"
 #include "Com\MCI.h"
+#include "Com\Communication.h"
 
 CDuiString  _PortName[24] = {  //对应名字id
 	_T("摄像机1"),
@@ -1122,7 +1123,13 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	else if (msg.sType == DUI_MSGTYPE_VALUECHANGED) {
 		if (_tcscmp(msg.pSender->GetName(), _T("camera_set_volume")) == 0) {
 			//camera config volume   value:msg.wParam
-
+			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
+			if (pPort) {
+			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
+				pPort->m_DevConfig.Volumn  = vol;
+				CCommunication::GetInstance()->SetVolume(pPort->m_pCamera,  vol);
+				pPort->StoreVolumn();
+			}
 		}
 		else if (_tcscmp(msg.pSender->GetName(), _T("sysset_light")) == 0) {
 
@@ -1847,7 +1854,7 @@ Print("Third Menu Sel :%d", inx);
 							pLogger->LogCameraAWOnOff(time, pPort);
 						}				*/		
 
-						//::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
+						::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, (WPARAM)pPort, (LPARAM)&config);
 						//::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME,)
 						camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("设置"));
 						UpdataCameraName(pPort);
