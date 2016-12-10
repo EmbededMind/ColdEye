@@ -23,8 +23,11 @@ public:
 private:
 	CDuiString mSkinFileName;
 
-	CButtonUI* pVolume;
-	CButtonUI* pLight;
+	CLabelUI* pVolume;
+	CLabelUI* pLight;
+	CProgressUI* pProgress;
+	int Value;
 	int mshowTime;
 	int mDpi;
+	CWnd* pMainWnd;
 };

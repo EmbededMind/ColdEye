@@ -229,8 +229,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	mSysSetIcons = new CSysSetIconsWnd(_T("SysSetIcons.xml"));
 	mSysSetIcons->SetDpi(mMenu.GetDpi());
-	mSysSetIcons->Create(NULL, _T("SysSetWnd"), UI_WNDSTYLE_DIALOG | WS_EX_TOPMOST, WS_EX_WINDOWEDGE, { 0,0,0,0 });
+	mSysSetIcons->Create(NULL, _T("SysSetWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mSysSetIcons->CenterWindow();
+	//::SetWindowPos(mSysSetIcons->GetHWND(), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	mSysSetIcons->ShowWindow(SW_HIDE);
 	
 	//::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUM, NULL, NULL);
@@ -1105,6 +1106,6 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam)
 	UINT8 volume;
 	volume = this->SetVolumeLevel(wParam);
 	Print("volume:%d, %d",volume,wParam);
-	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume, NULL);
+	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume,(LPARAM)GetFocus());
 	return 0;
 }

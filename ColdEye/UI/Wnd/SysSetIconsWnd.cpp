@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SysSetIconsWnd.h"
+#include "ColdEyeDlg.h"
+#include "ColdEye.h"
 
 CSysSetIconsWnd::CSysSetIconsWnd()
 {
@@ -29,11 +31,16 @@ CDuiString CSysSetIconsWnd::GetSkinFile()
 
 LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
+	Print("umsg:%x",uMsg);
 	switch(uMsg){
-	case WM_ACTIVATEAPP:
+	case WM_WINDOWPOSCHANGED:
 		if (IsWindowVisible(m_hWnd)) {
 			::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		}
+		break;
+
+	case WM_SETFOCUS:
+		pMainWnd->SetFocus();
 		break;
 
 	case WM_SHOWWINDOW:
@@ -47,11 +54,13 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 		break;
 
 	case USER_MSG_SYS_VOLUME:
+		pMainWnd = (CWnd*)lParam;
 		if (!IsWindowVisible(m_hWnd)) {
 			ShowWindow(true);
 		}
 		pVolume->SetVisible(true);
 		pLight->SetVisible(false);
+		pProgress->SetValue(wParam);
 		mshowTime = 3;
 		break;
 		
@@ -79,8 +88,9 @@ void CSysSetIconsWnd::Notify(TNotifyUI & msg)
 void CSysSetIconsWnd::InitWindow()
 {
 	m_pm.SetDPI(mDpi);
-	pVolume = static_cast<CButtonUI*>(m_pm.FindControl(_T("volume")));
-	pLight = static_cast<CButtonUI*>(m_pm.FindControl(_T("light")));
+	pVolume = static_cast<CLabelUI*>(m_pm.FindControl(_T("volume")));
+	pLight = static_cast<CLabelUI*>(m_pm.FindControl(_T("light")));
+	pProgress = static_cast<CProgressUI*>(m_pm.FindControl(_T("value")));
 }
 
 
