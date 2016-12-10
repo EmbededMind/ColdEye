@@ -281,7 +281,6 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
-
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -432,42 +431,75 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 		hr = pDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL, (void**)&pAudioClient);
 		if (FAILED(hr)) throw "pDevice->Active";
 
-		if (type == 1) {
+		if (type == HOST_VOICE_NOMUTE) {
 			hr = pAudioEndpointVolume->SetMute(FALSE, NULL);
 			if (FAILED(hr)) throw "SetMute";
 		}
-		else if (type == 0) {
+		else if (type == HOST_VOICE_MUTE) {
 			hr = pAudioEndpointVolume->SetMute(TRUE, NULL);
 			if (FAILED(hr)) throw "SetMute";
 		}
-		else {
-			if (type <= 1 || type >= 4) {
-				hr = E_INVALIDARG;
-				throw "Invalid Arg";
-			}
-
+		else if (type == HOST_VOICE_LEVEL_UP)
+		{
 			float fVolume;
-			fVolume = type / 100.0f;
 			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
 			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
-			if (type == 2)
-			{
-				fVolume += 0.1;
-				if (fVolume > 1) fVolume = 1;
-			}
-			else if (type == 3)
-			{
-				fVolume -= 0.1;
-				if (fVolume < 0) fVolume = 0;
-			}
+
+			fVolume += 0.2;
+			if (fVolume > 1) fVolume = 1.0;
+
 			hr = pAudioEndpointVolume->SetMasterVolumeLevelScalar(fVolume, &GUID_NULL);
-			if (FAILED(hr)) throw "SetMasterVolumeLevelScalar";
+			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
+
+			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
+			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
 
 			pAudioClient->Release();
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
 			pDeviceEnumerator->Release();
-			return (int)(10*fVolume);
+			return (int)(10 * fVolume);
+		}
+		else if (type == HOST_VOICE_LEVEL_DOWN)
+		{
+			float fVolume;
+			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
+			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
+
+			fVolume -= 0.2;
+			if (fVolume < 0) fVolume = 0;
+
+			hr = pAudioEndpointVolume->SetMasterVolumeLevelScalar(fVolume, &GUID_NULL);
+			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
+
+			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
+			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
+
+			pAudioClient->Release();
+			pAudioEndpointVolume->Release();
+			pDevice->Release();
+			pDeviceEnumerator->Release();
+			return (int)(10 * fVolume);
+		}
+		else if (type >= HOST_VOICE_LEVEL_0 || type <= HOST_VOICE_LEVEL_5) {
+
+			float fVolume;
+			fVolume = type / 5.0f;
+
+			if (fVolume >= 0 && fVolume <= 1)
+			{
+				hr = pAudioEndpointVolume->SetMasterVolumeLevelScalar(fVolume, &GUID_NULL);
+				if (FAILED(hr)) throw "SetMasterVolumeLevelScalar";
+
+				hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
+				if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
+
+				pAudioClient->Release();
+				pAudioEndpointVolume->Release();
+				pDevice->Release();
+				pDeviceEnumerator->Release();
+				return (int)(10 * fVolume);
+			}
 		}
 	}
 	catch (...) {
@@ -574,7 +606,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event('U', 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLUP:
-				volume = this->SetVolumeLevel(ENLARGE_VOLUME);
+				volume = this->SetVolumeLevel(HOST_VOICE_LEVEL_UP);
 				::PostMessage(mMenu, USER_MSG_SYS_VOLUM, volume, NULL);
 				break;
 			case KB_DOWN:
@@ -593,7 +625,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event(VK_F8, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLDOWN:
-				volume = this->SetVolumeLevel(REDUCE_VOLUME);
+				volume = this->SetVolumeLevel(HOST_VOICE_LEVEL_DOWN);
 				::PostMessage(mMenu,USER_MSG_SYS_VOLUM,volume,NULL);
 				break;
 			case KB_TALKQUIET:
@@ -631,14 +663,14 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				break;
 			}
 			case KB_PTTDOWN:
-				SetVolumeLevel(0);
+				SetVolumeLevel(HOST_VOICE_MUTE);
 				keybd_event(VK_CONTROL, 0, 0, 0);
 				keybd_event('T', 0, 0, 0);
 				keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
 				keybd_event('T', 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_PTTUP:
-				SetVolumeLevel(1);
+				SetVolumeLevel(HOST_VOICE_NOMUTE);
 				keybd_event(VK_CONTROL, 0, 0, 0);
 				keybd_event('O', 0, 0, 0);
 				keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);

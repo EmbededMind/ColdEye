@@ -205,13 +205,6 @@
 #pragma comment(lib, "sqlite3.lib")
 #endif
 
-
-/**  Set Volume  **/
-#define ZERO_VOLUME     0
-#define NORMAL_VOLUME   1
-#define ENLARGE_VOLUME  2
-#define REDUCE_VOLUME   3
-
 /**  type of messagebox  **/
 #define SHIPNAME_LIMIT		0	//船名已满
 #define CLOSE_CAMERA		1	//关闭摄像头
@@ -267,6 +260,18 @@
 //报警音播放类型
 #define ALARM_VOICE_DEFAULT         0
 #define ALARM_VOICE_RECORD          1
+
+//系统音量设置
+#define HOST_VOICE_LEVEL_0          0
+#define HOST_VOICE_LEVEL_1          1
+#define HOST_VOICE_LEVEL_2          2
+#define HOST_VOICE_LEVEL_3          3
+#define HOST_VOICE_LEVEL_4          4
+#define HOST_VOICE_LEVEL_5          5
+#define HOST_VOICE_MUTE             6
+#define HOST_VOICE_NOMUTE           7
+#define HOST_VOICE_LEVEL_UP         8
+#define HOST_VOICE_LEVEL_DOWN       9
 
 #include "Database\sqlitewrapper.h"
 extern int mutex;
