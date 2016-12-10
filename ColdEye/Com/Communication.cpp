@@ -256,7 +256,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			}
 			ResetEvent(pThis->mGetPortMacEvent);
 			break;
-		case 13:
+		case TIMER_ALARM_STOP:
 			pThis->StopAlarm(CRecordAlarmSound::GetInstance()->m_pPlayCamera);
 			CancelWaitableTimer(pThis->mAlarmSoundTimer);
 			pThis->liDueTimeAlarmSound.QuadPart = 0;
@@ -264,7 +264,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			pThis->liDueTimeAlarmSound.HighPart = ftUTC.dwHighDateTime;
 			SetWaitableTimer(pThis->mAlarmSoundTimer, &pThis->liDueTimeAlarmSound, 99999999999, NULL, NULL, FALSE);
 			break;
-		case 14:
+		case TIMER_LED_STOP:
 			pThis->TurnOffLED();
 			CancelWaitableTimer(pThis->mLEDTimer);
 			pThis->liDueTimeLED.QuadPart = 0;
@@ -487,8 +487,11 @@ void CCommunication::StopTalk()
 
 void CCommunication::Alarm(CCamera *pDev)
 {
-	this->mCurrentpDev[ALARM_EVENT_NUM] = pDev;
-	this->mState->Alarm(pDev);
+	if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_onoff)
+	{
+		this->mCurrentpDev[ALARM_EVENT_NUM] = pDev;
+		this->mState->Alarm(pDev);
+	}
 }
 
 void CCommunication::StopAlarm(CCamera *pDev)
@@ -647,54 +650,46 @@ IState * CCommunication::GetOldState()
 
 void CCommunication::SetFreeState()
 {
-	Print("转到空闲状态");
+	Print("free state");
 	mOldState = mState;
 	mState = FreeState;
 }
 
 void CCommunication::SetAlarmState()
 {
-	Print("转到报警状态");
+	Print("alarm state");
 	mOldState = mState;
 	mState = AlarmState;
 }
 
 void CCommunication::SetCameraTalkState()
 {
-	Print("转到摄像头讲话状态");
+	Print("camera talk state");
 	mOldState = mState;
 	mState = CameraTalkState;
 }
 
 void CCommunication::SetHostTalkState()
 {
-	Print("转到主机讲话状态");
+	Print("host talk state");
 	mOldState = mState;
 	mState = HostTalkState;
 }
 
 void CCommunication::SetWaitReplyState()
 {
-	Print("转到等待状态");
+	Print("wait reply state");
 	mOldState = mState;
 	mState = WaitReplyState;
 }
 
 void CCommunication::RecoveState()
 {
-	Print("返回原来状态");
+	Print("recove state");
 	if (mOldState == WaitReplyState)
 		return;
 	IState* tmp;
 	tmp = mState;
 	mState = mOldState;
 	mOldState = tmp;
-}
-
-void TurnOnLED()
-{
-}
-
-void TrunOffLED()
-{
 }
