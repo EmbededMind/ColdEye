@@ -143,10 +143,10 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 			case VK_UP:
 				if (event.pSender == m_pManager->FindControl(_T("time1_hour"))
 					|| event.pSender == m_pManager->FindControl(_T("time2_hour"))) {
-					DecreaseHour();
+					IncreaseHour();
 				}
 				else {
-					DecreaseMinute();
+					IncreaseMinute();
 				}
 				if (isMorrow()) {
 					if (!pButton->IsVisible())
@@ -160,10 +160,10 @@ void CTimeButtonUI::DoEvent(TEventUI& event)
 			case VK_DOWN:
 				if (event.pSender == m_pManager->FindControl(_T("time1_hour"))
 					|| event.pSender == m_pManager->FindControl(_T("time2_hour"))) {
-					IncreaseHour();
+					DecreaseHour();
 				}
 				else {
-					IncreaseMinute();
+					DecreaseMinute();
 				}
 				if (isMorrow()) {
 					if (!pButton->IsVisible())
