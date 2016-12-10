@@ -31,7 +31,7 @@
 				</HorizontalLayout>
 				<HorizontalLayout height="33" padding="0,3,0,1" >
 					<ShipNameItem width="100" text="罗经甲板"	userdata="20"/>
-					<ShipNameItem width="100" text="一层甲板" padding="58,0,24,0," 	userdata="21"/>
+					<ShipNameItem width="100" text="一层甲板" padding="20,0,24,0," 	userdata="21"/>
 					<ShipNameItem width="100" text="二层甲板" padding="24,0,24,0," 	userdata="22"/>
 					<ShipNameItem width="100" text="三层甲板" padding="24,0,29,0,"	userdata="23"/>
 					<ShipNameItem width="100" text="四层甲板" padding="29,0,27,0," 	userdata="24"/>

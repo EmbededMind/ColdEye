@@ -197,7 +197,7 @@
 					<Label text="系统设置" font="3" height="80" textpadding="339,21,339,20" bkcolor="#FFE5E3E3" textcolor="#FF333333" />
 					<Label text="亮度调节" font="3" height="68" textpadding="45,20,633,10" bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
 					<Label name="bind_light" float="true" pos="0,148,790,80" bkimage="file='image/slider_light_bk.png'" height="80" /> 
-					<MySlider name="sysset_light" float="true" pos="178,175,0,0" bindbkimage="file='image/slider_light_bk.png'" focusedbkimage="file='image/slider_light_focusedbk.png'"/> 
+					<MySlider name="sysset_light" enabled="false" value="0" float="true" pos="178,175,0,0" bindbkimage="file='image/slider_light_bk.png'" focusedbkimage="file='image/slider_light_focusedbk.png'"/> 
 					<Control float="true" pos="45,246,745,248" />
 					<Label text="音量调节" font="3" float="true" pos="45,268,157,307"  bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
 					<Label name="bind_voice" float="true" pos="0,320,790,80" bkimage="file='image/slider_volum_bk.png'" height="80" /> 

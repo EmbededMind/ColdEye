@@ -9,6 +9,7 @@
 #include "Com\SerialPort.h"
 #include "Wnd\MsgWnd.h"
 #include "GammaRamp.h"
+#include "Wnd/SysSetIconsWnd.h"
 
 const enum MonitorPowerCmd
 {
@@ -28,6 +29,8 @@ public:
 
 	CMsgWnd	*mMessageBox; 
 	CMyMenuWnd mMenu;
+	CSysSetIconsWnd* mSysSetIcons;
+
 
 protected:
 	CWallDlg  mWall;

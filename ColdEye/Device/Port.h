@@ -92,6 +92,11 @@ public:
 	bool       IsActive();
 
 	void       StoreDeviceConfig();
+	void       StoreVolumn();
+	void       StoreCameraOnOff();
+	void       StoreRecordOnOff();
+	void       StoreAwOnOff();
+	void       StoreName();
 
 	void       Config(DeviceConfig& config);
 

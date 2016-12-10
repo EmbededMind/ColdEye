@@ -75,4 +75,9 @@ protected:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 public:
 	afx_msg void OnPaint();
+protected:
+	afx_msg LRESULT OnUserMsgCameraConfigSwitch(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigAwswitch(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam);
 };
