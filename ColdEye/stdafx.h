@@ -120,6 +120,7 @@
 #define RECORD_VOICE_PATH          "D:\\VOICE\\"
 #define RECORD_VOICE_NAME_WAV	   "D:\\VOICE\\rwavalarm.wav"
 #define RECORD_VOICE_NAME_WAV_TMP  "D:\\VOICE\\rwavalarmtmp.wav"
+#define VOICE_NAME_WAV             "D:\\VOICE\\wavalarmtmp.wav"
 #define RECORD_VOICE_NAME	       "D:\\VOICE\\rG711"
 #define RECORD_VOICE_NAME_TMP      "D:\\VOICE\\rG711tmp"
 #define ALARM_VOICE_NAME	       "D:\\VOICE\\G711"
@@ -128,6 +129,8 @@
 #define NORMALDISK                 "d:\\"
 #define ALARMDISK                  "e:\\"
 
+#define DEFAULT_VOICE              0
+#define RECORD_VOICE               1
 
  /*****************************************
  *            File option macro           *

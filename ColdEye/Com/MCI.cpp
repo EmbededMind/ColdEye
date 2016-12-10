@@ -46,12 +46,17 @@ int CMCI::StopRecord()
 	return 0;
 }
 
-int CMCI::Play()
+int CMCI::Play(int type)
 {
 	MCI_OPEN_PARMS mci_open;
 	MCI_PLAY_PARMS mci_play;
-
-	mci_open.lpstrElementName = m_rFilePathTmp;
+	if (m_isPlay == true)
+		this->StopPlay();
+	m_isPlay = true;
+	if(type == RECORD_VOICE)
+		mci_open.lpstrElementName = m_rFilePathTmp;
+	else
+		mci_open.lpstrElementName = m_FilePath;
 	DWORD dwReturn = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_ELEMENT, (DWORD)(LPVOID)&mci_open);
 	if (dwReturn)
 	{
@@ -67,6 +72,7 @@ int CMCI::Play()
 
 int CMCI::StopPlay()
 {
+	m_isPlay = false;
 	mciSendCommand(m_PlayDeviceID, MCI_STOP, NULL, NULL);
 	mciSendCommand(m_PlayDeviceID, MCI_CLOSE, NULL, NULL);
 	return 0;

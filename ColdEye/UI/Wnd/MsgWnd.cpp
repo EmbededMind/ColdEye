@@ -337,7 +337,7 @@ void CMsgWnd::InitWindow()
 	else if (SkinType == _T("mb_playvoice.xml")) {
 		int TotalTime;
 		CMCI *pCmic = CMCI::GetInstance();
-		pCmic->Play();
+		pCmic->Play(RECORD_VOICE);
 		TotalTime = pCmic->GetTotaltime();
 		static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetMaxValue(TotalTime);
 		SetTimer(m_hWnd, TIME_PLAY_VOICE , 1000, NULL);
