@@ -261,6 +261,10 @@ BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_DISCONNECT, &CWallDlg::OnUserMsgDisconnect)
 	ON_MESSAGE(USER_MSG_RELOGIN, &CWallDlg::OnUserMsgRelogin)
 	ON_WM_PAINT()
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SWITCH, &CWallDlg::OnUserMsgCameraConfigSwitch)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SAVE, &CWallDlg::OnUserMsgCameraConfigSave)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWSWITCH, &CWallDlg::OnUserMsgCameraConfigAwswitch)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_NAME, &CWallDlg::OnUserMsgCameraConfigName)
 END_MESSAGE_MAP()
 
 
@@ -361,33 +365,7 @@ afx_msg LRESULT CWallDlg::OnUserMsgLogoff(WPARAM wParam, LPARAM lParam)
 }
 
 
-afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam)
-{
-	CPort* pPort  = (CPort*)wParam;
-	DeviceConfig* pConfig  = (DeviceConfig*)lParam;
 
-	ASSERT(pPort != NULL);
-	ASSERT(pPort->m_pCamera != NULL);
-
-	if (pConfig->Volumn != pPort->m_DevConfig.Volumn) {
-		::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, wParam, lParam);
-	}
-	
-	CSurface* pSurface  = FindSurface(pPort);
-	if (pSurface != NULL) {
-		pPort->m_DevConfig.NameId      = pConfig->NameId;
-		pPort->m_DevConfig.IsCameraOn  = pConfig->IsCameraOn;
-		pPort->m_DevConfig.NameId  = pConfig->NameId;
-		pPort->m_DevConfig.Volumn  = pConfig->Volumn;
-		pPort->m_DevConfig.IsRecordEnabled  = pConfig->IsRecordEnabled;
-		pPort->m_DevConfig.IsAutoWatchEnabled  = pConfig->IsAutoWatchEnabled;
-
-		pPort->StoreDeviceConfig();
-
-		pSurface->ExecuteConfig();
-	}
-	return 0;
-}
 
 
 void CWallDlg::OnTimer(UINT_PTR nIDEvent)
@@ -563,4 +541,90 @@ void CWallDlg::OnPaint()
 					   // TODO: 在此处添加消息处理程序代码
 					   // 不为绘图消息调用 CDialogEx::OnPaint()
 	//dc.Rectangle(mSurfaceArea);
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort = (CPort*)wParam;
+	DeviceConfig* pConfig = (DeviceConfig*)lParam;
+
+	ASSERT(pPort != NULL);
+	ASSERT(pPort->m_pCamera != NULL);
+
+	if (pConfig->Volumn != pPort->m_DevConfig.Volumn) {
+		::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_CAMERA_CONFIG_CHANGE, wParam, lParam);
+	}
+
+	CSurface* pSurface = FindSurface(pPort);
+	if (pSurface != NULL) {
+		pPort->m_DevConfig.NameId = pConfig->NameId;
+		pPort->m_DevConfig.IsCameraOn = pConfig->IsCameraOn;
+		pPort->m_DevConfig.NameId = pConfig->NameId;
+		pPort->m_DevConfig.Volumn = pConfig->Volumn;
+		pPort->m_DevConfig.IsRecordEnabled = pConfig->IsRecordEnabled;
+		pPort->m_DevConfig.IsAutoWatchEnabled = pConfig->IsAutoWatchEnabled;
+
+		pPort->StoreDeviceConfig();
+
+		pSurface->ExecuteConfig();
+	}
+	return 0;
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigSwitch(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort  = (CPort*) lParam;
+
+	CSurface* pSurface = FindSurface(pPort);
+	if (pSurface != NULL) {
+		//pPort->StoreDeviceConfig();
+		pPort->StoreCameraOnOff();
+		pSurface->ExecuteConfig();
+	}
+	return 0;
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort = (CPort*)lParam;
+
+	CSurface* pSurface = FindSurface(pPort);
+	if (pSurface != NULL) {
+		//pPort->StoreDeviceConfig();
+		pPort->StoreRecordOnOff();
+		pSurface->ExecuteConfig();
+	}
+	return 0;
+}
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigAwswitch(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort = (CPort*)lParam;
+
+	CSurface* pSurface = FindSurface(pPort);
+	if (pSurface != NULL) {
+		pPort->StoreAwOnOff();
+		pSurface->ExecuteConfig();
+	}
+	return 0;
+}
+
+
+
+
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam)
+{
+	CPort* pPort  = (CPort*)lParam;
+
+	CSurface* pSurface  = FindSurface(pPort);
+	if (pSurface != NULL) {
+		pSurface->SetOsdText(pPort->GetName());
+		pPort->StoreName();
+	}
+
+	return 0;
 }
