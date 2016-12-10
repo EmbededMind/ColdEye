@@ -77,7 +77,7 @@ void CDBLogger::LogAutoWatch(CTime& t, bool on_off)
 void CDBLogger::LogCameraOnOff(CTime& t, CPort* pPort)
 {
 	char sqlStmt[64];
-	sprintf_s(sqlStmt, "INSERT INTO log VALUES(%I64d, 4, %d);", t.GetTime(), pPort->m_DevConfig.IsCameraOn);
+	sprintf_s(sqlStmt, "INSERT INTO log VALUES(%I64d, %d, %d);", t.GetTime(), pPort->m_DevConfig.IsCameraOn?4:5, pPort->GetId());
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);
@@ -91,7 +91,7 @@ void CDBLogger::LogCameraOnOff(CTime& t, CPort* pPort)
 void CDBLogger::LogCameraAWOnOff(CTime& t, CPort* pPort)
 {
 	char sqlStmt[64];
-	sprintf_s(sqlStmt, "INSERT INTO log VALUES(%I64d, 5, %d);", t.GetTime(), pPort->m_DevConfig.IsAutoWatchEnabled);
+	sprintf_s(sqlStmt, "INSERT INTO log VALUES(%I64d, %d, %d);", t.GetTime(), pPort->m_DevConfig.IsAutoWatchEnabled?6:7 , pPort->GetId());
 
 	if (!sqlite.DirectStatement(sqlStmt)) {
 		Print("Sql error:%s", sqlStmt);

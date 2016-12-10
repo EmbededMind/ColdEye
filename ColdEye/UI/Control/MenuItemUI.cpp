@@ -239,6 +239,7 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 		}
 		SetBkColor(0xFF4198FE);
 		int i = StrToInt(GetUserData());
+		Print("userid:%d",i);
 		static_cast<CTabLayoutUI*>(m_pManager->FindControl(_T("layout_thirdmenu")))->SelectItem(StrToInt(GetUserData()));
 	}
 	else if(event.Type == UIEVENT_KILLFOCUS){

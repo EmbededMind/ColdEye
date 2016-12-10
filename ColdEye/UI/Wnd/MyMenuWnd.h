@@ -222,4 +222,5 @@ private:
 	float m_scale;
 	int m_DispSize = 1600;
 	CPlayerWallWnd	*mPlayerWall;
+
 };

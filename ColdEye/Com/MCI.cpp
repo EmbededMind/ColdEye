@@ -4,7 +4,7 @@
 
 CMCI::CMCI()
 {
-
+	m_isPlay = false;
 }
 
 
@@ -22,7 +22,7 @@ int CMCI::StartRecord()
 	DWORD dwReturn = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_ELEMENT|MCI_OPEN_TYPE, (DWORD)(LPVOID)&mci_open);
 	if (dwReturn)
 	{
-		TRACE("mci open error %d\n",dwReturn);
+		Print("mci open error %d\n",dwReturn);
 		return dwReturn;
 	}
 	m_RecordDeviceID = mci_open.wDeviceID;
@@ -38,7 +38,7 @@ int CMCI::StopRecord()
 	DWORD dwReturn = mciSendCommand(m_RecordDeviceID, MCI_SAVE, MCI_SAVE_FILE, (DWORD)(LPVOID)&mci_save);
 	if (dwReturn)
 	{
-		TRACE("mci save error %d\n",dwReturn);
+		Print("mci save error %d\n",dwReturn);
 		return dwReturn;
 	}
 	mciSendCommand(m_RecordDeviceID, MCI_STOP, NULL, NULL);
@@ -54,13 +54,15 @@ int CMCI::Play(int type)
 		this->StopPlay();
 	m_isPlay = true;
 	if(type == RECORD_VOICE)
+		mci_open.lpstrElementName = m_rFilePath;
+	else if(type == RECORD_VOICE_TMP)
 		mci_open.lpstrElementName = m_rFilePathTmp;
 	else
 		mci_open.lpstrElementName = m_FilePath;
 	DWORD dwReturn = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_ELEMENT, (DWORD)(LPVOID)&mci_open);
 	if (dwReturn)
 	{
-		TRACE("mci open error %d\n", dwReturn);
+		Print("mci open error %d\n", dwReturn);
 		return dwReturn;
 	}
 	m_PlayDeviceID = mci_open.wDeviceID;
@@ -72,9 +74,21 @@ int CMCI::Play(int type)
 
 int CMCI::StopPlay()
 {
+	if (m_isPlay == false)
+		return 0;
 	m_isPlay = false;
-	mciSendCommand(m_PlayDeviceID, MCI_STOP, NULL, NULL);
-	mciSendCommand(m_PlayDeviceID, MCI_CLOSE, NULL, NULL);
+	DWORD dwReturn = mciSendCommand(m_PlayDeviceID, MCI_STOP, NULL, NULL);
+	if (dwReturn)
+	{
+		Print("mci stop error %d\n", dwReturn);
+		return dwReturn;
+	}
+	dwReturn = mciSendCommand(m_PlayDeviceID, MCI_CLOSE, NULL, NULL);
+	if (dwReturn)
+	{
+		Print("mci close error %d\n", dwReturn);
+		return dwReturn;
+	}
 	return 0;
 }
 

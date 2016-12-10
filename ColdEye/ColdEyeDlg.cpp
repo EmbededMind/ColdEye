@@ -16,6 +16,7 @@
 #include "Com\RecordAlarmSound.h"
 #include "Pattern\MsgSquare.h"
 #include "Com\AlarmLED.h"
+#include "Com\MCI.h"
 //控制音量头文件
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
@@ -1119,11 +1120,15 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam)
 
 afx_msg LRESULT CColdEyeDlg::OnUserMsgStarPlayAlarmVoice(WPARAM wParam, LPARAM lParam)
 {
+	Print("Star Play Alarm Voice");
+	CMCI::GetInstance()->Play(wParam);
 	return 0;
 }
 
 
 afx_msg LRESULT CColdEyeDlg::OnUserMsgStopPlayAlarmVoice(WPARAM wParam, LPARAM lParam)
 {
+	Print("Stop Play Alarm Voice");
+	CMCI::GetInstance()->StopPlay();
 	return 0;
 }

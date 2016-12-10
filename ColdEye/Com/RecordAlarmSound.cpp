@@ -182,8 +182,9 @@ bool CRecordAlarmSound::Save()
 	if (PathFileExists(_T(RECORD_VOICE_NAME_TMP)))
 	{
 		DeleteFile(_T(RECORD_VOICE_NAME));
-		if (PathFileExists(_T(RECORD_VOICE_NAME)))
-		CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
+		if (!PathFileExists(_T(RECORD_VOICE_NAME)))
+			CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
+		return true;
 	}
 	return false;
 }

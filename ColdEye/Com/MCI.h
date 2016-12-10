@@ -13,7 +13,6 @@ public:
 		instance.m_rFilePathTmp = _T(RECORD_VOICE_NAME_WAV_TMP);
 		instance.m_rFilePath = _T(RECORD_VOICE_NAME_WAV);
 		instance.m_FilePath = _T(VOICE_NAME_WAV);
-		instance.m_isPlay = false;
 		return &instance;
 	};
 private:

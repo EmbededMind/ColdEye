@@ -13,7 +13,8 @@
 #include "Com\MCI.h"
 #include "Com\Communication.h"
 
-CDuiString  _PortName[24] = {  //对应名字id
+CDuiString  _PortName[25] = {  //对应名字id
+	_T("????"),
 	_T("摄像机1"),
 	_T("摄像机2"),
 	_T("摄像机3"),
@@ -29,7 +30,7 @@ CDuiString  _PortName[24] = {  //对应名字id
 	_T("集控台"),
 	_T("监控台"),
 	_T("船长室"),
-	_T("船员室"),
+	_T("船员室"),                               
 	_T("主机舱"),
 	_T("发电机舱"),
 	_T("罗经甲板"),
@@ -567,10 +568,12 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 							pPort->m_DevConfig.IsCameraOn = 0;
 							::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_SWITCH,  0, (LPARAM)pPort);
 							CDBLogger* pLogger = CDBLogger::GetInstance();
-							if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
+
+							pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
+			/*				if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
 								pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
-								pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
-							}
+								
+							}*/
 						}
 					}
 			}
@@ -600,10 +603,12 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 					pPort->m_DevConfig.IsCameraOn = 1;
 					::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_SWITCH, 0, (LPARAM)pPort);
 					CDBLogger* pLogger = CDBLogger::GetInstance();
-					if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
-						pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
-						pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
-					}
+					pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
+
+					//if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
+					//	pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
+					//	
+					//}
 				}
 			}
 			pItem->Invalidate();
@@ -741,6 +746,9 @@ void CMyMenuWnd::IsStorage(CMyLabelUI *pItem)
 			pItem->SetValue(false);
 			pPort->m_DevConfig.IsRecordEnabled  = false;
 		}
+		else {
+			return;
+		}
 	}
 	else {
 		pItem->SetValue(true);
@@ -763,9 +771,14 @@ void CMyMenuWnd::IsAutoWatch(CMyLabelUI *pItem)
 		return;
 	}
 
+
+
 	if (pItem->GetValue()) {
 		if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_okcancel.xml"), _T("关闭摄像机自动看船后，该摄像头将"), _T("不会发生报警，是否确定关闭？"), NULL, NULL)) {
 			pItem->SetValue(false);
+		}
+		else {
+			return;
 		}
 	}
 	else {
@@ -1007,9 +1020,10 @@ void CMyMenuWnd::RecordVoice()
 	result = CMsgWnd::MessageBox(this->GetHWND(), _T("mb_playvoice.xml"), text, NULL, NULL, NULL);
 	if (MSGID_OK == result) {
 		CMCI::GetInstance()->Save();
-		CRecordAlarmSound::GetInstance()->Save();
-		if(!pVoice1)
-			AddAlarmVoice();
+		if (CRecordAlarmSound::GetInstance()->Save()) {
+			if(!pVoice1)
+				AddAlarmVoice();
+		}
 	}
 	else if (MSGID_CANCEL == result) {
 		CMCI::GetInstance()->NotSave();
@@ -1241,6 +1255,9 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 					for (int i = 0; i < 6; i++) {
 						if (pShadow->GetRecordFileNumber(i + 1)) {						
 							CPort* pPort = pPortMgr->GetPortById(i+1);
+
+							Print("Port %d have %d file", pPort->GetId(), pShadow->GetRecordFileNumber(i+1));
+
 							if (pPort) {
 								AddVideoObtainMenuItem(pPort);
 							}							
@@ -2125,6 +2142,7 @@ void CMyMenuWnd::InitAlarmVoice()
 	if (CRecordAlarmSound::GetInstance()->ScanVoice()) {
 		AddAlarmVoice();
 	}
+
 
 	//选中默认  0:默认，1录制
 	if (mAlarmVoiceSel == 0){
