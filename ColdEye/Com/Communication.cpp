@@ -67,7 +67,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x04, 0x02, 0x00, pThis->mPdev);
 			CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);
 			pThis->SetWaitReplyState();
-			Event = WaitForSingleObject(pThis->mReplyStopAlarmEvent, 100000);
+			Event = WaitForSingleObject(pThis->mReplyStopAlarmEvent, TIMEOUT_TIME);
 			if (Event == WAIT_OBJECT_0)
 			{
 				pThis->mState->ReplyStopAlarm(pThis->mCurrentpDev[STOPALARM_EVENT_NUM]);
