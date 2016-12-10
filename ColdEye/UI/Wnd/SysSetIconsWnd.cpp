@@ -50,7 +50,6 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 
 	case SWP_HIDEWINDOW:
 		mshowTime = 3;
-		KillTimer(m_hWnd, 1);
 		break;
 
 	case USER_MSG_SYS_VOLUME:
@@ -60,7 +59,7 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 		}
 		pVolume->SetVisible(true);
 		pLight->SetVisible(false);
-		pProgress->SetValue(wParam);
+		pProgress->SetValue(wParam*10);
 		mshowTime = 3;
 		break;
 		
@@ -73,6 +72,7 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 	case WM_TIMER:
 		if (!mshowTime) {
 			ShowWindow(false);
+			KillTimer(m_hWnd, 1);
 		}
 		else mshowTime--;
 		break;

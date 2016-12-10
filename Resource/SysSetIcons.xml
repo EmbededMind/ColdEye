@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Window caption="0,0,0,97" size="600,450" alpha="153" roundcorner="10,10" > <!--  bktrans="true" layered="true"-->
+  
+  <Font shared="true" id="0" name="方正兰亭中黑_GBK" size="32"/>
+  
+  <Default shared="true" name="Button" value="float=&quot;true&quot; height=&quot;86&quot; pos=&quot;0,0,186,86&quot; font=&quot;0&quot; textpadding=&quot;110,20,20,21&quot; textcolor=&quot;#FFFFFFFF&quot; "/>
+  
+  <VerticalLayout >
+		<Label name="volume" float="true" pos="200,100,0,0" width="200" height="197" bkimage="file='image/sysset_volume.png'" />
+		<Label name="light" float="true" pos="200,100,0,0" width="200" height="197" bkimage="file='image/sysset_light.png'" />
+		<Label name="bind_progress"  />
+		<Progress name="value" float="true" pos="195,367,0,0" width="210" height="18" bkcolor="#FF667788" min="0" max="100" foreimage="file='image/player_pro_fore.png' mask='#FFE97FFF'"/>
+
+  </VerticalLayout>
+</Window>
