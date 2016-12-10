@@ -228,9 +228,10 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	mSysSetIcons = new CSysSetIconsWnd(_T("SysSetIcons.xml"));
 	mSysSetIcons->SetDpi(mMenu.GetDpi());
-	mSysSetIcons->Create(NULL, _T("SysSetWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
+	mSysSetIcons->Create(NULL, _T("SysSetWnd"), UI_WNDSTYLE_DIALOG | WS_EX_TOPMOST, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mSysSetIcons->CenterWindow();
 	mSysSetIcons->ShowWindow(false);
+	
 	//::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUM, NULL, NULL);
 	//mSysSetIcons->ShowWindow(true);
 

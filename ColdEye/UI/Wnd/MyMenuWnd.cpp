@@ -284,19 +284,7 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 		}
 		break;
 		//-------------------------------------------------------
-<<<<<<< HEAD
-	//case VK_BACK:
-	//	
-	//	if (sName == _T("camera_set_volume")) {
-	//		CameraInfo info;
-	//		info.Volumn  = 1;
 
-	//		CMenuItemUI* pMenuItem  = (CMenuItemUI*)pLayout_third->GetItemAt(7);
-	//		::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd,  USER_MSG_CAMERA_CONFIG_CHANGE, DEV_CONFIG_MASK_VOL, (LPARAM)NULL);			
-	//	}
-	//	break;
-=======
->>>>>>> bb77dead5ced5c08f54c6bbbe47ec759b166d6c2
 	}
 }
 

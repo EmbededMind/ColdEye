@@ -101,7 +101,6 @@ void CMsgWnd::OnClick(TNotifyUI &msg)
 
 LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	Print("msg:%x",uMsg);
 	LRESULT lRes = 0;
 	CDuiString sName;
 	CTextUI *pItem;
