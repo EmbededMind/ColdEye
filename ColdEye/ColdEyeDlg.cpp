@@ -616,6 +616,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			case KB_VOLUP:
 				volume = this->SetVolumeLevel(HOST_VOICE_LEVEL_UP);
 				::PostMessage(mMenu, USER_MSG_SYS_VOLUME, volume, NULL);
+				::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume, (LPARAM)GetFocus());
 				break;
 			case KB_DOWN:
 				keybd_event(VK_DOWN, 0, 0, 0);
@@ -635,6 +636,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			case KB_VOLDOWN:
 				volume = this->SetVolumeLevel(HOST_VOICE_LEVEL_DOWN);
 				::PostMessage(mMenu,USER_MSG_SYS_VOLUME,volume,NULL);
+				::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume, (LPARAM)GetFocus());
 				break;
 			case KB_TALKQUIET:
 				SetVolumeLevel(1);
@@ -1105,7 +1107,6 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam)
 {
 	UINT8 volume;
 	volume = this->SetVolumeLevel(wParam);
-	Print("volume:%d, %d",volume,wParam);
 	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume,(LPARAM)GetFocus());
 	return 0;
 }
