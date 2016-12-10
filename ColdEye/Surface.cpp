@@ -117,13 +117,6 @@ IMPLEMENT_DYNAMIC(CSurface, CWnd)
 
 CSurface::CSurface()
 {
-	//OSD_INFO_TXT osd;
-	//osd.bkColor = RGB(72, 209, 204);
-	//osd.color = RGB(0,0,0);
-	//osd.pos_x = 10;
-	//osd.pos_y = 80;
-	//osd.isTransparent = 1;
-	//osd.isBold = 1;
 	m_OsdInfoText.bkColor  = RGB(72, 209, 204);
 	m_OsdInfoText.color   = RGB(0, 0, 0);
 	m_OsdInfoText.pos_x  = 10;
