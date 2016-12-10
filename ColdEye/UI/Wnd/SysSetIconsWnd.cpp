@@ -29,7 +29,6 @@ CDuiString CSysSetIconsWnd::GetSkinFile()
 
 LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	Print("uMsg:%x", uMsg);
 	switch(uMsg){
 	case WM_ACTIVATEAPP:
 		if (IsWindowVisible(m_hWnd)) {
@@ -47,7 +46,7 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 		KillTimer(m_hWnd, 1);
 		break;
 
-	case USER_MSG_SYS_VOLUM:
+	case USER_MSG_SYS_VOLUME:
 		if (!IsWindowVisible(m_hWnd)) {
 			ShowWindow(true);
 		}

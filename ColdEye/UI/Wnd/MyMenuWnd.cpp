@@ -134,11 +134,11 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
-	CPort* pPort = new CPort();
+	/*CPort* pPort = new CPort();
 	pPort->SetId(1);
 	pPort->SetNameId(1);
 
-	AddPortConfigMenuItem(pPort);
+	AddPortConfigMenuItem(pPort);*/
 }
 
 
@@ -1146,6 +1146,11 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 				pPort->StoreVolumn();
 			}
 		}
+		if (_tcscmp(msg.pSender->GetName(), _T("sysset_voice")) == 0) {
+			//sysVolume Set value:msg.wParam
+			Print("sysVolume:%d",msg.wParam);
+			::SendMessage(((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd,USER_MSG_SYS_VOLUME,msg.wParam,NULL);
+		}
 	}
 }
 
@@ -1276,7 +1281,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			}
 			break;
 
-		case USER_MSG_SYS_VOLUM:
+		case USER_MSG_SYS_VOLUME:
 			pSysVolum->SetValue(wParam);
 			((CColdEyeApp*)AfxGetApp())->m_SysConfig.volumn = wParam;
 			((CColdEyeApp*)AfxGetApp())->StoreSystemConfig();

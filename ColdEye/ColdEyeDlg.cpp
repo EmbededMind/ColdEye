@@ -179,8 +179,9 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_VOLUME, &CColdEyeDlg::OnUserMsgCameraConfigVolume)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SAVE, &CColdEyeDlg::OnUserMsgCameraConfigSave)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWSWITCH, &CColdEyeDlg::OnUserMsgCmaeraConfigAWSwitch)
-
 	ON_MESSAGE(USER_MSG_ALARM_LIGHT, &CColdEyeDlg::OnUserMsgSetAlarmLight)
+
+	ON_MESSAGE(USER_MSG_SYS_VOLUME, &CColdEyeDlg::OnUserMsgSysVolume)
 END_MESSAGE_MAP()
 
 
@@ -230,7 +231,7 @@ BOOL CColdEyeDlg::OnInitDialog()
 	mSysSetIcons->SetDpi(mMenu.GetDpi());
 	mSysSetIcons->Create(NULL, _T("SysSetWnd"), UI_WNDSTYLE_DIALOG | WS_EX_TOPMOST, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mSysSetIcons->CenterWindow();
-	mSysSetIcons->ShowWindow(false);
+	mSysSetIcons->ShowWindow(SW_HIDE);
 	
 	//::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUM, NULL, NULL);
 	//mSysSetIcons->ShowWindow(true);
@@ -613,7 +614,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				break;
 			case KB_VOLUP:
 				volume = this->SetVolumeLevel(HOST_VOICE_LEVEL_UP);
-				::PostMessage(mMenu, USER_MSG_SYS_VOLUM, volume, NULL);
+				::PostMessage(mMenu, USER_MSG_SYS_VOLUME, volume, NULL);
 				break;
 			case KB_DOWN:
 				keybd_event(VK_DOWN, 0, 0, 0);
@@ -632,7 +633,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				break;
 			case KB_VOLDOWN:
 				volume = this->SetVolumeLevel(HOST_VOICE_LEVEL_DOWN);
-				::PostMessage(mMenu,USER_MSG_SYS_VOLUM,volume,NULL);
+				::PostMessage(mMenu,USER_MSG_SYS_VOLUME,volume,NULL);
 				break;
 			case KB_TALKQUIET:
 				SetVolumeLevel(1);
@@ -1096,4 +1097,14 @@ LRESULT CColdEyeDlg::OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam)
 LRESULT CColdEyeDlg::OnUserMsgCmaeraConfigAWSwitch(WPARAM wParam, LPARAM lParam)
 {
 	return LRESULT();
+}
+
+
+afx_msg LRESULT CColdEyeDlg::OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam)
+{
+	UINT8 volume;
+	volume = this->SetVolumeLevel(wParam);
+	Print("volume:%d, %d",volume,wParam);
+	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume, NULL);
+	return 0;
 }

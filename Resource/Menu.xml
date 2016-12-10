@@ -201,7 +201,7 @@
 					<Control float="true" pos="45,246,745,248" />
 					<Label text="音量调节" font="3" float="true" pos="45,268,157,307"  bkcolor="#FFF3F3F3" textcolor="#FF666666"/>
 					<Label name="bind_voice" float="true" pos="0,320,790,80" bkimage="file='image/slider_volum_bk.png'" height="80" /> 
-					<MySlider name="sysset_voice" float="true" pos="178,347,0,0" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'"/>
+					<MySlider name="sysset_voice" float="true" pos="178,347,0,0" bindbkimage="file='image/slider_volum_bk.png'" min="0" max="10" focusedbkimage="file='image/slider_volum_focusedbk.png'"/>
 					<Control float="true" pos="45,414,745,416" />
 					<MyLabel name="sysset_version" pos="0,426,790,506" text="软件版本：V1.0.0"  statedisabletext="更新"/>
 					<Control float="true" pos="45,516,745,518" />
