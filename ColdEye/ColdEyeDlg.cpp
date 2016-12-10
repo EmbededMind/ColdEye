@@ -450,7 +450,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
 			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
 
-			fVolume += 0.2;
+			fVolume += 0.1;
 			if (fVolume > 1) fVolume = 1.0;
 
 			hr = pAudioEndpointVolume->SetMasterVolumeLevelScalar(fVolume, &GUID_NULL);
@@ -471,7 +471,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 			hr = pAudioEndpointVolume->GetMasterVolumeLevelScalar(&fVolume);
 			if (FAILED(hr)) throw "GetMasterVolumeLevelScalar";
 
-			fVolume -= 0.2;
+			fVolume -= 0.1;
 			if (fVolume < 0) fVolume = 0;
 
 			hr = pAudioEndpointVolume->SetMasterVolumeLevelScalar(fVolume, &GUID_NULL);
@@ -486,10 +486,10 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 			pDeviceEnumerator->Release();
 			return (int)(10 * fVolume);
 		}
-		else if (type >= HOST_VOICE_LEVEL_0 || type <= HOST_VOICE_LEVEL_5) {
+		else if (type >= HOST_VOICE_LEVEL_0 || type <= HOST_VOICE_LEVEL_10) {
 
 			float fVolume;
-			fVolume = type / 5.0f;
+			fVolume = type / 10.0f;
 
 			if (fVolume >= 0 && fVolume <= 1)
 			{
