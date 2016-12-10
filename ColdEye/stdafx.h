@@ -93,6 +93,7 @@
 
 
 #define USER_MSG_SYS_VOLUM					(WM_USER + 210) //系统音量
+#define USER_MSG_SYS_LIGHT					(WM_USER + 211)	// 系统亮度
 
 #define USER_MSG_ALARM_LIGHT				(WM_USER + 220) //报警灯光
 
