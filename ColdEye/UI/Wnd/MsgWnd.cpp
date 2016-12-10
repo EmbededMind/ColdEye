@@ -62,7 +62,6 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 		else
 			pText1->SetText(_T("确认替换原录制语音"));
 	}
-	
 }
 
 void CMsgWnd::OnFinalMessage(HWND hWnd)
@@ -331,6 +330,7 @@ void CMsgWnd::InitWindow()
 		static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetMaxValue(TotalTime);
 		SetTimer(m_hWnd, TIME_PLAY_VOICE , 1000, NULL);
 	}
+
 }
 
 LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
