@@ -561,6 +561,11 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 						}
 					}
 			}
+			else{
+				//报警音和报警灯光关闭
+				pItem->SetValue(false);
+			}
+
 
 			if (pItem == pAlmVicSwitch) {
 				ShowAlarmVoiceList(pItem->GetValue());

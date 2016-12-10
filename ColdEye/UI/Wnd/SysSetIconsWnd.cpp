@@ -31,7 +31,6 @@ CDuiString CSysSetIconsWnd::GetSkinFile()
 
 LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	Print("umsg:%x",uMsg);
 	switch(uMsg){
 	case WM_WINDOWPOSCHANGED:
 		if (IsWindowVisible(m_hWnd)) {
@@ -40,7 +39,8 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 		break;
 
 	case WM_SETFOCUS:
-		pMainWnd->SetFocus();
+		if(pMainWnd)
+			pMainWnd->SetFocus();
 		break;
 
 	case WM_SHOWWINDOW:
@@ -59,6 +59,7 @@ LRESULT CSysSetIconsWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 		}
 		pVolume->SetVisible(true);
 		pLight->SetVisible(false);
+		Print("Value:%d",wParam);
 		pProgress->SetValue(wParam*10);
 		mshowTime = 3;
 		break;

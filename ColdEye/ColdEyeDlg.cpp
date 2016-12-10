@@ -466,7 +466,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
 			pDeviceEnumerator->Release();
-			return (int)(10 * fVolume);
+			return (int)(10.0 * fVolume + 0.01);
 		}
 		else if (type == HOST_VOICE_LEVEL_DOWN)
 		{
@@ -487,7 +487,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
 			pDeviceEnumerator->Release();
-			return (int)(10 * fVolume);
+			return (int)(10.0 * fVolume + 0.01);
 		}
 		else if (type >= HOST_VOICE_LEVEL_0 || type <= HOST_VOICE_LEVEL_10) {
 
@@ -506,7 +506,7 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 				pAudioEndpointVolume->Release();
 				pDevice->Release();
 				pDeviceEnumerator->Release();
-				return (int)(10 * fVolume);
+				return (int)(10.0 * fVolume + 0.01);
 			}
 		}
 	}
@@ -1107,6 +1107,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgSysVolume(WPARAM wParam, LPARAM lParam)
 {
 	UINT8 volume;
 	volume = this->SetVolumeLevel(wParam);
+	Print("Volum:%d, %d",volume,wParam);
 	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume,(LPARAM)GetFocus());
 	return 0;
 }
