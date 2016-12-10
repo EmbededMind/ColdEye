@@ -192,6 +192,74 @@ void CPort::StoreVolumn()
 }
 
 
+void CPort::StoreCameraOnOff()
+{
+	char sqlStmt[128];
+
+	sprintf_s(sqlStmt, "UPDATE port SET cam_on = %d WHERE id = %d;",
+		m_DevConfig.IsCameraOn, m_Id);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
+
+void CPort::StoreRecordOnOff()
+{
+	char sqlStmt[64];
+
+	sprintf_s(sqlStmt, "UPDATE port SET record_on = %d WHERE id = %d;",
+	 m_DevConfig.IsRecordEnabled, m_Id);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
+
+void CPort::StoreAwOnOff()
+{
+	char sqlStmt[64];
+
+	sprintf_s(sqlStmt, "UPDATE port SET aw_on = %d WHERE id = %d;",
+		m_DevConfig.IsAutoWatchEnabled, m_Id);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
+void CPort::StoreName()
+{
+	char sqlStmt[64];
+
+	sprintf_s(sqlStmt, "UPDATE port SET name_id = %d WHERE id = %d;",
+		m_DevConfig.NameId, m_Id);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
+
+
 void CPort::Config(DeviceConfig& config)
 {
 	//this->m_DevConfig.

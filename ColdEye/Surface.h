@@ -56,7 +56,8 @@ public:
 
 	void          ConnectRealPlay();         //打开实时播放数据流
 	void          DisconnectRealPlay();      //关闭实时播放
-	 
+	
+	void          SetOsdText(CString& text);
 	void          SetOsdText(int xPos, int yPos, CString& text);
 	void          SetOsdText(int xPos, int yPos, char* pText);
 

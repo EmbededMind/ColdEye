@@ -847,6 +847,12 @@ Print("Zoom out");
 }
 
 
+void CSurface::SetOsdText(CString& cam_name)
+{
+	SetOsdText(10, 10, cam_name);
+}
+
+
 void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 {
 	bool bkState  = m_bIsRealPlaying;
