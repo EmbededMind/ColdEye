@@ -175,6 +175,23 @@ void CPort::StoreDeviceConfig()
 }
 
 
+
+void CPort::StoreVolumn()
+{
+	char sqlStmt[128];
+
+	sprintf_s(sqlStmt,  "UPDATE port SET vol = %d WHERE id = %d;",
+	      m_DevConfig.Volumn , m_Id);
+
+	if (!sqlite.DirectStatement(sqlStmt)) {
+		Print("Sql error:%s", sqlStmt);
+	}
+	else {
+		Print("Sql done:%s", sqlStmt);
+	}
+}
+
+
 void CPort::Config(DeviceConfig& config)
 {
 	//this->m_DevConfig.
