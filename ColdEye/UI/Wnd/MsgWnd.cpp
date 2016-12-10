@@ -101,11 +101,24 @@ void CMsgWnd::OnClick(TNotifyUI &msg)
 
 LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	Print("msg:%x",uMsg);
 	LRESULT lRes = 0;
 	CDuiString sName;
 	CTextUI *pItem;
 	switch (uMsg) {
+		
+	case DOF_EXECUTABLE:{
+			CControlUI* pText1 = static_cast<CControlUI*>(m_pm.FindControl(_T("Text1")));
+			if (!pText1) break;
+			if(pText1->GetText()==_T("关闭储存摄像机视频后，你将无法回")){
+				pButton_cancel->SetFocus();
+			}
+			if (pText1->GetText() == _T("关闭摄像机自动看船后，该摄像头将")) {
+				pButton_cancel->SetFocus();
+			}
+		}
 
+		break;
 	//--------------------------------------------------------------------------
 	case WM_TIMER:
 		lRes = OnTimer(uMsg,wParam,lParam,bHandled);

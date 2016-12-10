@@ -267,7 +267,7 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 			pParentLayout->FindSubControl(_T("camera_switch"))->SetFocus();
 		}
 		else if (sName == _T("sysset_voice")) {
-			m_pm.FindControl(_T("sysset_light"))->SetFocus();
+			//m_pm.FindControl(_T("sysset_light"))->SetFocus();
 		}
 		break;
 		//------------------------------------------------------
@@ -284,16 +284,16 @@ void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
 		}
 		break;
 		//-------------------------------------------------------
-	case VK_BACK:
-		
-		if (sName == _T("camera_set_volume")) {
-			CameraInfo info;
-			info.Volumn  = 1;
+	//case VK_BACK:
+	//	
+	//	if (sName == _T("camera_set_volume")) {
+	//		CameraInfo info;
+	//		info.Volumn  = 1;
 
-			CMenuItemUI* pMenuItem  = (CMenuItemUI*)pLayout_third->GetItemAt(7);
-			::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd,  USER_MSG_CAMERA_CONFIG_CHANGE, DEV_CONFIG_MASK_VOL, (LPARAM)NULL);			
-		}
-		break;
+	//		CMenuItemUI* pMenuItem  = (CMenuItemUI*)pLayout_third->GetItemAt(7);
+	//		::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->m_hWnd,  USER_MSG_CAMERA_CONFIG_CHANGE, DEV_CONFIG_MASK_VOL, (LPARAM)NULL);			
+	//	}
+	//	break;
 	}
 }
 
@@ -845,7 +845,7 @@ void CMyMenuWnd::ThirdMenuSetFocus(CDuiString userdata)
 	}
 	else if (inx == 13){
 		//系统设置
-		pSysLight->SetFocus();
+		pSysVolum->SetFocus();
 	}
 	else if (inx == 14){
 		//看船时间
@@ -1130,12 +1130,6 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 				CCommunication::GetInstance()->SetVolume(pPort->m_pCamera,  vol);
 				pPort->StoreVolumn();
 			}
-		}
-		else if (_tcscmp(msg.pSender->GetName(), _T("sysset_light")) == 0) {
-
-		}
-		else if (_tcscmp(msg.pSender->GetName(), _T("sysset_voice")) == 0) {
-
 		}
 	}
 }

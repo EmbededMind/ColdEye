@@ -230,7 +230,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 	mSysSetIcons->SetDpi(mMenu.GetDpi());
 	mSysSetIcons->Create(NULL, _T("SysSetWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mSysSetIcons->CenterWindow();
-	::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUM, NULL, NULL);
+	mSysSetIcons->ShowWindow(false);
+	//::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUM, NULL, NULL);
 	//mSysSetIcons->ShowWindow(true);
 
 	
