@@ -13,30 +13,30 @@
 		</VerticalLayout>
 		<VerticalLayout	visible="false"  float="true" bkcolor="#FFF3F3F3" pos="70,235,0,0" width="790" height="204">
 			<VerticalLayout name="shipnamesel" padding="45,30,45,0" bkcolor="#FFD7E9FF" >
-				<HorizontalLayout height="33">
+				<HorizontalLayout height="33" padding="0,8,0,3" >
 					<ShipNameItem width="60" text="船头" 	userdata="0"/>
-					<ShipNameItem width="80" text="船甲板" 	userdata="1"/>
-					<ShipNameItem width="80" text="船左舷"	userdata="2"/>
-					<ShipNameItem width="80" text="船右舷" 	userdata="3"/>
-					<ShipNameItem width="80" text="船后方" 	userdata="4"/>
-					<ShipNameItem width="80" text="船缆绳" 	userdata="5"/>
+					<ShipNameItem width="80" text="船甲板" padding="40,0,19,0," userdata="1"/>
+					<ShipNameItem width="80" text="船左舷" padding="20,0,19,0," userdata="2"/>
+					<ShipNameItem width="80" text="船右舷" padding="20,0,19,0,"	userdata="3"/>
+					<ShipNameItem width="80" text="船后方" padding="20,0,19,0,"	userdata="4"/>
+					<ShipNameItem width="80" text="船缆绳" padding="20,0,19,0,"	userdata="5"/>
 				</HorizontalLayout>
-				<HorizontalLayout height="33">
+				<HorizontalLayout height="33" padding="0,3,0,3" >
 					<ShipNameItem width="80" text="集控台" 	userdata="10"/>
-					<ShipNameItem width="80" text="监控台" 	userdata="11"/>
-					<ShipNameItem width="80" text="船长室"	userdata="12"/>
-					<ShipNameItem width="80" text="船员室" 	userdata="13"/>
-					<ShipNameItem width="80" text="主机舱" 	userdata="14"/>
-					<ShipNameItem width="100" text="发电机舱"	userdata="15"/>
+					<ShipNameItem width="80" text="监控台" 	padding="20,0,19,0,"	userdata="11"/>
+					<ShipNameItem width="80" text="船长室"	padding="20,0,19,0,"	userdata="12"/>
+					<ShipNameItem width="80" text="船员室" 	padding="20,0,19,0," 	userdata="13"/>
+					<ShipNameItem width="80" text="主机舱" 	padding="20,0,19,0,"	userdata="14"/>
+					<ShipNameItem width="100" text="发电机舱" padding="20,0,19,0,"	userdata="15"/>
 				</HorizontalLayout>
-				<HorizontalLayout height="33">
+				<HorizontalLayout height="33" padding="0,3,0,1" >
 					<ShipNameItem width="100" text="罗经甲板"	userdata="20"/>
-					<ShipNameItem width="100" text="一层甲板" 	userdata="21"/>
-					<ShipNameItem width="100" text="二层甲板" 	userdata="22"/>
-					<ShipNameItem width="100" text="三层甲板" 	userdata="23"/>
-					<ShipNameItem width="100" text="四层甲板" 	userdata="24"/>
+					<ShipNameItem width="100" text="一层甲板" padding="20,0,24,0," 	userdata="21"/>
+					<ShipNameItem width="100" text="二层甲板" padding="24,0,24,0," 	userdata="22"/>
+					<ShipNameItem width="100" text="三层甲板" padding="24,0,29,0,"	userdata="23"/>
+					<ShipNameItem width="100" text="四层甲板" padding="29,0,27,0," 	userdata="24"/>
 				</HorizontalLayout>
-				<HorizontalLayout height="33">
+				<HorizontalLayout height="33" padding="0,1,0,0" >
 					<ShipNameItem width="100" height="33" text="五层甲板"	userdata="30"/>
 				</HorizontalLayout>
 			</VerticalLayout>
@@ -47,7 +47,7 @@
 			<Control float="true" pos="45,125,0,0" width="700" />
 			<Text float="true" pos="45,150,250,189" font="3" textcolor="#FF666666" text="喇叭声音音量" />
 			<Label name="bind_cameraset" float="true" pos="0,198,790,80" bkimage="file='image/slider_volum_bk.png'" height="80" /> 
-			<MySlider name="camera_set_volume" float="true" pos="178,224,0,0" min="0" max="9" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'" />
+			<MySlider name="camera_set_volume" sendmove="true" float="true" pos="178,224,0,0" min="0" max="9" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'" />
 			<Control float="true" pos="45,296,0,0" width="700" />
 			<MyLabel name="camera_set_video_save" pos="0,306,0,0" width="790" height="80" text="是否储存该摄像机视频" stateenabletext="是" statedisabletext="否" />
 			<Control float="true" pos="45,396,0,0" width="700" />

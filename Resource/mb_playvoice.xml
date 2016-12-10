@@ -13,6 +13,7 @@
 		<Button name="ok_btn" text="确定" pos="85,325,0,0" width="250" height="94"/>
 		<Button name="cancel_btn" text="取消" pos="355,325,0,0" width="250" height="94"/>
 		<Button name="record_btn" text="重录" pos="625,325,0,0" width="250" height="94"/>
-		<Slider name="voice_slider" float="true" pos="121,202,0,0" width="719" height="41" bkimage="file='image/mb_bkimage.png' mask='#FFE97FFF'" foreimage="file='image/mb_fore.png' mask='#FFE97FFF'" thumbsize="41,41" thumbimage="file='image/mb_thumb.png'" max="100" step="1" />
+		<Label name="bind_progress" float="true" pos="121,200,0,0" width="719" height="41" bkimage="file='image/mb_bkimage.png' mask='#FFE97FFF'" />
+		<Slider name="voice_slider" float="true" pos="121,202,0,0" width="800" height="41" foreimage="file='image/mb_fore.png' mask='#FFE97FFF'" thumbsize="38,38" thumbimage="file='image/mb_thumb.png'" max="100" step="1" />
 	</VerticalLayout>
 </Window>

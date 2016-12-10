@@ -98,6 +98,11 @@ public:
 	void PaintTitle(CPaintDC*);
 protected:
 	afx_msg LRESULT OnUserMsgCameraConfigChange(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnUserMsgStopAlarm(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgSetAlarmLight(WPARAM wParam, LPARAM lParam);
+
+	afx_msg LRESULT OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigSwich(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigVolume(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCmaeraConfigAWSwitch(WPARAM wParam, LPARAM lParam);
 };

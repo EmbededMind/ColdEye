@@ -25,10 +25,13 @@ void CMySliderUI::DoEvent(TEventUI & event)
 		//----------------------------------------------------------------------
 		case VK_LEFT:
 			SetValue(GetValue()-1);
+			Print("value:%d", GetValue());
+			m_pManager->SendNotify(this, DUI_MSGTYPE_VALUECHANGED, (WPARAM)GetValue(),NULL);
 			break;
 		//----------------------------------------------------------------------
 		case VK_RIGHT:
 			SetValue(GetValue() + 1);
+			m_pManager->SendNotify(this, DUI_MSGTYPE_VALUECHANGED, (WPARAM)GetValue(), NULL);
 			break;
 		//----------------------------------------------------------------------
 		case VK_BACK:

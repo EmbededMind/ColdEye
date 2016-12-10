@@ -64,7 +64,6 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void CPlayerWallWnd::InitWindow()
 {
-
 	if (pMenuWnd) {
 		m_pm.SetDPI(pMenuWnd->GetDpi());//pMenuWnd->GetDpi()
 	}
@@ -76,6 +75,7 @@ void CPlayerWallWnd::InitWindow()
 	pFast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));	
 	if (pFast) pFast->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnFast);
 	pSlider = static_cast<CSliderUI*>(m_pm.FindControl(_T("progress")));
+
 	pBeginTime = static_cast<CLabelUI*>(m_pm.FindControl(_T("time_begin")));
 	pEndTime = static_cast<CLabelUI*>(m_pm.FindControl(_T("time_end")));
 
@@ -91,9 +91,12 @@ void CPlayerWallWnd::InitWindow()
 		pAlphaMarkWnd->SetDpi(pMenuWnd->GetDpi());
 		pAlphaMarkWnd->Create(m_hWnd, _T("AlphaMarkWnd"), UI_WNDSTYLE_EX_FRAME, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 		::GetWindowRect(m_hWnd, &rt);
-		MoveWindow(pAlphaMarkWnd->GetHWND(), rt.left+707,rt.top+704, 186, 86, true);
+		int ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		ScreenWidth = (ScreenWidth - rt.right) / 2;
+		MoveWindow(pAlphaMarkWnd->GetHWND(), ScreenWidth+(rt.left + 707)*(pMenuWnd->GetMyScale()),(rt.top+904)*(pMenuWnd->GetMyScale()), 186*(pMenuWnd->GetMyScale()), 86*(pMenuWnd->GetMyScale()), true);
 		pAlphaMarkWnd->ShowWindow(SW_HIDE);
 	}
+	m_pm.SetFocus(pSlow);
 }
 
 void CPlayerWallWnd::PreparePlay(WPARAM wParam, CRecordFileInfo*info)
@@ -126,12 +129,12 @@ void CPlayerWallWnd::InitPlayer()
 		ClosePlayer();
 		return;
 	}
+	mSlowMultiple = 0;
+	mFastMultiple = 0;
 	CRecordFileInfo*pInfo = NULL;
 	pInfo = pListInfo->front();
 	pListInfo->pop_front();
 	if (pInfo) {
-		Print("infosize:%d", pListInfo->size());
-		InitPlayTime(pInfo);
 		PreparePlay(VoideType, pInfo);
 		H264_PLAY_Play(mPort, pVPlayer->GetHWND());
 		H264_PLAY_SetFileEndCallBack(mPort, EOFCallBack, (LONG)this);
@@ -179,15 +182,6 @@ LRESULT CPlayerWallWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL 
 	return LRESULT();
 }
 
-void CPlayerWallWnd::InitPlayTime(CRecordFileInfo*pInfo)
-{
-	CTime tbegin, tend;
-	tbegin = pInfo->tBegin;
-	tend = pInfo->tEnd;
-	pBeginTime->SetText(tbegin.Format(_T("%H:%M:%S")));
-	pEndTime->SetText(tend.Format(_T("%H:%M:%S")));
-}
-
 void CPlayerWallWnd::InitPlayBtImage()
 {
 	sPlayFocusedImg = _T("file='image/play_focused.png'");
@@ -203,7 +197,8 @@ void CPlayerWallWnd::ClosePlayer()
 	H264_PLAY_CloseFile(mPort);
 	H264_PLAY_FreePort(mPort);
 	pAlphaMarkWnd->Close();
-	pVPlayer->Close();
+	pVPlayer->Close();	
+	pListInfo->clear();
 	Close();
 }
 

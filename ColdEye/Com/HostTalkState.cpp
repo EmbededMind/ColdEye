@@ -8,48 +8,36 @@
 void CHostTalkState::CameraTalk(CCamera *pDev)
 {
 	Print("摄像头讲话");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x02, 0x02, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetWaitReplyState();
+	SetEvent(ComManagement->mCameraTalkEvent);
 }
 
 void CHostTalkState::SetVolume(CCamera *pDev, int Volume)
 {
 	Print("设置音量");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x01, Volume, 0x00, pDev);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetWaitReplyState();
+	SetEvent(ComManagement->mSetVolumeEvent);
 }
 
-void CHostTalkState::ControlLED(int Switch)
+void CHostTalkState::TurnOffLED()
 {
-	Print("控制LED");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x06, Switch, 0x00, NULL);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetWaitReplyState();
+	Print("TurnOffLED");
+	SetEvent(ComManagement->mTurnOffLEDEvent);
 }
 
 void CHostTalkState::SetLED(int isON)
 {
 	Print("设置LED");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x07, 0x01, isON, NULL);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetWaitReplyState();
+	SetEvent(ComManagement->mSetLEDEvent);
 }
 
 void CHostTalkState::Handle()
 {
 	Print("握手");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x01, 0x00, NULL);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetWaitReplyState();
+	SetEvent(ComManagement->mHandleEvent);
 }
 
 void CHostTalkState::GetPortMac(int port)
 {
 	Print("获取MAC地址");
-	CUtil::LoadOrder(mOrder, 0x24, 0x01, 0x02, 0x05, 0x02, 0x00, NULL);
-	CSerialPort::GetInstance(COM_CAM)->WriteToPort(mOrder, 17);
-	ComManagement->SetWaitReplyState();
+	SetEvent(ComManagement->mGetPortMacEvent);
 }
 

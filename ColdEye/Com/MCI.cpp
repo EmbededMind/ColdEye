@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MCI.h"
-
+#include "ColdEye.h"
 
 CMCI::CMCI()
 {
@@ -107,6 +107,8 @@ BOOL CMCI::Save()
 	{
 		DeleteFile(m_rFilePath);
 		CFile::Rename(m_rFilePathTmp, m_rFilePath);
+		((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_sec = m_Totaltime;
+		((CColdEyeApp*)AfxGetApp())->StoreAlarmSoundConfig();
 	}
 	return 0;
 }

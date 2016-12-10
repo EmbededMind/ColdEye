@@ -62,7 +62,6 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 		else
 			pText1->SetText(_T("确认替换原录制语音"));
 	}
-	
 }
 
 void CMsgWnd::OnFinalMessage(HWND hWnd)
@@ -208,10 +207,13 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	case USER_MSG_COPY_INFO:
 		{
 			//ProgressReflash();
+			CDuiString text;
 			int Size = sendedSize + wParam;
 			int num_progress = 100*((double)Size / (double)totalSize);
 			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 			progress->SetValue(num_progress);
+			text.Format(_T("%d%%"), num_progress);
+			progress->SetText(text);
 		}
 		break;
 
@@ -224,11 +226,10 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 				if (iter == pRecordInfo->end()) {
 					CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 					progress->SetValue(totalSize);
-					Print("sendsize:%d",sendedSize);
 					Close(1);//复制结束
 					return 0;
 				}
-				CExHardDrive::GetInstance()->CopyRecord((*iter), 0);
+				CExHardDrive::GetInstance()->CopyRecord((*iter), videoType);
 				return 0;
 			}
 		}
@@ -305,11 +306,9 @@ void CMsgWnd::InitWindow()
 	if (SkinType == _T("mb_recordingvoice.xml")) {
 		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
 		pMainDlg->mMessageBox = this;
-		//pMainDlg->SendMessage(USER_MSG_RECORDVOICE,NULL,NULL);
 	}
 	else if (SkinType == _T("mb_update.xml")) {
 		UINT_PTR i;
-		//i = SetTimer(m_pm.GetPaintWindow(),1, 200, NULL);
 		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
 	}
 	else if (SkinType == _T("mb_copyvideo.xml")) {
@@ -318,7 +317,6 @@ void CMsgWnd::InitWindow()
 		totalSize = 0;
 		sendedSize = 0;
 		list<CRecordFileInfo*>::iterator iter;
-		Print("Copy %d", pRecordInfo->size());
 		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++)
 			totalSize += (*iter)->dlSize;
 
@@ -329,10 +327,10 @@ void CMsgWnd::InitWindow()
 		CMCI *pCmic = CMCI::GetInstance();
 		pCmic->Play();
 		TotalTime = pCmic->GetTotaltime();
-Print("alarm voice TotalTime:%d", TotalTime);
 		static_cast<CSliderUI*>(m_pm.FindControl(_T("voice_slider")))->SetMaxValue(TotalTime);
 		SetTimer(m_hWnd, TIME_PLAY_VOICE , 1000, NULL);
 	}
+
 }
 
 LRESULT CMsgWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)

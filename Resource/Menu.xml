@@ -23,7 +23,7 @@
 	<!--摄像机设置船舶名称项-->
 	<Default shared="true" name="ShipNameItem" value="bkcolor=&quot;#FFD7E9FF&quot; borderround=&quot;4,4&quot; font=&quot;1&quot; align=&quot;center&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; "/>
 	<!--滑块-->
-	<Default shared="false" name="MySlider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;27,27&quot; foreimage=&quot;file='image/slider_fore.png' mask='#FFE97FFF'&quot; thumbimage=&quot;file='image/thumb.png' mask='#FFDAEBF9'&quot; " />
+	<Default shared="false" name="MySlider" value="height=&quot;28&quot; width=&quot;478&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;27,27&quot; foreimage=&quot;file='image/slider_fore.png' mask='#FFE97FFF'&quot; thumbimage=&quot;file='image/thumb.png' mask='#FFDAEBF9'&quot; " />
 	<!---->
 	<Default shared="true"  name="MyLabel" value="float=&quot;true&quot; textpadding=&quot;45,0,0,0&quot; font=&quot;3&quot; align=&quot;left&quot; bkcolor=&quot;#FFF3F3F3&quot; focusbkcolor=&quot;#FF4198FE&quot; textcolor=&quot;#FF666666&quot; focusedtextcolor=&quot;#FFFFFFFF&quot; statetextcolor=&quot;#FF4198FE&quot; statetextfocuscolor=&quot;#FFFFFFFF&quot;"/>
 	<!--视频列表-->
@@ -41,7 +41,7 @@
 	<Style name="treenode" value="height=&quot;65&quot; selitemtextcolor=&quot;#FFFFFFFF&quot; itemtextcolor=&quot;#FF333333&quot;" /> 
 	<!--滑块开关-->
 	<Style name="slider_switch" value="float=&quot;true&quot; height=&quot;50&quot; width=&quot;81&quot; max=&quot;1&quot; min=&quot;0&quot; thumbsize=&quot;60,60&quot; bkimage=&quot;file='' mask='#FFE97FFF'&quot; foreimage=&quot;file='' mask='#FFE97FFF'&quot; thumbimage=&quot;file=''&quot; "/>
-	<Style name="slider" value="height=&quot;28&quot; width=&quot;430&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; bkimage=&quot;file='123.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; foreimage=&quot;file='321.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; thumbimage=&quot;file='3.png' mask='#FFDAEBF9'&quot; " />
+	<Style name="slider" value="height=&quot;28&quot; width=&quot;478&quot; max=&quot;10&quot; min=&quot;0&quot; float=&quot;true&quot; thumbsize=&quot;28,28&quot; bkimage=&quot;file='123.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; foreimage=&quot;file='321.png' corner='6,0,6,0' mask='#FFE97FFF'&quot; thumbimage=&quot;file='3.png' mask='#FFDAEBF9'&quot; " />
 	<Style name="list" value="textcolor=&quot;#FFFFFF00&quot;"/>
 	<Style name="alarm_voice_list"  value="height=&quot;80&quot; font=&quot;3&quot; textcolor=&quot;#FF666666&quot; textpadding=&quot;105,0,0,0&quot; align=&quot;left&quot; normalimage=&quot;file='image/unsel.png' dest='679,29,704,54'&quot; pushedimage=&quot;file='image/sel.png' dest='679,29,704,54'&quot; "/>
 	<Style name="watch_record_style" value="height=&quot;65&quot; "/>
@@ -157,7 +157,7 @@
 							<KeyBoard name="vk_g" text="g" userdata="16" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_h" text="h" userdata="17" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_i" text="i" userdata="18" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_delet" userdata="19" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_delet" userdata="19" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 						<HorizontalLayout name="line3" padding="20,0,0,0" height="67">
 							<KeyBoard name="vk_j" text="j" userdata="20" textcolor="#FF4561E3"/>
@@ -169,7 +169,7 @@
 							<KeyBoard name="vk_p" text="p" userdata="26" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_q" text="q" userdata="27" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_r" text="r" userdata="28" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_deleat1" userdata="29" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat1" userdata="29" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 						<HorizontalLayout name="line4" padding="20,0,0,0" height="67">
 							<KeyBoard name="vk_s" text="s" userdata="30" textcolor="#FF4561E3"/>
@@ -180,15 +180,15 @@
 							<KeyBoard name="vk_x" text="x" userdata="35" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_y" text="y" userdata="36" textcolor="#FF4561E3"/>
 							<KeyBoard name="vk_z" text="z" userdata="37" textcolor="#FF4561E3"/>
-							<KeyBoard name="vk_deleat2" userdata="38" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
-							<KeyBoard name="vk_deleat3" userdata="39" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat2" userdata="38" height="67" width="60" font="0" focusedimage="file='image/deleteall2.png'" normalimage="file='image/deleteall1.png'"/>
+							<KeyBoard name="vk_deleat3" userdata="39" height="67" width="60" font="0" focusedimage="file='image/delete2.png'" normalimage="file='image/delete1.png'"/>
 						</HorizontalLayout>
 					</VerticalLayout>
 					<VerticalLayout name="prompt" visible="false" >
 						<Text text="“    ” 表示回删一位，“    ” 表示全部清空。" float="true" font="3" pos="172,561,756,600" textcolor="#FF666666" align="center"/>
 						<Text text="船舶名字最长为32个数字/字母。" float="true" font="3" pos="172,600,756,639" textcolor="#FF666666" align="center"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="210,560,0,0"/>
-						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="497,565,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/2.png'" pos="208,560,0,0"/>
+						<Label float="true" width="26" height="22" bkimage="file='image/1.png'" pos="497,565,0,0"/>
 					</VerticalLayout>
 					<Text text="【确认】按键弹出输入键盘" float="true" pos="276,948,0,0" width="377" height="30" font="2" textcolor="#FF666666"/>
 				</VerticalLayout>

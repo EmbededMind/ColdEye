@@ -64,6 +64,12 @@
 
 #define USER_MSG_CAMERA_CONFIG_AWTIME      (WM_USER + 123)
 
+#define USER_MSG_CAMERA_CONFIG_NAME		   (WM_USER + 124)
+#define USER_MSG_CAMERA_CONFIG_SWITCH      (WM_USER + 125)
+#define USER_MSG_CAMERA_CONFIG_VOLUME	   (WM_USER + 126)
+#define USER_MSG_CAMERA_CONFIG_SAVE		   (WM_USER + 127)
+#define USER_MSG_CAMERA_CONFIG_AWSWITCH	   (WM_USER + 128)
+
 #define USER_MSG_CAMERA_PARAM              (WM_USER + 130)
 
 #define USER_MSG_MESSAGE_BOX               (WM_USER + 140)
@@ -84,7 +90,7 @@
 
 #define USER_MSG_HANDLE                     (WM_USER + 190) //握手消息
 
-#define USER_MSG_STOP_ALARM					(WM_USER + 200) //报警取消
+
 
 #define USER_MSG_SYS_VOLUM					(WM_USER + 210) //系统音量
 

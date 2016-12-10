@@ -10,7 +10,8 @@ public:
 	virtual void Alarm(CCamera *pDev) {};
 	virtual void StopAlarm(CCamera *pDev) {};
 	virtual void SetVolume(CCamera *pDev, int Volume) {};
-	virtual void ControlLED(int Switch) {};
+	virtual void TurnOnLED() {};
+	virtual void TurnOffLED() {};
 	virtual void SetLED(int isON) {};
 	virtual void Handle() {};
 	virtual void GetPortMac(int port) {};
@@ -22,8 +23,9 @@ public:
 	virtual void ReplyStopTalk() {};
 	virtual void ReplyAlarm(CCamera *) {};
 	virtual void ReplyStopAlarm(CCamera *) {};
-	virtual void ReplySetVolume(bool) {};
-	virtual void ReplyControlLED(bool) {};
+	virtual void ReplySetVolume(CCamera *,int) {};
+	virtual void ReplyTurnOnLED() {};
+	virtual void ReplyTurnOffLED() {};
 	virtual void ReplySetLED(bool) {};
 	virtual void ReplyHandle(bool) {};
 	virtual void ReplyGetPortMac(int port) {};
