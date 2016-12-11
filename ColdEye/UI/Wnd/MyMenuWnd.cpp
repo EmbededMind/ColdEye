@@ -1273,13 +1273,13 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				camera[pInfo->nOwner - 1].pAlarmList->AddRecordFile(pInfo);
 
 				//port->virgin ++;
+				Print("Add Alarm File");
 				CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
 				port->m_virginNumber++;
 				SetAllVirginNum();
 			}
 			else {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
-				Print("nOwner:%d", pInfo->nOwner);
 				camera[pInfo->nOwner - 1].pNormalList->AddRecordFile(pInfo);
 			}
 			break;
@@ -1358,10 +1358,14 @@ void CMyMenuWnd::InitRecordFile(list<CRecordFileInfo*>* pList)
 
 void CMyMenuWnd::InitAlarmFile(list<CRecordFileInfo*>* pList)
 {
+	int num=0;
 	list<CRecordFileInfo*>::iterator iter;
 	for (iter = pList->begin(); iter != pList->end(); iter++) {
 		camera[(*iter)->nOwner - 1].pAlarmList->AddRecordFile(*iter);
+		if ((*iter)->nOwner == 2)
+			num++;
 	}
+	Print("Init Alarm File num:%d",num);
 }
 
 
@@ -1372,7 +1376,7 @@ void CMyMenuWnd::SetAllVirginNum()
 	for (MenuIteriter = MenuItemVirginNum.begin(); MenuIteriter != MenuItemVirginNum.end(); MenuIteriter++) {
 		(*MenuIteriter)->m_virginNumber = 0;
 	}
-	MenuItemVirginNum.empty();
+	MenuItemVirginNum.clear();
 
 	//List Head
 	list<CMyListUI*>::iterator RecordInfoiter;
@@ -1382,14 +1386,13 @@ void CMyMenuWnd::SetAllVirginNum()
 		if (pNode->data()._level == 0)
 			(*RecordInfoiter)->mhintNumber = 0;
 	}
-	RecordVirginNum.empty();
+	RecordVirginNum.clear();
 
 	//Pop ½Ç±ê
 	int totalVirginNum = 0;
 	for (int i = 0; i < 6; i++) {
 		if (pAlarmItem[i]) {
 			CPort* port = (CPort*)pAlarmItem[i]->GetTag();
-			Print("Get %d port %d virgin file", port->GetId(), port->m_virginNumber);
 			totalVirginNum += port->m_virginNumber;
 		}
 	}
@@ -1401,7 +1404,7 @@ void CMyMenuWnd::SetAllVirginNum()
 		 pAlarmVideo->SetTag((UINT_PTR)pPort);
 	}
 	pPort->m_virginNumber = totalVirginNum;
-	pAlarmVideo->Invalidate();
+	m_pm.Invalidate();
 }
 
 void CMyMenuWnd::DeleteAlarmCtl(CameraInfo cameraInfo)

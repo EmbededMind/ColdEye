@@ -125,6 +125,11 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	if (pItem) {
 		pNode = (CVideoListUI::Node*)pItem->GetTag();
 	}
+	int i;
+	if (pInfo->nOwner == 2) {
+		i = 0;
+		GetName();
+	}
 
 	//判断是否存在节点
 	if (pItem) {
@@ -227,11 +232,9 @@ void CVideoListUI::CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRe
 		pNode = AddHeadNode(_T("今天"), 0, pInfo);
 		AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 	}
-	else if (refTime.GetYear() == tbegin.GetYear() && refTime.GetMonth() == tbegin.GetMonth()) {
-		if (refTime.GetDay() - tbegin.GetDay() == 1) {
+	else if (refTime.GetYear() == tbegin.GetYear() && refTime.GetMonth() == tbegin.GetMonth() && refTime.GetDay() - tbegin.GetDay() == 1) {
 			pNode = AddHeadNode(_T("昨天"), 0, pInfo);
 			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);	
-		}
 	}	
 	else {
 			pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);

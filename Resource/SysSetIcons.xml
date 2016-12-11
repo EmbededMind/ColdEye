@@ -10,7 +10,7 @@
 		<Label name="volume" float="true" pos="200,100,0,0" width="200" height="197" bkimage="file='image/sysset_volume.png' fade='255'" />
 		<Label name="light" float="true" pos="200,100,0,0" width="200" height="197" bkimage="file='image/sysset_light.png'" />
 		<Label name="bind_progress" float="true" pos="195,367,0,0" width="210" height="18" bkcolor="#FF9B9B9B"  />
-		<Progress name="value" float="true" pos="195,367,0,0" width="233" height="18" min="0" max="100" foreimage="file='image/progressbk.png' fade='255'"/>
+		<Progress name="value" float="true" pos="195,367,0,0" width="233" height="18" min="0" max="100" foreimage="file='image/sysvolume_progress.png' fade='255'" isstretchfore="false"/>
 
   </VerticalLayout>
 </Window>
