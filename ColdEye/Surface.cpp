@@ -118,10 +118,12 @@ IMPLEMENT_DYNAMIC(CSurface, CWnd)
 CSurface::CSurface()
 {
 	m_OsdInfoText.bkColor  = RGB(72, 209, 204);
-	m_OsdInfoText.color   = RGB(0, 0, 0);
-	m_OsdInfoText.pos_x  = 10;
+	m_OsdInfoText.color   = RGB(255, 255, 255);
+	m_OsdInfoText.pos_x  = 42;
 	m_OsdInfoText.pos_y  = 10;
 	m_OsdInfoText.isTransparent  = 1;
+	m_OsdInfoText.font_size = 5;
+	m_OsdInfoText.font_type  = OSD_TXT_FONT_SIMHEI;
 
 	RegisterWindowClass();
 }
@@ -243,7 +245,8 @@ void CSurface::ExecuteConfig()
 		}
 	}
 
-	SetOsdText(10, 10, m_BindedPort->GetName());
+	//SetOsdText(35, 10, m_BindedPort->GetName());
+	SetOsdText(m_BindedPort->GetName());
 }
 
 
@@ -849,13 +852,13 @@ Print("Zoom out");
 
 void CSurface::SetOsdText(CString& cam_name)
 {
-	SetOsdText(10, 10, cam_name);
+	SetOsdText(42, 10, cam_name);
 }
 
 
 void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 {
-	bool bkState  = m_bIsRealPlaying;
+	bool bState  = m_bIsRealPlaying;
 
 	if (m_bIsRealPlaying) {
 		StopRealPlay();
@@ -868,7 +871,7 @@ void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 	WideCharToMultiByte(CP_ACP, 0, cam_name, -1, tmp, 40, NULL,NULL);
 	strcpy_s(m_OsdInfoText.text, tmp);
 
-	if (bkState) {
+	if (bState) {
 		StartRealPlay();
 	}
 }
