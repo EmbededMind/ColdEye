@@ -43,6 +43,8 @@ CCamera::CCamera()
 	m_Param.Day_nfLevel = 0;//noise filter 等级，0-5,0不滤波，1-5 值越大滤波效果越明显
 	m_Param.Night_nfLevel = 0;
 	m_Param.Ircut_swap = 0;//ircut 正常序= 0        反序= 1
+
+	mIsTalking  = false;
 }
 
 CCamera::~CCamera()
@@ -363,6 +365,18 @@ void CCamera::OnDisConnnect()
 	//StopRealPlay();
 }
 
+
+void CCamera::SetTalking(bool newState)
+{
+	mIsTalking  = newState;
+	Print("Set talking:%s", mIsTalking?"true":"false");
+}
+
+
+bool CCamera::GetTalkState()
+{
+	return mIsTalking;
+}
 
 //void CCamera::AttachPort(CPort* pPort)
 //{

@@ -28,6 +28,8 @@ void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 			ComManagement->mHandle = handle;
 			ComManagement->mPdev = pDev;
 			ComManagement->SetHostTalkState();
+
+			pDev->SetTalking(true);
 			return;
 		}
 		else if(ComManagement->GetOldState() == ComManagement->GetCameraTalkState())//摄像头讲话下请求
@@ -46,6 +48,8 @@ void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 				ComManagement->mHandle = handle;
 				ComManagement->mPdev = pDev;
 				ComManagement->SetHostTalkState();
+
+				pDev->SetTalking(true);
 				return;
 			}
 		}
@@ -68,9 +72,14 @@ void CWaitReplyState::ReplyStopTalk()
 	if (ComManagement->mPdev)
 	{
 		H264_DVR_StopVoiceCom(ComManagement->mHandle);
+
+		ComManagement->mPdev->SetTalking(false);
+
 		ComManagement->mHandle = NULL;
 		ComManagement->mPdev = NULL;
 		ComManagement->SetFreeState();
+
+
 		return;
 	}
 	ComManagement->SetFreeState();

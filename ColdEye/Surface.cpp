@@ -73,7 +73,6 @@ void CALLBACK cbDefaultDrawOSD(LONG nPort, HDC hDC, LONG nUser)
 	static long lImgWidth = 0;
 	static long lImgHeight = 0;
 
-
 	CDC* pDstDC = CDC::FromHandle(hDC);
 
 	if (!flag) {
@@ -94,7 +93,12 @@ void CALLBACK cbDefaultDrawOSD(LONG nPort, HDC hDC, LONG nUser)
 		//mSrcDC.SelectObject(img);
 		mSrcDC.SelectObject(bitmap);
 	}
-		pDstDC->BitBlt(10, 500, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, NOTSRCCOPY | SRCAND);
+	    if(pSurface->m_BindedCamera  &&  pSurface->m_BindedCamera->GetTalkState()){
+		    CRect rClient;
+			pSurface->GetClientRect(rClient);
+			pDstDC->BitBlt(rClient.Width()/20, rClient.Height() - rClient.Height()/20 - bmp.bmHeight, bmp.bmWidth, bmp.bmHeight, &mSrcDC, 0, 0, NOTSRCCOPY | SRCAND);
+		}
+			
 		//pDstDC->BitBlt(10, 50, lImgWidth, lImgHeight, &mSrcDC, 0, 0, SRCAND);
 
 		//pDstDC->MoveTo(10, 50);
@@ -404,6 +408,8 @@ void CSurface::StartRealPlay()
 
 	if (H264_PLAY_OpenStream(m_lPlayPort, &byFileHeadBuf, 1, SOURCE_BUF_MIN * 100)) {
 		H264_PLAY_SetOsdTex(m_lPlayPort, &m_OsdInfoText);
+
+		H264_PLAY_RigisterDrawFun(m_lPlayPort, cbDefaultDrawOSD, (DWORD)this);
 
 		if (!H264_PLAY_SetStreamOpenMode(m_lPlayPort, STREAME_REALTIME)) {
 			TRACE("Play set stream open mode failed:%d\n", H264_PLAY_GetLastError(m_lPlayPort));
@@ -1069,6 +1075,7 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				
 				mDelBtn.ShowWindow(SW_SHOW);
 				mReverseBtn.SetFocus();
+				return true;
 				break;
 			//------------------------------------------
 			case VK_RETURN:
@@ -1111,7 +1118,7 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 					{
 					case 'T':
 						CCommunication::GetInstance()->HostTalk(this->m_BindedCamera);
-						return TRUE;
+						return true;
 					case 'O':
 						CCommunication::GetInstance()->CameraTalk();
 						return true;
@@ -1204,10 +1211,13 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 				text1.Format(_T("确定删除摄像机%s？如果误操作,需"),m_BindedPort->GetName());
 				if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_okcancel.xml"),text1, _T("断电后再次上电,方能恢复。"), NULL, NULL)) {
 					Print("Clicked delete camera");
+
+					mReverseBtn.ShowWindow(SW_HIDE);
+					mDelBtn.ShowWindow(SW_HIDE);
+					this->SetFocus();
+
 					OnCameraLogOff();
 				}
-
-
 			}
 			break;
 

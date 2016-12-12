@@ -628,3 +628,11 @@ afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam
 
 	return 0;
 }
+
+
+void CWallDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	//CDialogEx::OnOK();
+}
