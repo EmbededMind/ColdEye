@@ -222,6 +222,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 
 
+	m_SysTime = CTime::GetCurrentTime();
+
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
 	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
@@ -256,6 +258,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 
 	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
+
+	SwitchToThisWindow(m_hWnd, TRUE);
 
 	mWall.SetFocus();
 

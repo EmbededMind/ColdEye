@@ -211,6 +211,9 @@ void CWallDlg::DeleteSurface(CSurface* pSurface)
 	for (int i = 0; i < 6; i++) {
 		if (mSurfaces[i] == pSurface) {
 			mSurfaces[i]  = NULL;
+
+			Print("Delete surface");
+
 			delete pSurface;
 
 			DesignSurfaceLayout();
@@ -289,15 +292,14 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		switch (pMsg->wParam)
 		{
 		case VK_UP:
-		TestIngestOne();
-		break;
-		//-----------------------
 		case VK_DOWN:
-		break;
+			return true;
+		//-----------------------
+
 		//-----------------------
 		case VK_RETURN:
-		return true;
-		break;
+			return true;
+			break;
 		//-----------------------
 		default:
 			break;
@@ -322,20 +324,22 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 afx_msg LRESULT CWallDlg::OnUserMsgLogoff(WPARAM wParam, LPARAM lParam)
 {
 	CPort* pPort  = (CPort*)lParam;
-	if (wParam == 2) {
-		CSurface* pSurface  = FindSurface(pPort);
 
-		if (pSurface != NULL) {
-			DeleteSurface(pSurface);
-		}
+	CSurface* pSurface  = FindSurface(pPort);
 
-		MSG msg;
-		msg.message  = USER_MSG_LOGOFF;
-		msg.lParam   = (LPARAM)pPort;
-		CMsgSquare::GetInstance()->Broadcast(msg);
-
-		return 0;
+	if (pSurface != NULL) {
+		DeleteSurface(pSurface);
 	}
+
+	this->SetFocus();
+
+	MSG msg;
+	msg.message  = USER_MSG_LOGOFF;
+	msg.lParam   = (LPARAM)pPort;
+	CMsgSquare::GetInstance()->Broadcast(msg);
+
+	return 0;
+
 
 
 	//CSurface* pSurface = (CSurface*)lParam;
