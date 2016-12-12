@@ -996,6 +996,7 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 	}
 	int result;
 	result = CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo.xml"), text, NULL, (LPARAM)recordInfo, type);
+	Print("result:%d",result);
 	if (MSGID_OK == result) {
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("¸´ÖÆ³É¹¦£¡"), NULL, NULL);
 	}

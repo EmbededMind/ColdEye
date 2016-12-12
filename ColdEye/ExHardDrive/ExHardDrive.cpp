@@ -80,10 +80,12 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 			break;
 		case 2:
 		{
+			Print("before CopyFileEx");
 			BOOL bSucceed = CopyFileEx(ExHardDrive->mCopyFromPath, ExHardDrive->mCopyToPath,
 				(LPPROGRESS_ROUTINE)CopyProgressCall,
 				ExHardDrive, NULL,
 				COPY_FILE_ALLOW_DECRYPTED_DESTINATION | COPY_FILE_COPY_SYMLINK | COPY_FILE_FAIL_IF_EXISTS);
+			Print("after CopyFileEx");
 			if (ExHardDrive->mHOwner != NULL)
 			{
 				if (bSucceed)
@@ -98,9 +100,14 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 					if (static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox)
 					{
 						if (GetLastError() == 2) {
-							::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
-							ResetEvent(ExHardDrive->mCopyEvent);
-							break;
+							Print("U OUT");
+							//PathFileExists
+							if (!PathIsDirectory(ExHardDrive->mDiskName))
+							{
+								::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
+								ResetEvent(ExHardDrive->mCopyEvent);
+								break;
+							}
 						}
 						Print("File Name:%S", ExHardDrive->mCopyFromPath);
 						//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
@@ -188,6 +195,7 @@ DWORD CExHardDrive::CopyProgressCall(LARGE_INTEGER TotalFileSize,
 	HANDLE hDestinationFile,
 	LPVOID lpData)
 {
+	Print("copy callback ---------");
 	if (dwCallbackReason == CALLBACK_STREAM_SWITCH)
 	{
 		//发送开始文件的录制信息 , 消息号是 COPY_START
