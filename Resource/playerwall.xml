@@ -6,7 +6,6 @@
 		</VerticalLayout>
 		
 		<VerticalLayout name="playercontrol" bkcolor="#FF3F3F3F" bkcolor2="#FF222222">
-			
 			<Button name="bt_slow" float="true" pos="70,42,0,0" width="76" height="76" bkimage="file='image/slow.png'" focusedimage="file='image/slow_focused.png'" />
 			<Button name="bt_play" float="true" pos="175,30,0,0" width="101" height="101" bkimage="file='image/play.png'" focusedimage="file='image/play_focused.png'"/>
 			<Button name="bt_fast" float="true" pos="305,42,0,0" width="76" height="76" bkimage="file='image/fast.png'" focusedimage="file='image/fast_focused.png'" />
