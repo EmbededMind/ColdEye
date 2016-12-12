@@ -21,6 +21,7 @@
 #include <mmdeviceapi.h> 
 #include <endpointvolume.h>
 #include <audioclient.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -952,6 +953,11 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 		CExHardDrive::GetInstance()->StartMonitoring();
 		break;
 	case DBT_DEVICEREMOVECOMPLETE:
+		int isCopying = 0;
+		if (isCopying) {
+			CMsgWnd::MessageBox(NULL, _T("mb_ok,xml"), NULL, _T("¸´ÖÆÖÐ¶Ï,Î´¼ì²âµ½UÅÌ£¡"), NULL, NULL);
+		}
+
 		GetDlgItem(IDC_UFLASH)->ShowWindow(false);
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
 		mask = pDisk->dbcv_unitmask;
