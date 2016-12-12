@@ -293,7 +293,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
 
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	this->SetFocus();
+
+	return FALSE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CColdEyeDlg::OnSysCommand(UINT nID, LPARAM lParam)

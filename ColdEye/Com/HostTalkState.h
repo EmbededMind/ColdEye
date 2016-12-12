@@ -14,6 +14,7 @@ public:
 	CCommunication *ComManagement;
 
 	void CameraTalk(CCamera *pDev);
+	void StopTalk();
 	void SetVolume(CCamera *pDev, int Volume);
 	void TurnOffLED();
 	void SetLED(int isON);
