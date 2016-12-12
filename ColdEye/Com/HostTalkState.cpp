@@ -11,6 +11,12 @@ void CHostTalkState::CameraTalk(CCamera *pDev)
 	SetEvent(ComManagement->mCameraTalkEvent);
 }
 
+void CHostTalkState::StopTalk()
+{
+	Print("Õ£÷πΩ≤ª∞");
+	SetEvent(ComManagement->mStopTalkEvent);
+}
+
 void CHostTalkState::SetVolume(CCamera *pDev, int Volume)
 {
 	Print("…Ë÷√“Ù¡ø");

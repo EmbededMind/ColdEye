@@ -58,9 +58,9 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 	else if (SkinType == _T("mb_playvoice.xml")) {
 		CControlUI* pText1 = static_cast<CControlUI*>(m_pm.FindControl(_T("contain")));
 		if(_tcscmp(text1,_T("录制报警音")) == 0)	
-			pText1->SetText(_T("确认创建录制语音"));
+			pText1->SetText(_T("是否确认创建录制语音？"));
 		else
-			pText1->SetText(_T("确认替换原录制语音"));
+			pText1->SetText(_T("是否确认替换原录制语音？"));
 	}
 }
 

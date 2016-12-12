@@ -102,6 +102,7 @@
 #define USER_MSG_STAR_PLAY_ALARM_VOICE		(WM_USER + 230)	//开始播放报警音
 #define USER_MSG_STOP_PLAY_ALARM_VOICE		(WM_USER + 231)	//停止播放报警音
 
+#define USER_MSG_EXHARDDRIVE_OUT            (WM_USER + 240) //U盘拔出
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))
 

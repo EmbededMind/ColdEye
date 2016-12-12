@@ -135,11 +135,11 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
-	/*CPort* pPort = new CPort();
+	CPort* pPort = new CPort();
 	pPort->SetId(1);
 	pPort->SetNameId(1);
 
-	AddPortConfigMenuItem(pPort);*/
+	AddPortConfigMenuItem(pPort);
 }
 
 
