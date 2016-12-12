@@ -30,6 +30,8 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			LONG handle = H264_DVR_StartLocalVoiceCom(pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM]->GetLoginId());
 			if (handle)
 			{
+			    pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM]->SetTalking(true);
+				pThis->mPdev = pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM];
 				pThis->mHandle = handle;
 				CUtil::LoadOrder(pThis->mOrder, 0x24, 0x01, 0x02, 0x03, 0x00, 0x01, pThis->mCurrentpDev[CAMERACANTALK_EVENT_NUM]);
 				CSerialPort::GetInstance(COM_CAM)->WriteToPort(pThis->mOrder, 17);

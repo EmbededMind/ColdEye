@@ -93,6 +93,9 @@ public:
 
 	void OnDisConnnect();
 
+	void SetTalking(bool newState);
+	bool GetTalkState();
+
 	SDK_CONFIG_NET_COMMON_V2 mCommonNetConfig;
 
 	//void AttachPort(CPort* pPort);
@@ -107,5 +110,6 @@ private:
 	char m_szUserName[20];
 	char m_szPassword[20];
 
+	bool mIsTalking;
 	//CPort*  m_pAttachedPort;
 };

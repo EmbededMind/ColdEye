@@ -80,4 +80,5 @@ protected:
 	afx_msg LRESULT OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigAwswitch(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam);
+	virtual void OnOK();
 };
