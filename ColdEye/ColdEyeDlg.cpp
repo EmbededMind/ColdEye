@@ -647,7 +647,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				::SendMessage(mSysSetIcons->GetHWND(), USER_MSG_SYS_VOLUME, volume, (LPARAM)GetFocus());
 				break;
 			case KB_TALKQUIET:
-				SetVolumeLevel(1);
+				SetVolumeLevel(HOST_VOICE_NOMUTE);
 				keybd_event(VK_CONTROL, 0, 0, 0);
 				keybd_event('S', 0, 0, 0);
 				keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
