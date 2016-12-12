@@ -955,11 +955,7 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 		CExHardDrive::GetInstance()->StartMonitoring();
 		break;
 	case DBT_DEVICEREMOVECOMPLETE:
-		int isCopying = 0;
-		if (isCopying) {
-			CMsgWnd::MessageBox(NULL, _T("mb_ok,xml"), NULL, _T("¸´ÖÆÖÐ¶Ï,Î´¼ì²âµ½UÅÌ£¡"), NULL, NULL);
-		}
-
+		::PostMessage(mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
 		GetDlgItem(IDC_UFLASH)->ShowWindow(false);
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
 		mask = pDisk->dbcv_unitmask;
