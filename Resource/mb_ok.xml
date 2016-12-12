@@ -7,7 +7,7 @@
 	<Default shared="true" name="Button" value="float=&quot;true&quot; font=&quot;0&quot; bkcolor=&quot;#FF4198FE&quot; borderround=&quot;6,6&quot; textcolor=&quot;#FFFFFFFF&quot;"/>
 	<Default shared="true" name="Text" value="float=&quot;true&quot; font=&quot;0&quot; textcolor=&quot;#FF333333&quot; " />
 	
-	<VerticalLayout bkcolor="#FFFFFFFF">
+	<VerticalLayout bkcolor="#FFFFFFFF" bordersize="5">
 		<Text name="Text1" pos="45,76,0,0" width="520" height="40"/>
 		<Text name="Text2" pos="45,116,0,0" width="520" height="40"/>
 		<Button name="ok_btn" text="确定" pos="180,231,0,0" width="250" height="94"/>
