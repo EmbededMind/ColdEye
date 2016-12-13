@@ -25,20 +25,20 @@ CDuiString  _PortName[25] = {  //对应名字id
 	_T("船甲板摄像机"),
 	_T("船左舷摄像机"),
 	_T("船右舷摄像机"),
-	_T("船后方"),
-	_T("船缆绳"),
-	_T("集控台"),
-	_T("监控台"),
-	_T("船长室"),
-	_T("船员室"),                               
-	_T("主机舱"),
-	_T("发电机舱"),
-	_T("罗经甲板"),
-	_T("一层甲板"),
-	_T("二层甲板"),
-	_T("三层甲板"),
-	_T("四层甲板"),
-	_T("五层甲板")
+	_T("船后方摄像机"),
+	_T("船缆绳摄像机"),
+	_T("集控台摄像机"),
+	_T("监控台摄像机"),
+	_T("船长室摄像机"),
+	_T("船员室摄像机"),                               
+	_T("主机舱摄像机"),
+	_T("发电机舱摄像机"),
+	_T("罗经甲板摄像机"),
+	_T("一层甲板摄像机"),
+	_T("二层甲板摄像机"),
+	_T("三层甲板摄像机"),
+	_T("四层甲板摄像机"),
+	_T("五层甲板摄像机")
 };
 
 CMyMenuWnd::CMyMenuWnd()
@@ -1679,6 +1679,7 @@ void CMyMenuWnd::SetMenuItemName(CVerticalLayoutUI* pLayout, CPort* pPort)
 {
 	CMenuItemUI* pItem;
 	CPort* _pPort;
+	CDuiString text;
 	for (int i=0; i < pLayout->GetCount(); i += 2) {
 		pItem = (CMenuItemUI*)pLayout->GetItemAt(i);
 		_pPort = (CPort*)pItem->GetTag();

@@ -48,18 +48,30 @@ void CTimeButtonUI::DecreaseHour()
 
 void CTimeButtonUI::DecreaseMinute()
 {
+	//int val;
+	//CDuiString text = GetText();
+	//val = StrToInt(text);
+	//if (val > 0) {
+	//	val--;
+	//}
+	//else {
+	//	val = 59;
+	//}
+
+	//SetValue(val);
+
 	int val;
 	CDuiString text = GetText();
 	val = StrToInt(text);
-	if (val > 0) {
-		val--;
+	if (val > 9) {
+		val = (val / 10) * 10;
+		val -= 10;
 	}
 	else {
-		val = 59;
+		val = 50;
 	}
 
 	SetValue(val);
-
 }
 
 void CTimeButtonUI::IncreaseHour()
@@ -82,8 +94,9 @@ void CTimeButtonUI::IncreaseMinute()
 	int val;
 	CDuiString text = GetText();
 	val = StrToInt(text);
-	if (val <59) {
-		val++;
+	if (val <49) {
+		val = (val / 10) * 10;
+		val += 10;
 	}
 	else {
 		val = 0;
