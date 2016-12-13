@@ -131,6 +131,7 @@ void CMyMenuWnd::InitWindow()
 		pSquare->AddAudience(m_hWnd, USER_MSG_LOGOFF);
 		pSquare->AddAudience(m_hWnd, USER_MSG_INITFILE);
 		pSquare->AddAudience(m_hWnd, USER_MSG_ADDFILE);
+		pSquare->AddAudience(m_hWnd, USER_MSG_DELFILE);
 	}
 	InitAlarmVoice();
 	InitAwOnOffRecord();
@@ -598,7 +599,6 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	case VK_LEFT:
 		if (pItem->GetValue()) {
 			if (_tcscmp(pItem->GetName(), _T("camera_switch")) == 0) {
-					//CTime time = CTime::GetCurrentTime();
 					if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_camera_switch.xml"), NULL, NULL, NULL, NULL)) {
 						pItem->SetValue(false);	
 						
@@ -611,10 +611,6 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 							CDBLogger* pLogger = CDBLogger::GetInstance();
 
 							pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
-			/*				if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
-								pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
-								
-							}*/
 						}
 					}
 			}
@@ -641,15 +637,10 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 				CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 
 				if (pPort) {
-					pPort->m_DevConfig.IsCameraOn = 1;
+					pPort->m_DevConfig.IsCameraOn = true;
 					::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_SWITCH, 0, (LPARAM)pPort);
 					CDBLogger* pLogger = CDBLogger::GetInstance();
 					pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
-
-					//if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
-					//	pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
-					//	
-					//}
 				}
 			}
 			pItem->Invalidate();
@@ -824,13 +815,12 @@ void CMyMenuWnd::IsAutoWatch(CMyLabelUI *pItem)
 		pItem->SetValue(true);
 	}
 
+	pPort->m_DevConfig.IsAutoWatchEnabled  = pItem->GetValue();
+
 	::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd,USER_MSG_CAMERA_CONFIG_AWSWITCH, 0, (LPARAM)pPort);
 
 	CDBLogger* pLogger = CDBLogger::GetInstance();
-	if (pPort->m_DevConfig.IsAutoWatchEnabled != pItem->GetValue()) {
-		pPort->m_DevConfig.IsAutoWatchEnabled = pItem->GetValue();
-		pLogger->LogCameraAWOnOff(CTime::GetCurrentTime(), pPort);
-	}
+	pLogger->LogCameraAWOnOff(CTime::GetCurrentTime(), pPort);
 	pItem->Invalidate();
 }
 
@@ -1333,6 +1323,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
         //--------------------------------------------
 		case USER_MSG_DELFILE:
 			if (wParam == RECORD_ALARM) {
+		        Print("delete alarm file in view");
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);
 
@@ -1344,6 +1335,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				SetAllVirginNum();
 			}
 			else {
+			   Print("delete normal file in view");
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pNormalList->DeleteRecordFile(pInfo);
 			}
@@ -1451,6 +1443,7 @@ void CMyMenuWnd::SetAllVirginNum()
 		 pAlarmVideo->SetTag((UINT_PTR)pPort);
 	}
 	pPort->m_virginNumber = totalVirginNum;
+	Print("totalVirginNum:%d", totalVirginNum);
 	m_pm.Invalidate();
 }
 
@@ -1926,10 +1919,9 @@ Print("Third Menu Sel :%d", inx);
 
 			if (CameraSetIsChange()) {
 				if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
+				    pPort->m_DevConfig.NameId  = camera[nPort-1].pShipname->GetTag();
 					::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME, 0, (LPARAM)pPort);
-					pPort->SetNameId(camera[nPort - 1].pShipname->GetTag());
-					Print("nameid:%d", camera[nPort - 1].pShipname->GetTag());
-					//::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME,)
+
 					camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("设置"));
 					UpdataCameraName(pPort);
 

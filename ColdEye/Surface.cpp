@@ -219,12 +219,16 @@ void CSurface::ExecuteConfig()
 
 		//自动看船需要开启且现在属于自动看船时段
 		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
+			Print("Global auto watch on");
 			if (m_BindedPort->m_DevConfig.IsAutoWatchEnabled) {
 				//自动看船是关闭状态则开启
 				if (!m_bIsAutoWatchEnabled) {
 					StartAutoWatch();
 				}
 			}
+		}
+		else {
+			Print("Global auto watcon off");
 		}
 	}
 	
@@ -725,21 +729,6 @@ void CSurface::OnCameraLogOff()
 
 	Print("On camera delete");
 
-	//if (m_bIsRecording) {
-	//	StopAutoRecord();
-	//}
-
-	//if (m_bIsAlarming) {
-	//	StopAlarmRecord();
-	//}
-
-	//if (m_bIsWatching) {
-	//	StopAutoWatch();
-	//}
-
-	//DisconnectRealPlay();
-	//m_BindedCamera->OnDisConnnect();
-	//Invalidate();
 
 	::SendMessage(GetParent()->m_hWnd, USER_MSG_LOGOFF, 2, (LPARAM)this->m_BindedPort);
 }
@@ -824,6 +813,12 @@ void CSurface::SetPos(CRect& r)
 }
 
 
+void CSurface::SetPos()
+{
+	SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
+}
+
+
 
 
 
@@ -833,10 +828,14 @@ Print("Zoom in");
 	if (mIsLargeMode) {
 		mIsLargeMode = false;
 
-		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
+		::SendMessage(GetParent()->m_hWnd, USER_MSG_SURFACE_ZOOM, (WPARAM)false, (LPARAM)this);
 
-		pSaveParent->ShowWindow(SW_SHOW);
-		SetParent(pSaveParent);		
+		//SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
+
+
+		//pSaveParent->ShowWindow(SW_SHOW);
+		//SetParent(pSaveParent);		
+		//this->SetFocus();
 	}
 }
 
@@ -847,20 +846,25 @@ void CSurface::ZoomOut()
 Print("Zoom out");
 	if (!mIsLargeMode) {
 		mIsLargeMode  = true;
-		pSaveParent  = GetParent();
+		//pSaveParent  = GetParent();
 
-		
-		CRect rc;
-		AfxGetMainWnd()->GetClientRect(&rc);
+		::SendMessage(GetParent()->m_hWnd, USER_MSG_SURFACE_ZOOM, (WPARAM)true, (LPARAM)this);
+		//CRect rc;
+		////AfxGetMainWnd()->GetClientRect(&rc);
+		//pSaveParent->GetClientRect(rc);
 
-		SetParent(AfxGetMainWnd());
-		pSaveParent->ShowWindow(SW_HIDE);
+		//SetParent(AfxGetMainWnd());
 
-		SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
-		SetWindowPos(pSaveParent, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		
+		//pSaveParent->ShowWindow(SW_HIDE);
 
-		this->SetFocus();
+		//
+		//((CColdEyeDlg*)AfxGetMainWnd())->m_rTitle.Height();
+
+		//SetWindowPos(NULL, 0, 100, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		//SetWindowPos(pSaveParent, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		//
+
+		//this->SetFocus();
 	}
 }
 
@@ -902,12 +906,7 @@ BEGIN_MESSAGE_MAP(CSurface, CWnd)
 	ON_MESSAGE(USER_MSG_RELOGIN, &CSurface::OnUserMsgRelogin)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
-	ON_BN_CLICKED(1, &CSurface::OnBnClickedRevsese)
-	ON_BN_CLICKED(2, &CSurface::OnBnClickedDelete)
 	ON_MESSAGE(USER_MSG_NOFITY_KEYDOWN, &CSurface::OnUserMsgNofityKeydown)
-	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_OO_CHANGE, &CSurface::OnUserMsgCameraConfigOoChange)
-	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_RD_CHANGE, &CSurface::OnUserMsgCameraConfigRdChange)
-	//ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AW_CHANGE, &CSurface::OnUserMsgCameraConfigAwChange)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWTIME, &CSurface::OnUserMsgCameraConfigAwtime)
 	ON_WM_DRAWITEM()
 	ON_MESSAGE(USER_MSG_SYSTEM_CONFIG, &CSurface::OnUserMsgSystemConfig)
@@ -958,6 +957,10 @@ void CSurface::OnNcPaint()
 
 
 
+void CSurface::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp)
+{
+
+}
 
 
 void CSurface::OnTimer(UINT_PTR nIDEvent)
@@ -1064,6 +1067,10 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 		mDelBtn.SetWindowPos(NULL, rClient.left+ margin_left*2 + btn_width, rClient.top + margin_top,
 			btn_width, btn_height, 0);
 	}
+
+	if (m_BindedPort) {
+          SetOsdText(42, 10, m_BindedPort->GetName());
+	}
 }
 
 
@@ -1149,16 +1156,6 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 
 
 
-void CSurface::OnBnClickedRevsese()
-{
-	Print("Reserve Clicked");
-}
-
-
-void CSurface::OnBnClickedDelete()
-{
-	Print("Delete Clicked");
-}
 
 afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 {
@@ -1167,11 +1164,9 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 		case VK_LEFT:
 		case VK_RIGHT:
 			if ((LPARAM)&mReverseBtn == lParam) {
-				TRACE("Rec reserve btn key msg\n");
 				mDelBtn.SetFocus();
 			}
 			else {
-				TRACE("Rec del btn key msg\n");
 				mReverseBtn.SetFocus();
 			}
 			break;
@@ -1279,10 +1274,6 @@ afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwChange(WPARAM wParam, LPARAM lP
  */
 afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lParam)
 {	
-
-	//m_BindedPort->m_AwConfig.Begining  = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_begining;
-	//m_BindedPort->m_AwConfig.End       = ( (CColdEyeApp*)AfxGetApp())->m_SysConfig.watch_time_end;
-
 	CTime time  = CTime::GetCurrentTime();
 	Print("Current time: %02d:%02d:%02d", time.GetHour(), time.GetMinute(), time.GetSecond());
 	//正在自动看船
@@ -1326,7 +1317,9 @@ afx_msg LRESULT CSurface::OnUserMsgCameraConfigAwtime(WPARAM wParam, LPARAM lPar
 			}
 		}
 	}
+	else {
 
+	}
 	return 0;
 }
 
@@ -1383,15 +1376,18 @@ void CSurface::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 afx_msg LRESULT CSurface::OnUserMsgSystemConfig(WPARAM wParam, LPARAM lParam)
 {
+	Print("System config:%d", wParam);
 	//自动看船全局设置切换
 	if (wParam == 666) {
 		// 全局设置自动看船开。
 		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
+		    Print("System config aw on");
 			ExecuteConfig();
 		}
 		
 		// 全局设置自动看船关
 		else if (m_bIsAutoWatchEnabled) {
+			Print("System config aw off");
 			StopAutoWatch();
 		}
 	}

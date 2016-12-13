@@ -30,6 +30,7 @@ void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 			ComManagement->SetHostTalkState();
 
 			pDev->SetTalking(true);
+			::MessageBeep(MB_ICONASTERISK);
 			return;
 		}
 		else if(ComManagement->GetOldState() == ComManagement->GetCameraTalkState())//摄像头讲话下请求
@@ -50,6 +51,7 @@ void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 				ComManagement->SetHostTalkState();
 
 				pDev->SetTalking(true);
+				::MessageBeep(MB_ICONASTERISK);
 				return;
 			}
 		}

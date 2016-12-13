@@ -537,7 +537,7 @@ void CColdEyeDlg::SetAutoRun(bool bAutoRun)
 		{
 			TCHAR szModule[_MAX_PATH];
 			GetModuleFileName(NULL, szModule, _MAX_PATH);//得到本程序自身的全路径  
-			RegSetValueEx(hKey, _T("ColdEye"), 0, REG_SZ, (const BYTE*)(LPCSTR)szModule, wcslen(szModule)); //添加一个子Key,并设置值，"Client"是应用程序名字（不加后缀.exe）  
+			RegSetValueEx(hKey, _T("ColdEye"), 0, REG_SZ, (const BYTE*)(LPCSTR)szModule, wcslen(szModule)); //添加一个子Key,并设置值，"ColdEye"是应用程序名字（不加后缀.exe）  
 			RegCloseKey(hKey); //关闭注册表  
 		}
 		else
@@ -619,11 +619,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				{
 					MSG msg;
 					msg.wParam   = 666;
-					msg.lParam  = USER_MSG_SYSTEM_CONFIG;
+					msg.message  = USER_MSG_SYSTEM_CONFIG;
 
 					CColdEyeApp* pApp  = (CColdEyeApp*)AfxGetApp();
 
-					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on>0?0:1;
+					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on ? false:true;
 
 					CDBLogger::GetInstance()->LogAutoWatch(m_SysTime, pApp->m_SysConfig.auto_watch_on);
 
@@ -731,8 +731,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		static int cnt = 0;
 		onedata *p = (onedata*)pData;
 
-		//printf("COM_CAMERA message NO.%d : ", CAmessage_NO);
-		//CAmessage_NO++;
+		printf("COM_CAMERA message NO.%d : ", CAmessage_NO);
+		CAmessage_NO++;
 		for (int i = 0; i < p->num; i++) {
 			printf("%02X ", p->ch[i]);
 		}
