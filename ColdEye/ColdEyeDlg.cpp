@@ -589,10 +589,10 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 				mWall.SetFocus();
 			}
 		}*/
-		if (pMsg->wParam == VK_RETURN)
-		{
-			return TRUE;
-		}
+		//if (pMsg->wParam == VK_RETURN)
+		//{
+		//	return TRUE;
+		//}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
