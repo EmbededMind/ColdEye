@@ -185,44 +185,47 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 			}
 			break;
 		default:
-			if (GetKeyState(VK_CONTROL) && !(lParam & 0x20000000)) {
-				switch (wParam) {
-				//开始录制报警音
-				case 'T': 
-					{
-						CTextUI *pItem = static_cast<CTextUI*>(m_pm.FindControl(_T("Text2")));
-						_time = 0;
-						SetTimer(m_hWnd, TIME_RECORD_VOICE, 500, NULL);
-						pItem->SetText(_T("松开          按键，结束录制。"));
-						CCamera* pCamera = NULL;
-						for (int i = 0; i < 6; i++)
+			if (SkinType == _T("mb_recordingvoice.xml")) {
+				if (GetKeyState(VK_CONTROL) && !(lParam & 0x20000000)) {
+					switch (wParam) {
+					//开始录制报警音
+					case 'T': 
 						{
-							if (CPortManager::GetInstance()->mPorts[i].GetCamera())
+							CTextUI *pItem = static_cast<CTextUI*>(m_pm.FindControl(_T("Text2")));
+							_time = 0;
+							SetTimer(m_hWnd, TIME_RECORD_VOICE, 500, NULL);
+							pItem->SetText(_T("松开          按键，结束录制。"));
+							CCamera* pCamera = NULL;
+							for (int i = 0; i < 6; i++)
 							{
-								pCamera = CPortManager::GetInstance()->mPorts[i].GetCamera();
-								break;
+								if (CPortManager::GetInstance()->mPorts[i].GetCamera())
+								{
+									pCamera = CPortManager::GetInstance()->mPorts[i].GetCamera();
+									break;
+								}
+							}
+							if (pCamera)
+							{
+								CRecordAlarmSound::GetInstance()->Record(pCamera);
+								CMCI::GetInstance()->StartRecord();
 							}
 						}
-						if (pCamera)
-						{
-							CRecordAlarmSound::GetInstance()->Record(pCamera);
-							CMCI::GetInstance()->StartRecord();
-						}
-					}
-					break;
+						break;
 
-				case 'O':
-					{
-						CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
-						pItem->RecordTime = 60;
-						KillTimer(m_hWnd, TIME_RECORD_VOICE);
-						CRecordAlarmSound::GetInstance()->StopTalk();
-						CMCI::GetInstance()->StopRecord();
-						Close(MSGID_OK);
+					case 'O':
+						{
+							CRecordvoiceUI *pItem = static_cast<CRecordvoiceUI*>(m_pm.FindControl(_T("image")));
+							pItem->RecordTime = 60;
+							KillTimer(m_hWnd, TIME_RECORD_VOICE);
+							CRecordAlarmSound::GetInstance()->StopTalk();
+							CMCI::GetInstance()->StopRecord();
+							Close(MSGID_OK);
+						}
+						break;
 					}
-					break;
 				}
 			}
+
 			break;
 
 		}

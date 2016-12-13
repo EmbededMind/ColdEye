@@ -1311,9 +1311,9 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				camera[pInfo->nOwner - 1].pAlarmList->AddRecordFile(pInfo);
 
 				//port->virgin ++;
-				Print("Add Alarm File");
 				CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
 				port->m_virginNumber++;
+				Print("biu---------Add Alarm File virginnum:%d", port->m_virginNumber);
 				SetAllVirginNum();
 			}
 			else {
@@ -1332,6 +1332,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				if (pInfo->status == RECORD_NSEEN) {
 					CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
 					port->m_virginNumber--;
+					Print("biu------------pInfo->nOwner:%d,virnum:%d", pInfo->nOwner, port->m_virginNumber);
 				}
 				SetAllVirginNum();
 			}
