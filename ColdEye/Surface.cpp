@@ -835,6 +835,7 @@ Print("Zoom in");
 
 		SetWindowPos(NULL, mSplitPos.left, mSplitPos.top, mSplitPos.Width(), mSplitPos.Height(), SWP_SHOWWINDOW);
 
+		pSaveParent->ShowWindow(SW_SHOW);
 		SetParent(pSaveParent);		
 	}
 }
@@ -853,6 +854,7 @@ Print("Zoom out");
 		AfxGetMainWnd()->GetClientRect(&rc);
 
 		SetParent(AfxGetMainWnd());
+		pSaveParent->ShowWindow(SW_HIDE);
 
 		SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		SetWindowPos(pSaveParent, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
