@@ -595,7 +595,21 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 	}
-	return CDialogEx::PreTranslateMessage(pMsg);
+
+	//if (pMsg->message == WM_KEYDOWN) {
+	//	if (pMsg->wParam == VK_APPS) {
+	//		if (mWall.IsWindowVisible()) {
+	//			mWall.ShowWindow(false);
+	//			mMenu.ShowWindow(true);
+
+	//		}
+	//		else {
+	//			mWall.ShowWindow(true);
+	//			mMenu.ShowWindow(false);
+	//			mWall.SetFocus();
+	//		}
+	//	}
+	//}
 }
 
 
@@ -1008,7 +1022,7 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 		CExHardDrive::GetInstance()->StartMonitoring();
 		break;
 	case DBT_DEVICEREMOVECOMPLETE:
-		::PostMessage(mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
+		//::PostMessage(mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
 		GetDlgItem(IDC_UFLASH)->ShowWindow(false);
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
 		mask = pDisk->dbcv_unitmask;
