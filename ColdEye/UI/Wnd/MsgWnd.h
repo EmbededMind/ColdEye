@@ -11,6 +11,7 @@ using namespace DuiLib;
 #define MSGID_CANCEL	0
 #define MSGID_OK		1
 #define MSGID_RECORD	2
+#define MSGID_EXHARDDRIVE_OUT	3
 
 #define TIME_RECORD_VOICE	1
 #define TIME_PLAY_VOICE		3

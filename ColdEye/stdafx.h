@@ -106,6 +106,13 @@
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))
 
+
+/*****************************************
+*             Copy Flie Result           *
+******************************************/
+#define COPY_END_SUCCEED   1
+#define COPY_END_FAIL      0
+
  /*****************************************
  *             Timer ID define            *
  ******************************************/

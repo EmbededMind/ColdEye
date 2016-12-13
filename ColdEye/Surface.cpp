@@ -721,34 +721,35 @@ void CSurface::OnReconnect()
  */
 void CSurface::OnCameraLogOff()
 {
-	ASSERT(m_BindedCamera != NULL);
+	//ASSERT(m_BindedCamera != NULL);
 
 	Print("On camera delete");
 
-	if (m_bIsRecording) {
-		StopAutoRecord();
-	}
+	//if (m_bIsRecording) {
+	//	StopAutoRecord();
+	//}
 
-	if (m_bIsAlarming) {
-		StopAlarmRecord();
-	}
+	//if (m_bIsAlarming) {
+	//	StopAlarmRecord();
+	//}
 
-	if (m_bIsWatching) {
-		StopAutoWatch();
-	}
+	//if (m_bIsWatching) {
+	//	StopAutoWatch();
+	//}
 
-	DisconnectRealPlay();
-	m_BindedCamera->OnDisConnnect();
-	Invalidate();
+	//DisconnectRealPlay();
+	//m_BindedCamera->OnDisConnnect();
+	//Invalidate();
 
-	::SendMessage(GetParent()->m_hWnd, USER_MSG_LOGOFF, 0, (LPARAM)this->m_BindedPort);
+	::SendMessage(GetParent()->m_hWnd, USER_MSG_LOGOFF, 2, (LPARAM)this->m_BindedPort);
 }
 
 
 
 void CSurface::Delete()
 {
-	ASSERT(m_BindedCamera != NULL);
+	//ASSERT(m_BindedCamera != NULL);
+	
 
 	if (m_bIsAutoRecordEnabled) {
 Print("Stop auto record when exit");
@@ -765,11 +766,17 @@ Print("Stop auto watch when exit");
 		StopAutoWatch();
 	}
 
-	DisconnectRealPlay();
+	if (m_bIsRealPlaying) {
+		DisconnectRealPlay();
+	}
 
-	m_BindedCamera->Logout();
 
-	delete m_BindedCamera;
+	if (m_BindedCamera) {
+		m_BindedCamera->Logout();
+
+		delete m_BindedCamera;
+	}
+
 	m_BindedCamera  = NULL;
 }
 
@@ -1180,6 +1187,17 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			//µ¹×Å·Å
 			if (lParam == (LPARAM)&(mReverseBtn)) {
+				if (m_BindedCamera == NULL) {
+					mReverseBtn.ShowWindow(SW_HIDE);
+					mDelBtn.ShowWindow(SW_HIDE);
+
+					this->SetFocus();
+					if (m_bIsRealPlaying) {
+						H264_PLAY_Pause(m_lPlayPort, 0);
+					}
+					break;
+				}
+
 				if (m_BindedCamera->m_Param.PictureFlip) {
 					m_BindedCamera->m_Param.PictureFlip = 0;
 					m_BindedCamera->m_Param.PictureMirror = 0;
@@ -1189,13 +1207,13 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 					m_BindedCamera->m_Param.PictureMirror = 1;
 				}
 
-
 				MSG msg;
 				msg.message = USER_MSG_CAMERA_PARAM;
 				msg.lParam = (LPARAM)m_BindedCamera;
 				CMsgSquare::GetInstance()->Broadcast(msg);
 
-				PostThreadMessage( ((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
+				PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_CAMERA_PARAM, true, (LPARAM)m_BindedCamera);
+
 
 				mReverseBtn.ShowWindow(SW_HIDE);
 				mDelBtn.ShowWindow(SW_HIDE);
@@ -1217,6 +1235,14 @@ afx_msg LRESULT CSurface::OnUserMsgNofityKeydown(WPARAM wParam, LPARAM lParam)
 					this->SetFocus();
 
 					OnCameraLogOff();
+				}
+				else {
+					mReverseBtn.ShowWindow(SW_HIDE);
+					mDelBtn.ShowWindow(SW_HIDE);
+					this->SetFocus();
+					if (m_bIsRealPlaying) {
+						H264_PLAY_Pause(m_lPlayPort, 0);
+					}
 				}
 			}
 			break;

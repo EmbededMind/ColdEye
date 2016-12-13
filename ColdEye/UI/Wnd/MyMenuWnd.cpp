@@ -135,11 +135,11 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
-	CPort* pPort = new CPort();
-	pPort->SetId(1);
-	pPort->SetNameId(1);
+	//CPort* pPort = new CPort();
+	//pPort->SetId(1);
+	//pPort->SetNameId(1);
 
-	AddPortConfigMenuItem(pPort);
+	//AddPortConfigMenuItem(pPort);
 }
 
 
@@ -994,9 +994,13 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 		}
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo_request.xml"), text, NULL, NULL, NULL);
 	}
-
-	if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo.xml"), text, NULL, (LPARAM)recordInfo, type)) {
+	int result;
+	result = CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo.xml"), text, NULL, (LPARAM)recordInfo, type);
+	if (MSGID_OK == result) {
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("复制成功！"), NULL, NULL);
+	}
+	else if (MSGID_EXHARDDRIVE_OUT == result) {
+		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("复制中断,未检测到U盘！"), NULL, NULL);
 	}
 
 }
@@ -1173,6 +1177,9 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
 			if (pPort) {
 			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
+				vol = vol * 2 - 1;
+				if (vol < 0)
+					vol = 0;
 				pPort->m_DevConfig.Volumn  = vol;
 				CCommunication::GetInstance()->SetVolume(pPort->m_pCamera,  vol);
 				pPort->StoreVolumn();

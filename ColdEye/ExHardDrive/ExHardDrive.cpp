@@ -94,10 +94,18 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 				}
 				else
 				{
-					printf("copy fail!\n");
-					Print("File Name:%S", ExHardDrive->mCopyFromPath);
-					//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
-					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
+					printf("copy fail! err:%d\n",GetLastError());
+					if (static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox)
+					{
+						if (GetLastError() == 2) {
+							::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
+							ResetEvent(ExHardDrive->mCopyEvent);
+							break;
+						}
+						Print("File Name:%S", ExHardDrive->mCopyFromPath);
+						//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
+						::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
+					}
 				}
 			}
 			ResetEvent(ExHardDrive->mCopyEvent);
