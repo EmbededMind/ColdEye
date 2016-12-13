@@ -294,9 +294,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
 
-	/*this->SetAutoRun(TRUE);*/
+	SetForegroundWindow();
 
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	return FALSE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CColdEyeDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -596,7 +596,6 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
-		/*SetForegroundWindow();*/
 		onedata *p = (onedata*)pData;
 		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
 		KBmessage_NO++;
