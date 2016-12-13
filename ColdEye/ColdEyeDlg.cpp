@@ -109,7 +109,7 @@ void CColdEyeDlg::UpdateLayout()
 	
 
 	m_TextFont.DeleteObject();
-	m_TextFont.CreatePointFont(title_height/5*10,  _T("方正兰亭中黑_GBK"));
+	m_TextFont.CreatePointFont(title_height/4*10,  _T("方正兰亭中黑_GBK"));
 	//m_TextFont.CreateFont(title_height / 4 * 10, _T("方正兰亭中黑_GBK"));
 	LOGFONT  fontInfo;
 	m_TextFont.GetLogFont(&fontInfo);
@@ -222,8 +222,6 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 
 
-	m_SysTime = CTime::GetCurrentTime();
-
 	// TODO: 在此添加额外的初始化代码
 	mWall.Create(IDD_WALL, this);
 	((CColdEyeApp*)AfxGetApp())->SetWallDlg(&mWall);
@@ -258,8 +256,6 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 
 	SetWindowPos(NULL, 0, 0, ScreenHeight*4/3, ScreenHeight, 0);
-
-	SwitchToThisWindow(m_hWnd, TRUE);
 
 	mWall.SetFocus();
 
@@ -600,7 +596,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
-		SetForegroundWindow();
+		/*SetForegroundWindow();*/
 		onedata *p = (onedata*)pData;
 		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
 		KBmessage_NO++;
@@ -987,6 +983,7 @@ BOOL CColdEyeDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
 		CExHardDrive::GetInstance()->StartMonitoring();
 		break;
 	case DBT_DEVICEREMOVECOMPLETE:
+		::PostMessage(mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
 		GetDlgItem(IDC_UFLASH)->ShowWindow(false);
 		pDisk = (DEV_BROADCAST_VOLUME*)dwData;
 		mask = pDisk->dbcv_unitmask;
