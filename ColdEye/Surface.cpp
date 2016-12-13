@@ -1067,6 +1067,10 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 		mDelBtn.SetWindowPos(NULL, rClient.left+ margin_left*2 + btn_width, rClient.top + margin_top,
 			btn_width, btn_height, 0);
 	}
+
+	if (m_BindedPort) {
+          SetOsdText(42, 10, m_BindedPort->GetName());
+	}
 }
 
 

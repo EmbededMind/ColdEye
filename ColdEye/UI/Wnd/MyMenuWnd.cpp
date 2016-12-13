@@ -25,20 +25,20 @@ CDuiString  _PortName[25] = {  //对应名字id
 	_T("船甲板摄像机"),
 	_T("船左舷摄像机"),
 	_T("船右舷摄像机"),
-	_T("船后方"),
-	_T("船缆绳"),
-	_T("集控台"),
-	_T("监控台"),
-	_T("船长室"),
-	_T("船员室"),                               
-	_T("主机舱"),
-	_T("发电机舱"),
-	_T("罗经甲板"),
-	_T("一层甲板"),
-	_T("二层甲板"),
-	_T("三层甲板"),
-	_T("四层甲板"),
-	_T("五层甲板")
+	_T("船后方摄像机"),
+	_T("船缆绳摄像机"),
+	_T("集控台摄像机"),
+	_T("监控台摄像机"),
+	_T("船长室摄像机"),
+	_T("船员室摄像机"),                               
+	_T("主机舱摄像机"),
+	_T("发电机舱摄像机"),
+	_T("罗经甲板摄像机"),
+	_T("一层甲板摄像机"),
+	_T("二层甲板摄像机"),
+	_T("三层甲板摄像机"),
+	_T("四层甲板摄像机"),
+	_T("五层甲板摄像机")
 };
 
 CMyMenuWnd::CMyMenuWnd()
@@ -984,6 +984,7 @@ void CMyMenuWnd::PrepareCopy(list<CRecordFileInfo*>*recordInfo, UINT8 type)
 	}
 	int result;
 	result = CMsgWnd::MessageBox(m_hWnd, _T("mb_copyvideo.xml"), text, NULL, (LPARAM)recordInfo, type);
+	Print("result:%d",result);
 	if (MSGID_OK == result) {
 		CMsgWnd::MessageBox(m_hWnd, _T("mb_ok.xml"), NULL, _T("复制成功！"), NULL, NULL);
 	}
@@ -1281,6 +1282,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
         //--------------------------------------------
 		case USER_MSG_DELFILE:
 			if (wParam == RECORD_ALARM) {
+		        Print("delete alarm file in view");
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);
 
@@ -1292,6 +1294,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				SetAllVirginNum();
 			}
 			else {
+			   Print("delete normal file in view");
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pNormalList->DeleteRecordFile(pInfo);
 			}
@@ -1666,6 +1669,7 @@ void CMyMenuWnd::SetMenuItemName(CVerticalLayoutUI* pLayout, CPort* pPort)
 {
 	CMenuItemUI* pItem;
 	CPort* _pPort;
+	CDuiString text;
 	for (int i=0; i < pLayout->GetCount(); i += 2) {
 		pItem = (CMenuItemUI*)pLayout->GetItemAt(i);
 		_pPort = (CPort*)pItem->GetTag();
@@ -1875,6 +1879,7 @@ Print("Third Menu Sel :%d", inx);
 				if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 				    pPort->m_DevConfig.NameId  = camera[nPort-1].pShipname->GetTag();
 					::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME, 0, (LPARAM)pPort);
+
 					camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("设置"));
 					UpdataCameraName(pPort);
 
@@ -2103,6 +2108,7 @@ void CMyMenuWnd::DeleteMenuItem(CPort* pPort, CDuiString layoutname, int BaseDat
 void CMyMenuWnd::DeleteAlarmMenuItem(CPort* pPort)
 {
 	DeleteMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	pAlarmItem[pPort->GetId() - 1] = NULL;
 }
 
 

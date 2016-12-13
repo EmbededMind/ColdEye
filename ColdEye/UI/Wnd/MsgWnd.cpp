@@ -65,6 +65,19 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 	}
 }
 
+
+
+LRESULT CMsgWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	if (IsChildren) {
+		if (wParam)
+			::PostMessage(((CColdEyeDlg*)AfxGetMainWnd())->mMessageBox->GetHWND(), USER_MSG_CANCEL_COPY, NULL, NULL);
+	}
+	__super::OnClose( uMsg,  wParam,  lParam,  bHandled);
+	bHandled = FALSE;
+	return 0;
+}
+
 void CMsgWnd::OnFinalMessage(HWND hWnd)
 {
 	__super::OnFinalMessage(hWnd);
@@ -94,9 +107,7 @@ void CMsgWnd::OnClick(TNotifyUI &msg)
 		Close(MSGID_RECORD);
 	}
 	else if (sName == _T("cancel_copy")) {
-		if (MSGID_OK == MessageBox(m_pm.GetPaintWindow(), _T("mb_okcancel.xml"), NULL, _T("确定停止复制视频？"), NULL, NULL)) {
-			Close(0);
-		}
+		pChildWnd =	ShowMessageBox(m_hWnd, _T("mb_okcancel.xml"), NULL, _T("确定停止复制视频？"));
 	}
 }
 
@@ -240,6 +251,8 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 					if (iter == pRecordInfo->end()) {
 						CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
 						progress->SetValue(totalSize);
+						if (pChildWnd)
+							pChildWnd->Close();
 						Close(1);//复制结束
 						return 0;
 					}
@@ -247,12 +260,20 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 					return 0;
 				}
 			}
+			if (pChildWnd)
+				pChildWnd->Close();
 			Close(1);//复制结束
 		}
 		break;
 
 	case USER_MSG_EXHARDDRIVE_OUT:
+		if (pChildWnd)
+			pChildWnd->Close();
 		Close(MSGID_EXHARDDRIVE_OUT);
+		break;
+
+	case USER_MSG_CANCEL_COPY:
+		Close(0);
 		break;
 	}
 

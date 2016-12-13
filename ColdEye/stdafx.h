@@ -103,6 +103,7 @@
 #define USER_MSG_STOP_PLAY_ALARM_VOICE		(WM_USER + 231)	//停止播放报警音
 
 #define USER_MSG_EXHARDDRIVE_OUT            (WM_USER + 240) //U盘拔出
+#define USER_MSG_CANCEL_COPY				(WM_USER + 245) //取消复制
 //  DUI user message
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))
 
@@ -186,8 +187,8 @@
 
 
 /**      Disk Surpluss Space     **/
-#define SURPLUSSPACENORMAL      1024*1024*1024//正常文件所在磁盘剩余空间红线524288000
-#define SURPLUSSPACEALARM       1024*1024*1024//报警文件所在磁盘剩余空间红线524088000
+#define SURPLUSSPACENORMAL      2*1024*1024*1024//正常文件所在磁盘剩余空间红线524288000
+#define SURPLUSSPACEALARM       2*1024*1024*1024//报警文件所在磁盘剩余空间红线524088000
 
 /**        Com num define        **/
 #define COM_KB    1
