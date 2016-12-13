@@ -188,6 +188,10 @@ LRESULT CPlayerWallWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL 
 		case VK_RETURN:
 			OnPlay();
 			break;
+
+		case VK_APPS:
+			
+			return TRUE;
 		}
 
 		//m_pm.SendNotify(m_pm.GetFocus(), DUI_MSGTYPE_KEYDOWN, wParam, lParam);

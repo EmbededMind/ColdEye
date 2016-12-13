@@ -114,6 +114,14 @@ void CMyListUI::DrawItemText(HDC hDC, const RECT& rcItem)
 void CMyListUI::DoEvent(TEventUI & event)
 {
 	if (event.Type == UIEVENT_KEYDOWN){
+		if (event.wParam == VK_APPS) {
+			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
+			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+			pList->ExpandNode(node->parent(), 0);
+			pList->UnSelectAllItems();
+			return;
+		}
+
 		if (event.wParam == VK_RETURN){
 			CVideoListUI *pList = (CVideoListUI*)GetParent()->GetParent();
 			int num;
@@ -173,12 +181,10 @@ void CMyListUI::DoEvent(TEventUI & event)
 			}
 		}
 
-		if (GetKeyState(VK_CONTROL) && !(event.wParam & 0x20000000)) {
-			if (event.wParam == 'L') { //¼ÓËø
-				CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
-				if (node->data()._level == 1) {
-					m_pManager->SendNotify(this, DUI_MSGTYPE_LISTLABEL, event.wParam, event.lParam);
-				}
+		if (event.wParam == VK_F8) { //¼ÓËø
+			CVideoListUI::Node* node = (CVideoListUI::Node*)GetTag();
+			if (node->data()._level == 1) {
+				m_pManager->SendNotify(this, DUI_MSGTYPE_LISTLABEL, event.wParam, event.lParam);
 			}
 		}
 	}

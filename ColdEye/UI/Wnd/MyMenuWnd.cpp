@@ -181,6 +181,44 @@ void CMyMenuWnd::AdapTive()
 	Print("Scale:%d,DPI:%d", pDpi->GetScale());
 }
 
+void CMyMenuWnd::FocusedReset()
+{
+	CButtonUI* pItem;
+
+	if (focusLevel > 0) {
+		pLayout_third->SetBkColor(LAYOUT_THIRD_NOFOUCS);
+
+		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		CVerticalLayoutUI* pLayout = (CVerticalLayoutUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel());
+		for (int i = 0; i < pLayout->GetCount(); i += 2) {
+			pItem = (CButtonUI*)pLayout->GetItemAt(i);
+			pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		}
+
+		for (int i = 0; i < pLayout_PopMenu->GetCount(); i += 2) {
+			pItem = (CButtonUI*)pLayout_PopMenu->GetItemAt(i);
+			if (pItem != FocusedItem[0])
+				pItem->SetBkColor(LAYOUT_POP_FOCUSED);
+		}
+		if(FocusedItem[1])
+			FocusedItem[1]->SetTextColor(0xFF666666);
+		FocusedItem[0]->SetTextColor(0xFF666666);
+		FocusedItem[0]->SetBkColor(LAYOUT_POP_FOCUSED);
+	}
+
+	static_cast<CButtonUI*>(m_pm.FindControl(_T("homewatch")))->SetTextColor(0xFF666666);
+	m_pm.FindControl(_T("homewatch"))->SetBkColor(0xFFFFFFFF);
+	pLayout_PopMenu->SetBkColor(LAYOUT_POP_FOCUSED);
+
+	focusLevel = 0;
+	FocusedItem[1] = NULL;
+	pLayout_Menuitem->SelectItem(0);
+	pLayout_third->SelectItem(0);
+	pLayout_third->SetVisible(false);
+	m_pm.FindControl(_T("alarmvideo"))->SetFocus();
+	m_pm.Invalidate();
+}
+
 
 bool CMyMenuWnd::OnHomeWatch(void * param)
 {
@@ -254,7 +292,6 @@ void CMyMenuWnd::UpdataItemColor()
 		FocusedItem[1]->SetTextColor(0xFFFFFFFF);
 	}
 }
-
 
 
 void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
@@ -357,6 +394,10 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			}
 			break;
 		//-----------------------------------------------
+		case VK_BACK:
+			keybd_event(VK_APPS, 0, 0, 0);
+			keybd_event(VK_APPS, 0, KEYEVENTF_KEYUP, 0);
+			break;
 		}
 	}
 	else {
@@ -638,28 +679,26 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 
 void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 {
-	if (GetKeyState(VK_CONTROL) && !(msg.wParam & 0x20000000)) {
-		if (msg.wParam == 'L') { //¼ÓËø
-			if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0){
-				CMyListUI *pSender = (CMyListUI*)msg.pSender;
-				if (pSender->Info->status == RECORD_LOCKED) {
-					pSender->Info->status = RECORD_SEEN;
-				}
-				else {
-					if (pSender->Info->status == RECORD_NSEEN) {
-						//refreshSuperscript(pSender);
-					}
-					pSender->Info->status = RECORD_LOCKED;
-				}
-				char sqlStmt[128];
-				sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pSender->Info->status, pSender->Info->nOwner, pSender->Info->tBegin);
-				if (!sqlite.DirectStatement(sqlStmt)) {
-					Print("Sql error:%s", sqlStmt);
-				}
-				pSender->Invalidate();
+	if (msg.wParam == VK_F8) { //¼ÓËø
+		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0){
+			CMyListUI *pSender = (CMyListUI*)msg.pSender;
+			if (pSender->Info->status == RECORD_LOCKED) {
+				pSender->Info->status = RECORD_SEEN;
 			}
-
+			else {
+				if (pSender->Info->status == RECORD_NSEEN) {
+					//refreshSuperscript(pSender);
+				}
+				pSender->Info->status = RECORD_LOCKED;
+			}
+			char sqlStmt[128];
+			sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pSender->Info->status, pSender->Info->nOwner, pSender->Info->tBegin);
+			if (!sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
+			pSender->Invalidate();
 		}
+
 	}
 
 	switch (msg.wParam) {

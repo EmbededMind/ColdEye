@@ -87,6 +87,7 @@ public :
 	void CreataCameraLayout(int inx);
 	void BingingCameraSlider(CVerticalLayoutUI* pLayout);
 	void AdapTive();
+	void FocusedReset();
 
 
 	bool OnHomeWatch(void* param);

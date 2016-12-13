@@ -563,11 +563,11 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		if (mWall.IsWindowVisible()) {
 			mWall.ShowWindow(false);
 			mMenu.ShowWindow(true);
-
 		}
 		else {
 			mWall.ShowWindow(true);
 			mMenu.ShowWindow(false);
+			mMenu.FocusedReset();
 			mWall.SetFocus();
 		}
 		
