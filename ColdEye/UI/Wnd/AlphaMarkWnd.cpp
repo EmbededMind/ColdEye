@@ -37,6 +37,7 @@ LRESULT CAlphaMarkWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 		break;
 		
 	case USER_MSG_PLAY_SLOW:
+		wParam = pow(2, wParam);
 		PlayText.Format(_T("X%d"), wParam);
 		pBt_fast->SetVisible(false);
 		pBt_slow->SetVisible(true);
@@ -44,6 +45,7 @@ LRESULT CAlphaMarkWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 		break;
 
 	case USER_MSG_PLAY_FAST:
+		wParam = pow(2, wParam);
 		PlayText.Format(_T("X%d"), wParam);
 		pBt_slow->SetVisible(false);
 		pBt_fast->SetVisible(true);

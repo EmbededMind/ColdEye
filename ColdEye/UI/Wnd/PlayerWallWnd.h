@@ -45,9 +45,12 @@ public:
 	void InitPlayBtImage();
 	void ClosePlayer();
 	BOOL StopPlay();
-	bool OnSlow(void* param);
-	bool OnFast(void* param);
-	bool OnPlay(void* param);
+	//bool OnSlow(void* param);
+	//bool OnFast(void* param);
+	//bool OnPlay(void* param);
+	void OnSlow();
+	void OnFast();
+	void OnPlay();
 	void SetMenuWnd(CMyMenuWnd* pWnd);
 
 

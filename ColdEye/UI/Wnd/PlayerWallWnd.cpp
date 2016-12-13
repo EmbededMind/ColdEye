@@ -69,11 +69,11 @@ void CPlayerWallWnd::InitWindow()
 	}
 	InitPlayBtImage();
 	pSlow = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_slow")));
-	if (pSlow) pSlow->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnSlow);
+	//if (pSlow) pSlow->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnSlow);
 	pPlay = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_play")));
-	if (pPlay) pPlay->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnPlay);
+	//if (pPlay) pPlay->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnPlay);
 	pFast = static_cast<CButtonUI*>(m_pm.FindControl(_T("bt_fast")));	
-	if (pFast) pFast->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnFast);
+	//if (pFast) pFast->OnNotify += MakeDelegate(this, &CPlayerWallWnd::OnFast);
 	pSlider = static_cast<CSliderUI*>(m_pm.FindControl(_T("progress")));
 
 	pBeginTime = static_cast<CLabelUI*>(m_pm.FindControl(_T("time_begin")));
@@ -176,7 +176,21 @@ LRESULT CPlayerWallWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL 
 		WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
 	}
 	else {
-		m_pm.SendNotify(m_pm.GetFocus(), DUI_MSGTYPE_KEYDOWN, wParam, lParam);
+		switch (wParam) {
+		case VK_LEFT:
+			OnSlow();
+			break;
+
+		case VK_RIGHT:
+			OnFast();
+			break;
+
+		case VK_RETURN:
+			OnPlay();
+			break;
+		}
+
+		//m_pm.SendNotify(m_pm.GetFocus(), DUI_MSGTYPE_KEYDOWN, wParam, lParam);
 	}
 
 	return LRESULT();
@@ -215,125 +229,225 @@ BOOL CPlayerWallWnd::StopPlay()
 	return 0;
 }
 
-bool CPlayerWallWnd::OnSlow(void * param)
+//bool CPlayerWallWnd::OnSlow(void * param)
+//{
+//	TNotifyUI* pMsg = (TNotifyUI*)param;
+//	Print("%S", pMsg->sType);
+//
+//	//键盘按键事件
+//	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
+//		switch (pMsg->wParam) {
+//		case VK_RIGHT:
+//			pPlay->SetFocus();
+//			break;
+//
+//		case VK_RETURN:
+//			if (mStatus != pause){
+//				int play_slow;
+//				play_slow = H264_PLAY_Slow(mPort);
+//				if (mSlowMultiple < 4)
+//					mSlowMultiple++;
+//				Print("play_slow:%d", play_slow);
+//				mStatus = slow_fast;
+//				pAlphaMarkWnd->ShowWindow(SW_SHOW);
+//				::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_SLOW, mSlowMultiple, NULL);
+//			}
+//			break;
+//		}
+//	}
+//	return true;
+//}
+//
+//bool CPlayerWallWnd::OnFast(void * param)
+//{
+//	TNotifyUI* pMsg = (TNotifyUI*)param;
+//	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
+//		switch (pMsg->wParam) {
+//		case VK_LEFT:
+//			pPlay->SetFocus();
+//			break;
+//
+//		case VK_RETURN:
+//			if (mStatus != pause) {
+//				int play_fast;
+//				play_fast = H264_PLAY_Fast(mPort);
+//				if (mFastMultiple < 4)
+//					mFastMultiple++;
+//				Print("play_fast:%d",play_fast);
+//				mStatus = slow_fast;
+//				::ShowWindow(pAlphaMarkWnd->GetHWND(), true);
+//				::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_FAST, mFastMultiple, NULL);
+//			}
+//			break;
+//		}
+//	}
+//
+//	return true;
+//}
+//
+//bool CPlayerWallWnd::OnPlay(void * param)
+//{
+//	TNotifyUI* pMsg = (TNotifyUI*)param;
+//
+//	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
+//		switch (pMsg->wParam) {
+//		case VK_LEFT:
+//			pSlow->SetFocus();
+//			break;
+//
+//		case VK_RIGHT:
+//			pFast->SetFocus();
+//			break;
+//
+//		case VK_RETURN:
+//			if (mStatus == pause){
+//				//暂停时恢复播放
+//				if (!H264_PLAY_Pause(mPort, 0)) {
+//					long err = H264_PLAY_GetLastError(mPort);
+//					printf("play err = %d\n", err);
+//				}
+//				else {
+//					mStatus = playing;
+//				}
+//			}
+//			else if (mStatus == playing) {
+//				//暂停播放
+//				if (!H264_PLAY_Pause(mPort, 1)) {
+//					long err = H264_PLAY_GetLastError(mPort);
+//					printf("play err = %d\n", err);
+//				}
+//				else {
+//					mStatus = pause;
+//				}
+//			}
+//			else if(mStatus == slow_fast){
+//				//恢复正常播放速度
+//				if (!H264_PLAY_Play(mPort, pVPlayer->GetHWND())){
+//					long err = H264_PLAY_GetLastError(mPort);
+//					printf("play err = %d\n", err);
+//				}
+//				else {
+//					mStatus = playing;
+//					mSlowMultiple = 0;
+//					mFastMultiple = 0;
+//				}
+//			}
+//
+//			if (mStatus == playing) {
+//				SetTimer(m_hWnd, 1, 1000, NULL);
+//				::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
+//				pPlay->SetBkImage(sStopNoFocusImg);
+//				pPlay->SetFocusedImage(sStopFocusedImg);
+//			}
+//			else {
+//				pPlay->SetBkImage(sPlayNoFocusImg);
+//				pPlay->SetFocusedImage(sPlayFocusedImg);
+//				KillTimer(m_hWnd, 1);
+//			}
+//			break;
+//		}
+//	}
+//	return true;
+//}
+
+void CPlayerWallWnd::OnSlow()
 {
-	TNotifyUI* pMsg = (TNotifyUI*)param;
-	Print("%S", pMsg->sType);
-
-	//键盘按键事件
-	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
-		switch (pMsg->wParam) {
-		case VK_RIGHT:
-			pPlay->SetFocus();
-			break;
-
-		case VK_RETURN:
-			if (mStatus != pause){
-				int play_slow;
-				play_slow = H264_PLAY_Slow(mPort);
-				if (mSlowMultiple < 4)
-					mSlowMultiple++;
-				Print("play_slow:%d", play_slow);
-				mStatus = slow_fast;
-				pAlphaMarkWnd->ShowWindow(SW_SHOW);
-				::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_SLOW, mSlowMultiple, NULL);
-			}
-			break;
+	if (mStatus != pause){
+		if (mFastMultiple != 0) {
+			H264_PLAY_Play(mPort, pVPlayer->GetHWND());
+			mFastMultiple = 0;
 		}
+		pSlow->SetFocus();
+		int play_slow;
+		play_slow = H264_PLAY_Slow(mPort);
+		if (mSlowMultiple < 4)
+			mSlowMultiple++;
+		else {
+			mSlowMultiple = 0;
+			H264_PLAY_Play(mPort, pVPlayer->GetHWND());
+			mStatus = playing;
+			::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
+			return;
+		}
+		Print("play_slow:%d", play_slow);
+		mStatus = slow_fast;
+		pAlphaMarkWnd->ShowWindow(SW_SHOW);
+		::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_SLOW, mSlowMultiple, NULL);
 	}
-	return true;
 }
 
-bool CPlayerWallWnd::OnFast(void * param)
+void CPlayerWallWnd::OnFast()
 {
-	TNotifyUI* pMsg = (TNotifyUI*)param;
-	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
-		switch (pMsg->wParam) {
-		case VK_LEFT:
-			pPlay->SetFocus();
-			break;
-
-		case VK_RETURN:
-			if (mStatus != pause) {
-				int play_fast;
-				play_fast = H264_PLAY_Fast(mPort);
-				if (mFastMultiple < 4)
-					mFastMultiple++;
-				Print("play_fast:%d",play_fast);
-				mStatus = slow_fast;
-				::ShowWindow(pAlphaMarkWnd->GetHWND(), true);
-				::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_FAST, mFastMultiple, NULL);
-			}
-			break;
+	if (mStatus != pause) {
+		if (mSlowMultiple != 0) {
+			H264_PLAY_Play(mPort, pVPlayer->GetHWND());
+			mSlowMultiple = 0;
 		}
+		pFast->SetFocus();
+		int play_fast;
+		play_fast = H264_PLAY_Fast(mPort);
+		if (mFastMultiple < 4)
+			mFastMultiple++;
+		else {
+			mFastMultiple = 0;
+			H264_PLAY_Play(mPort, pVPlayer->GetHWND());
+			mStatus = playing;
+			::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
+			return;
+		}
+		Print("play_fast:%d",play_fast);
+		mStatus = slow_fast;
+		::ShowWindow(pAlphaMarkWnd->GetHWND(), true);
+		::SendMessage(pAlphaMarkWnd->GetHWND(), USER_MSG_PLAY_FAST, mFastMultiple, NULL);
 	}
-
-	return true;
 }
 
-bool CPlayerWallWnd::OnPlay(void * param)
+void CPlayerWallWnd::OnPlay()
 {
-	TNotifyUI* pMsg = (TNotifyUI*)param;
-
-	if (pMsg->sType == DUI_MSGTYPE_KEYDOWN) {
-		switch (pMsg->wParam) {
-		case VK_LEFT:
-			pSlow->SetFocus();
-			break;
-
-		case VK_RIGHT:
-			pFast->SetFocus();
-			break;
-
-		case VK_RETURN:
-			if (mStatus == pause){
-				//暂停时恢复播放
-				if (!H264_PLAY_Pause(mPort, 0)) {
-					long err = H264_PLAY_GetLastError(mPort);
-					printf("play err = %d\n", err);
-				}
-				else {
-					mStatus = playing;
-				}
-			}
-			else if (mStatus == playing) {
-				//暂停播放
-				if (!H264_PLAY_Pause(mPort, 1)) {
-					long err = H264_PLAY_GetLastError(mPort);
-					printf("play err = %d\n", err);
-				}
-				else {
-					mStatus = pause;
-				}
-			}
-			else if(mStatus == slow_fast){
-				//恢复正常播放速度
-				if (!H264_PLAY_Play(mPort, pVPlayer->GetHWND())){
-					long err = H264_PLAY_GetLastError(mPort);
-					printf("play err = %d\n", err);
-				}
-				else {
-					mStatus = playing;
-					mSlowMultiple = 0;
-					mFastMultiple = 0;
-				}
-			}
-
-			if (mStatus == playing) {
-				SetTimer(m_hWnd, 1, 1000, NULL);
-				::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
-				pPlay->SetBkImage(sStopNoFocusImg);
-				pPlay->SetFocusedImage(sStopFocusedImg);
-			}
-			else {
-				pPlay->SetBkImage(sPlayNoFocusImg);
-				pPlay->SetFocusedImage(sPlayFocusedImg);
-				KillTimer(m_hWnd, 1);
-			}
-			break;
+	pPlay->SetFocus();
+	mSlowMultiple = 0;
+	mFastMultiple = 0;
+	if (mStatus == pause){
+		//暂停时恢复播放
+		if (!H264_PLAY_Pause(mPort, 0)) {
+			long err = H264_PLAY_GetLastError(mPort);
+			printf("play err = %d\n", err);
+		}
+		else {
+			mStatus = playing;
 		}
 	}
-	return true;
+	else if (mStatus == playing) {
+		//暂停播放
+		if (!H264_PLAY_Pause(mPort, 1)) {
+			long err = H264_PLAY_GetLastError(mPort);
+			printf("play err = %d\n", err);
+		}
+		else {
+			mStatus = pause;
+		}
+	}
+	else if(mStatus == slow_fast){
+		//恢复正常播放速度
+		H264_PLAY_Play(mPort, pVPlayer->GetHWND());
+		mSlowMultiple = 0;
+		mFastMultiple = 0;
+		H264_PLAY_Pause(mPort, 1);
+		::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
+		mStatus = pause;
+	}
+	
+	if (mStatus == playing) {
+		SetTimer(m_hWnd, 1, 1000, NULL);
+		::ShowWindow(pAlphaMarkWnd->GetHWND(), false);
+		pPlay->SetBkImage(sStopNoFocusImg);
+		pPlay->SetFocusedImage(sStopFocusedImg);
+	}
+	else {
+		pPlay->SetBkImage(sPlayNoFocusImg);
+		pPlay->SetFocusedImage(sPlayFocusedImg);
+		KillTimer(m_hWnd, 1);
+	}
 }
 
 void CPlayerWallWnd::SetMenuWnd(CMyMenuWnd * pWnd)

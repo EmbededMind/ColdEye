@@ -1887,6 +1887,8 @@ Print("Third Menu Sel :%d", inx);
 			if (CameraSetIsChange()) {
 				if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
 					::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME, 0, (LPARAM)pPort);
+					pPort->SetNameId(camera[nPort - 1].pShipname->GetTag());
+					Print("nameid:%d", camera[nPort - 1].pShipname->GetTag());
 					//::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME,)
 					camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("设置"));
 					UpdataCameraName(pPort);
