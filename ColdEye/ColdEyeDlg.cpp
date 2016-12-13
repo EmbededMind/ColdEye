@@ -620,11 +620,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				{
 					MSG msg;
 					msg.wParam   = 666;
-					msg.lParam  = USER_MSG_SYSTEM_CONFIG;
+					msg.message  = USER_MSG_SYSTEM_CONFIG;
 
 					CColdEyeApp* pApp  = (CColdEyeApp*)AfxGetApp();
 
-					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on>0?0:1;
+					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on ? false:true;
 
 					CDBLogger::GetInstance()->LogAutoWatch(m_SysTime, pApp->m_SysConfig.auto_watch_on);
 

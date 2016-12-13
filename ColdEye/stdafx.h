@@ -107,6 +107,8 @@
 #define DUI_USER_MSGTYPE_BACK      (_T("back"))
 
 
+#define USER_MSG_SURFACE_ZOOM              (WM_USER + 250)
+
 /*****************************************
 *             Copy Flie Result           *
 ******************************************/
