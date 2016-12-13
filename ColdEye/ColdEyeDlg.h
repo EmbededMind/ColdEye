@@ -90,6 +90,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT OnUserMsgScanDev(WPARAM wParam, LPARAM lParam);
 	int SetVolumeLevel(int type);
+	void SetAutoRun(bool bAutoRun);
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnSize(UINT nType, int cx, int cy);

@@ -294,9 +294,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
 
-	this->SetFocus();
+	/*this->SetAutoRun(TRUE);*/
 
-	return FALSE;  // 除非将焦点设置到控件，否则返回 TRUE
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CColdEyeDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -528,6 +528,34 @@ int CColdEyeDlg::SetVolumeLevel(int type)
 	return -1;
 }
 
+void CColdEyeDlg::SetAutoRun(bool bAutoRun)
+{
+	HKEY hKey;
+	CString strRegPath = _T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");//找到系统的启动项  
+	if (bAutoRun)
+	{
+		if (RegOpenKeyEx(HKEY_CURRENT_USER, strRegPath, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS) //打开启动项       
+		{
+			TCHAR szModule[_MAX_PATH];
+			GetModuleFileName(NULL, szModule, _MAX_PATH);//得到本程序自身的全路径  
+			RegSetValueEx(hKey, _T("ColdEye"), 0, REG_SZ, (const BYTE*)(LPCSTR)szModule, wcslen(szModule)); //添加一个子Key,并设置值，"Client"是应用程序名字（不加后缀.exe）  
+			RegCloseKey(hKey); //关闭注册表  
+		}
+		else
+		{
+			AfxMessageBox(_T("系统参数错误,不能随系统启动"));
+		}
+	}
+	else
+	{
+		if (RegOpenKeyEx(HKEY_CURRENT_USER, strRegPath, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+		{
+			RegDeleteValue(hKey, _T("ColdEye"));
+			RegCloseKey(hKey);
+		}
+	}
+}
+
 
 BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -568,6 +596,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
+		SetForegroundWindow();
 		onedata *p = (onedata*)pData;
 		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
 		KBmessage_NO++;
@@ -654,11 +683,10 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event('S', 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_BRIDOWN:
-				mBrightness--;
-				if (mBrightness < 0)
-					mBrightness = 0;
+				if (mBrightness > 0)
+					mBrightness--;
 				Print("brightness %d", mBrightness);
-				mGammaRamp.SetBrightness(NULL, mBrightness * 25);
+				mGammaRamp.SetBrightness(NULL, 50 + mBrightness * 15);
 				//PostMessage();
 				break;
 			case KB_SWITCH:
