@@ -564,34 +564,36 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//if (pMsg->message == WM_CONTEXTMENU) {
-	//	if (mWall.IsWindowVisible()) {
-	//		mWall.ShowWindow(false);
-	//		mMenu.ShowWindow(true);
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (mWall.IsWindowVisible()) {
+			mWall.ShowWindow(false);
+			mMenu.ShowWindow(true);
 
-	//	}
-	//	else {
-	//		mWall.ShowWindow(true);
-	//		mMenu.ShowWindow(false);
-	//		mWall.SetFocus();
-	//	}
-	//	
-	//}
-
-	if (pMsg->message == WM_KEYDOWN) {
-		if (pMsg->wParam == VK_APPS) {
-			if (mWall.IsWindowVisible()) {
-				mWall.ShowWindow(false);
-				mMenu.ShowWindow(true);
-
-			}
-			else {
-				mWall.ShowWindow(true);
-				mMenu.ShowWindow(false);
-				mWall.SetFocus();
-			}
 		}
+		else {
+			mWall.ShowWindow(true);
+			mMenu.ShowWindow(false);
+			mWall.SetFocus();
+		}
+		
 	}
+	
+	//if (pMsg->message == WM_KEYDOWN) {
+	//	if (pMsg->wParam == VK_APPS) {
+	//		if (mWall.IsWindowVisible()) {
+	//			mWall.ShowWindow(false);
+	//			mMenu.ShowWindow(true);
+
+	//		}
+	//		else {
+	//			mWall.ShowWindow(true);
+	//			mMenu.ShowWindow(false);
+	//			mWall.SetFocus();
+	//		}
+
+	//		return true;
+	//	}
+	//}
 
 
 	return CDialogEx::PreTranslateMessage(pMsg);
@@ -1181,4 +1183,12 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgStopPlayAlarmVoice(WPARAM wParam, LPARAM l
 	Print("Stop Play Alarm Voice");
 	CMCI::GetInstance()->StopPlay();
 	return 0;
+}
+
+
+void CColdEyeDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	//CDialogEx::OnOK();
 }

@@ -70,8 +70,6 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			Print("Sql error:%s", sqlStmt);
 		}
 
-		Print("%d,After shadow add owner:%d", __LINE__, pInfo->nOwner);
-
 		break;
 		//-----------------------------------------------
 	case FILE_OPT_END:

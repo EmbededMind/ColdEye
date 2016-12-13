@@ -304,7 +304,11 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 			return true;
 			break;
 		//-----------------------
+		case VK_APPS:
+			Print("Wall case apps");
+			break;
 		default:
+
 			break;
 		}
 	}
