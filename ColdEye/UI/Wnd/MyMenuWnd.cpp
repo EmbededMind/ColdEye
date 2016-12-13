@@ -182,6 +182,44 @@ void CMyMenuWnd::AdapTive()
 	Print("Scale:%d,DPI:%d", pDpi->GetScale());
 }
 
+void CMyMenuWnd::FocusedReset()
+{
+	CButtonUI* pItem;
+
+	if (focusLevel > 0) {
+		pLayout_third->SetBkColor(LAYOUT_THIRD_NOFOUCS);
+
+		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		CVerticalLayoutUI* pLayout = (CVerticalLayoutUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel());
+		for (int i = 0; i < pLayout->GetCount(); i += 2) {
+			pItem = (CButtonUI*)pLayout->GetItemAt(i);
+			pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		}
+
+		for (int i = 0; i < pLayout_PopMenu->GetCount(); i += 2) {
+			pItem = (CButtonUI*)pLayout_PopMenu->GetItemAt(i);
+			if (pItem != FocusedItem[0])
+				pItem->SetBkColor(LAYOUT_POP_FOCUSED);
+		}
+		if(FocusedItem[1])
+			FocusedItem[1]->SetTextColor(0xFF666666);
+		FocusedItem[0]->SetTextColor(0xFF666666);
+		FocusedItem[0]->SetBkColor(LAYOUT_POP_FOCUSED);
+	}
+
+	static_cast<CButtonUI*>(m_pm.FindControl(_T("homewatch")))->SetTextColor(0xFF666666);
+	m_pm.FindControl(_T("homewatch"))->SetBkColor(0xFFFFFFFF);
+	pLayout_PopMenu->SetBkColor(LAYOUT_POP_FOCUSED);
+
+	focusLevel = 0;
+	FocusedItem[1] = NULL;
+	pLayout_Menuitem->SelectItem(0);
+	pLayout_third->SelectItem(0);
+	pLayout_third->SetVisible(false);
+	m_pm.FindControl(_T("alarmvideo"))->SetFocus();
+	m_pm.Invalidate();
+}
+
 
 bool CMyMenuWnd::OnHomeWatch(void * param)
 {
@@ -255,7 +293,6 @@ void CMyMenuWnd::UpdataItemColor()
 		FocusedItem[1]->SetTextColor(0xFFFFFFFF);
 	}
 }
-
 
 
 void CMyMenuWnd::SliderNotify(TNotifyUI & msg)
@@ -358,6 +395,10 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			}
 			break;
 		//-----------------------------------------------
+		case VK_BACK:
+			keybd_event(VK_APPS, 0, 0, 0);
+			keybd_event(VK_APPS, 0, KEYEVENTF_KEYUP, 0);
+			break;
 		}
 	}
 	else {
@@ -558,7 +599,6 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	case VK_LEFT:
 		if (pItem->GetValue()) {
 			if (_tcscmp(pItem->GetName(), _T("camera_switch")) == 0) {
-					//CTime time = CTime::GetCurrentTime();
 					if (MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("mb_camera_switch.xml"), NULL, NULL, NULL, NULL)) {
 						pItem->SetValue(false);	
 						
@@ -571,10 +611,6 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 							CDBLogger* pLogger = CDBLogger::GetInstance();
 
 							pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
-			/*				if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
-								pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
-								
-							}*/
 						}
 					}
 			}
@@ -601,15 +637,10 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 				CPort* pPort = (CPort*)FocusedItem[1]->GetTag();
 
 				if (pPort) {
-					pPort->m_DevConfig.IsCameraOn = 1;
+					pPort->m_DevConfig.IsCameraOn = true;
 					::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_SWITCH, 0, (LPARAM)pPort);
 					CDBLogger* pLogger = CDBLogger::GetInstance();
 					pLogger->LogCameraOnOff(CTime::GetCurrentTime(), pPort);
-
-					//if (pPort->m_DevConfig.IsCameraOn != pItem->GetValue()) {
-					//	pPort->m_DevConfig.IsCameraOn = pItem->GetValue();
-					//	
-					//}
 				}
 			}
 			pItem->Invalidate();
@@ -639,28 +670,26 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 
 void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 {
-	if (GetKeyState(VK_CONTROL) && !(msg.wParam & 0x20000000)) {
-		if (msg.wParam == 'L') { //加锁
-			if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0){
-				CMyListUI *pSender = (CMyListUI*)msg.pSender;
-				if (pSender->Info->status == RECORD_LOCKED) {
-					pSender->Info->status = RECORD_SEEN;
-				}
-				else {
-					if (pSender->Info->status == RECORD_NSEEN) {
-						//refreshSuperscript(pSender);
-					}
-					pSender->Info->status = RECORD_LOCKED;
-				}
-				char sqlStmt[128];
-				sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pSender->Info->status, pSender->Info->nOwner, pSender->Info->tBegin);
-				if (!sqlite.DirectStatement(sqlStmt)) {
-					Print("Sql error:%s", sqlStmt);
-				}
-				pSender->Invalidate();
+	if (msg.wParam == VK_F8) { //加锁
+		if (_tcscmp(m_pm.GetFocus()->GetClass(), _T("ListLabelElementUI")) == 0){
+			CMyListUI *pSender = (CMyListUI*)msg.pSender;
+			if (pSender->Info->status == RECORD_LOCKED) {
+				pSender->Info->status = RECORD_SEEN;
 			}
-
+			else {
+				if (pSender->Info->status == RECORD_NSEEN) {
+					//refreshSuperscript(pSender);
+				}
+				pSender->Info->status = RECORD_LOCKED;
+			}
+			char sqlStmt[128];
+			sprintf_s(sqlStmt, "UPDATE alarm_record SET status = %d WHERE owner = %d AND begin_sec = %d;", pSender->Info->status, pSender->Info->nOwner, pSender->Info->tBegin);
+			if (!sqlite.DirectStatement(sqlStmt)) {
+				Print("Sql error:%s", sqlStmt);
+			}
+			pSender->Invalidate();
 		}
+
 	}
 
 	switch (msg.wParam) {
@@ -786,13 +815,12 @@ void CMyMenuWnd::IsAutoWatch(CMyLabelUI *pItem)
 		pItem->SetValue(true);
 	}
 
+	pPort->m_DevConfig.IsAutoWatchEnabled  = pItem->GetValue();
+
 	::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd,USER_MSG_CAMERA_CONFIG_AWSWITCH, 0, (LPARAM)pPort);
 
 	CDBLogger* pLogger = CDBLogger::GetInstance();
-	if (pPort->m_DevConfig.IsAutoWatchEnabled != pItem->GetValue()) {
-		pPort->m_DevConfig.IsAutoWatchEnabled = pItem->GetValue();
-		pLogger->LogCameraAWOnOff(CTime::GetCurrentTime(), pPort);
-	}
+	pLogger->LogCameraAWOnOff(CTime::GetCurrentTime(), pPort);
 	pItem->Invalidate();
 }
 
@@ -1297,6 +1325,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		case USER_MSG_DELFILE:
 			Print("USER MSG DELFILE");
 			if (wParam == RECORD_ALARM) {
+		        Print("delete alarm file in view");
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);
 
@@ -1308,6 +1337,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				SetAllVirginNum();
 			}
 			else {
+			   Print("delete normal file in view");
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pNormalList->DeleteRecordFile(pInfo);
 			}
@@ -1415,6 +1445,7 @@ void CMyMenuWnd::SetAllVirginNum()
 		 pAlarmVideo->SetTag((UINT_PTR)pPort);
 	}
 	pPort->m_virginNumber = totalVirginNum;
+	Print("totalVirginNum:%d", totalVirginNum);
 	m_pm.Invalidate();
 }
 
@@ -1890,10 +1921,9 @@ Print("Third Menu Sel :%d", inx);
 
 			if (CameraSetIsChange()) {
 				if (MSGID_OK == CMsgWnd::MessageBox(this->GetHWND(), _T("mb_okcancel.xml"), NULL, _T("确定更改设置内容？"), NULL, NULL)) {
+				    pPort->m_DevConfig.NameId  = camera[nPort-1].pShipname->GetTag();
 					::SendMessage( ((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME, 0, (LPARAM)pPort);
-					pPort->SetNameId(camera[nPort - 1].pShipname->GetTag());
-					Print("nameid:%d", camera[nPort - 1].pShipname->GetTag());
-					//::SendMessage(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->m_hWnd, USER_MSG_CAMERA_CONFIG_NAME,)
+
 					camera[nPort - 1].pTitle->SetText(pPort->GetName() + _T("设置"));
 					UpdataCameraName(pPort);
 

@@ -68,6 +68,7 @@ bool CWallDlg::Ingest(CPort* pPort)
 
 	 mSurfaces[pos]  = new CSurface();
 	 mSurfaces[pos]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(0,0,0,0), this, pPort->GetId());
+	 
 	 mSurfaces[pos]->ShowWindow(SW_SHOW);
 
 
@@ -266,8 +267,9 @@ BEGIN_MESSAGE_MAP(CWallDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SWITCH, &CWallDlg::OnUserMsgCameraConfigSwitch)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_SAVE, &CWallDlg::OnUserMsgCameraConfigSave)
-	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWSWITCH, &CWallDlg::OnUserMsgCameraConfigAwswitch)
+	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_AWSWITCH, &CWallDlg::OnUserMsgCameraConfigAwSwitch)
 	ON_MESSAGE(USER_MSG_CAMERA_CONFIG_NAME, &CWallDlg::OnUserMsgCameraConfigName)
+	ON_MESSAGE(USER_MSG_SURFACE_ZOOM, &CWallDlg::OnUesrMsgSurfaceZoom)
 END_MESSAGE_MAP()
 
 
@@ -293,6 +295,7 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		{
 		case VK_UP:
 		case VK_DOWN:
+		    TestIngestOne();
 			return true;
 		//-----------------------
 
@@ -605,10 +608,10 @@ afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam
 }
 
 
-afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigAwswitch(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CWallDlg::OnUserMsgCameraConfigAwSwitch(WPARAM wParam, LPARAM lParam)
 {
 	CPort* pPort = (CPort*)lParam;
-
+	Print("Global config auto watch switch");
 	CSurface* pSurface = FindSurface(pPort);
 	if (pSurface != NULL) {
 		pPort->StoreAwOnOff();
@@ -639,4 +642,42 @@ void CWallDlg::OnOK()
 	// TODO: 在此添加专用代码和/或调用基类
 
 	//CDialogEx::OnOK();
+}
+
+
+afx_msg LRESULT CWallDlg::OnUesrMsgSurfaceZoom(WPARAM wParam, LPARAM lParam)
+{
+	CSurface* pSurface  = (CSurface*)lParam;
+
+    // Zoom out
+	if (wParam) {
+		for (int i = 0; i < 6; i++) {
+			if (mSurfaces[i] && mSurfaces[i] != pSurface) {
+				mSurfaces[i]->ShowWindow(SW_HIDE);
+			}
+		}
+
+		CRect rClient;
+		GetClientRect(rClient);
+
+		CRect r;
+		r.top   = rClient.Height() / 10;
+		r.bottom  = rClient.Height() - r.top;
+
+		r.left  = (rClient.Width() - r.Height() * 4 /3) /2;
+		r.right = rClient.Width() - r.left;
+
+		pSurface->SetWindowPos(NULL, r.left, r.top, r.Width(), r.Height(), 0);
+
+	}
+	else {
+		for (int i = 0; i < 6; i ++) {
+			if (mSurfaces[i] && mSurfaces[i] != pSurface) {
+				mSurfaces[i]->ShowWindow(SW_SHOW);
+			}
+		}
+
+		pSurface->SetPos();
+	}
+	return 0;
 }

@@ -78,7 +78,8 @@ public:
 protected:
 	afx_msg LRESULT OnUserMsgCameraConfigSwitch(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigSave(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnUserMsgCameraConfigAwswitch(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMsgCameraConfigAwSwitch(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgCameraConfigName(WPARAM wParam, LPARAM lParam);
 	virtual void OnOK();
+	afx_msg LRESULT OnUesrMsgSurfaceZoom(WPARAM wParam, LPARAM lParam);
 };

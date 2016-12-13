@@ -30,7 +30,7 @@ public:
 	CMsgWnd	*mMessageBox; 
 	CMyMenuWnd mMenu;
 	CSysSetIconsWnd* mSysSetIcons;
-
+	CRect    m_rTitle;
 
 protected:
 	CWallDlg  mWall;
@@ -41,7 +41,7 @@ protected:
 private:
 	CFont    m_TipFont;
 
-	CRect    m_rTitle;
+
 	POINT	 m_pTitleBk_left[4];
 	POINT	 m_pTitleBk_center[4];
 	POINT	 m_pTitleBk_right[4];

@@ -37,6 +37,10 @@ CDuiString CPlayerWallWnd::GetSkinFile()
 LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (uMsg){
+	case WM_CONTEXTMENU:
+		Print("Player MenuKey");
+		return true;
+
 	case USER_MSG_PLAY_START: {
 
 		pListInfo = ((list<CRecordFileInfo*>*)lParam);

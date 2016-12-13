@@ -92,6 +92,7 @@ public:
 	
 	void          Delete();
 	void          SetPos(CRect& r);
+	void          SetPos();
 
 
 protected:
@@ -133,6 +134,7 @@ protected:
 public:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg void OnNcPaint();
+	afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncxp);
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	virtual BOOL OnEraseBkgnd(CDC* pDC);

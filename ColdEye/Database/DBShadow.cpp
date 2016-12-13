@@ -35,6 +35,17 @@ int CDBShadow::GetVirginFileCnt(int id)
 }
 
 
+int CDBShadow::GetVirginFileCnt()
+{
+	int totalCnt  = 0;
+	for (int i = 0; i < 6; i++) {
+		totalCnt  +=mVirginFileCnts[i];
+	}
+
+	return totalCnt;
+}
+
+
 void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 {
 	std::list<CRecordFileInfo*>& infoList = (wParam == 1 ? mReocrdFileInfoList : mAlarmFileInfoList);

@@ -371,14 +371,18 @@ void CColdEyeDlg::OnPaint()
 
 		dc.DrawTextW(text, m_rSysTimeText, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-
-
-		if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
-			text  = _T("自动看船已开启");
+		if (CDBShadow::GetInstance()->GetVirginFileCnt()) {
+			text  = _T("本船出现监控报警");
 		}
 		else {
-			text  = _T("自动看船已关闭");
+			if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
+				text = _T("自动看船已开启");
+			}
+			else {
+				text = _T("自动看船已关闭");
+			}
 		}
+
 		textSize = dc.GetTextExtent(text);
 		offset_x = (m_rSysTimeText.Width() - textSize.cx) / 2;
 		offset_y = (m_rSysTimeText.Height() - textSize.cy) / 2;
@@ -559,18 +563,34 @@ void CColdEyeDlg::SetAutoRun(bool bAutoRun)
 BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_CONTEXTMENU) {
-		if (mWall.IsWindowVisible()) {
-			mWall.ShowWindow(false);
-			mMenu.ShowWindow(true);
 
+	//if (pMsg->message == WM_CONTEXTMENU) {
+	//	if (mWall.IsWindowVisible()) {
+	//		mWall.ShowWindow(false);
+	//		mMenu.ShowWindow(true);
+
+	//	}
+	//	else {
+	//		mWall.ShowWindow(true);
+	//		mMenu.ShowWindow(false);
+	//		mWall.SetFocus();
+	//	}
+	//	
+	//}
+
+	if (pMsg->message == WM_KEYDOWN) {
+		if (pMsg->wParam == VK_APPS) {
+			if (mWall.IsWindowVisible()) {
+				mWall.ShowWindow(false);
+				mMenu.ShowWindow(true);
+
+			}
+			else {
+				mWall.ShowWindow(true);
+				mMenu.ShowWindow(false);
+				mWall.SetFocus();
+			}
 		}
-		else {
-			mWall.ShowWindow(true);
-			mMenu.ShowWindow(false);
-			mWall.SetFocus();
-		}
-		
 	}
 
 
@@ -619,11 +639,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				{
 					MSG msg;
 					msg.wParam   = 666;
-					msg.lParam  = USER_MSG_SYSTEM_CONFIG;
+					msg.message  = USER_MSG_SYSTEM_CONFIG;
 
 					CColdEyeApp* pApp  = (CColdEyeApp*)AfxGetApp();
 
-					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on>0?0:1;
+					pApp->m_SysConfig.auto_watch_on = pApp->m_SysConfig.auto_watch_on ? false:true;
 
 					CDBLogger::GetInstance()->LogAutoWatch(m_SysTime, pApp->m_SysConfig.auto_watch_on);
 
