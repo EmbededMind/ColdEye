@@ -1238,6 +1238,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			break;
 		//-------------------------------------------
 		case USER_MSG_INITFILE:
+			Print("USER MSG INITFILE");
 			if (wParam == RECORD_ALARM) {
 				InitAlarmFile((list<CRecordFileInfo*>*)lParam);
 
@@ -1294,6 +1295,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			break;
         //--------------------------------------------
 		case USER_MSG_DELFILE:
+			Print("USER MSG DELFILE");
 			if (wParam == RECORD_ALARM) {
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);

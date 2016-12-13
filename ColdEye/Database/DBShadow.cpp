@@ -100,10 +100,10 @@ void CDBShadow::Update(UINT opt, WPARAM wParam, LPARAM lParam)
 			Print("file cnt error:%d", pInfo->nOwner);
 		}
 
-		msg.message = USER_MSG_DELFILE;
-		msg.wParam = wParam;
-		msg.lParam = lParam;
-		CMsgSquare::GetInstance()->Broadcast(msg);
+		//msg.message = USER_MSG_DELFILE;
+		//msg.wParam = wParam;
+		//msg.lParam = lParam;
+		//CMsgSquare::GetInstance()->Broadcast(msg);
 
 		DelFileInfo(infoList, (CRecordFileInfo*)lParam);
 		break;

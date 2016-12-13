@@ -129,6 +129,8 @@ BOOL CRecordFileMetabolism::FileMetabolism()
 {
 	//EnterCriticalSection(&g_cs);
 	this->mSurplusSpaceNormal = this->GetDiskFreeSpaceAsB(_T(NORMALDISK));
+	Print("2G = %llu byte", SURPLUSSPACENORMAL);
+	Print("mSurplusSpaceNormal = %llu", this->mSurplusSpaceNormal);
 	while(this->mSurplusSpaceNormal < SURPLUSSPACENORMAL && this->mSurplusSpaceNormal)
 	{
 		uint64_t tmp = this->KillNormalFile();
@@ -139,6 +141,7 @@ BOOL CRecordFileMetabolism::FileMetabolism()
 		this->mSurplusSpaceNormal += tmp;
 	}
 	this->mSurplusSpaceAlarm = this->GetDiskFreeSpaceAsB(_T(ALARMDISK));
+	Print("mSurplusSpaceAlarm = %llu", this->mSurplusSpaceAlarm);
 	while (this->mSurplusSpaceAlarm < SURPLUSSPACEALARM && this->mSurplusSpaceAlarm)
 	{
 		uint64_t tmp = this->KillAlarmFile();
