@@ -193,6 +193,7 @@ BOOL CColdEyeApp::InitInstance()
 
 	CColdEyeDlg dlg;
 	m_pMainWnd = &dlg;
+	dlg.SetFocus();
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{
