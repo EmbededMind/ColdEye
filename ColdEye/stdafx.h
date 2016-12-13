@@ -187,8 +187,8 @@
 
 
 /**      Disk Surpluss Space     **/
-#define SURPLUSSPACENORMAL      2*1024*1024*1024//正常文件所在磁盘剩余空间红线524288000
-#define SURPLUSSPACEALARM       2*1024*1024*1024//报警文件所在磁盘剩余空间红线524088000
+const ULONGLONG SURPLUSSPACENORMAL = 2147483648;//正常文件所在磁盘剩余空间红线524288000
+const ULONGLONG SURPLUSSPACEALARM = 2147483648;//报警文件所在磁盘剩余空间红线524088000
 
 /**        Com num define        **/
 #define COM_KB    1

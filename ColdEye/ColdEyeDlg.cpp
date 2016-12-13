@@ -292,10 +292,9 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
-
-	SetForegroundWindow();
-
-	return FALSE;  // 除非将焦点设置到控件，否则返回 TRUE
+	Print("2G = %llu byte", SURPLUSSPACENORMAL);
+	::SetForegroundWindow(this->GetSafeHwnd());
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CColdEyeDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -564,22 +563,22 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//if (pMsg->message == WM_CONTEXTMENU) {
-	//	if (mWall.IsWindowVisible()) {
-	//		mWall.ShowWindow(false);
-	//		mMenu.ShowWindow(true);
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (mWall.IsWindowVisible()) {
+			mWall.ShowWindow(false);
+			mMenu.ShowWindow(true);
 
-	//	}
-	//	else {
-	//		mWall.ShowWindow(true);
-	//		mMenu.ShowWindow(false);
-	//		mWall.SetFocus();
-	//	}
-	//	
-	//}
+		}
+		else {
+			mWall.ShowWindow(true);
+			mMenu.ShowWindow(false);
+			mWall.SetFocus();
+		}
+		
+	}
 
 	if (pMsg->message == WM_KEYDOWN) {
-		if (pMsg->wParam == VK_APPS) {
+		/*if (pMsg->wParam == VK_APPS) {
 			if (mWall.IsWindowVisible()) {
 				mWall.ShowWindow(false);
 				mMenu.ShowWindow(true);
@@ -590,10 +589,12 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 				mMenu.ShowWindow(false);
 				mWall.SetFocus();
 			}
+		}*/
+		if (pMsg->wParam == VK_RETURN)
+		{
+			return TRUE;
 		}
 	}
-
-
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -615,6 +616,12 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
+		if(::GetForegroundWindow() != this->GetSafeHwnd() && ::GetForegroundWindow() != mMenu.GetHWND())
+		{
+			Print("Menu 不在最前面 %d %d %d",::GetForegroundWindow(), this->GetSafeHwnd(), mMenu.GetHWND());
+			::SetForegroundWindow(this->GetSafeHwnd());
+			this->SetFocus();
+		}
 		onedata *p = (onedata*)pData;
 		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
 		KBmessage_NO++;
