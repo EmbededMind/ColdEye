@@ -185,27 +185,35 @@ void CMyMenuWnd::AdapTive()
 void CMyMenuWnd::FocusedReset()
 {
 	CButtonUI* pItem;
-
+	int inx;
+	inx = pLayout_Menuitem->GetCurSel();
+	m_pm.FindControl(_T("alarmvideo"))->SetFocus();
 	if (focusLevel > 0) {
 		pLayout_third->SetBkColor(LAYOUT_THIRD_NOFOUCS);
 
-		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
-		CVerticalLayoutUI* pLayout = (CVerticalLayoutUI*)pLayout_Menuitem->GetItemAt(pLayout_Menuitem->GetCurSel());
-		for (int i = 0; i < pLayout->GetCount(); i += 2) {
-			pItem = (CButtonUI*)pLayout->GetItemAt(i);
-			pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
-		}
 
 		for (int i = 0; i < pLayout_PopMenu->GetCount(); i += 2) {
 			pItem = (CButtonUI*)pLayout_PopMenu->GetItemAt(i);
 			if (pItem != FocusedItem[0])
 				pItem->SetBkColor(LAYOUT_POP_FOCUSED);
 		}
-		if(FocusedItem[1])
+		if (focusLevel == 2) {
+			FocusedItem[1]->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
 			FocusedItem[1]->SetTextColor(0xFF666666);
+		}
+
+		pLayout_Menuitem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		CVerticalLayoutUI* pLayout = (CVerticalLayoutUI*)pLayout_Menuitem->GetItemAt(inx);
+		for (int i = 0; i < pLayout->GetCount(); i += 2) {
+			pItem = (CButtonUI*)pLayout->GetItemAt(i);
+			pItem->SetBkColor(LAYOUT_MENUITEM_NOFOCUS);
+		}
+
 		FocusedItem[0]->SetTextColor(0xFF666666);
 		FocusedItem[0]->SetBkColor(LAYOUT_POP_FOCUSED);
 	}
+	static_cast<CButtonUI*>(m_pm.FindControl(_T("alarmvideo")))->SetTextColor(0xFF666666);
+	m_pm.FindControl(_T("alarmvideo"))->SetBkColor(0xFF4198FE);
 
 	static_cast<CButtonUI*>(m_pm.FindControl(_T("homewatch")))->SetTextColor(0xFF666666);
 	m_pm.FindControl(_T("homewatch"))->SetBkColor(0xFFFFFFFF);
@@ -216,7 +224,6 @@ void CMyMenuWnd::FocusedReset()
 	pLayout_Menuitem->SelectItem(0);
 	pLayout_third->SelectItem(0);
 	pLayout_third->SetVisible(false);
-	m_pm.FindControl(_T("alarmvideo"))->SetFocus();
 	m_pm.Invalidate();
 }
 
@@ -443,7 +450,6 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 			pLayout_third->SelectItem(0);
 			pLayout_third->SetVisible(false);
 			UpdataItemColor();
-			
 			break;
 		}
 	}

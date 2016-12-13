@@ -572,28 +572,28 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		else {
 			mWall.ShowWindow(true);
 			mMenu.ShowWindow(false);
-			mMenu.FocusedReset();
 			mWall.SetFocus();
+			mMenu.FocusedReset();
 		}
 	}
 
-	if (pMsg->message == WM_KEYDOWN) {
-		/*if (pMsg->wParam == VK_APPS) {
-			if (mWall.IsWindowVisible()) {
-				mWall.ShowWindow(false);
-				mMenu.ShowWindow(true);
-			}
-			else {
-				mWall.ShowWindow(true);
-				mMenu.ShowWindow(false);
-				mWall.SetFocus();
-			}
-		}*/
-		if (pMsg->wParam == VK_RETURN)
-		{
-			return TRUE;
-		}
-	}
+	//if (pMsg->message == WM_KEYDOWN) {
+	//	/*if (pMsg->wParam == VK_APPS) {
+	//		if (mWall.IsWindowVisible()) {
+	//			mWall.ShowWindow(false);
+	//			mMenu.ShowWindow(true);
+	//		}
+	//		else {
+	//			mWall.ShowWindow(true);
+	//			mMenu.ShowWindow(false);
+	//			mWall.SetFocus();
+	//		}
+	//	}*/
+	//	if (pMsg->wParam == VK_RETURN)
+	//	{
+	//		return TRUE;
+	//	}
+	//}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
