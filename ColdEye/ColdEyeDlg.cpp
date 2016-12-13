@@ -109,7 +109,7 @@ void CColdEyeDlg::UpdateLayout()
 	
 
 	m_TextFont.DeleteObject();
-	m_TextFont.CreatePointFont(title_height/4*10,  _T("方正兰亭中黑_GBK"));
+	m_TextFont.CreatePointFont(title_height/5*10,  _T("方正兰亭中黑_GBK"));
 	//m_TextFont.CreateFont(title_height / 4 * 10, _T("方正兰亭中黑_GBK"));
 	LOGFONT  fontInfo;
 	m_TextFont.GetLogFont(&fontInfo);
