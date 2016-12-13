@@ -2116,6 +2116,7 @@ void CMyMenuWnd::DeleteMenuItem(CPort* pPort, CDuiString layoutname, int BaseDat
 void CMyMenuWnd::DeleteAlarmMenuItem(CPort* pPort)
 {
 	DeleteMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
+	pAlarmItem[pPort->GetId() - 1] = NULL;
 }
 
 
