@@ -34,10 +34,6 @@ void CMySliderUI::DoEvent(TEventUI & event)
 			m_pManager->SendNotify(this, DUI_MSGTYPE_VALUECHANGED, (WPARAM)GetValue(), NULL);
 			break;
 		//----------------------------------------------------------------------
-		case VK_BACK:
-			m_pManager->SendNotify(this, DUI_MSGTYPE_SLIDER, event.wParam, event.lParam);
-			break;
-		//----------------------------------------------------------------------
 		}
 	}
 	else if (event.Type == UIEVENT_SETFOCUS) {

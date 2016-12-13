@@ -13,6 +13,7 @@ DUI_END_MESSAGE_MAP()
 
 CMsgWnd::CMsgWnd()
 {
+	pRecordInfo = NULL;
 }
 
 CMsgWnd::~CMsgWnd()
@@ -230,22 +231,28 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 		break;
 
 	case USER_MSG_COPY_STOP:
-		list<CRecordFileInfo*>::iterator iter;
-		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
-			if ((CRecordFileInfo*)lParam == (*iter)) {
-				sendedSize += (*iter)->dlSize;
-				iter++;
-				if (iter == pRecordInfo->end()) {
-					CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
-					progress->SetValue(totalSize);
-					Close(1);//复制结束
+		{
+			list<CRecordFileInfo*>::iterator iter;
+			for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
+				if ((CRecordFileInfo*)lParam == (*iter)) {
+					sendedSize += (*iter)->dlSize;
+					iter++;
+					if (iter == pRecordInfo->end()) {
+						CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
+						progress->SetValue(totalSize);
+						Close(1);//复制结束
+						return 0;
+					}
+					CExHardDrive::GetInstance()->CopyRecord((*iter), videoType);
 					return 0;
 				}
-				CExHardDrive::GetInstance()->CopyRecord((*iter), videoType);
-				return 0;
 			}
+			Close(1);//复制结束
 		}
-		Close(1);//复制结束
+		break;
+
+	case USER_MSG_EXHARDDRIVE_OUT:
+		Close(MSGID_EXHARDDRIVE_OUT);
 		break;
 	}
 
@@ -311,7 +318,6 @@ void CMsgWnd::InitWindow()
 {
 	m_pm.SetDPI(((CColdEyeDlg*)AfxGetMainWnd())->mMenu.GetDpi());
 
-	HWND MainDlg;
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));
 	pButton_record = (CButtonUI*)m_pm.FindControl(_T("record_btn"));

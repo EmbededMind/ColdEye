@@ -3,8 +3,6 @@
 #include "stdint.h"
 #include "File\RecordFileInfo.h"
 
-#define COPY_END_SUCCEED   1
-#define COPY_END_FAIL      0
 
 typedef struct USBFlashDiskStatus
 {
