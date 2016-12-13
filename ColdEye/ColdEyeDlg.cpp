@@ -572,6 +572,7 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		else {
 			mWall.ShowWindow(true);
 			mMenu.ShowWindow(false);
+			mMenu.FocusedReset();
 			mWall.SetFocus();
 		}
 	}
