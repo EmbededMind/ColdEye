@@ -1330,8 +1330,7 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
         //--------------------------------------------
 		case USER_MSG_DELFILE:
 			Print("USER MSG DELFILE");
-			if (wParam == RECORD_ALARM) {
-		        Print("delete alarm file in view");
+			if (wParam == RECORD_ALARM) {		        
 				CRecordFileInfo* pInfo = (CRecordFileInfo*)lParam;
 				camera[pInfo->nOwner - 1].pAlarmList->DeleteRecordFile(pInfo);
 

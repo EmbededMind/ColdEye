@@ -1077,12 +1077,12 @@ void CSurface::OnSize(UINT nType, int cx, int cy)
 BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_CONTEXTMENU) {
+	/*if (pMsg->message == WM_CONTEXTMENU) {
 		if (mIsLargeMode) {
 			return true;
 		}
 	}
-	else if (pMsg->message == WM_KEYDOWN) { 			
+	else*/ if (pMsg->message == WM_KEYDOWN) { 			
 		switch (pMsg->wParam)
 		{
 			case VK_F8:
@@ -1126,6 +1126,10 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 				if (mIsLargeMode) {
 					return true;
 				}
+				break;
+			//------------------------------------------
+			case VK_APPS:
+				Print("Surface case apps");
 				break;
 			//------------------------------------------
 			default:
