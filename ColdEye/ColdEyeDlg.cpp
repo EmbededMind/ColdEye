@@ -574,7 +574,6 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 			mMenu.ShowWindow(false);
 			mWall.SetFocus();
 		}
-		
 	}
 
 	if (pMsg->message == WM_KEYDOWN) {
@@ -582,7 +581,6 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 			if (mWall.IsWindowVisible()) {
 				mWall.ShowWindow(false);
 				mMenu.ShowWindow(true);
-
 			}
 			else {
 				mWall.ShowWindow(true);
@@ -595,21 +593,7 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 	}
-
-	//if (pMsg->message == WM_KEYDOWN) {
-	//	if (pMsg->wParam == VK_APPS) {
-	//		if (mWall.IsWindowVisible()) {
-	//			mWall.ShowWindow(false);
-	//			mMenu.ShowWindow(true);
-
-	//		}
-	//		else {
-	//			mWall.ShowWindow(true);
-	//			mMenu.ShowWindow(false);
-	//			mWall.SetFocus();
-	//		}
-	//	}
-	//}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
 
