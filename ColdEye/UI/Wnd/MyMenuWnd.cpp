@@ -131,6 +131,7 @@ void CMyMenuWnd::InitWindow()
 		pSquare->AddAudience(m_hWnd, USER_MSG_LOGOFF);
 		pSquare->AddAudience(m_hWnd, USER_MSG_INITFILE);
 		pSquare->AddAudience(m_hWnd, USER_MSG_ADDFILE);
+		pSquare->AddAudience(m_hWnd, USER_MSG_DELFILE);
 	}
 	InitAlarmVoice();
 	InitAwOnOffRecord();
