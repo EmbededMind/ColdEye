@@ -43,7 +43,7 @@ public:
 		return pWnd->ShowModal();
 	}
 
-	static void ShowMessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2)
+	static CMsgWnd* ShowMessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2)
 	{
 		CMsgWnd* pWnd = new CMsgWnd();
 		pWnd->SkinType = skinType;
@@ -51,9 +51,12 @@ public:
 		pWnd->CenterWindow();
 		pWnd->SetMsg(text1, text2);
 		pWnd->ShowWindow(true);
+		pWnd->IsChildren = true;
+		return pWnd;
 	}
 
 public:
+	virtual LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	virtual void OnFinalMessage(HWND);
 	virtual CDuiString GetSkinFile();
 	virtual LPCTSTR GetWindowClassName(void) const;
@@ -80,5 +83,7 @@ public:
 	ULONGLONG totalSize;
 	ULONGLONG sendedSize;
 	UINT8 videoType;
+	CMsgWnd* pChildWnd;
+	bool IsChildren;
 };
 
