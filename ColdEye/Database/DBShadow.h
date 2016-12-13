@@ -34,6 +34,7 @@ public:
 	list<CRecordFileInfo*> mAlarmFileInfoList;
 
 	int GetVirginFileCnt(int id);
+	int GetVirginFileCnt();
 	
 	static CDBShadow* GetInstance();
 
