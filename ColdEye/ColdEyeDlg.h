@@ -69,6 +69,8 @@ private:
 
 	CGammaRamp mGammaRamp;
 	WORD mBrightness;
+
+	bool misSetFocus;
 										// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_COLDEYE_DIALOG };

@@ -599,28 +599,40 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
-		if (!this->mMessageBox)
+		//if (!this->mMessageBox)
+		//{
+		//	Print("mMessageBox ЮЊПе");
+		//	HWND hwnd = ::GetForegroundWindow();
+		//	while (hwnd)
+		//	{
+		//		Print("hwnd while");
+		//		if (hwnd == this->GetSafeHwnd())
+		//		{
+		//			Print("hwnd == cold");
+		//			::SetForegroundWindow(hwnd);
+		//			/*::SetFocus(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->GetSafeHwnd());*/
+		//			break;
+		//		}
+		//		if (hwnd == mMenu.GetHWND())
+		//		{
+		//			Print("hwnd == menu");
+		//			::SetForegroundWindow(hwnd);
+		//			/*::SetFocus(hwnd);*/
+		//			break;
+		//		}
+		//		hwnd = ::GetNextWindow(hwnd, GW_HWNDNEXT);
+		//	}
+		//	if (!hwnd)
+		//	{
+		//		Print("hwnd == NULL");
+		//		::SetForegroundWindow(this->GetSafeHwnd());
+		//		/*this->SetFocus();*/
+		//	}
+		//}
+		if (!misSetFocus)
 		{
-			Print("mMessageBox ЮЊПе");
-			HWND hwnd = ::GetForegroundWindow();
-			while (hwnd)
-			{
-				Print("hwnd while");
-				if (hwnd == this->GetSafeHwnd() || hwnd == mMenu.GetHWND())
-				{
-					Print("hwnd == cold || hwnd == menu");
-					::SetForegroundWindow(hwnd);
-					::SetFocus(hwnd);
-					break;
-				}
-				hwnd = ::GetNextWindow(hwnd, GW_HWNDNEXT);
-			}
-			if (!hwnd)
-			{
-				Print("hwnd == NULL");
-				::SetForegroundWindow(this->GetSafeHwnd());
-				this->SetFocus();
-			}
+			misSetFocus = TRUE;
+			::SetForegroundWindow(this->GetSafeHwnd());
 		}
 		onedata *p = (onedata*)pData;
 		//printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
