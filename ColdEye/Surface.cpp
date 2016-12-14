@@ -959,7 +959,12 @@ void CSurface::OnNcPaint()
 
 void CSurface::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp)
 {
+	if (bCalcValidRects) {
+		CRect& rc  = (CRect&)lpncsp->rgrc[0];
 
+		rc.top  += 50 - GetSystemMetrics(SM_CYCAPTION);
+		//rc.left += 10 - GetSystemMetrics(SM_CDLGFRAME);
+	}
 }
 
 
