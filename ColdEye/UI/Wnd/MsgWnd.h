@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ColdEyeDlg.h"
 #include "ColdEye.h"
+#include "ColdEyeDlg.h"
 #include "Wnd\MsgWnd.h"
 
 #include "UIlib.h"
@@ -46,12 +46,12 @@ public:
 	static CMsgWnd* ShowMessageBox(HWND hParent, LPCTSTR skinType, LPCTSTR text1, LPCTSTR text2)
 	{
 		CMsgWnd* pWnd = new CMsgWnd();
+		pWnd->IsChildren = true;
 		pWnd->SkinType = skinType;
 		pWnd->Create(hParent, _T("msgwnd"), UI_WNDSTYLE_FRAME, 0);
 		pWnd->CenterWindow();
 		pWnd->SetMsg(text1, text2);
 		pWnd->ShowWindow(true);
-		pWnd->IsChildren = true;
 		return pWnd;
 	}
 

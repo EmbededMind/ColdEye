@@ -18,6 +18,7 @@ CMsgWnd::CMsgWnd()
 
 CMsgWnd::~CMsgWnd()
 {
+	pMainDlg->mMessageBox = NULL;
 }
 
 
@@ -340,22 +341,21 @@ LRESULT CMsgWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 void CMsgWnd::InitWindow()
 {
+	pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
+	if (!IsChildren)
+		pMainDlg->mMessageBox = this;
 	m_pm.SetDPI(((CColdEyeDlg*)AfxGetMainWnd())->mMenu.GetDpi());
 
 	pButton_ok = (CButtonUI*)m_pm.FindControl(_T("ok_btn"));
 	pButton_cancel = (CButtonUI*)m_pm.FindControl(_T("cancel_btn"));
 	pButton_record = (CButtonUI*)m_pm.FindControl(_T("record_btn"));
 	if (SkinType == _T("mb_recordingvoice.xml")) {
-		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
-		pMainDlg->mMessageBox = this;
 	}
 	else if (SkinType == _T("mb_update.xml")) {
 		UINT_PTR i;
 		i = SetTimer(m_pm.GetPaintWindow(),1, 200,NULL);
 	}
 	else if (SkinType == _T("mb_copyvideo.xml")) {
-		pMainDlg = (CColdEyeDlg*)AfxGetMainWnd();
-		pMainDlg->mMessageBox = this;
 		totalSize = 0;
 		sendedSize = 0;
 		list<CRecordFileInfo*>::iterator iter;
