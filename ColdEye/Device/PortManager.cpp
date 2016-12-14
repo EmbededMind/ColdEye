@@ -69,6 +69,17 @@ void CPortManager::LoadPortsParam()
 
 
 
+int  CPortManager::GetTotalVirginFiltCnt()
+{
+    int cnt  = 0;
+	for (int i = 0; i < 6; i++) {
+		cnt += mPorts[i].m_virginNumber;
+	}
+
+	return cnt;
+}
+
+
 
 CPort*  CPortManager::GetPortById(int id)
 {

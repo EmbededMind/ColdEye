@@ -16,6 +16,8 @@ public:
 
 	void   LoadPortsParam();
 
+	int    GetTotalVirginFiltCnt();
+
 
 	CPort*  GetPortById(int id);
 
