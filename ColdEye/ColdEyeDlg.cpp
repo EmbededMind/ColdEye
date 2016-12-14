@@ -632,6 +632,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		//}
 		if (!misSetFocus)
 		{
+			Print("SetFocus");
 			misSetFocus = TRUE;
 			::SetForegroundWindow(this->GetSafeHwnd());
 		}

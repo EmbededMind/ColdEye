@@ -45,6 +45,7 @@ void CWaitReplyState::ReplyHostTalk(CCamera *pDev)
 			{
 				LONG handle;
 				H264_DVR_StopVoiceCom(ComManagement->mHandle);
+				ComManagement->mPdev->SetTalking(FALSE);
 				handle = H264_DVR_StartLocalVoiceCom(pDev->GetLoginId());
 				ComManagement->mHandle = handle;
 				ComManagement->mPdev = pDev;
