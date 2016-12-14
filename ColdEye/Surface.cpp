@@ -923,6 +923,9 @@ void CSurface::OnSetFocus(CWnd* pOldWnd)
 {
 	mHasFocused = TRUE;
 	CWnd::OnSetFocus(pOldWnd);
+
+	//ModifyStyle(0, WS_THICKFRAME);
+
 	OnNcPaint();
 	// TODO: 在此处添加消息处理程序代码
 }
@@ -932,7 +935,11 @@ void CSurface::OnKillFocus(CWnd* pNewWnd)
 {
 	mHasFocused = FALSE;
 	CWnd::OnKillFocus(pNewWnd);
+
+	//ModifyStyle(WS_THICKFRAME, 0);
+
 	OnNcPaint();
+
 	// TODO: 在此处添加消息处理程序代码
 }
 
@@ -941,30 +948,54 @@ void CSurface::OnNcPaint()
 {
 	// TODO: 在此处添加消息处理程序代码
 	// 不为绘图消息调用 CWnd::OnNcPaint()
-	COLORREF border_color = mHasFocused ? RGB(220, 20, 60) : RGB(123, 104, 238);
 
-	HDC hDC = ::GetWindowDC(m_hWnd);
-	CRect rc;
-	::GetWindowRect(m_hWnd, &rc);
-	rc = CRect(0, 0, rc.right - rc.left, rc.bottom - rc.top);
+		COLORREF border_color = mHasFocused ? RGB(255, 255, 255) : RGB(64,84,115);
+		CPen pen(PS_SOLID, 3, border_color);
+		HDC hDC = ::GetWindowDC(m_hWnd);
 
-	::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
-	rc.InflateRect(-1, -1);
-	::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+		SelectObject(hDC, pen);
 
-	::ReleaseDC(m_hWnd, hDC);
+		CRect rc;
+		::GetWindowRect(m_hWnd, &rc);
+		rc = CRect(0, 0, rc.right - rc.left, rc.bottom - rc.top);
+
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+		rc.InflateRect(-1, -1);
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+		rc.InflateRect(-1, -1);
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+		rc.InflateRect(-1, -1);
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+
+		rc.InflateRect(-1, -1);
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+
+		rc.InflateRect(-1, -1);
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+
+		rc.InflateRect(-1, -1);
+		::FrameRect(hDC, &rc, ::CreateSolidBrush(border_color));
+
+		::ReleaseDC(m_hWnd, hDC);
 }
 
 
 
 void CSurface::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp)
 {
-	if (bCalcValidRects) {
-		CRect& rc  = (CRect&)lpncsp->rgrc[0];
+	//if (bCalcValidRects) {
+	//	CRect& rc  = (CRect&)lpncsp->rgrc[0];
 
-		rc.top  += 50 - GetSystemMetrics(SM_CYCAPTION);
-		//rc.left += 10 - GetSystemMetrics(SM_CDLGFRAME);
-	}
+
+	//	rc.left -= 20;
+	//	rc.right += 20;
+	//	rc.top  -=  02;
+	//	rc.bottom += 20;
+	//	
+
+	//	//CWnd::OnNcCalcSize(bCalcValidRects, lpncsp);
+	//	//rc.left += 10 - GetSystemMetrics(SM_CDLGFRAME);
+	//}
 }
 
 
