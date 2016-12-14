@@ -18,7 +18,8 @@ CMsgWnd::CMsgWnd()
 
 CMsgWnd::~CMsgWnd()
 {
-	pMainDlg->mMessageBox = NULL;
+	if(!IsChildren)
+		pMainDlg->mMessageBox = NULL;
 }
 
 
@@ -71,8 +72,11 @@ void CMsgWnd::SetMsg(LPCTSTR text1, LPCTSTR text2)
 LRESULT CMsgWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	if (IsChildren) {
-		if (wParam)
+		if (wParam) {
 			::PostMessage(((CColdEyeDlg*)AfxGetMainWnd())->mMessageBox->GetHWND(), USER_MSG_CANCEL_COPY, NULL, NULL);
+			CExHardDrive::GetInstance()->CancelCopy();
+		}
+
 	}
 	__super::OnClose( uMsg,  wParam,  lParam,  bHandled);
 	bHandled = FALSE;

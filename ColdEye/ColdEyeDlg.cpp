@@ -371,10 +371,12 @@ void CColdEyeDlg::OnPaint()
 
 		dc.DrawTextW(text, m_rSysTimeText, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-		if (CDBShadow::GetInstance()->GetVirginFileCnt()) {
+		if (CPortManager::GetInstance()->GetTotalVirginFiltCnt()) {
 			text  = _T("本船出现监控报警");
+			Print("Have virgin");
 		}
 		else {
+			Print("Have no virgin");
 			if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
 				text = _T("自动看船已开启");
 			}
