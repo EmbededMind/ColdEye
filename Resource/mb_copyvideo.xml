@@ -10,7 +10,7 @@
 	
 	<VerticalLayout name="root" bkimage="file='image/mb_bk.png'">
 		<VerticalLayout float="true" pos="495,457,0,0" borderround="10,10" bkcolor="#FFFFFFFF" width="610" height="414" ><!--POS Y+=64 -->
-			<Text name="title" pos="250,30,0,0" width="150" height="40" font="1"/>
+			<Text name="title" width="610" height="96" font="1" align="center" textpadding="0,30,0,0" />
 			<Text name="subtitle" text="视频复制进度" pos="221,96,0,0" width="200" height="39" textcolor="#FF666666"/>
 			<Label name="bind_progress" float="true" pos="56,170,0,0" width="500" height="55" bkcolor="#FFC4C4C4" />
 			<Progress name="copy_progress" float="true" pos="56,170,0,0" width="555" height="60" foreimage="file='image/progressbk.png'" min="0" max="100" font="0" textcolor="#FF333333" valign="vcenter"/>

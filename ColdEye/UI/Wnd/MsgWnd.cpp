@@ -73,8 +73,9 @@ LRESULT CMsgWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled
 {
 	if (IsChildren) {
 		if (wParam) {
-			::PostMessage(((CColdEyeDlg*)AfxGetMainWnd())->mMessageBox->GetHWND(), USER_MSG_CANCEL_COPY, NULL, NULL);
 			CExHardDrive::GetInstance()->CancelCopy();
+			::PostMessage(((CColdEyeDlg*)AfxGetMainWnd())->mMessageBox->GetHWND(), USER_MSG_CANCEL_COPY, NULL, NULL);
+			Print("Stop Copy");
 		}
 
 	}
