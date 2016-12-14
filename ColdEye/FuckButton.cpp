@@ -1,4 +1,4 @@
-// FuckButton.cpp : 实现文件
+  // FuckButton.cpp : 实现文件
 //
 
 #include "stdafx.h"

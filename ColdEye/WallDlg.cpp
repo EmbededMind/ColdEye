@@ -67,7 +67,7 @@ bool CWallDlg::Ingest(CPort* pPort)
 	 ASSERT(mSurfaces[pos] == NULL);
 
 	 mSurfaces[pos]  = new CSurface();
-	 mSurfaces[pos]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(0,0,0,0), this, pPort->GetId());
+	 mSurfaces[pos]->Create(NULL, _T("Surface"), WS_CHILD|WS_VISIBLE|WS_BORDER|WS_THICKFRAME, CRect(0,0,0,0), this, pPort->GetId());
 	 
 	 mSurfaces[pos]->ShowWindow(SW_SHOW);
 
