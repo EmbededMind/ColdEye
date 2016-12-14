@@ -615,18 +615,35 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
-		if(::GetForegroundWindow() != this->GetSafeHwnd() && ::GetForegroundWindow() != mMenu.GetHWND())
+		if (!this->mMessageBox)
 		{
-			Print("Menu 不在最前面 %d %d %d",::GetForegroundWindow(), this->GetSafeHwnd(), mMenu.GetHWND());
-			::SetForegroundWindow(this->GetSafeHwnd());
-			this->SetFocus();
+			Print("mMessageBox 为空");
+			HWND hwnd = ::GetForegroundWindow();
+			while (hwnd)
+			{
+				Print("hwnd while");
+				if (hwnd == this->GetSafeHwnd() || hwnd == mMenu.GetHWND())
+				{
+					Print("hwnd == cold || hwnd == menu");
+					::SetForegroundWindow(hwnd);
+					::SetFocus(hwnd);
+					break;
+				}
+				hwnd = ::GetNextWindow(hwnd, GW_HWNDNEXT);
+			}
+			if (!hwnd)
+			{
+				Print("hwnd == NULL");
+				::SetForegroundWindow(this->GetSafeHwnd());
+				this->SetFocus();
+			}
 		}
 		onedata *p = (onedata*)pData;
-		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
-		KBmessage_NO++;
+		//printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
+		//KBmessage_NO++;
 		for (int i = 0; i < p->num; i++)
 		{
-			printf("kb = %d\n", p->ch[i]);
+			/*printf("kb = %d\n", p->ch[i]);*/
 			switch (p->ch[i])
 			{
 			case KB_MENU:
