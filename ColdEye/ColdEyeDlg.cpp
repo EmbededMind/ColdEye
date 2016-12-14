@@ -186,6 +186,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_SYS_VOLUME, &CColdEyeDlg::OnUserMsgSysVolume)
 	ON_MESSAGE(USER_MSG_STAR_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStarPlayAlarmVoice)
 	ON_MESSAGE(USER_MSG_STOP_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStopPlayAlarmVoice)
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -580,7 +581,6 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		
 	}
 
-
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -602,18 +602,47 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 	int volume;
 	if (port == COM_KB)
 	{
-		if(::GetForegroundWindow() != this->GetSafeHwnd() && ::GetForegroundWindow() != mMenu.GetHWND())
+		//if (!this->mMessageBox)
+		//{
+		//	Print("mMessageBox 为空");
+		//	HWND hwnd = ::GetForegroundWindow();
+		//	while (hwnd)
+		//	{
+		//		Print("hwnd while");
+		//		if (hwnd == this->GetSafeHwnd())
+		//		{
+		//			Print("hwnd == cold");
+		//			::SetForegroundWindow(hwnd);
+		//			/*::SetFocus(((CColdEyeApp*)AfxGetApp())->GetWallDlg()->GetSafeHwnd());*/
+		//			break;
+		//		}
+		//		if (hwnd == mMenu.GetHWND())
+		//		{
+		//			Print("hwnd == menu");
+		//			::SetForegroundWindow(hwnd);
+		//			/*::SetFocus(hwnd);*/
+		//			break;
+		//		}
+		//		hwnd = ::GetNextWindow(hwnd, GW_HWNDNEXT);
+		//	}
+		//	if (!hwnd)
+		//	{
+		//		Print("hwnd == NULL");
+		//		::SetForegroundWindow(this->GetSafeHwnd());
+		//		/*this->SetFocus();*/
+		//	}
+		//}
+		if (!misSetFocus)
 		{
-			Print("Menu 不在最前面 %d %d %d",::GetForegroundWindow(), this->GetSafeHwnd(), mMenu.GetHWND());
+			misSetFocus = TRUE;
 			::SetForegroundWindow(this->GetSafeHwnd());
-			this->SetFocus();
 		}
 		onedata *p = (onedata*)pData;
-		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
-		KBmessage_NO++;
+		//printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
+		//KBmessage_NO++;
 		for (int i = 0; i < p->num; i++)
 		{
-			printf("kb = %d\n", p->ch[i]);
+			/*printf("kb = %d\n", p->ch[i]);*/
 			switch (p->ch[i])
 			{
 			case KB_MENU:
@@ -1182,4 +1211,13 @@ void CColdEyeDlg::OnOK()
 	// TODO: 在此添加专用代码和/或调用基类
 
 	//CDialogEx::OnOK();
+}
+
+
+BOOL CColdEyeDlg::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	return true;
+	//return CDialogEx::OnEraseBkgnd(pDC);
 }
