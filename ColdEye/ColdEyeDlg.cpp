@@ -186,6 +186,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_SYS_VOLUME, &CColdEyeDlg::OnUserMsgSysVolume)
 	ON_MESSAGE(USER_MSG_STAR_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStarPlayAlarmVoice)
 	ON_MESSAGE(USER_MSG_STOP_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStopPlayAlarmVoice)
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -572,8 +573,8 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		else {
 			mWall.ShowWindow(true);
 			mMenu.ShowWindow(false);
-			mWall.SetFocus();
 			mMenu.FocusedReset();
+			mWall.SetFocus();
 		}
 		
 	}
@@ -1179,4 +1180,13 @@ void CColdEyeDlg::OnOK()
 	// TODO: 在此添加专用代码和/或调用基类
 
 	//CDialogEx::OnOK();
+}
+
+
+BOOL CColdEyeDlg::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	return true;
+	//return CDialogEx::OnEraseBkgnd(pDC);
 }

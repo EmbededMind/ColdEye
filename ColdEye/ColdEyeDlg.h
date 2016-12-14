@@ -113,4 +113,6 @@ protected:
 	afx_msg LRESULT OnUserMsgStarPlayAlarmVoice(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMsgStopPlayAlarmVoice(WPARAM wParam, LPARAM lParam);
 	virtual void OnOK();
+public:
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
