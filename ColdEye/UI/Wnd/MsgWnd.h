@@ -72,6 +72,8 @@ public:
 
 	void RecordVoice();
 	void AlarmVoicePlay();
+	void ProgressReflash(int Size);
+
 public:
 	CDuiString SkinType;
 	CButtonUI *pButton_ok;

@@ -373,10 +373,8 @@ void CColdEyeDlg::OnPaint()
 
 		if (CPortManager::GetInstance()->GetTotalVirginFiltCnt()) {
 			text  = _T("本船出现监控报警");
-			Print("Have virgin");
 		}
 		else {
-			Print("Have no virgin");
 			if (((CColdEyeApp*)AfxGetApp())->m_SysConfig.auto_watch_on) {
 				text = _T("自动看船已开启");
 			}
@@ -639,11 +637,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			::SetForegroundWindow(this->GetSafeHwnd());
 		}
 		onedata *p = (onedata*)pData;
-		//printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
-		//KBmessage_NO++;
+		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
+		KBmessage_NO++;
 		for (int i = 0; i < p->num; i++)
 		{
-			/*printf("kb = %d\n", p->ch[i]);*/
+			printf("kb = %d\n", p->ch[i]);
 			switch (p->ch[i])
 			{
 			case KB_MENU:

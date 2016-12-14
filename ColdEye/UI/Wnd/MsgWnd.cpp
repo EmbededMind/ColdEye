@@ -73,9 +73,7 @@ LRESULT CMsgWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled
 {
 	if (IsChildren) {
 		if (wParam) {
-			CExHardDrive::GetInstance()->CancelCopy();
 			::PostMessage(((CColdEyeDlg*)AfxGetMainWnd())->mMessageBox->GetHWND(), USER_MSG_CANCEL_COPY, NULL, NULL);
-			Print("Stop Copy");
 		}
 
 	}
@@ -239,23 +237,20 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	//--------------------------------------------------------------------------
 	case USER_MSG_COPY_INFO:
 		{
-			//ProgressReflash();
 			CDuiString text;
 			int Size = sendedSize + wParam;
-			int num_progress = 100*((double)Size / (double)totalSize);
-			CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
-			progress->SetValue(num_progress);
-			text.Format(_T("%d%%"), num_progress);
-			progress->SetText(text);
+			ProgressReflash(Size);
 		}
 		break;
 
 	case USER_MSG_COPY_STOP:
 		{
+		if (!pRecordInfo) break;
 			list<CRecordFileInfo*>::iterator iter;
 			for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++) {
 				if ((CRecordFileInfo*)lParam == (*iter)) {
 					sendedSize += (*iter)->dlSize;
+					ProgressReflash(sendedSize);
 					iter++;
 					if (iter == pRecordInfo->end()) {
 						CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
@@ -278,10 +273,12 @@ LRESULT CMsgWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	case USER_MSG_EXHARDDRIVE_OUT:
 		if (pChildWnd)
 			pChildWnd->Close();
+		CExHardDrive::GetInstance()->CancelCopy();
 		Close(MSGID_EXHARDDRIVE_OUT);
 		break;
 
 	case USER_MSG_CANCEL_COPY:
+		CExHardDrive::GetInstance()->CancelCopy();
 		Close(0);
 		break;
 	}
@@ -333,6 +330,16 @@ Print("alarm voice PlayTime:%d",PlayTime);
 		KillTimer(m_hWnd, TIME_PLAY_VOICE);
 }
 
+void CMsgWnd::ProgressReflash(int Size)
+{
+	CDuiString text;
+	int num_progress = 100 * ((double)Size / (double)totalSize);
+	CProgressUI* progress = (CProgressUI*)m_pm.FindControl(_T("copy_progress"));
+	progress->SetValue(num_progress);
+	text.Format(_T("%d%%"), num_progress);
+	progress->SetText(text);
+}
+
 void CMsgWnd::Notify(TNotifyUI &msg)
 {
 	return WindowImplBase::Notify(msg);
@@ -367,6 +374,7 @@ void CMsgWnd::InitWindow()
 		for (iter = pRecordInfo->begin(); iter != pRecordInfo->end(); iter++)
 			totalSize += (*iter)->dlSize;
 
+		Print("Biu----copy video");
 		CExHardDrive::GetInstance()->CopyRecord(pRecordInfo->front(), videoType);
 	}
 	else if (SkinType == _T("mb_playvoice.xml")) {

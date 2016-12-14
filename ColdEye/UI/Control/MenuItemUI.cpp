@@ -88,13 +88,12 @@ void CMenuItemUI::DoEvent(TEventUI& event)
 				int id = StrToInt(userdata);
 				Print("id :%d",id);
 				if (id >= 0 && id < 6) {
-					list<CRecordFileInfo*> RecordInfo;
+					
 					UINT8 type;
 					RecordInfo = FindRecordFile(&type);
 					m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);
 				}
 				else if (id >= 18 && id < 23) {
-					list<CRecordFileInfo*> RecordInfo;
 					UINT8 type;
 					RecordInfo = FindRecordFile(&type);
 					m_pManager->SendNotify(this, DUI_MSGTYPE_COPYFILE, type, (LPARAM)&RecordInfo);

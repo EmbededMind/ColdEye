@@ -80,19 +80,22 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 			break;
 		case 2:
 		{
-			Print("before CopyFileEx");
+			ResetEvent(ExHardDrive->mCopyEvent);
+			//Print("before CopyFileEx");
 			BOOL bSucceed = CopyFileEx(ExHardDrive->mCopyFromPath, ExHardDrive->mCopyToPath,
 				(LPPROGRESS_ROUTINE)CopyProgressCall,
 				ExHardDrive, NULL,
 				COPY_FILE_ALLOW_DECRYPTED_DESTINATION | COPY_FILE_COPY_SYMLINK | COPY_FILE_FAIL_IF_EXISTS);
-			Print("after CopyFileEx");
+			//Print("after CopyFileEx");
 			if (ExHardDrive->mHOwner != NULL)
 			{
+				Print("Biu----after CopyFileEx");
 				if (bSucceed)
 				{
-					printf("copy succeed!\n");
+					//printf("copy succeed!\n");
 					//发送结束， 成功 消息号是 COPY_END 数据是 COPY_END_SUCCEED
-					::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_SUCCEED, (LPARAM)ExHardDrive->mFileInfo);
+					if (static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox)
+						::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_SUCCEED, (LPARAM)ExHardDrive->mFileInfo);
 				}
 				else
 				{
@@ -100,22 +103,21 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 					if (static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox)
 					{
 						if (GetLastError() == 2) {
-							Print("U OUT");
 							//PathFileExists
 							if (!PathIsDirectory(ExHardDrive->mDiskName))
 							{
-								::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
-								ResetEvent(ExHardDrive->mCopyEvent);
+								if (static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox)
+									::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_EXHARDDRIVE_OUT, NULL, NULL);
 								break;
 							}
 						}
 						Print("File Name:%S", ExHardDrive->mCopyFromPath);
 						//发送结束， 失败 消息号是 COPY_END 数据是 COPY_END_FAIL
-						::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
+						if (static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox)
+							::PostMessage(static_cast<CColdEyeDlg*>(ExHardDrive->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_STOP, STATUS_COPY_FIAL, (LPARAM)ExHardDrive->mFileInfo);
 					}
 				}
 			}
-			ResetEvent(ExHardDrive->mCopyEvent);
 		}
 			break;
 		case 3:
@@ -180,7 +182,7 @@ BOOL CExHardDrive::RecordFilePath(CString path, CString FileName)
 	tmp.Format(_T("%d\\"), mFileInfo->nOwner);
 	mCopyToPath += tmp;
 	mCopyToPath += FileName;
-	Print("CopyFile path : %S", mCopyToPath);
+	//Print("CopyFile path : %S", mCopyToPath);
 	SetEvent(mCopyEvent);
 	return 0;
 }
@@ -195,7 +197,6 @@ DWORD CExHardDrive::CopyProgressCall(LARGE_INTEGER TotalFileSize,
 	HANDLE hDestinationFile,
 	LPVOID lpData)
 {
-	Print("copy callback ---------");
 	if (((CExHardDrive*)lpData)->mCancelCopy)
 	{
 		((CExHardDrive*)lpData)->mCancelCopy = FALSE;
@@ -211,7 +212,8 @@ DWORD CExHardDrive::CopyProgressCall(LARGE_INTEGER TotalFileSize,
 		((CExHardDrive*)lpData)->mTotalBytesTransferred = TotalBytesTransferred.QuadPart;
 		/*printf("FILE COPY INFO : %lld, %lld\n", ((CExHardDrive*)lpData)->mTotalFileSize, ((CExHardDrive*)lpData)->mTotalBytesTransferred);*/
 		//发送文件复制中的信息，mTotalFileSize是文件的总大小， mTotalBytesTransferred是文件已经复制的大小, 消息号是 COPY_INFO
-		::SendMessage(static_cast<CColdEyeDlg*>(((CExHardDrive*)lpData)->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_INFO, TotalBytesTransferred.QuadPart, (LPARAM)((CExHardDrive*)lpData)->mFileInfo);
+		if(static_cast<CColdEyeDlg*>(((CExHardDrive*)lpData)->mCOwner)->mMessageBox)
+			::SendMessage(static_cast<CColdEyeDlg*>(((CExHardDrive*)lpData)->mCOwner)->mMessageBox->GetHWND(), USER_MSG_COPY_INFO, TotalBytesTransferred.QuadPart, (LPARAM)((CExHardDrive*)lpData)->mFileInfo);
 	}
 	return PROGRESS_CONTINUE;
 }

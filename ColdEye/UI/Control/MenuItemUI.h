@@ -25,6 +25,8 @@ public:
 
 	list<CRecordFileInfo*> FindRecordFile(UINT8*);
 	void HardDriverStatus(list<CRecordFileInfo*> , UINT8);
+
+	list<CRecordFileInfo*> RecordInfo;
 	//void SetItemRelation(CMenuItemUI* pPrevItem, CMenuItemUI* pNextItem);
 	
 //private:
