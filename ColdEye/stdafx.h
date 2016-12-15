@@ -308,9 +308,9 @@ extern 	SQLiteWrapper sqlite;
 #define USE_PRINT
 
 #ifdef USE_PRINT
-#define Print(format,...)  printf(format"\n",__VA_ARGS__)
-#define PrintE(format,...) printf(format"\n",__VA_ARGS__)
-#define PrintW(format,...) printf(format"\n",__VA_ARGS__)
+#define Print(format,...)  printf("File: "__FILE__",Line:%5d: "format"\n",__LINE__,##__VA_ARGS__)
+#define PrintE(format,...) printf("File: "__FILE__",Line:%5d: "format"\n",__LINE__,##__VA_ARGS__)
+#define PrintW(format,...) printf("File: "__FILE__",Line:%5d: "format"\n",__LINE__,##__VA_ARGS__)
 #else
 #define Print(format,...)
 #endif
