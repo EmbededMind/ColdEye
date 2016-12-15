@@ -103,7 +103,7 @@ void CPlayerWallWnd::InitWindow()
 	m_pm.SetFocus(pSlow);
 }
 
-void CPlayerWallWnd::PreparePlay(WPARAM wParam, CRecordFileInfo*info)
+BOOL CPlayerWallWnd::PreparePlay(WPARAM wParam, CRecordFileInfo*info)
 {
 	H264_PLAY_GetPort(&mPort);
 
@@ -123,19 +123,18 @@ void CPlayerWallWnd::PreparePlay(WPARAM wParam, CRecordFileInfo*info)
 	path += tmp; Print("%S", path);
 	USES_CONVERSION;
 	const char * ptr = T2CA(path);
-	H264_PLAY_OpenFile(mPort, ptr);
+	return H264_PLAY_OpenFile(mPort, ptr);
 }
 
-void CPlayerWallWnd::InitPlayer()
+CRecordFileInfo * CPlayerWallWnd::SearchNextFile()
 {
 	if (pListInfo->size() == 0) {
-		ClosePlayer();
-		return;
+		return NULL;
 	}
 
 	mSlowMultiple = 0;
 	mFastMultiple = 0;
-	CRecordFileInfo*pInfo=NULL;
+	CRecordFileInfo*pInfo = NULL;
 
 	while (pListInfo->size()) {
 		pInfo = NULL;
@@ -148,9 +147,25 @@ void CPlayerWallWnd::InitPlayer()
 		}
 	}
 	pListInfo->pop_front();
+	return pInfo;
+}
+
+void CPlayerWallWnd::InitPlayer()
+{
+	CRecordFileInfo* pInfo;
+	int result=0;
+	do{
+		pInfo = SearchNextFile();
+		if (pInfo)
+			result = PreparePlay(VoideType, pInfo);
+		else {
+			Print("Biu----Close Player");
+			ClosePlayer();
+			return;
+		}
+	} while (!result);
 
 	if (pInfo) {
-		PreparePlay(VoideType, pInfo);
 		H264_PLAY_Play(mPort, pVPlayer->GetHWND());
 		H264_PLAY_SetFileEndCallBack(mPort, EOFCallBack, (LONG)this);
 		DWORD PlayTime = H264_PLAY_GetFileTime(mPort);
@@ -162,6 +177,7 @@ void CPlayerWallWnd::InitPlayer()
 		pPlay->SetFocusedImage(sStopFocusedImg);
 		SetTimer(m_hWnd, 1, 1000, NULL);
 	}
+
 }
 
 LRESULT CPlayerWallWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
