@@ -27,7 +27,7 @@
 #define TIMER_ALARM_STOP           13
 #define TIMER_LED_STOP             14
 
-#define TIMEOUT_TIME               250
+#define TIMEOUT_TIME               500
 
 #endif // !EVENT_NUM
 

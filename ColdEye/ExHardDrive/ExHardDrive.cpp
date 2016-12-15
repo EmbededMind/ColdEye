@@ -66,7 +66,7 @@ UINT CExHardDrive::ExHardDriveThread(LPVOID pParam)
 		switch (Event)
 		{
 		case 0:
-			printf("m_endEvent\n");
+			Print("m_endEvent\n");
 			ExHardDrive->mIsThreadAlive = FALSE;
 			ResetEvent(ExHardDrive->mEndEvent);
 			AfxEndThread(100);
@@ -223,7 +223,7 @@ BOOL CExHardDrive::StartMonitoring()
 	if (!mIsInsert) return 0;
 	if (!(mThread = AfxBeginThread(ExHardDriveThread, this)))
 		return FALSE;
-	printf("Thread Start\n");
+	Print("Thread Start\n");
 	return TRUE;
 }
 
