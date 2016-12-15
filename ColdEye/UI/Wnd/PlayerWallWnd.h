@@ -38,13 +38,15 @@ public:
 	virtual CDuiString GetSkinFile();
 	LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	void InitWindow();
-	void PreparePlay(WPARAM wParam, CRecordFileInfo* );
+	BOOL PreparePlay(WPARAM wParam, CRecordFileInfo* );
+	CRecordFileInfo* SearchNextFile();
 	void InitPlayer();
 	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 	virtual LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 	void InitPlayBtImage();
 	void ClosePlayer();
 	BOOL StopPlay();
+	
 	//bool OnSlow(void* param);
 	//bool OnFast(void* param);
 	//bool OnPlay(void* param);
