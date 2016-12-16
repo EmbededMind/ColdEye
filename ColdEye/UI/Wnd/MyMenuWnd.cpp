@@ -1218,7 +1218,7 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 			//camera config volume   value:msg.wParam
 			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
 			if (pPort) {
-			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
+			    int vol  = camera[pPort->GetId()-1].pVolum->GetValue();
 				Print("Get vol %d from slider",vol);
 				vol = vol * 2 - 1;
 				if (vol < 0)
