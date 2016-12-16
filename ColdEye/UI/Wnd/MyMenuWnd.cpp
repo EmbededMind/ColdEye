@@ -136,11 +136,11 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
-	CPort* pPort = new CPort();
-	pPort->SetId(1);
-	pPort->SetNameId(1);
+	//CPort* pPort = new CPort();
+	//pPort->SetId(1);
+	//pPort->SetNameId(1);
 
-	AddPortConfigMenuItem(pPort);
+	//AddPortConfigMenuItem(pPort);
 }
 
 
@@ -1219,11 +1219,11 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
 			if (pPort) {
 			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
-				Print("Get vol %d from slider");
+				Print("Get vol %d from slider",vol);
 				vol = vol * 2 - 1;
 				if (vol < 0)
 					vol = 0;
-				Print("Final vol %d");
+				Print("Final vol %d",vol);
 				pPort->m_DevConfig.Volumn  = vol;
 				CCommunication::GetInstance()->SetVolume(pPort->m_pCamera,  vol);
 				pPort->StoreVolumn();
