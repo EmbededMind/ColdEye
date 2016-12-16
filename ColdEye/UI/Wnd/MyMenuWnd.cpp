@@ -1212,15 +1212,21 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 	else if (msg.sType == DUI_MSGTYPE_VALUECHANGED) {
 		if (_tcscmp(msg.pSender->GetName(), _T("camera_set_volume")) == 0) {
 			//camera config volume   value:msg.wParam
+
+
+
 			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
 			if (pPort) {
 			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
+
+				pPort->m_DevConfig.Volumn = vol;
+
 				Print("Get vol %d from slider");
 				vol = vol * 2 - 1;
 				if (vol < 0)
 					vol = 0;
 				Print("Final vol %d");
-				pPort->m_DevConfig.Volumn  = vol;
+				
 				CCommunication::GetInstance()->SetVolume(pPort->m_pCamera,  vol);
 				pPort->StoreVolumn();
 			}
