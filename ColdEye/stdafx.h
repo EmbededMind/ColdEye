@@ -336,4 +336,4 @@ extern 	SQLiteWrapper sqlite;
 #endif
 #endif
 
-
+void ShowMemoryInfo();

@@ -48,6 +48,8 @@ BOOL CRecordAlarmSound::StopTalk()
 	StopTalkPlay(m_port);	//关闭数据流,已共享的方式关闭播放声音，关闭播放通道
 	H264_DVR_StopVoiceCom(m_TalkHandle);	//停止语音对讲
 	m_TalkHandle = 0;
+	delete [] pBuf;
+	ShowMemoryInfo();
 	return true;
 }
 void __stdcall TalkDataCallBack(LONG lTalkHandle, char *pDataBuf, long dwBufSize, char byAudioFlag, long dwUser)
@@ -120,6 +122,7 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
 	Print("Play");
+	ShowMemoryInfo();
 	m_pPlayCamera = pCamera;
 	int nLen = 640;
 	DWORD dwSampleRate = 8000;
