@@ -136,11 +136,11 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
-	//CPort* pPort = new CPort();
-	//pPort->SetId(1);
-	//pPort->SetNameId(1);
+	CPort* pPort = new CPort();
+	pPort->SetId(1);
+	pPort->SetNameId(1);
 
-	//AddPortConfigMenuItem(pPort);
+	AddPortConfigMenuItem(pPort);
 }
 
 
@@ -663,7 +663,11 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 		if (_tcscmp(sName, _T("camera_switch")) == 0) {
 			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
 			Print("Biu----thidlayoutsel:%d",inx);
-			camera[inx].pVolum->SetFocus();
+			if(camera[inx].pVolum)
+				camera[inx].pVolum->SetFocus();
+			else {
+				Print("Biu----Volume err");
+			}
 			Print("Biu----Volume SetFocus");
 		}
 		else if (pItem == pAlmVicSwitch) {

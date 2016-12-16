@@ -163,7 +163,7 @@ void CVideoListUI::RefreshList()
 		if (!pItem) return;
 		int Day;
 		if (pItem) {
-			//年月日都相等
+			//年月都相等
 			if (refTime.GetYear() == CTime(pItem->Info->tBegin).GetYear() && refTime.GetMonth() == CTime(pItem->Info->tBegin).GetMonth()) {
 				if (refTime.GetDay() - CTime(pItem->Info->tBegin).GetDay() == 1) {
 					pNode->data()._text = _T("昨天");
@@ -245,9 +245,11 @@ void CVideoListUI::CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRe
 int CVideoListUI::IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo)
 {
 	int year, month, day, InfoYear,InfoMonth,InfoDay;
+	//头结点年月日
 	year = CTime(HeadInfo->tBegin).GetYear();
 	month = CTime(HeadInfo->tBegin).GetMonth();
 	day = CTime(HeadInfo->tBegin).GetDay();
+
 	InfoYear = CTime(pInfo->tBegin).GetYear();
 	InfoMonth = CTime(pInfo->tBegin).GetMonth();
 	InfoDay = CTime(pInfo->tBegin).GetDay();
