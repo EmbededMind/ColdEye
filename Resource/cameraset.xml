@@ -47,7 +47,7 @@
 			<Control float="true" pos="45,125,0,0" width="700" />
 			<Text float="true" pos="45,150,250,189" font="3" textcolor="#FF666666" text="喇叭声音音量" />
 			<Label name="bind_cameraset" float="true" pos="0,198,790,80" bkimage="file='image/slider_volum_bk.png'" height="80" /> 
-			<MySlider name="camera_set_volume" sendmove="true" float="true" pos="178,224,0,0" min="0" max="9" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'" />
+			<MySlider name="camera_set_volume" sendmove="true" float="true" pos="178,224,0,0" min="0" max="5" bindbkimage="file='image/slider_volum_bk.png'" focusedbkimage="file='image/slider_volum_focusedbk.png'" />
 			<Control float="true" pos="45,296,0,0" width="700" />
 			<MyLabel name="camera_set_video_save" pos="0,306,0,0" width="790" height="80" text="是否储存该摄像机视频" stateenabletext="是" statedisabletext="否" />
 			<Control float="true" pos="45,396,0,0" width="700" />

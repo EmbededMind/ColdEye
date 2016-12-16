@@ -663,7 +663,11 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 		if (_tcscmp(sName, _T("camera_switch")) == 0) {
 			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
 			Print("Biu----thidlayoutsel:%d",inx);
-			camera[inx].pVolum->SetFocus();
+			if(camera[inx].pVolum)
+				camera[inx].pVolum->SetFocus();
+			else {
+				Print("Biu----Volume err");
+			}
 			Print("Biu----Volume SetFocus");
 		}
 		else if (pItem == pAlmVicSwitch) {
@@ -1217,16 +1221,17 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 
 			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
 			if (pPort) {
+
 			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
 
 				pPort->m_DevConfig.Volumn = vol;
 
-				Print("Get vol %d from slider");
+				Print("Get vol %d from slider",vol);
 				vol = vol * 2 - 1;
 				if (vol < 0)
 					vol = 0;
-				Print("Final vol %d");
-				
+				Print("Final vol %d",vol);
+
 				CCommunication::GetInstance()->SetVolume(pPort->m_pCamera,  vol);
 				pPort->StoreVolumn();
 			}

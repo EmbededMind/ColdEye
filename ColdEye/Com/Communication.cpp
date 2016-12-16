@@ -182,7 +182,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			CancelWaitableTimer(pThis->mLEDTimer);
 			pThis->liDueTimeLED.HighPart = 0;
 			pThis->liDueTimeLED.LowPart = 0;
-			pThis->liDueTimeLED.QuadPart = -600000000*15;
+			pThis->liDueTimeLED.QuadPart = -9000000000;
 			SetWaitableTimer(pThis->mLEDTimer, &pThis->liDueTimeLED, 0, NULL, NULL, FALSE);
 			ResetEvent(pThis->mTurnOnLEDEvent);
 			break;
