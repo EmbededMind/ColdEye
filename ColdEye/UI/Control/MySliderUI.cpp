@@ -39,14 +39,13 @@ void CMySliderUI::DoEvent(TEventUI & event)
 	else if (event.Type == UIEVENT_SETFOCUS) {
 		CDuiString name;
 		name = bindControl->GetName();
-		Print("name:%S", name);
+		Print("Biu----name:%S", name);
 		bindControl->SetBkImage(m_focusedbkimage);
 		bindControl->Invalidate();
 	}
 	else if (event.Type == UIEVENT_KILLFOCUS) {
 		bindControl->SetBkImage(m_bkimage);
 		bindControl->Invalidate();
-		//Invalidate();
 	}
 	CSliderUI::DoEvent(event);
 }
