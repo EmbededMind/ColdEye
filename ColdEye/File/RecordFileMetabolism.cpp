@@ -32,7 +32,7 @@ bool CRecordFileMetabolism::DelFile(CString DelPath)
 	hfind = ::FindFirstFile(DelPath, &findFileData);
 	if (hfind == INVALID_HANDLE_VALUE)
 	{
-		printf("delete succeed!\n");
+		Print("delete succeed!\n");
 		return true;
 	}
 	return false;
@@ -57,7 +57,7 @@ ULONGLONG CRecordFileMetabolism::KillAlarmFile()
 			}
 			else
 			{
-				printf("the file is no exist, delete the info\n");
+				Print("the file is no exist, delete the info\n");
 				CRecordFileInfo* delFileInfo = (*iter);
 				iter++;
 				Notify(FILE_OPT_DEL, RECORD_ALARM, (LPARAM)(delFileInfo));
@@ -87,7 +87,7 @@ ULONGLONG CRecordFileMetabolism::KillNormalFile()
 			}
 			else
 			{
-				printf("the file is no exist, delete the info\n");
+				Print("the file is no exist, delete the info\n");
 				CRecordFileInfo* delFileInfo = (*iter);
 				iter++;
 				Notify(FILE_OPT_DEL, RECORD_NORMAl, (LPARAM)(delFileInfo));

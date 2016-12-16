@@ -60,7 +60,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			else
 			{
 				Print("StopTalk超时了");
-				pThis->RecoveState();
+				pThis->SetFreeState();
 			}
 			ResetEvent(pThis->mStopTalkEvent);
 			break;
@@ -81,7 +81,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 				Print("StopAlarm超时了");
 				long err = GetLastError();
 				Print("err = %d", err);
-				pThis->RecoveState();
+				pThis->SetFreeState();
 			}
 			ResetEvent(pThis->mStopAlarmEvent);
 			break;
@@ -143,7 +143,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			CancelWaitableTimer(pThis->mAlarmSoundTimer);
 			pThis->liDueTimeAlarmSound.LowPart = 0;
 			pThis->liDueTimeAlarmSound.HighPart = 0;
-			pThis->liDueTimeAlarmSound.QuadPart = -(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_sec * 30000000);
+			pThis->liDueTimeAlarmSound.QuadPart = -(((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_sec * 30000000 + 20000000);
 			SetWaitableTimer(pThis->mAlarmSoundTimer, &pThis->liDueTimeAlarmSound, 0, NULL, NULL, FALSE);
 			ResetEvent(pThis->mAlarmEvent);
 			break;
@@ -182,7 +182,7 @@ UINT CCommunication::CommunicationThread(LPVOID pParam)
 			CancelWaitableTimer(pThis->mLEDTimer);
 			pThis->liDueTimeLED.HighPart = 0;
 			pThis->liDueTimeLED.LowPart = 0;
-			pThis->liDueTimeLED.QuadPart = -600000000;
+			pThis->liDueTimeLED.QuadPart = -600000000*15;
 			SetWaitableTimer(pThis->mLEDTimer, &pThis->liDueTimeLED, 0, NULL, NULL, FALSE);
 			ResetEvent(pThis->mTurnOnLEDEvent);
 			break;

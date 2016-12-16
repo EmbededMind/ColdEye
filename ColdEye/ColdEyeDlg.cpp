@@ -637,11 +637,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 			::SetForegroundWindow(this->GetSafeHwnd());
 		}
 		onedata *p = (onedata*)pData;
-		printf("COM_KEYBD message NO.%d : ", KBmessage_NO);
+		/*printf("COM_KEYBD message NO.%d : ", KBmessage_NO);*/
 		KBmessage_NO++;
 		for (int i = 0; i < p->num; i++)
 		{
-			printf("kb = %d\n", p->ch[i]);
+			/*printf("kb = %d\n", p->ch[i]);*/
 			switch (p->ch[i])
 			{
 			case KB_MENU:
@@ -781,12 +781,12 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 
 		if (p->num != 17)
 		{
-			printf("message length <17\n");
+			Print("message length <17\n");
 			return 0;
 		}
 		if (p->ch[0] != 0x24)
 		{
-			printf("message head !=0x24\n");
+			Print("message head !=0x24\n");
 			return 0;
 		}
 

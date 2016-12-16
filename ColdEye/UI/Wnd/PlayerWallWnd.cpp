@@ -323,7 +323,7 @@ void CPlayerWallWnd::OnPlay()
 		//ÔÝÍ£Ê±»Ö¸´²¥·Å
 		if (!H264_PLAY_Pause(mPort, 0)) {
 			long err = H264_PLAY_GetLastError(mPort);
-			printf("play err = %d\n", err);
+			Print("play err = %d\n", err);
 		}
 		else {
 			mStatus = playing;
@@ -333,7 +333,7 @@ void CPlayerWallWnd::OnPlay()
 		//ÔÝÍ£²¥·Å
 		if (!H264_PLAY_Pause(mPort, 1)) {
 			long err = H264_PLAY_GetLastError(mPort);
-			printf("play err = %d\n", err);
+			Print("play err = %d\n", err);
 		}
 		else {
 			mStatus = pause;
