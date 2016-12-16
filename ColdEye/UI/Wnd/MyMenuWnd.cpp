@@ -662,7 +662,9 @@ void CMyMenuWnd::SwitchNotify(TNotifyUI & msg)
 	case VK_DOWN:
 		if (_tcscmp(sName, _T("camera_switch")) == 0) {
 			int inx = pLayout_third->GetCurSel() - CAMERA_SET;
+			Print("Biu----thidlayoutsel:%d",inx);
 			camera[inx].pVolum->SetFocus();
+			Print("Biu----Volume SetFocus");
 		}
 		else if (pItem == pAlmVicSwitch) {
 			if (pItem->GetValue()) {
