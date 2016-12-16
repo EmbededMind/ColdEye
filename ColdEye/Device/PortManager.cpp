@@ -126,3 +126,16 @@ CPort* CPortManager::AllocPort()
 
 	return NULL;
 }
+
+
+bool CPortManager::IsMacUnique(char* mac)
+{
+	int cnt  = 0;
+	for (int i = 0; i < 6; i++) {
+		if (mPorts[i].m_State != OFFLINE  &&  strcmp(mPorts[i].GetMac(), mac) == 0) {
+			cnt++;
+		}
+	}
+
+	return (cnt < 2);
+}

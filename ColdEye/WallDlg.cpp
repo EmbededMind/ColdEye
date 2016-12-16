@@ -295,7 +295,7 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		{
 		case VK_UP:
 		case VK_DOWN:
-		    TestIngestOne();
+		    //TestIngestOne();
 			return true;
 		//-----------------------
 

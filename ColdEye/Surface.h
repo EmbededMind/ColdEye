@@ -116,6 +116,7 @@ private:
 
 	long          m_hRealPlay;
 	WORD          m_wAlarmStamp;
+	WORD          m_wAlarmTriggerCnt;
 	BOOL          ShouldWatch();
 	BOOL          ShouldWatch(CTime& refTime);
 	UINT          GetNextWatchEventElapse(CTime& refTime);
