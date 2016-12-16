@@ -965,8 +965,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 
 
 						if (pPort->m_State == PENDING_MAC) {
-								char tmp[40];
-								CUtil::MacNumberToStr( &(p->ch[6]), tmp);
+								CUtil::MacNumberToStr( &(p->ch[6]), pPort->GetMac());
 
 								//if (pPortMgr->IsMacUnique(tmp)) {
 								//	pPort->SetMac(tmp);
