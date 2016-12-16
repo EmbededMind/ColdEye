@@ -24,4 +24,6 @@ public:
     void    BindPortId(CPort* pPort, int id);
 
 	CPort*  AllocPort();
+
+	bool    IsMacUnique(char* mac);
 };

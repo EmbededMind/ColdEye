@@ -579,6 +579,28 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 		
 	}
 
+	//if (pMsg->message == WM_KEYDOWN) {
+	//	switch (pMsg->wParam) {
+	//		case VK_APPS:
+	//			Print("ColdEyeDlg case apps");
+
+	//			if (mWall.IsWindowVisible()) {
+	//				mWall.ShowWindow(false);
+	//				mMenu.ShowWindow(true);
+
+	//			}
+	//			else {
+	//				mWall.ShowWindow(true);
+	//				mMenu.ShowWindow(false);
+	//				mMenu.FocusedReset();
+	//				mWall.SetFocus();
+	//			}
+
+	//			return true;
+	//			break;
+	//	}
+	//}
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -943,11 +965,28 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 
 
 						if (pPort->m_State == PENDING_MAC) {
-							CUtil::MacNumberToStr( &(p->ch[6]), pPort->GetMac());
+								char tmp[40];
+								CUtil::MacNumberToStr( &(p->ch[6]), tmp);
 
-							// 此端口未绑定摄像头
-							if (pPort->m_pCamera == NULL) {
-							Print("Unbinded port");
+								//if (pPortMgr->IsMacUnique(tmp)) {
+								//	pPort->SetMac(tmp);
+								//}
+								//else {
+								//	pPort->m_State  = OFFLINE;
+								//	break;
+								//}
+
+
+								// 此端口未绑定摄像头
+								if (pPort->m_pCamera == NULL) {
+								Print("Unbinded port");
+
+								if (!pPortMgr->IsMacUnique(pPort->GetMac())) {
+									Print("-  --  - Find repeat mac %s", pPort->GetMac());
+									pPort->m_State  = OFFLINE;
+									break;
+								}
+
 								pPort->m_State  = PENDING_CAMERA;								
 								PostThreadMessage(((CColdEyeApp*)AfxGetApp())->GetLoginThreadPID(), USER_MSG_SCAN_DEV, 0, (LPARAM)pPort);
 							}
