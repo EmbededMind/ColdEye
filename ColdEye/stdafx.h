@@ -110,6 +110,8 @@
 
 #define USER_MSG_SURFACE_ZOOM              (WM_USER + 250)
 
+#define USER_MSG_HAPPY_NEW_DAY             (WM_USER + 260)
+
 /*****************************************
 *             Copy Flie Result           *
 ******************************************/

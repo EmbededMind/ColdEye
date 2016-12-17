@@ -411,7 +411,10 @@ void CSurface::StartRealPlay()
 
 
 	if (H264_PLAY_OpenStream(m_lPlayPort, &byFileHeadBuf, 1, SOURCE_BUF_MIN * 100)) {
-		H264_PLAY_SetOsdTex(m_lPlayPort, &m_OsdInfoText);
+		
+		H264_PLAY_DeleteOsdTex(m_lPlayPort, m_OsdTextIndex);
+		
+		m_OsdTextIndex  = H264_PLAY_SetOsdTex(m_lPlayPort, &m_OsdInfoText);
 
 		H264_PLAY_RigisterDrawFun(m_lPlayPort, cbDefaultDrawOSD, (DWORD)this);
 
@@ -885,6 +888,8 @@ void CSurface::SetOsdText(int xPos, int yPos, CString& cam_name)
 
 	m_OsdInfoText.pos_x  = xPos;
 	m_OsdInfoText.pos_y  = yPos;
+
+	
 	
 	char tmp[40];
 	WideCharToMultiByte(CP_ACP, 0, cam_name, -1, tmp, 40, NULL,NULL);

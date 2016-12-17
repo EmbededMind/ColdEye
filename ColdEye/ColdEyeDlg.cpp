@@ -196,6 +196,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	m_SysTime  = CTime::GetCurrentTime();
+
 	// 将“关于...”菜单项添加到系统菜单中。
 
 	// IDM_ABOUTBOX 必须在系统命令范围内。
@@ -1114,7 +1116,11 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 			}
 		}
 
-		m_SysTime = CTime::GetCurrentTime();
+		CTime curTime  = CTime::GetCurrentTime();
+		if (curTime.GetDay() != m_SysTime.GetDay()) {
+			// Welcome to new day
+			::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->mMenu.GetHWND(), USER_MSG_HAPPY_NEW_DAY, 0, 0 );
+		}
 
 		CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
 
