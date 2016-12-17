@@ -1121,6 +1121,7 @@ void CColdEyeDlg::OnTimer(UINT_PTR nIDEvent)
 			// Welcome to new day
 			::SendMessage( ((CColdEyeDlg*)AfxGetMainWnd())->mMenu.GetHWND(), USER_MSG_HAPPY_NEW_DAY, 0, 0 );
 		}
+		m_SysTime  = curTime;
 
 		CDBLogger::GetInstance()->LogSystemTime(m_SysTime);
 
