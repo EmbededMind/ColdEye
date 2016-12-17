@@ -136,11 +136,6 @@ void CMyMenuWnd::InitWindow()
 	InitAlarmVoice();
 	InitAwOnOffRecord();
 
-	//CPort* pPort = new CPort();
-	//pPort->SetId(1);
-	//pPort->SetNameId(1);
-
-	//AddPortConfigMenuItem(pPort);
 }
 
 
@@ -1335,6 +1330,8 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				CPort* port = (CPort*)pAlarmItem[pInfo->nOwner - 1]->GetTag();
 				port->m_virginNumber++;
 				Print("biu---------Add Alarm File virginnum:%d", port->m_virginNumber);
+				MenuItemVirginNum.clear();
+				RecordVirginNum.clear();
 				SetAllVirginNum();
 			}
 			else {
@@ -1355,6 +1352,8 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 					port->m_virginNumber--;
 					Print("biu------------pInfo->nOwner:%d,virnum:%d", pInfo->nOwner, port->m_virginNumber);
 				}
+				MenuItemVirginNum.clear();
+				RecordVirginNum.clear();
 				SetAllVirginNum();
 			}
 			else {
@@ -1384,6 +1383,12 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			((CColdEyeApp*)AfxGetApp())->StoreSystemConfig();
 			break;
 		//-------------------------------------------------------------
+		case USER_MSG_HAPPY_NEW_DAY:
+			for (int i = 0; i < 6; i++) {
+				camera[i].pAlarmList->RefreshList();
+				camera[i].pNormalList->RefreshList();
+			}
+			break;
 	}
 	return LRESULT();
 }
@@ -1455,10 +1460,10 @@ void CMyMenuWnd::SetAllVirginNum()
 	for (int i = 0; i < 6; i++) {
 		if (pAlarmItem[i]) {
 			CPort* port = (CPort*)pAlarmItem[i]->GetTag();
-			totalVirginNum += port->m_virginNumber;
+			totalVirginNum += port->m_virginNumber; 
 		}
 	}
-	
+
 	CPopupMenuUI* pAlarmVideo = static_cast<CPopupMenuUI*>(m_pm.FindControl(_T("alarmvideo")));
 	CPort* pPort = (CPort*)pAlarmVideo->GetTag();
 	if (!pPort) {
@@ -1642,23 +1647,20 @@ int CMyMenuWnd::InsertAt(UINT8 id, CVerticalLayoutUI *pLayout, UINT8 baseData)
 {
 	int order=0;
 	CDuiString  userdata;
-	UINT8 Count,CtlId;
+	UINT8 Count,thisId;//个数，索引
 
-	Count = pLayout->GetCount() / 2;
-	for (int i = 0; i < Count; i+=2) {
-		userdata = static_cast<CControlUI*>(pLayout->GetItemAt(i))->GetUserData();
-		CtlId = StrToInt(userdata)+ 1 - baseData ;
-		if (CtlId > 0) {
-			if (id < CtlId) 
-				break;
-			else 
-				order++;
+	Count = pLayout->GetCount();
+	for (order = 0; order < Count; order +=2) {
+		userdata = static_cast<CControlUI*>(pLayout->GetItemAt(order))->GetUserData();
+		if (pLayout == static_cast<CVerticalLayoutUI*>(m_pm.FindControl(_T("layout_submenu_setting")))) {
+			if (StrToInt(userdata) == 6)
+				continue;
 		}
-		else {
-			order++;
+		thisId = StrToInt(userdata) - baseData ;
+		if (thisId > id) {
+			break;
 		}
 	}
-	order *= 2;
 	return order;
 }
 
@@ -1889,6 +1891,7 @@ Print("Third Menu Sel :%d", inx);
 		if (pKeyBoard->IsVisible()) {
 			pKeyBoard->SetVisible(false);
 			m_pm.FindControl(_T("prompt"))->SetVisible(false); //提示信息
+			pShipName->SetStatus(false);
 			pShipName->SetFocus();
 		}
 		else {
@@ -1917,7 +1920,6 @@ Print("Third Menu Sel :%d", inx);
 			}
 			BackTOMenuItem();
 		}
-
 		break;
 	//---------------摄像头设置----------------------
 	case 7:
@@ -2116,7 +2118,6 @@ CMenuItemUI* CMyMenuWnd::AddMenuItem(CPort* pPort, CDuiString layoutName, int ba
 
 void CMyMenuWnd::AddAlarmMenuItem(CPort* pPort)
 {
-	Print("port id :%d , %d", pPort->GetId(),pPort->m_virginNumber);
 	pAlarmItem[pPort->GetId()-1]  = AddMenuItem(pPort, _T("layout_submenu_alarm"), ALARM_VIDEO);
 	pAlarmItem[pPort->GetId() - 1]->SetMark(_T("true"));
 	pAlarmItem[pPort->GetId() - 1]->SetTag((UINT_PTR)pPort);

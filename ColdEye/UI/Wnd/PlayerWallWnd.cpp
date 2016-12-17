@@ -100,6 +100,9 @@ void CPlayerWallWnd::InitWindow()
 		MoveWindow(pAlphaMarkWnd->GetHWND(), ScreenWidth+(rt.left + 707)*(pMenuWnd->GetMyScale()),(rt.top+904)*(pMenuWnd->GetMyScale()), 186*(pMenuWnd->GetMyScale()), 86*(pMenuWnd->GetMyScale()), true);
 		pAlphaMarkWnd->ShowWindow(SW_HIDE);
 	}
+	pSlow->Invalidate();
+	pPlay->Invalidate();
+	pFast->Invalidate();
 	m_pm.SetFocus(pSlow);
 }
 

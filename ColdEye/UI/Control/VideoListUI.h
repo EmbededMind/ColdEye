@@ -265,6 +265,8 @@ public:
 	int IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo);
 
 	void SetListElementHeight(float);
+
+	int DataSpan(CTime refTime,CTime _tBegin);
 private:
 	Node* _root;
 	int m_listElementHight;
