@@ -8,7 +8,8 @@ public:
 private:CRecordAlarmSound() {
 	H264_PLAY_GetPort(&m_port);
 	m_pTalkDecodeBuf = nullptr;
-	m_isAlarm = false;
+	m_isCanTalk = TRUE;
+	m_isCanRecord = TRUE;
 	m_pThis = this;
 };
 public:
@@ -42,6 +43,7 @@ private:
 	LONG m_port;
 	BOOL StopTalkPlay(long nPort);
 	BYTE *m_pTalkDecodeBuf;
-	bool m_isAlarm;
+	bool m_isCanTalk;
+	bool m_isCanRecord;
 };
 

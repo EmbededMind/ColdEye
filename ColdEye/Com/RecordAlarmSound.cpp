@@ -40,7 +40,6 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 
 BOOL CRecordAlarmSound::StopTalk()
 {
-	m_isAlarm = false;
 	H264_PLAY_StopAudioCapture();//关闭音频采集功能
 
 	BOOL bPlayOk = FALSE;
@@ -50,6 +49,7 @@ BOOL CRecordAlarmSound::StopTalk()
 	m_TalkHandle = 0;
 	delete [] pBuf;
 	ShowMemoryInfo();
+	this->m_isCanRecord = TRUE;
 	return true;
 }
 void __stdcall TalkDataCallBack(LONG lTalkHandle, char *pDataBuf, long dwBufSize, char byAudioFlag, long dwUser)
@@ -68,12 +68,18 @@ void __stdcall AudioDataCallBack(LPBYTE pDataBuffer, DWORD dwDataLength, long nU
 		pDevice->SendTalkData(pDataBuffer, dwDataLength);//发送音频数据到摄像头
 		FILE *stream;
 		fopen_s(&stream, pDevice->m_rtmpName, "ab+");
-		fwrite(pDataBuffer, dwDataLength, 1, stream);
-		fclose(stream);
+		if (stream)
+		{
+			fwrite(pDataBuffer, dwDataLength, 1, stream);
+			fclose(stream);
+		}
 	}
 }
 void CRecordAlarmSound::Record(CCamera *pCamera)
 {
+	if (!m_isCanRecord)
+		return;
+	m_isCanTalk = FALSE;
 	m_pRecordCamera = pCamera;
 	DeleteFile(_T(RECORD_VOICE_NAME_TMP));//删掉文件
 	int nLen = 640;
@@ -121,6 +127,9 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 }
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
+	if (!m_isCanTalk)
+		return 0;
+	this->m_isCanRecord = FALSE;
 	Print("Play");
 	ShowMemoryInfo();
 	m_pPlayCamera = pCamera;
@@ -153,7 +162,8 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 			return 0;
 		}
 	}
-	
+	if (!pFile)
+		return 0;
 	fseek(pFile, 0, SEEK_END);//首先到文件末尾查看文件长度
 	len = ftell(pFile);//接上面的那句话
 	pBuf = new LPBYTE[len];
@@ -189,12 +199,14 @@ bool CRecordAlarmSound::Save()
 			CFile::Rename(_T(RECORD_VOICE_NAME_TMP), _T(RECORD_VOICE_NAME));
 		return true;
 	}
+	this->m_isCanTalk = TRUE;
 	return false;
 }
 
 bool CRecordAlarmSound::NotSave()
 {
 	DeleteFile(_T(RECORD_VOICE_NAME_TMP));
+	this->m_isCanTalk = TRUE;
 	return false;
 }
 
