@@ -10,6 +10,7 @@ private:CRecordAlarmSound() {
 	m_pTalkDecodeBuf = nullptr;
 	m_isCanTalk = TRUE;
 	m_isCanRecord = TRUE;
+	Print("CanTalk & CanRecord");
 	m_pThis = this;
 };
 public:
