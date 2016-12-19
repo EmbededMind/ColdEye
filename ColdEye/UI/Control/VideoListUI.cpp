@@ -131,8 +131,7 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	Day = refTime.GetDay() - tInfoBegin.GetDay();
 	if (Day < 0)
 		Day = 0;
-	Print("_Day:%d,  nowDay:%d,redBegDay:%d",Day, refTime.GetDay(), tInfoBegin.GetDay());
-	//Print("Day:%d, refTime:%llu, RecordBegin:%llu", Day,refTime.GetTime(), pInfo->tBegin);
+	//Print("_Day:%d,  nowDay:%d,redBegDay:%d",Day, refTime.GetDay(), tInfoBegin.GetDay());
 	if (Day == 0) {
 		if (pItem) {
 			CTime tHeadBegin = CTime(pItem->Info->tBegin);

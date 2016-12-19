@@ -330,6 +330,11 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				focusLevel++;
 				pLayout_third->SetVisible(true);
 				pNextFocusLayout->GetItemAt(0)->SetFocus();
+				if (_tcscmp(m_pm.GetFocus()->GetParent()->GetName(), _T("layout_submenu_alarm")) == 0) {
+					CPort* pPort;
+					pPort = (CPort*)static_cast<CMenuItemUI*>(m_pm.GetFocus())->GetTag();
+					pPort->m_virginNumber = 0;
+				}
 
 				UpdataItemColor();
 			}
@@ -341,25 +346,20 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 		switch (msg.wParam) {
 		case VK_UP:
 			if (ItemIndex > 0) {
-				pLayout->GetItemAt(ItemIndex - 2)->SetFocus();
+				CPort *pPort;
+				CMenuItemUI* pItem = (CMenuItemUI*)pLayout->GetItemAt(ItemIndex - 2);
+				pItem->SetFocus();
+				pPort = (CPort*)pItem->GetTag();
+				pPort->m_virginNumber = 0;
 			}
 			break;
-			//-----------------------------------------------
+		//-----------------------------------------------
 		case VK_DOWN:
 			if (pLayout->GetItemAt(ItemIndex + 2)) {
 				pLayout->GetItemAt(ItemIndex + 2)->SetFocus();
 			}
 			break;
-			//-----------------------------------------------
-		case VK_LEFT:
-			FocusedItem[0]->SetFocus();
-			FocusedItem[1] = NULL;
-			focusLevel--;
-			pLayout_third->SelectItem(0);
-			pLayout_third->SetVisible(false);
-			UpdataItemColor();
-			break;
-			//-----------------------------------------------
+		//-----------------------------------------------
 		case VK_RIGHT:
 			FocusedItem[1] = pItem;
 			ThirdMenuSetFocus(userdata);
@@ -367,6 +367,15 @@ void CMyMenuWnd::MenuItemNotify(TNotifyUI & msg)
 				focusLevel++;
 				UpdataItemColor();
 			}
+			break;
+		//-----------------------------------------------
+		case VK_BACK:
+			FocusedItem[0]->SetFocus();
+			FocusedItem[1] = NULL;
+			focusLevel--;
+			pLayout_third->SelectItem(0);
+			pLayout_third->SetVisible(false);
+			UpdataItemColor();
 			break;
 		}
 	}
@@ -555,7 +564,7 @@ void CMyMenuWnd::ListLabelNotify(TNotifyUI & msg)
 				}
 				else {
 					if (pSender->Info->status == RECORD_NSEEN) {
-						refreshSuperscript(pSender);
+						//refreshSuperscript(pSender);
 					}
 					pSender->Info->status = RECORD_LOCKED;
 				}
@@ -1541,6 +1550,9 @@ LRESULT CMyMenuWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 			if(FocusedItem[1]){
 				KeyDown_VK_BACK();
 				UpdataItemColor();
+			}
+			else {
+				WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
 			}
 		}
 		break;
