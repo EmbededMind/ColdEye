@@ -1171,6 +1171,7 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 			//------------------------------------------
 			case VK_APPS:
 				Print("Surface case apps");
+				return true;
 				break;
 			//------------------------------------------
 			default:

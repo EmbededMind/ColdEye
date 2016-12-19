@@ -9,7 +9,7 @@
 #include "Pattern\MsgSquare.h"
 #include "Device\PortManager.h"
 #include "Com\Util.h"
-
+#include "ColdEyeDlg.h"
 
 /**@brief 报警消息回调
  *
@@ -306,6 +306,18 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		//-----------------------
 		case VK_APPS:
 			Print("Wall case apps");
+			if (this->IsWindowVisible()) {
+				this->ShowWindow(false);
+				((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.ShowWindow(true);
+
+			}
+			else {
+				this->ShowWindow(true);
+				this->ShowWindow(false);
+				((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.FocusedReset();
+				this->SetFocus();
+			}
+			return true;
 			break;
 		default:
 
