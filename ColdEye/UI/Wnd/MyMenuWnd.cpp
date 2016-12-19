@@ -149,6 +149,12 @@ void CMyMenuWnd::InitWindow()
 	}
 	InitAlarmVoice();
 	InitAwOnOffRecord();
+
+	CPort *pPort = new CPort;
+	pPort->SetId(1);
+	pPort->SetNameId(1);
+	AddPortConfigMenuItem(pPort);
+	
 }
 
 
@@ -611,7 +617,7 @@ void CMyMenuWnd::ExpandCameraName()
 	if (pChildLayout1->IsVisible() == false) {
 		rect = pChildLayout2->GetPos();
 		size.cx = 70;
-		size.cy = rect.top + 204;
+		size.cy = 439;//rect.top + 204;
 		pChildLayout2->SetFixedXY(size);
 		pChildLayout1->SetVisible(true);
 		pChildItem = (CContainerUI*)pChildLayout1->GetItemAt(0);
@@ -625,7 +631,7 @@ void CMyMenuWnd::ExpandCameraName()
 		pChildLayout1->SetVisible(false);
 		rect = pChildLayout2->GetPos();
 		size.cx = 70;
-		size.cy = rect.top - 204;
+		size.cy = 235;
 		pChildLayout2->SetFixedXY(size);
 		CMyEditUI *pItem = (CMyEditUI*)(static_cast<CVerticalLayoutUI*>(pLayout->GetItemAt(0))->GetItemAt(2));
 		pItem->SetFocus();
@@ -788,7 +794,12 @@ void CMyMenuWnd::PlayVideo(WPARAM wParam,LPARAM lParam)
 	mPlayerWall = new CPlayerWallWnd(_T("playerwall.xml"));
 	mPlayerWall->Create(NULL, _T("PlayerWallWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mPlayerWall->ShowWindow(true);
-	mPlayerWall->CenterWindow();
+	CRect rcPlayer;
+	GetWindowRect(mPlayerWall->GetHWND(),rcPlayer);
+	int   cx = GetSystemMetrics(SM_CXSCREEN);
+	int   cy = GetSystemMetrics(SM_CYSCREEN);
+	::MoveWindow(mPlayerWall->GetHWND(), cx / 2 - rcPlayer.Width() / 2, 108, rcPlayer.Width(), cy-108, true);
+	//mPlayerWall->CenterWindow();
 	::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, wParam, lParam);
 }
 
