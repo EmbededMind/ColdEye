@@ -21,7 +21,7 @@ CPlayerWallWnd::CPlayerWallWnd(CDuiString skinName)
 
 CPlayerWallWnd::~CPlayerWallWnd()
 {
-	
+	pMenuWnd->mPlayerWall = NULL;
 }
 
 LPCTSTR CPlayerWallWnd::GetWindowClassName() const
@@ -37,13 +37,7 @@ CDuiString CPlayerWallWnd::GetSkinFile()
 LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (uMsg){
-	case WM_CONTEXTMENU:
-		Print("Player MenuKey");
-		//ClosePlayer();
-		return true;
-
 	case USER_MSG_PLAY_START: {
-
 		pListInfo = ((list<CRecordFileInfo*>*)lParam);
 		Print("size:%d", pListInfo->size());
 		VoideType = wParam;
@@ -55,13 +49,6 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 		OnTimer(uMsg, wParam, lParam, bHandled);
 		break;
 
-	case WM_KEYDOWN:
-		switch (wParam) {
-		case VK_BACK:
-			ClosePlayer();
-			break;
-		}
-		break;
 	}
 	bHandled = FALSE;
 	return 0;
@@ -207,27 +194,42 @@ LRESULT CPlayerWallWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 
 LRESULT CPlayerWallWnd::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	if (wParam == VK_BACK) {
-		WindowImplBase::OnKeyDown(uMsg, wParam, lParam, bHandled);
+	Print("Biu----Player uMsg:%d",uMsg);
+	switch (wParam) {
+	case VK_LEFT:
+		OnSlow();
+		break;
+
+	case VK_RIGHT:
+		OnFast();
+		break;
+
+	case VK_RETURN:
+		OnPlay();
+		break;
+
+	case VK_UP:
+		Print("Player VK_UP");
+		return true;
+		break;
+
+	case VK_BACK:
+		ClosePlayer();
+		break;
+
+	case VK_APPS:
+		Print("Print Vk_apps");
+		return true;
+		pMenuWnd->FocusedReset();
+		ClosePlayer();
+		break;
 	}
-	else {
-		switch (wParam) {
-		case VK_LEFT:
-			OnSlow();
-			break;
 
-		case VK_RIGHT:
-			OnFast();
-			break;
+	return LRESULT();
+}
 
-		case VK_RETURN:
-			OnPlay();
-			break;
-		}
-
-		//m_pm.SendNotify(m_pm.GetFocus(), DUI_MSGTYPE_KEYDOWN, wParam, lParam);
-	}
-
+LRESULT CPlayerWallWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
+{
 	return LRESULT();
 }
 
@@ -245,10 +247,11 @@ void CPlayerWallWnd::ClosePlayer()
 	H264_PLAY_Stop(mPort);
 	H264_PLAY_CloseFile(mPort);
 	H264_PLAY_FreePort(mPort);
-	pAlphaMarkWnd->Close();
-	pVPlayer->Close();	
+	DestroyWindow(pAlphaMarkWnd->GetHWND());
+	DestroyWindow(pVPlayer->GetHWND());
 	pListInfo->clear();
-	Close();
+	DestroyWindow(m_hWnd);
+	pMenuWnd->mPlayerWall = NULL;
 }
 
 

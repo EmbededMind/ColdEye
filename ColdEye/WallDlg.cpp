@@ -304,21 +304,21 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 			return true;
 			break;
 		//-----------------------
-		case VK_APPS:
-			Print("Wall case apps");
-			if (this->IsWindowVisible()) {
-				this->ShowWindow(false);
-				((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.ShowWindow(true);
+		//case VK_APPS:
+		//	Print("Wall case apps");
+		//	if (this->IsWindowVisible()) {
+		//		this->ShowWindow(false);
+		//		((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.ShowWindow(true);
 
-			}
-			else {
-				this->ShowWindow(true);
-				this->ShowWindow(false);
-				((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.FocusedReset();
-				this->SetFocus();
-			}
-			return true;
-			break;
+		//	}
+		//	else {
+		//		this->ShowWindow(true);
+		//		this->ShowWindow(false);
+		//		((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.FocusedReset();
+		//		this->SetFocus();
+		//	}
+		//	//return true;
+		//	break;
 		default:
 
 			break;

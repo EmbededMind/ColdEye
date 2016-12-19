@@ -566,42 +566,49 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//if (pMsg->message == WM_CONTEXTMENU) {
-	//	if (mWall.IsWindowVisible()) {
-	//		mWall.ShowWindow(false);
-	//		mMenu.ShowWindow(true);
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (!mMenu.mPlayerWall) {
+			if (mWall.IsWindowVisible()) {
+				mWall.ShowWindow(false);
+				mMenu.ShowWindow(true);
 
-	//	}
-	//	else {
-	//		mWall.ShowWindow(true);
-	//		mMenu.ShowWindow(false);
-	//		mMenu.FocusedReset();
-	//		mWall.SetFocus();
-	//	}
-	//	
-	//}
-
-	if (pMsg->message == WM_KEYDOWN) {
-		switch (pMsg->wParam) {
-			case VK_APPS:
-				Print("ColdEyeDlg case apps");
-
-				if (mWall.IsWindowVisible()) {
-					mWall.ShowWindow(false);
-					mMenu.ShowWindow(true);
-
-				}
-				else {
-					mWall.ShowWindow(true);
-					mMenu.ShowWindow(false);
-					mMenu.FocusedReset();
-					mWall.SetFocus();
-				}
-
-				return true;
-				break;
+			}
+			else {
+				mWall.ShowWindow(true);
+				mMenu.ShowWindow(false);
+				mMenu.FocusedReset();
+				mWall.SetFocus();
+			}
 		}
 	}
+
+	//if (pMsg->message == WM_KEYDOWN) {
+	//	switch (pMsg->wParam) {
+	//		case VK_APPS:
+	//			Print("ColdEyeDlg case apps");
+
+	//			if (mWall.IsWindowVisible()) {
+	//				mWall.ShowWindow(false);
+	//				mMenu.ShowWindow(true);
+
+	//			}
+	//			else {
+	//				mWall.ShowWindow(true);
+	//				mMenu.ShowWindow(false);
+	//				mMenu.FocusedReset();
+	//				mWall.SetFocus();
+	//			}
+
+	//			//return true;
+	//			break;
+	//		case VK_BACK:
+	//			Print("BACK");
+	//			break;
+	//		case VK_UP:
+	//			Print("VK_UP");
+	//			break;
+	//	}
+	//}
 
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
