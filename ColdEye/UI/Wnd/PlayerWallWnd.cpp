@@ -39,6 +39,7 @@ LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 	switch (uMsg){
 	case WM_CONTEXTMENU:
 		Print("Player MenuKey");
+		//ClosePlayer();
 		return true;
 
 	case USER_MSG_PLAY_START: {
