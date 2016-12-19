@@ -606,8 +606,8 @@ void CMyMenuWnd::ExpandCameraName()
 	CSize size;
 	pLayout = (CVerticalLayoutUI*)pLayout_third->GetItemAt(pLayout_third->GetCurSel());
 
-	pChildLayout1 = (CVerticalLayoutUI*)pLayout->GetItemAt(1);
-	pChildLayout2 = (CVerticalLayoutUI*)pLayout->GetItemAt(2);
+	pChildLayout1 = (CVerticalLayoutUI*)pLayout->GetItemAt(1); //船名布局
+	pChildLayout2 = (CVerticalLayoutUI*)pLayout->GetItemAt(2); //船名下面控件布局
 	if (pChildLayout1->IsVisible() == false) {
 		rect = pChildLayout2->GetPos();
 		size.cx = 70;

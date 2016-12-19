@@ -123,12 +123,20 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	if(pItem){
 		pNode = (CVideoListUI::Node*)pItem->GetTag();
 	}
-	int Day;
-	Day = refTime.GetTime() / (3600 * 24) - pInfo->tBegin / (3600 * 24);
+	refTime.GetDay();
+	CTime tInfoBegin = CTime(pInfo->tBegin);
+	
 
+	int Day;
+	Day = refTime.GetDay() - tInfoBegin.GetDay();
+	if (Day < 0)
+		Day = 0;
+	Print("_Day:%d,  nowDay:%d,redBegDay:%d",Day, refTime.GetDay(), tInfoBegin.GetDay());
+	//Print("Day:%d, refTime:%llu, RecordBegin:%llu", Day,refTime.GetTime(), pInfo->tBegin);
 	if (Day == 0) {
 		if (pItem) {
-			if (pItem->Info->tBegin / (3600 * 24) != pInfo->tBegin / (3600 * 24)) {//当天没有头结点
+			CTime tHeadBegin = CTime(pItem->Info->tBegin);
+			if (tHeadBegin.GetDay() != tInfoBegin.GetDay()) {//当天没有头结点
 				pNode = AddHeadNode(_T("今天"), 0, pInfo);
 				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 			}
@@ -143,7 +151,9 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	}
 	else if (Day == 1) {
 		if (pItem) {
-			if (pItem->Info->tBegin / (3600 * 24) != pInfo->tBegin / (3600 * 24)) {//当天没有头结点
+
+			CTime tHeadBegin = CTime(pItem->Info->tBegin);
+			if (tHeadBegin.GetDay() != tInfoBegin.GetDay()) {//当天没有头结点
 				pNode = AddHeadNode(_T("昨天"), 0, pInfo);
 				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 			}
@@ -158,7 +168,9 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	}
 	else {
 		if (pItem) {
-			if (pItem->Info->tBegin / (3600 * 24) != pInfo->tBegin / (3600 * 24)) {//当天没有头结点
+
+			CTime tHeadBegin = CTime(pItem->Info->tBegin);
+			if (tHeadBegin.GetDay() != tInfoBegin.GetDay()) {//当天没有头结点
 				pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
 				AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 			}
