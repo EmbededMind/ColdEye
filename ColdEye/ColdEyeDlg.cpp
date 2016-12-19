@@ -187,6 +187,7 @@ BEGIN_MESSAGE_MAP(CColdEyeDlg, CDialogEx)
 	ON_MESSAGE(USER_MSG_STAR_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStarPlayAlarmVoice)
 	ON_MESSAGE(USER_MSG_STOP_PLAY_ALARM_VOICE, &CColdEyeDlg::OnUserMsgStopPlayAlarmVoice)
 	ON_WM_ERASEBKGND()
+	ON_MESSAGE(USER_MSG_MENU, &CColdEyeDlg::OnUserMsgMenu)
 END_MESSAGE_MAP()
 
 
@@ -566,42 +567,43 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	if (pMsg->message == WM_CONTEXTMENU) {
-		if (mWall.IsWindowVisible()) {
-			mWall.ShowWindow(false);
-			mMenu.ShowWindow(true);
+	//if (pMsg->message == WM_CONTEXTMENU) {
+	//	if (mWall.IsWindowVisible()) {
+	//		mWall.ShowWindow(false);
+	//		mMenu.ShowWindow(true);
 
-		}
-		else {
-			mWall.ShowWindow(true);
-			mMenu.ShowWindow(false);
-			mMenu.FocusedReset();
-			mWall.SetFocus();
-		}
-		
-	}
-
-	//if (pMsg->message == WM_KEYDOWN) {
-	//	switch (pMsg->wParam) {
-	//		case VK_APPS:
-	//			Print("ColdEyeDlg case apps");
-
-	//			if (mWall.IsWindowVisible()) {
-	//				mWall.ShowWindow(false);
-	//				mMenu.ShowWindow(true);
-
-	//			}
-	//			else {
-	//				mWall.ShowWindow(true);
-	//				mMenu.ShowWindow(false);
-	//				mMenu.FocusedReset();
-	//				mWall.SetFocus();
-	//			}
-
-	//			return true;
-	//			break;
 	//	}
+	//	else {
+	//		mWall.ShowWindow(true);
+	//		mMenu.ShowWindow(false);
+	//		mMenu.FocusedReset();
+	//		mWall.SetFocus();
+	//	}
+	//	
 	//}
+
+	if (pMsg->message == WM_KEYDOWN) {
+		switch (pMsg->wParam) {
+			case VK_APPS:
+				Print("ColdEyeDlg case apps");
+
+				if (mWall.IsWindowVisible()) {
+					Print("Show menu");
+					mWall.ShowWindow(SW_HIDE);
+					mMenu.ShowWindow(SW_SHOW);					
+				}
+				else {
+					Print("Show wall");
+					mWall.ShowWindow(SW_SHOW);
+					mMenu.ShowWindow(SW_HIDE);
+					mMenu.FocusedReset();
+					mWall.SetFocus();
+				}
+
+				return true;
+				break;
+		}
+	}
 
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
@@ -1264,4 +1266,21 @@ BOOL CColdEyeDlg::OnEraseBkgnd(CDC* pDC)
 
 	return true;
 	//return CDialogEx::OnEraseBkgnd(pDC);
+}
+
+
+afx_msg LRESULT CColdEyeDlg::OnUserMsgMenu(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == 1) {
+		mWall.ShowWindow(false);
+		mMenu.ShowWindow(true);
+
+	}
+	else {
+		mWall.ShowWindow(true);
+		mMenu.ShowWindow(false);
+		mMenu.FocusedReset();
+		mWall.SetFocus();
+	}
+	return 0;
 }

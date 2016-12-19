@@ -1171,6 +1171,8 @@ BOOL CSurface::PreTranslateMessage(MSG* pMsg)
 			//------------------------------------------
 			case VK_APPS:
 				Print("Surface case apps");
+				::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_MENU, 1, 0);
+				return true;
 				break;
 			//------------------------------------------
 			default:

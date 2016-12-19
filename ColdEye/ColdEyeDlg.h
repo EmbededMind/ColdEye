@@ -117,4 +117,6 @@ protected:
 	virtual void OnOK();
 public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+protected:
+	afx_msg LRESULT OnUserMsgMenu(WPARAM wParam, LPARAM lParam);
 };

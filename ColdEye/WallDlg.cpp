@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "ColdEye.h"
+#include "ColdEyeDlg.h"
 #include "WallDlg.h"
 #include "afxdialogex.h"
 #include "Com\Communication.h"
@@ -295,7 +296,7 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		{
 		case VK_UP:
 		case VK_DOWN:
-		    //TestIngestOne();
+		    TestIngestOne();
 			return true;
 		//-----------------------
 
@@ -304,18 +305,18 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 			return true;
 			break;
 		//-----------------------
-		case VK_APPS:
-			Print("Wall case apps");
+		case VK_APPS: {
+				Print("Wall case apps");
+				::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_MENU, 1, 0);
+				return true;
+			}
 			break;
 		default:
 
 			break;
 		}
 	}
-	else if (pMsg->message == WM_CONTEXTMENU)
-	{
-		TRACE("CWallDlg case contextmenu\n");
-	}
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 

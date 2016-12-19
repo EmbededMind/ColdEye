@@ -112,6 +112,8 @@
 
 #define USER_MSG_HAPPY_NEW_DAY             (WM_USER + 260)
 
+#define USER_MSG_MENU                      (WM_USER + 270)
+
 /*****************************************
 *             Copy Flie Result           *
 ******************************************/

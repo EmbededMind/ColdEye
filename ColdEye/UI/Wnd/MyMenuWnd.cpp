@@ -1364,9 +1364,19 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			}
 			break;
 		//--------------------------------------------
-		case WM_KEYDOWN: 
-			
-			break;
+		case WM_KEYDOWN: {
+				if (wParam == VK_APPS) {
+					//CColdEyeApp* app = (CColdEyeApp*)AfxGetApp();
+					//app->GetWallDlg()->ShowWindow(true);
+					//this->ShowWindow(false);
+					//this->FocusedReset();
+					//app->GetWallDlg()->SetFocus();
+					::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_MENU, 0, 0);
+					return true;
+					
+				}
+			}break;
+
 		//---------------------------------------------------------------
 		case USER_MSG_CAMERA_CONFIG_AWTIME:
 			DWORD aw_begining, aw_end;
