@@ -788,11 +788,11 @@ void CMyMenuWnd::PlayVideo(WPARAM wParam,LPARAM lParam)
 	mPlayerWall = new CPlayerWallWnd(_T("playerwall.xml"));
 	mPlayerWall->Create(NULL, _T("PlayerWallWnd"), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE, { 0,0,0,0 });
 	mPlayerWall->ShowWindow(true);
-	CRect rcPlayer;
-	GetWindowRect(mPlayerWall->GetHWND(),rcPlayer);
-	int   cx = GetSystemMetrics(SM_CXSCREEN);
-	int   cy = GetSystemMetrics(SM_CYSCREEN);
-	::MoveWindow(mPlayerWall->GetHWND(), cx / 2 - rcPlayer.Width() / 2, 108, rcPlayer.Width(), cy-108, true);
+	//CRect rcPlayer;
+	//GetWindowRect(mPlayerWall->GetHWND(),rcPlayer);
+	//int   cx = GetSystemMetrics(SM_CXSCREEN);
+	//int   cy = GetSystemMetrics(SM_CYSCREEN);
+	//::MoveWindow(mPlayerWall->GetHWND(), cx / 2 - rcPlayer.Width() / 2, 108, rcPlayer.Width(), cy-108, true);
 	//mPlayerWall->CenterWindow();
 	::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, wParam, lParam);
 }

@@ -100,7 +100,7 @@ void CColdEyeDlg::UpdateLayout()
 	m_rTitle.bottom = m_rTitle.top + titleHeight;
 
 	m_rSysTimeText.left  = 40;
-	m_rSysTimeText.right = m_rSysTimeText.left + 400;
+	m_rSysTimeText.right = m_rSysTimeText.left + 360;
 
 	m_rSysTimeText.top  = 37;
 	m_rSysTimeText.bottom  = m_rSysTimeText.top + 39;
