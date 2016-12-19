@@ -23,9 +23,7 @@
 #define new DEBUG_NEW
 #endif
 
-
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -67,6 +65,7 @@ CColdEyeDlg::CColdEyeDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_COLDEYE_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_MonitorPower = MonitorPowerOn;
 }
 
 
@@ -100,7 +99,7 @@ void CColdEyeDlg::UpdateLayout()
 	m_rTitle.bottom = m_rTitle.top + titleHeight;
 
 	m_rSysTimeText.left  = 40;
-	m_rSysTimeText.right = m_rSysTimeText.left + 360;
+	m_rSysTimeText.right = m_rSysTimeText.left + 370;
 
 	m_rSysTimeText.top  = 37;
 	m_rSysTimeText.bottom  = m_rSysTimeText.top + 39;
@@ -330,7 +329,7 @@ afx_msg LRESULT CColdEyeDlg::OnUserMsgScanDev(WPARAM wParam, LPARAM lParam)
 }
 
 
-BOOL CColdEyeDlg::SetVolumeLevel(int type)
+int CColdEyeDlg::SetVolumeLevel(int type)
 {
 	HRESULT hr;
 	IMMDeviceEnumerator* pDeviceEnumerator = 0;
@@ -383,7 +382,7 @@ BOOL CColdEyeDlg::SetVolumeLevel(int type)
 			pAudioEndpointVolume->Release();
 			pDevice->Release();
 			pDeviceEnumerator->Release();
-			return true;
+			return (int)(100*fVolume);
 		}
 	}
 	catch (...) {
@@ -393,7 +392,7 @@ BOOL CColdEyeDlg::SetVolumeLevel(int type)
 		if (pDeviceEnumerator) pDeviceEnumerator->Release();
 		throw;
 	}
-	return 0;
+	return -1;
 }
 
 
@@ -433,6 +432,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 {
 	static int KBmessage_NO = 0;
 	static int CAmessage_NO = 0;
+	int volume;
 	if (port == COM_KB)
 	{
 		onedata *p = (onedata*)pData;
@@ -489,7 +489,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event('U', 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLUP:
-				this->SetVolumeLevel(ENLARGE_VOLUME);
+				volume = this->SetVolumeLevel(ENLARGE_VOLUME);
+				//PostMessage();
 				break;
 			case KB_DOWN:
 				keybd_event(VK_DOWN, 0, 0, 0);
@@ -502,7 +503,8 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				keybd_event(VK_F8, 0, KEYEVENTF_KEYUP, 0);
 				break;
 			case KB_VOLDOWN:
-				this->SetVolumeLevel(REDUCE_VOLUME);
+				volume = this->SetVolumeLevel(REDUCE_VOLUME);
+				//PostMessage();
 				break;
 			case KB_TALKQUIET:
 				SetVolumeLevel(1);
@@ -515,8 +517,21 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				break;
 			case KB_SWITCH:
 			{
-				char str[120] = "shutdown -f -s -t 0";
-				system(str);
+				//char str[120] = "shutdown -f -s -t 0";
+				//system(str);
+				//break;
+				if (m_MonitorPower != MonitorPowerOn)
+				{
+					m_MonitorPower = MonitorPowerOn;
+				}
+				else if(m_MonitorPower != MonitorPowerOff)
+				{
+					m_MonitorPower = MonitorPowerOff;
+				}
+				::PostMessage(HWND_BROADCAST,
+					WM_SYSCOMMAND,
+					SC_MONITORPOWER,
+					(LPARAM)m_MonitorPower);
 				break;
 			}
 			case KB_PTTDOWN:
