@@ -1104,6 +1104,12 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 				CMsgSquare::GetInstance()->Broadcast(msg);
 			}
 			break;
+
+		case USER_MSG_SYS_VOLUM:
+			pSysVolum->SetValue(wParam);
+			((CColdEyeApp*)AfxGetApp())->m_SysConfig.volumn = wParam;
+			((CColdEyeApp*)AfxGetApp())->StoreSystemConfig();
+			break;
 		//-------------------------------------------------------------
 	}
 	return LRESULT();

@@ -490,7 +490,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				break;
 			case KB_VOLUP:
 				volume = this->SetVolumeLevel(ENLARGE_VOLUME);
-				//PostMessage();
+				::PostMessage(mMenu, USER_MSG_SYS_VOLUM, volume, NULL);
 				break;
 			case KB_DOWN:
 				keybd_event(VK_DOWN, 0, 0, 0);
@@ -504,7 +504,7 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 				break;
 			case KB_VOLDOWN:
 				volume = this->SetVolumeLevel(REDUCE_VOLUME);
-				//PostMessage();
+				::PostMessage(mMenu,USER_MSG_SYS_VOLUM,volume,NULL);
 				break;
 			case KB_TALKQUIET:
 				SetVolumeLevel(1);
