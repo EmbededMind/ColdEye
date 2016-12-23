@@ -295,8 +295,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
-	Print("2G = %llu byte", SURPLUSSPACENORMAL);
 	::SetForegroundWindow(this->GetSafeHwnd());
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -824,6 +824,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		//这里判断CRC
 		//.....
 
+		if (!CUtil::CheckCRC32(p->ch, 12))
+		{
+			Print("CRC FALSE");
+			return 0;
+		}
 		//if (p->ch[1] == 0x02 && p->ch[2] == 0x01)
 		uint64_t mac64 = CUtil::ArrayToUint64(&p->ch[6]);
 		CCamera *pDev;

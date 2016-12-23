@@ -30,10 +30,11 @@ void CUtil::LoadOrder(uint8_t * pOrder, uint8_t Header, uint8_t ScrType, uint8_t
 		pOrder[10] = CharToUint8(pCamear->mCommonNetConfig.sMac[12]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[13]);
 		pOrder[11] = CharToUint8(pCamear->mCommonNetConfig.sMac[15]) * 16 + CharToUint8(pCamear->mCommonNetConfig.sMac[16]);
 	}
-	pOrder[12] = 0x0;
-	pOrder[13] = 0x0;
-	pOrder[14] = 0x0;
-	pOrder[15] = 0x0;
+	uint32_t crc = CRC32Software(pOrder, 12);
+	pOrder[12] = (uint8_t) (crc>>24);
+	pOrder[13] = (uint8_t) ((crc&0x00ffffff)>>16);
+	pOrder[14] = (uint8_t) ((crc&0x0000ffff)>>8);
+	pOrder[15] = (uint8_t) (crc&0x000000ff);
 	pOrder[16] = 0xfd;
 }
 
@@ -156,4 +157,47 @@ void CUtil::MacNumberToStr(uint8_t* pNumber, char* pMac)
 	pMac[11] = ':';
 	pMac[14] = ':';
 	pMac[17] = 0;
+}
+
+uint32_t CUtil::CRC32Software(uint8_t *pData, uint16_t Length)
+{
+	DWORD dwPolynomial = 0x04c11db7;
+	DWORD    xbit;
+	DWORD    data;
+	DWORD    CRC = 0xFFFFFFFF;    // init
+	//Length = 1;
+	while (Length--) {
+		xbit = 1 << 31;
+		data = *pData++;
+		data &= 0x000000ff;
+		//data = 0x44434241;
+		//Print("%32x", data);
+		for (int bits = 0; bits < 32; bits++) {
+			if (CRC & 0x80000000) {
+				CRC <<= 1;
+				CRC ^= dwPolynomial;
+			}
+			else
+				CRC <<= 1;
+			if (data & xbit)
+				CRC ^= dwPolynomial;
+
+			xbit >>= 1;
+		}
+	}
+	return CRC;
+}
+
+bool CUtil::CheckCRC32(uint8_t * pData, uint16_t Length)
+{
+	uint32_t crc = CRC32Software(pData, Length);
+	if (pData[Length] != (uint8_t)(crc >> 24))
+		return false;
+	if (pData[Length + 1] != (uint8_t)((crc & 0x00ffffff) >> 16))
+		return false;
+	if (pData[Length + 2] != (uint8_t)((crc & 0x0000ffff) >> 8))
+		return false;
+	if (pData[Length + 3] != (uint8_t)(crc & 0x000000ff))
+		return false;
+	return true;
 }
