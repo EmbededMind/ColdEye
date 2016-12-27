@@ -112,6 +112,7 @@ protected:
 
 private:
 	OSD_INFO_TXT  m_OsdInfoText;
+	int           m_OsdTextIndex;
 
 
 	long          m_hRealPlay;
