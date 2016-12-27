@@ -1384,6 +1384,12 @@ LRESULT CMyMenuWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 			((CColdEyeApp*)AfxGetApp())->StoreSystemConfig();
 			break;
 		//-------------------------------------------------------------
+		case USER_MSG_HAPPY_NEW_DAY:
+			for (int i = 0; i < 6; i++) {
+				camera[i].pAlarmList->RefreshList();
+				camera[i].pNormalList->RefreshList();
+			}
+			break;
 	}
 	return LRESULT();
 }
