@@ -125,11 +125,7 @@ void CVideoListUI::AddItem(CRecordFileInfo * pInfo)
 	if (pItem) {
 		pNode = (CVideoListUI::Node*)pItem->GetTag();
 	}
-	int i;
-	if (pInfo->nOwner == 2) {
-		i = 0;
-		GetName();
-	}
+
 
 	//判断是否存在节点
 	if (pItem) {
@@ -150,38 +146,36 @@ void CVideoListUI::RefreshList()
 {
 	int num;
 	CTime tbegin;
+	int SpanDay;
 	CTime refTime = CTime::GetCurrentTime();
 	CVideoListUI::Node* pNode  = NULL;
 	CMyListUI *pItem = (CMyListUI*)GetItemAt(0);
-
 	if (!pItem) return;
-
+	//第一头结点
 	pNode = (CVideoListUI::Node*)pItem->GetTag();
+	SpanDay = DataSpan(refTime, CTime(pItem->Info->tBegin));
+	if (SpanDay == 0) {
+		pNode->data()._text = _T("今天");
+	}
+	else if (SpanDay == 1) {
+		pNode->data()._text = _T("昨天");
+	}
+	else {
+		tbegin = CTime(pItem->Info->tBegin);
+		pNode->data()._text = tbegin.Format("%Y-%m-%d");
+	}
+
 	num = pNode->num_children();
-	if (!num) {
+	if (num) {
 		pItem = (CMyListUI*)GetItemAt(num + 1); //第二个头节点
 		if (!pItem) return;
-		int Day;
-		if (pItem) {
-			//年月都相等
-			if (refTime.GetYear() == CTime(pItem->Info->tBegin).GetYear() && refTime.GetMonth() == CTime(pItem->Info->tBegin).GetMonth()) {
-				if (refTime.GetDay() - CTime(pItem->Info->tBegin).GetDay() == 1) {
-					pNode->data()._text = _T("昨天");
-				}
-				else {
-					tbegin = CTime(pItem->Info->tBegin);
-					pNode->data()._text = tbegin.Format("%Y-%m-%d");
-				}
-			}
-			//跨月
-			else if (refTime.GetYear() == CTime(pItem->Info->tBegin).GetYear() && refTime.GetMonth() - CTime(pItem->Info->tBegin).GetMonth() - 1) {
-				if(refTime.GetDay()==1)
-					pNode->data()._text = _T("昨天");
-				else {
-					tbegin = CTime(pItem->Info->tBegin);
-					pNode->data()._text = tbegin.Format("%Y-%m-%d");
-				}
-			}
+		pNode = (CVideoListUI::Node*)pItem->GetTag();
+		SpanDay = DataSpan(refTime, CTime(pItem->Info->tBegin));
+		if (SpanDay == 0) {
+			pNode->data()._text = _T("今天");
+		}
+		else if (SpanDay == 1) {
+			pNode->data()._text = _T("昨天");
 		}
 		else {
 			tbegin = CTime(pItem->Info->tBegin);
@@ -233,8 +227,8 @@ void CVideoListUI::CompareBeginTime(CTime refTime, CTime tbegin, CTime tend, CRe
 		AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);
 	}
 	else if (refTime.GetYear() == tbegin.GetYear() && refTime.GetMonth() == tbegin.GetMonth() && refTime.GetDay() - tbegin.GetDay() == 1) {
-			pNode = AddHeadNode(_T("昨天"), 0, pInfo);
-			AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);	
+		pNode = AddHeadNode(_T("昨天"), 0, pInfo);
+		AddChildNode(tbegin.Format("%Y-%m-%d  %H:%M") + _T("-") + tend.Format("%H:%M"), pNode, 0, pInfo);	
 	}	
 	else {
 			pNode = AddHeadNode(tbegin.Format("%Y-%m-%d"), 0, pInfo);
@@ -266,6 +260,51 @@ int CVideoListUI::IsNewDay(CRecordFileInfo *HeadInfo,CRecordFileInfo * pInfo)
 void CVideoListUI::SetListElementHeight(float m_scale)
 {
 	m_listElementHight = 60 * m_scale;
+}
+
+
+//时间差 
+int CVideoListUI::DataSpan(CTime refTime, CTime _tBegin)
+{
+	if (refTime.GetYear() == _tBegin.GetYear() && refTime.GetMonth() == _tBegin.GetMonth() && refTime.GetDay() == _tBegin.GetDay()) {
+		return 0;
+	}
+	else if (refTime.GetYear() == _tBegin.GetYear() && refTime.GetMonth() == _tBegin.GetMonth()) {
+		if (refTime.GetDay() - _tBegin.GetDay() == 1) {
+			return 1;
+		}
+		else {
+			return 2;
+		}
+	}
+	//跨月
+	else if (refTime.GetYear() == _tBegin.GetYear()) {
+		if (refTime.GetMonth() - _tBegin.GetMonth() == 1) {
+
+			CTime refTimeTemp = CTime(refTime.GetYear(), refTime.GetMonth(), refTime.GetDay(), 0, 0, 0);
+			CTimeSpan span = refTimeTemp.GetTime() - _tBegin.GetTime();
+			if (span.GetDays() == 0) {
+				return 1;
+			}
+			else {
+				return 2;
+			}
+		}
+		else {
+			return 2;
+		}
+	}
+	//跨年
+	else {
+		CTime refTimeTemp = CTime(refTime.GetYear(), refTime.GetMonth(), refTime.GetDay(), 0, 0, 0);
+		CTimeSpan span = refTimeTemp.GetTime() - _tBegin.GetTime();
+		if (span.GetDays() == 0) {
+			return 1;
+		}
+		else {
+			return 2;
+		}
+	}
 }
 
 
