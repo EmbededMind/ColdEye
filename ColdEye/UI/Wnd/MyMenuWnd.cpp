@@ -1217,7 +1217,7 @@ void CMyMenuWnd::Notify(TNotifyUI & msg)
 			CPort* pPort  = (CPort*)FocusedItem[1]->GetTag();
 			if (pPort) {
 
-			    int vol  = camera[pPort->GetId()].pVolum->GetValue();
+			    int vol  = camera[pPort->GetId()-1].pVolum->GetValue();
 
 				pPort->m_DevConfig.Volumn = vol;
 
