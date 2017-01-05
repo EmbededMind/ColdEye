@@ -296,8 +296,8 @@ BOOL CColdEyeDlg::OnInitDialog()
 
 	CCommunication::GetInstance()->Init(this);
 	CCommunication::GetInstance()->StartThread();
-	Print("2G = %llu byte", SURPLUSSPACENORMAL);
 	::SetForegroundWindow(this->GetSafeHwnd());
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -565,6 +565,7 @@ void CColdEyeDlg::SetAutoRun(bool bAutoRun)
 
 BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 {
+<<<<<<< HEAD
 	if (pMsg->message == WM_CONTEXTMENU) {
 		return true;
 	}
@@ -586,8 +587,53 @@ BOOL CColdEyeDlg::PreTranslateMessage(MSG* pMsg)
 				}
 				return true;
 				break;
+=======
+	// TODO: 在此添加专用代码和/或调用基类
+
+	if (pMsg->message == WM_CONTEXTMENU) {
+		if (!mMenu.mPlayerWall) {
+			if (mWall.IsWindowVisible()) {
+				mWall.ShowWindow(false);
+				mMenu.ShowWindow(true);
+
+			}
+			else {
+				mWall.ShowWindow(true);
+				mMenu.ShowWindow(false);
+				mMenu.FocusedReset();
+				mWall.SetFocus();
+			}
+>>>>>>> fd6ea9660d3a950961ee1558620825fcf7a7fd24
 		}
 	}
+
+	//if (pMsg->message == WM_KEYDOWN) {
+	//	switch (pMsg->wParam) {
+	//		case VK_APPS:
+	//			Print("ColdEyeDlg case apps");
+
+	//			if (mWall.IsWindowVisible()) {
+	//				mWall.ShowWindow(false);
+	//				mMenu.ShowWindow(true);
+
+	//			}
+	//			else {
+	//				mWall.ShowWindow(true);
+	//				mMenu.ShowWindow(false);
+	//				mMenu.FocusedReset();
+	//				mWall.SetFocus();
+	//			}
+
+	//			//return true;
+	//			break;
+	//		case VK_BACK:
+	//			Print("BACK");
+	//			break;
+	//		case VK_UP:
+	//			Print("VK_UP");
+	//			break;
+	//	}
+	//}
 
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
@@ -803,6 +849,11 @@ LONG CColdEyeDlg::OnCommReceive(WPARAM pData, LPARAM port)
 		//这里判断CRC
 		//.....
 
+		if (!CUtil::CheckCRC32(p->ch, 12))
+		{
+			Print("CRC FALSE");
+			return 0;
+		}
 		//if (p->ch[1] == 0x02 && p->ch[2] == 0x01)
 		uint64_t mac64 = CUtil::ArrayToUint64(&p->ch[6]);
 		CCamera *pDev;

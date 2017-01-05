@@ -1050,6 +1050,7 @@ void CMyMenuWnd::PlayVideo(WPARAM wParam,LPARAM lParam)
 	mPlayerWall->ShowWindow(true);
 	mPlayerWall->CenterWindow();
 	::SendMessage(mPlayerWall->GetHWND(), USER_MSG_PLAY_START, wParam, lParam);
+	SetFocus(mPlayerWall->GetHWND());
 }
 
 void CMyMenuWnd::RecordVoice()

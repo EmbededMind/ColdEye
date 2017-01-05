@@ -17,5 +17,7 @@ public:
 	static void RemoveDev(CCamera *pCamera);
 	static uint64_t ArrayToUint64(uint8_t *pch);
 	static void     MacNumberToStr(uint8_t * pNum, char* pMac);
+	static uint32_t CRC32Software(uint8_t *pData, uint16_t Length);
+	static bool CheckCRC32(uint8_t *pData, uint16_t Length);
 };
 

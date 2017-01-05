@@ -166,6 +166,8 @@ public :
 	CameraInfo cameraInfo;
 	SwtichRecord recordInfo;
 	CameraItem camera[6];
+
+	CPlayerWallWnd	*mPlayerWall;
 private:
 
 	CMenuItemUI*  AddMenuItem(CPort* pPort, CDuiString layoutName, int baseData);
@@ -222,6 +224,5 @@ private:
 	int mDPI;
 	float m_scale;
 	int m_DispSize = 1600;
-	CPlayerWallWnd	*mPlayerWall;
 
 };

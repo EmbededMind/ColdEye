@@ -305,12 +305,30 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 			return true;
 			break;
 		//-----------------------
+<<<<<<< HEAD
 
 		case VK_APPS: {
 				Print("Wall case apps");
 				::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_MENU, 1, 0);
 				return true;
 			}
+=======
+		//case VK_APPS:
+		//	Print("Wall case apps");
+		//	if (this->IsWindowVisible()) {
+		//		this->ShowWindow(false);
+		//		((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.ShowWindow(true);
+
+		//	}
+		//	else {
+		//		this->ShowWindow(true);
+		//		this->ShowWindow(false);
+		//		((CColdEyeDlg*)(AfxGetApp()->m_pMainWnd))->mMenu.FocusedReset();
+		//		this->SetFocus();
+		//	}
+		//	//return true;
+		//	break;
+>>>>>>> fd6ea9660d3a950961ee1558620825fcf7a7fd24
 		default:
 
 			break;
