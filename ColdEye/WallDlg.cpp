@@ -10,7 +10,7 @@
 #include "Pattern\MsgSquare.h"
 #include "Device\PortManager.h"
 #include "Com\Util.h"
-
+#include "ColdEyeDlg.h"
 
 /**@brief 报警消息回调
  *
@@ -296,7 +296,7 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 		{
 		case VK_UP:
 		case VK_DOWN:
-		    //TestIngestOne();
+		    TestIngestOne();
 			return true;
 		//-----------------------
 
@@ -305,12 +305,12 @@ BOOL CWallDlg::PreTranslateMessage(MSG * pMsg)
 			return true;
 			break;
 		//-----------------------
+
 		case VK_APPS: {
 				Print("Wall case apps");
 				::SendMessage(AfxGetMainWnd()->m_hWnd, USER_MSG_MENU, 1, 0);
 				return true;
 			}
-			break;
 		default:
 
 			break;

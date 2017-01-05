@@ -195,8 +195,8 @@ const ULONGLONG SURPLUSSPACENORMAL = 2147483648;//正常文件所在磁盘剩余空间红线52
 const ULONGLONG SURPLUSSPACEALARM = 2147483648;//报警文件所在磁盘剩余空间红线524088000
 
 /**        Com num define        **/
-#define COM_KB    1
-#define COM_CAM   2
+#define COM_KB    2
+#define COM_CAM   1
 
 /**     COM_KB keyboard num     **/
 #define KB_MENU                       1

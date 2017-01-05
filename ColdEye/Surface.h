@@ -50,7 +50,7 @@ public:
 	//void          BindCamera(CCamera* pCamera);
 
 	void          BindPort(CPort* pPort);
-
+	 
 	void          ExecuteConfig();
 	void          ModifyConfig(DeviceConfig* pConfig);
 

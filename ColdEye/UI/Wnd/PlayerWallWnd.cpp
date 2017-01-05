@@ -37,9 +37,10 @@ CDuiString CPlayerWallWnd::GetSkinFile()
 LRESULT CPlayerWallWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	switch (uMsg){
-	case WM_CONTEXTMENU:
-		Print("Player MenuKey");
-		return true;
+	//case WM_CONTEXTMENU:
+	//	Print("Player MenuKey");
+	//	//ClosePlayer();
+	//	return true;
 
 	case USER_MSG_PLAY_START: {
 
@@ -100,6 +101,9 @@ void CPlayerWallWnd::InitWindow()
 		MoveWindow(pAlphaMarkWnd->GetHWND(), ScreenWidth+(rt.left + 707)*(pMenuWnd->GetMyScale()),(rt.top+904)*(pMenuWnd->GetMyScale()), 186*(pMenuWnd->GetMyScale()), 86*(pMenuWnd->GetMyScale()), true);
 		pAlphaMarkWnd->ShowWindow(SW_HIDE);
 	}
+	pSlow->Invalidate();
+	pPlay->Invalidate();
+	pFast->Invalidate();
 	m_pm.SetFocus(pSlow);
 }
 

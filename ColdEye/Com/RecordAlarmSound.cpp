@@ -40,16 +40,17 @@ BOOL CRecordAlarmSound::StopTalkPlay(long nPort)
 
 BOOL CRecordAlarmSound::StopTalk()
 {
-	m_isAlarm = false;
+	if (this->m_isCanRecord)
+		return FALSE;
 	H264_PLAY_StopAudioCapture();//关闭音频采集功能
-
 	BOOL bPlayOk = FALSE;
-
 	StopTalkPlay(m_port);	//关闭数据流,已共享的方式关闭播放声音，关闭播放通道
 	H264_DVR_StopVoiceCom(m_TalkHandle);	//停止语音对讲
 	m_TalkHandle = 0;
 	delete [] pBuf;
 	ShowMemoryInfo();
+	this->m_isCanRecord = TRUE;
+	Print("Play Record Done CanRecord");
 	return true;
 }
 void __stdcall TalkDataCallBack(LONG lTalkHandle, char *pDataBuf, long dwBufSize, char byAudioFlag, long dwUser)
@@ -68,12 +69,22 @@ void __stdcall AudioDataCallBack(LPBYTE pDataBuffer, DWORD dwDataLength, long nU
 		pDevice->SendTalkData(pDataBuffer, dwDataLength);//发送音频数据到摄像头
 		FILE *stream;
 		fopen_s(&stream, pDevice->m_rtmpName, "ab+");
-		fwrite(pDataBuffer, dwDataLength, 1, stream);
-		fclose(stream);
+		if (stream)
+		{
+			fwrite(pDataBuffer, dwDataLength, 1, stream);
+			fclose(stream);
+		}
 	}
 }
 void CRecordAlarmSound::Record(CCamera *pCamera)
 {
+	if (!m_isCanRecord)
+	{
+		Print("Can't Record");
+		return;
+	}
+	Print("Can't Talk");
+	m_isCanTalk = FALSE;
 	m_pRecordCamera = pCamera;
 	DeleteFile(_T(RECORD_VOICE_NAME_TMP));//删掉文件
 	int nLen = 640;
@@ -121,6 +132,13 @@ void __stdcall AudioDataCallBack_2(LPBYTE pDataBuffer, DWORD dwDataLength, long 
 }
 bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 {
+	if (!m_isCanTalk)
+	{
+		Print("Can't Talk");
+		return 0;
+	}
+	this->m_isCanRecord = FALSE;
+	Print("Can't Record");
 	Print("Play");
 	ShowMemoryInfo();
 	m_pPlayCamera = pCamera;
@@ -153,7 +171,8 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 			return 0;
 		}
 	}
-	
+	if (!pFile)
+		return 0;
 	fseek(pFile, 0, SEEK_END);//首先到文件末尾查看文件长度
 	len = ftell(pFile);//接上面的那句话
 	pBuf = new LPBYTE[len];
@@ -182,6 +201,8 @@ bool CRecordAlarmSound::Play(CCamera *pCamera, uint8_t type)
 
 bool CRecordAlarmSound::Save()
 {
+	this->m_isCanTalk = TRUE;
+	Print("Record Done Can Play");
 	if (PathFileExists(_T(RECORD_VOICE_NAME_TMP)))
 	{
 		DeleteFile(_T(RECORD_VOICE_NAME));
@@ -195,6 +216,8 @@ bool CRecordAlarmSound::Save()
 bool CRecordAlarmSound::NotSave()
 {
 	DeleteFile(_T(RECORD_VOICE_NAME_TMP));
+	this->m_isCanTalk = TRUE;
+	Print("Record Done Can Play");
 	return false;
 }
 

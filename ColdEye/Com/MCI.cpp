@@ -126,9 +126,12 @@ BOOL CMCI::Save()
 	if (PathFileExists(m_rFilePathTmp))
 	{
 		DeleteFile(m_rFilePath);
-		CFile::Rename(m_rFilePathTmp, m_rFilePath);
-		((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_sec = m_Totaltime;
-		((CColdEyeApp*)AfxGetApp())->StoreAlarmSoundConfig();
+		if (!PathFileExists(m_rFilePath))
+		{
+			CFile::Rename(m_rFilePathTmp, m_rFilePath);
+			((CColdEyeApp*)AfxGetApp())->m_SysConfig.alarm_sound_sec = m_Totaltime;
+			((CColdEyeApp*)AfxGetApp())->StoreAlarmSoundConfig();
+		}
 	}
 	return 0;
 }
